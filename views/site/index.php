@@ -1,3 +1,3 @@
 <?php
-Yii::$app->getResponse()->redirect('/resultaat');
+Yii::$app->getResponse()->redirect('resultaat');
 ?>
