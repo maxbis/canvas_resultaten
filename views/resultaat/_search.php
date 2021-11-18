@@ -37,6 +37,10 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'voldaan') ?>
 
+    <?php // echo $form->field($model, 'laatste_activiteit') ?>
+
+    <?php // echo $form->field($model, 'laatste_beoordeling') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>

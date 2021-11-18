@@ -18,7 +18,7 @@ class ResultaatSearch extends Resultaat
     {
         return [
             [['id', 'course_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
-            [['module', 'student_nummer', 'student_naam', 'voldaan'], 'safe'],
+            [['module', 'student_nummer', 'klas', 'student_naam', 'voldaan', 'laatste_activiteit', 'laatste_beoordeling'], 'safe'],
         ];
     }
 
@@ -47,7 +47,7 @@ class ResultaatSearch extends Resultaat
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => 100,
             ],
         ]);
 
@@ -73,7 +73,10 @@ class ResultaatSearch extends Resultaat
         $query->andFilterWhere(['like', 'module', $this->module])
             ->andFilterWhere(['like', 'student_nummer', $this->student_nummer])
             ->andFilterWhere(['like', 'student_naam', $this->student_naam])
-            ->andFilterWhere(['like', 'voldaan', $this->voldaan]);
+            ->andFilterWhere(['like', 'voldaan', $this->voldaan])
+            ->andFilterWhere(['like', 'klas', $this->klas])
+            ->andFilterWhere(['<', 'datediff(now(), laatste_activiteit)',  $this->laatste_activiteit])
+            ->andFilterWhere(['<', 'datediff(now(), laatste_beoordeling)',  $this->laatste_beoordeling]);
 
         return $dataProvider;
     }

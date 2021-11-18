@@ -3,18 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Resultaat;
-use app\models\ResultaatSearch;
+use app\models\Student;
+use app\models\StudentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-use yii\helpers\ArrayHelper;
-
 /**
- * ResultaatController implements the CRUD actions for Resultaat model.
+ * StudentController implements the CRUD actions for Student model.
  */
-class ResultaatController extends Controller
+class StudentController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -32,26 +30,22 @@ class ResultaatController extends Controller
     }
 
     /**
-     * Lists all Resultaat models.
+     * Lists all Student models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ResultaatSearch();
+        $searchModel = new StudentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $modules = ArrayHelper::map(Resultaat::find()->asArray()->all(), 'module', 'module');
-        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modules' => $modules,
         ]);
     }
 
-
     /**
-     * Displays a single Resultaat model.
+     * Displays a single Student model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -64,13 +58,13 @@ class ResultaatController extends Controller
     }
 
     /**
-     * Creates a new Resultaat model.
+     * Creates a new Student model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Resultaat();
+        $model = new Student();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -82,7 +76,7 @@ class ResultaatController extends Controller
     }
 
     /**
-     * Updates an existing Resultaat model.
+     * Updates an existing Student model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -102,7 +96,7 @@ class ResultaatController extends Controller
     }
 
     /**
-     * Deletes an existing Resultaat model.
+     * Deletes an existing Student model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -116,15 +110,15 @@ class ResultaatController extends Controller
     }
 
     /**
-     * Finds the Resultaat model based on its primary key value.
+     * Finds the Student model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Resultaat the loaded model
+     * @return Student the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Resultaat::findOne($id)) !== null) {
+        if (($model = Student::findOne($id)) !== null) {
             return $model;
         }
 

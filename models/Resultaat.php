@@ -11,6 +11,7 @@ use Yii;
  * @property int $course_id
  * @property string $module
  * @property string $student_nummer
+ * @property string|null $klas
  * @property string $student_naam
  * @property int $ingeleverd
  * @property int $ingeleverd_eo
@@ -18,6 +19,8 @@ use Yii;
  * @property int $punten_max
  * @property int $punten_eo
  * @property string $voldaan
+ * @property string|null $laatste_activiteit
+ * @property string|null $laatste_beoordeling
  */
 class Resultaat extends \yii\db\ActiveRecord
 {
@@ -35,10 +38,12 @@ class Resultaat extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_id', 'module', 'student_nummer', 'student_naam', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo', 'voldaan'], 'required'],
+            [['course_id', 'module', 'student_nummer', 'student_naam', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'required'],
             [['course_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
+            [['laatste_activiteit', 'laatste_beoordeling'], 'safe'],
             [['module'], 'string', 'max' => 100],
             [['student_nummer'], 'string', 'max' => 8],
+            [['klas'], 'string', 'max' => 2],
             [['student_naam'], 'string', 'max' => 200],
             [['voldaan'], 'string', 'max' => 1],
         ];
@@ -54,6 +59,7 @@ class Resultaat extends \yii\db\ActiveRecord
             'course_id' => 'Course ID',
             'module' => 'Module',
             'student_nummer' => 'Student Nummer',
+            'klas' => 'Klas',
             'student_naam' => 'Student Naam',
             'ingeleverd' => 'Ingeleverd',
             'ingeleverd_eo' => 'Ingeleverd Eo',
@@ -61,6 +67,8 @@ class Resultaat extends \yii\db\ActiveRecord
             'punten_max' => 'Punten Max',
             'punten_eo' => 'Punten Eo',
             'voldaan' => 'Voldaan',
+            'laatste_activiteit' => 'Laatste Activiteit',
+            'laatste_beoordeling' => 'Laatste Beoordeling',
         ];
     }
 }

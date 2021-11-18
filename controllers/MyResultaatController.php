@@ -49,7 +49,6 @@ class ResultaatController extends Controller
         ]);
     }
 
-
     /**
      * Displays a single Resultaat model.
      * @param integer $id
