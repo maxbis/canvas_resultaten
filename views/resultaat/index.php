@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'course_id',
                 'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
                 'format' => 'raw',
-                'filter' => ['2101'=>'Blok 1','a2110'=>'Blok 2'],
+                'filter' => ['2101'=>'Blok 1','2110'=>'Blok 2'],
                 'value' => function ($data) {
                     if ($data->course_id==2101) return "Blok 1";
                     if ($data->course_id==2110) return "Blok 2";
