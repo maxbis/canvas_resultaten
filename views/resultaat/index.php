@@ -10,9 +10,22 @@ use yii\grid\GridView;
 $this->title = 'Resultaten';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+
 <div class="resultaat-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <h1><?= Html::encode($this->title) ?></h1>
+            </div>
+            <div class="col-md-auto">
+                <?= Html::a('Export', ['resultaat/export'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
+            </div>
+        </div>
+    </div>
+
+    <br>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -46,11 +59,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [   'attribute' => 'student_naam',
                 'label' => 'Student',
                 'contentOptions' => ['style' => 'width:160px; white-space: normal;'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return Html::a($data->student_naam, ['/resultaat', 'ResultaatSearch[student_nummer]'=>$data->student_nummer], ['title'=> 'Show',]);
+                }
             ],
             [
                 'attribute'=>'voldaan',
+                'label' => 'V',
                 'headerOptions' => [ 'style' => 'color:#F0F0F0;' ],
-                'contentOptions' => ['style' => 'width:100px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
                 'options' => [ 'style' => 'voldaan' == 'V' ? 'color:#b4fac0':'color:#ffc7c7' ],
                 'filter' => ['-'=>'Niet Voldaan','V'=>'Voldaan'],
             ],
@@ -73,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'laatste_activiteit',
                 'label' => 'laatste A.',
-                'contentOptions' => ['style' => 'width:100px; white-space: normal; '],
+                'contentOptions' => ['style' => 'width:60px; white-space: normal; '],
                 'format' => 'raw',
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_activiteit))/86400) ;
@@ -87,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'laatste_beoordeling',
                 'label' => 'beoordeeld',
-                'contentOptions' => ['style' => 'width:100px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:60px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_beoordeling))/86400);
@@ -98,6 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
+
 
             //['class' => 'yii\grid\ActionColumn'],
         ],

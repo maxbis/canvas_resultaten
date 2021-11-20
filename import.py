@@ -43,7 +43,8 @@ def slashJoin(*args):
     return "/".join(arg.strip("/") for arg in args)
 
 # do validation and checks before insert
-def validate_string(val):
+# do validation and checks before insert
+def validate_string(fieldName, val):
     if val != None:
             if type(val) is int or type(val) is float:
                 #for x in val:
@@ -58,8 +59,12 @@ def validate_string(val):
                 return val[:-1]
             else:
                 return val.replace('\'','') # remove ' from strings and return string, ToDo make a proper fully escaped string
-    else:
-        return '0'
+    else: # value is None (NULL)
+        if(fieldName in ['submitted_at',  'graded_at']): # hack to translate null date into actual date (constraint MariaDB)
+            return "1970-01-01 00:00:00"
+        else:
+            return '0'
+
 
 def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     #json_data=getJsonData("modules/")
@@ -82,10 +87,10 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
         first=True # first fieldname in list of fields; this field usually id is returned as a list
         for thisField in fields:
             if (first):
-                returnList.append(validate_string(item.get(thisField, None)))
+                returnList.append(validate_string(thisField, item.get(thisField, None)))
                 first=False
             fieldStrings += thisField+','
-            fieldValues += '\''+validate_string(item.get(thisField, courseId))+'\',' # if fieldname is not found in dict use course_id
+            fieldValues += '\''+validate_string(thisField, item.get(thisField, courseId))+'\',' # if fieldname is not found in dict use course_id
         fieldStrings = fieldStrings[:-1]
         fieldValues = fieldValues[:-1]
         sql="INSERT INTO " + tableName + " (" + fieldStrings + ") VALUES (" + fieldValues + ")"
@@ -102,13 +107,14 @@ def createBlok(course_id):
     importTable(course_id,"modules", "module", [ 'id', 'name', 'position', 'items_count',  'published', 'course_id'])
     returnList=importTable(course_id,"assignments", "assignment", [ 'id', 'points_possible', 'assignment_group_id', 'name', 'course_id'])
     deleteAll=True
-    for item in returnList:
+    for item in returnList: # itterate through all assignments and retrieve all submissions for each assignement (due to limitation set by Canvas admin this cannot be done in one go) 
         print("Item: "+item)
         inserts=importTable(course_id,"assignments/"+item+"/submissions", "submission", [ 'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'graded_at', 'excused', 'entered_score', 'workflow_state','course_id'], deleteAll)
         print("return: "+str(len(inserts)))
-        deleteAll=False
+        deleteAll=False # since we itterate through all submissions in this course, only clean up entire table in the first itteration
 
 def createResultaat():
+    # put all results as displayed in GUI in one table (for performance reason)
     sql="delete from resultaat"
     print(sql)
     cursor.execute(sql)
@@ -145,10 +151,10 @@ def calcVoldaan():
         'Opdrachten DevOps':'punten_eo>=15',
     } 
  
-    sql="update resultaat set voldaan='-'"
+    sql="update resultaat set voldaan='-'" # reset all V to - (nothing is 'voldaan')
     cursor.execute(sql)
 
-    for item in voldaan_criteria:
+    for item in voldaan_criteria: #check all voldaan criterea and put V when criteria is met
         sql="update resultaat set voldaan = 'V' WHERE module = '"+ item +"' and "+ voldaan_criteria[item]
         print("Update resultaat: "+sql)
         print("Update resultaat")
@@ -188,7 +194,5 @@ if(1):
     createResultaat()
     calcVoldaan()
     createCsv()
-
-
 
 con.close()

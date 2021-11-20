@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\filters\AccessControl;
+
 /**
  * StudentController implements the CRUD actions for Student model.
  */
@@ -26,6 +28,16 @@ class StudentController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     'rules' => [
+            //         // when logged in, any user
+            //         [   'actions' => [],
+            //             'allow' => true,
+            //             'roles' => ['@'],
+            //         ],
+            //     ],
+            // ],
         ];
     }
 
@@ -87,7 +99,10 @@ class StudentController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $sql = "update resultaat set klas=:klas, student_naam=:naam  where student_nummer=:student_nummer";
+            $params = array(':klas'=>$model->klas,':naam'=>$model->name,':student_nummer'=>$model->student_nr);
+            $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
+            return $this->redirect(['/student']);
         }
 
         return $this->render('update', [

@@ -27,7 +27,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'name',
+            [   'attribute' => 'name',
+                'label' => 'Student',
+                'contentOptions' => ['style' => 'width:160px; white-space: normal;'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return Html::a($data->name, ['/resultaat', 'ResultaatSearch[student_nummer]'=>$data->student_nr], ['title'=> 'Show',]);
+            }
+        ],
             'login_id',
             'student_nr',
             'klas',

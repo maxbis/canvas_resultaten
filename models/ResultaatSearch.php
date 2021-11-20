@@ -14,6 +14,7 @@ class ResultaatSearch extends Resultaat
     /**
      * {@inheritdoc}
      */
+
     public function rules()
     {
         return [
@@ -50,6 +51,7 @@ class ResultaatSearch extends Resultaat
                 'pageSize' => 100,
             ],
         ]);
+
 
         $this->load($params);
 

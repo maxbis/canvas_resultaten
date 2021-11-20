@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 
 use yii\helpers\ArrayHelper;
 
+use yii\filters\AccessControl;
+
 /**
  * ResultaatController implements the CRUD actions for Resultaat model.
  */
@@ -28,6 +30,16 @@ class ResultaatController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     'rules' => [
+            //         // when logged in, any user
+            //         [   'actions' => [],
+            //             'allow' => true,
+            //             'roles' => ['@'],
+            //         ],
+            //     ],
+            // ],
         ];
     }
 
@@ -130,4 +142,28 @@ class ResultaatController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionExport(){       
+        header('Content-type: text/csv');
+        header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
+         
+        $data = Resultaat::find()->asArray()->all();
+
+        $firstLine=True;
+        foreach ($data as $line) {
+            foreach ( $line as $key => $value) {
+                if ($firstLine) {
+                    echo $key.",";
+                } else {
+                    echo "$value, ";
+                }
+            }
+            $firstLine=False;
+            echo "\n";
+        }
+        exit;      
+}    
+      
 }
+
+

@@ -70,7 +70,9 @@ class SiteController extends Controller
      * @return Response|string
      */
     public function actionLogin()
-    {
+    {   
+        MyHelpers::CheckIP();
+        
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

@@ -71,4 +71,9 @@ class Resultaat extends \yii\db\ActiveRecord
             'laatste_beoordeling' => 'Laatste Beoordeling',
         ];
     }
+
+    //public function getStudentr()
+    //{
+    //    return $this->hasOne(Student::className(), ['student_nr' => 'student_nummer']);
+    //}
 }
