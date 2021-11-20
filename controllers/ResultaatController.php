@@ -30,16 +30,16 @@ class ResultaatController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     'rules' => [
-            //         // when logged in, any user
-            //         [   'actions' => [],
-            //             'allow' => true,
-            //             'roles' => ['@'],
-            //         ],
-            //     ],
-            // ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    // when logged in, any user
+                    [   'actions' => [],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -162,7 +162,79 @@ class ResultaatController extends Controller
             echo "\n";
         }
         exit;      
-}    
+    }
+
+    public function getSubmissionFromApi($id) {
+        $uri = 'https://talnet.instructure.com/api/graphql';
+        $api_key  = "17601~LZ3pktnGAYnvWPXvIsqjGNY1bg1LfSH1fOfVvmoCAG9AmKX3mDZIyzPBsmnO1iZw";
+        $authorization = "Authorization: Bearer ".$api_key;
+
+        $query="query {
+            submission(id: \"$id\") {
+              _id
+              score
+              state
+              submittedAt
+              gradedAt
+              submissionStatus
+            }
+          }";
+
+        $ch = curl_init($uri);
+
+        curl_setopt_array($ch, array(
+            CURLOPT_HTTPHEADER  => array($authorization),
+            CURLOPT_RETURNTRANSFER  =>true,
+            CURLOPT_VERBOSE     => 1
+        ));
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "query=".$query);
+
+        $out = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+        return $out['data']['submission'];
+    }
+
+    public function updateSubmission($data) {
+        $sql="update submission set entered_score=:score, submitted_at=:submitted_at, graded_at=:graded_at, workflow_state=:state where id=:id";
+        $params = array(':score'=> $data['score'], ':submitted_at' => $data['submittedAt'], ':graded_at' => $data['gradedAt'], ':state' => $data['submissionStatus'], ':id'=>$data['_id']);
+        $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
+        return $result;
+    }
+
+    public function actionUpdateAssignment($student_nr, $module_id) { #this is too slow.....
+        # get submission_ids, let's get all submissions that are from this assignment group and this user
+        $sql="  select s.id from submission s
+                inner join assignment a on a.id=s.assignment_id
+                inner join assignment_group g on g.id=a.assignment_group_id
+                inner join user u on u.id=user_id
+                where g.id = :module_id and u.student_nr=:user_id";
+        $params = array(':user_id'=> $student_nr, ':module_id' => $module_id );
+        $listOfSubmissions = Yii::$app->db->createCommand($sql)->bindValues($params)->queryAll();               
+
+        # update the list of submissions, these are all submissions that are part of this assignment_group (=module)
+        foreach ($listOfSubmissions as $submission) { // get all submissions async since api responce is quite slow
+            // $data = $this->getSubmissionFromApi($submission['id']); // do this async
+            // $this->updateSubmission($data); // and then do this
+
+            Yii::$app->async->run(function() {
+                return $this->getSubmissionFromApi($submission['id']);
+           },
+           [    'success' => function ($result) {
+                    $this->updateSubmission($result);
+                },
+                'error' => function() {
+                    dd('async timeout');
+                },
+                'timeout' => function() {
+                    dd('async timeout');
+                },
+            ]
+            );
+        } // endfor
+        return $this->redirect(['index']);
+    }
       
 }
 

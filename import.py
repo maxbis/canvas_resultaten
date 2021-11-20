@@ -121,8 +121,8 @@ def createResultaat():
     con.commit()
 
     sql="""
-    insert into resultaat (course_id, module, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling)
-    SELECT a.course_id course_id,g.name module, SUBSTRING_INDEX(u.login_id,'@',1) student_nummer, u.klas klas, u.name student_naam,
+    insert into resultaat (course_id, module_id, module, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling)
+    SELECT a.course_id course_id,g.id module_id,g.name module, SUBSTRING_INDEX(u.login_id,'@',1) student_nummer, u.klas klas, u.name student_naam,
     SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
     SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
     sum(s.entered_score) punten,

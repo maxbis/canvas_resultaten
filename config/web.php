@@ -16,6 +16,10 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'async' => [
+            'class' => 'vxm\async\Async',
+            'appConfigFile' => '@app/config/async.php' // optional when you need to use yii feature in async process.
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'Z684r_xZu9At5qF9y1GkFOfFNUQAfmFR',
