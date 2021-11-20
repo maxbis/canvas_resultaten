@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="resultaat-index">
 
     <div class="container">
-        <div class="row justify-content-md-center">
+        <div class="row  align-items-center">
             <div class="col">
                 <h1><?= Html::encode($this->title) ?></h1>
             </div>
