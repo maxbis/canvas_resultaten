@@ -35,5 +35,7 @@ tests/_support/_generated
 config/db.php
 config/secrets.php
 config/ipAllowed.txt
+config/web.php
+web/output/*
 
 *.log

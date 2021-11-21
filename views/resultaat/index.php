@@ -11,6 +11,16 @@ $this->title = 'Resultaten';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<script>
+    function hide() {
+        // document.getElementById('main').style.visibility = 'hidden';
+        document.getElementById("main").innerHTML = "<br><br>Updating...";
+        t=setInterval(waiting,250);
+    }
+    function waiting() {
+        document.getElementById("main").innerHTML = document.getElementById("main").innerHTML + "..";
+    }
+</script>
 
 <div class="resultaat-index">
 
@@ -28,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <br>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <div id="main">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -91,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'laatste_activiteit',
                 'label' => 'laatste A.',
-                'contentOptions' => ['style' => 'width:60px; white-space: normal; '],
+                'contentOptions' => ['style' => 'width:40px; white-space: normal; '],
                 'format' => 'raw',
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_activiteit))/86400) ;
@@ -104,8 +114,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [   'attribute' => 'laatste_beoordeling',
-                'label' => 'beoordeeld',
-                'contentOptions' => ['style' => 'width:60px; white-space: normal;'],
+                'label' => 'beoord.',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_beoordeling))/86400);
@@ -120,7 +130,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'width:20px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['id'=> $data->module_id.$data->student_nummer, 'class'=>'', 'title'=> 'Update',]);
+                    #return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['id'=> $data->module_id.$data->student_nummer, 'class'=>'', 'title'=> 'Update',]);
+                    return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['onclick'=>'hide()']);
                 }
 
             ],
@@ -128,6 +139,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]); ?></div>
 
 </div>
