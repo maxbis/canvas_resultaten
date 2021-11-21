@@ -28,14 +28,10 @@ function dd($var)
 }
 
 
-function HTMLInclude($file)
-{
-    return \Yii::$app->view->renderFile('@app/views/layouts/'.$file.'.php');
-}
 
 function writeLog($msg="")
 {
-    $log  = date("j-m-Y,H:i")." "
+    $log  = date("j-m-Y,H:i:s")." "
             .$_SERVER['REMOTE_ADDR']." "
             .Yii::$app->controller->id."Controller "
             ."action".Yii::$app->controller->action->id." "

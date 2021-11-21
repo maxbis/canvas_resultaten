@@ -13,6 +13,9 @@ use yii\helpers\ArrayHelper;
 
 use yii\filters\AccessControl;
 
+use vxm\async\Task;
+use Spatie\Async\Pool;
+
 /**
  * ResultaatController implements the CRUD actions for Resultaat model.
  */
@@ -165,9 +168,10 @@ class ResultaatController extends Controller
     }
 
     public function getSubmissionFromApi($id) {
-        $uri = 'https://talnet.instructure.com/api/graphql';
-        $api_key  = "17601~LZ3pktnGAYnvWPXvIsqjGNY1bg1LfSH1fOfVvmoCAG9AmKX3mDZIyzPBsmnO1iZw";
-        $authorization = "Authorization: Bearer ".$api_key;
+
+        include __DIR__.'/../config/secrets.php';
+
+        $authorization = "Authorization: Bearer ".$API_KEY;
 
         $query="query {
             submission(id: \"$id\") {
@@ -180,7 +184,7 @@ class ResultaatController extends Controller
             }
           }";
 
-        $ch = curl_init($uri);
+        $ch = curl_init($URI);
 
         curl_setopt_array($ch, array(
             CURLOPT_HTTPHEADER  => array($authorization),
@@ -214,26 +218,35 @@ class ResultaatController extends Controller
         $listOfSubmissions = Yii::$app->db->createCommand($sql)->bindValues($params)->queryAll();               
 
         # update the list of submissions, these are all submissions that are part of this assignment_group (=module)
-        foreach ($listOfSubmissions as $submission) { // get all submissions async since api responce is quite slow
-            // $data = $this->getSubmissionFromApi($submission['id']); // do this async
-            // $this->updateSubmission($data); // and then do this
+        # https://github.com/spatie/async
+        # async only works on Linux server, on windows async will be converted into sync processing
+        $count=0;
+        $pool = Pool::create();
 
-            Yii::$app->async->run(function() {
-                return $this->getSubmissionFromApi($submission['id']);
-           },
-           [    'success' => function ($result) {
-                    $this->updateSubmission($result);
-                },
-                'error' => function() {
-                    dd('async timeout');
-                },
-                'timeout' => function() {
-                    dd('async timeout');
-                },
-            ]
-            );
+        $timerStart=round(microtime(true) * 1000);
+        foreach ($listOfSubmissions as $submission) { // get all submissions async since api responce is quite slow
+            $count++;
+            $pool->add(function () use ($submission, $count, $timerStart) {
+                $data = $this->getSubmissionFromApi($submission['id']);
+                $this->updateSubmission($data);
+                return([$count, $data]);
+            })->then(function ($data) use ($timerStart) {
+                // do nothing for now
+                // writeLog("asycn ".$data[0]." succes: ".$data[1]['_id'].": ".$data[1]['submittedAt']." ".strval(round(microtime(true) * 1000)-$timerStart));
+            })->catch(function (Throwable $exception) {
+                writeLog("Error async: ".$exception );
+            });
+
         } // endfor
+
+        await($pool); 
+        writeLog("Async Pool(".$count." threads) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
+
         return $this->redirect(['index']);
+    }
+
+    public function test($string){
+        writeLog($string);
     }
       
 }
