@@ -38,8 +38,8 @@ class Resultaat extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_id', 'module', 'student_nummer', 'student_naam', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'required'],
-            [['course_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
+            [['course_id', 'module_id', 'module', 'student_nummer', 'student_naam', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'required'],
+            [['course_id', 'module_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
             [['laatste_activiteit', 'laatste_beoordeling'], 'safe'],
             [['module'], 'string', 'max' => 100],
             [['student_nummer'], 'string', 'max' => 8],
@@ -57,6 +57,7 @@ class Resultaat extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'course_id' => 'Course ID',
+            'module_id' => 'Module ID',
             'module' => 'Module',
             'student_nummer' => 'Student Nummer',
             'klas' => 'Klas',

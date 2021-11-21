@@ -22,6 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 </script>
 
+<style type="text/css">
+        main { font-size:0.85rem;  }
+    </style>
+
 <div class="resultaat-index">
 
     <div class="container">
@@ -46,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Blok',
                 'attribute'=>'course_id',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
                 'filter' => ['2101'=>'Blok 1','2110'=>'Blok 2'],
                 'format' => 'raw',
                 'value' => function ($data) {
@@ -55,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [   'attribute' => 'module',
-                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:140px; white-space: normal;'],
                 'format' => 'raw',
                 'filter' => $modules,
                 'value' => function ($data) {
@@ -84,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'ingeleverd',
                 'label' => 'ingel./eind.',
-                'contentOptions' => ['style' => 'width:100px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     return sprintf("<pre>%2d %2d</pre>", $data->ingeleverd, $data->ingeleverd_eo);
@@ -93,14 +97,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'punten',
                 'label' => 'punten/eind/max',
-                'contentOptions' => ['style' => 'width:100px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return sprintf("<pre>%3d %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten*100/$data->punten_max);
+                    return sprintf("<pre>%2d %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten*100/$data->punten_max);
                 }
             ],
             [   'attribute' => 'laatste_activiteit',
-                'label' => 'laatste A.',
+                'label' => 'Act.',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal; '],
                 'format' => 'raw',
                 'value' => function ($data) {
@@ -114,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [   'attribute' => 'laatste_beoordeling',
-                'label' => 'beoord.',
+                'label' => 'Beo.',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {

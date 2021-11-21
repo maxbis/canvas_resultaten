@@ -52,6 +52,10 @@ class ResultaatSearch extends Resultaat
             ],
         ]);
 
+        // $dataProvider->sort->attributes['module'] = [ // ADD this block to suppoer sorting
+        //     'asc' => ['module_id' => SORT_ASC],
+        //     'desc' => ['module_id' => SORT_DESC],
+        // ];
 
         $this->load($params);
 

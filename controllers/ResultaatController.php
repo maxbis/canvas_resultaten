@@ -242,7 +242,7 @@ class ResultaatController extends Controller
         await($pool); 
         writeLog("Async Pool(".$count." threads) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'ResultaatSearch[student_nummer]'=>$student_nr]);
     }
 
     public function test($string){
