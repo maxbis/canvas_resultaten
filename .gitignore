@@ -33,6 +33,6 @@ tests/_support/_generated
 /.vagrant
 
 config/db.php
-config/secret.php
+config/secrets.php
 
 *.log
