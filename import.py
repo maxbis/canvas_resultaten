@@ -1,10 +1,10 @@
 import pymysql, os, json, csv
 import urllib.request
 
-baseUrl  = 'https://talnet.instructure.com/api/v1/courses/'
+baseUrl  = 'https://xxx.xxx.com/api/v1/courses/'
 courseId = '2101'
 paramUrl = '?per_page=100&page='
-api_key  = "17601~LZ3pktnGAYnvWPXvIsqjGNY1bg1LfSH1fOfVvmoCAG9AmKX3mDZIyzPBsmnO1iZw"
+api_key  = "17601~LZ3pktnGAYnvWPXvIsqjGNY1bg1LfSH1......"
 
 def getJsonData(url, courseId):
     pageNr=1
@@ -133,7 +133,7 @@ def createResultaat():
     FROM assignment a
     join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
     join assignment_group g on g.id = a.assignment_group_id
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6
     """
     print("Create resultaat")
     cursor.execute(sql)

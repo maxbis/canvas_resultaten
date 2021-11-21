@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'width:20px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['class'=>'', 'title'=> 'Update',]);
+                    return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['id'=> $data->module_id.$data->student_nummer, 'class'=>'', 'title'=> 'Update',]);
                 }
 
             ],
