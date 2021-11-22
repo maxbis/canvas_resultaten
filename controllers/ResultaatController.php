@@ -202,7 +202,7 @@ class ResultaatController extends Controller
 
     public function updateSubmission($data) {
         $sql="update submission set entered_score=:score, submitted_at=:submitted_at, graded_at=:graded_at, workflow_state=:state where id=:id";
-        $params = array(':score'=> $data['score'], ':submitted_at' => $data['submittedAt'], ':graded_at' => $data['gradedAt'], ':state' => $data['submissionStatus'], ':id'=>$data['_id']);
+        $params = array(':score'=> $data['score'] ?: 0, ':submitted_at' => $data['submittedAt'] ?: '1970-01-01T00:00:00', ':graded_at' => $data['gradedAt'] ?: '1970-01-01T00:00:00', ':state' => $data['submissionStatus'] ?: '1970-01-01T00:00:00', ':id'=>$data['_id']);
         $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
         return $result;
     }
