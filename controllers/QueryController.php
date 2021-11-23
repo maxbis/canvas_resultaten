@@ -108,7 +108,7 @@ class QueryController extends Controller
 
     public function actionVoortgang($sort='desc', $export=false) {
 
-        $sql="select student_nummer stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) Voldaan from resultaat group by 1,2 order by 4 $sort";
+        $sql="select student_nummer stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) Voldaan from resultaat group by 1,2, 3 order by 4 $sort";
 
         $data=$this->executeQuery($sql, "Laatste activiteit per student", $export);
         
