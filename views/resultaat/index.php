@@ -51,11 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Blok',
                 'attribute'=>'course_id',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
-                'filter' => ['2101'=>'Blok 1','2110'=>'Blok 2'],
+                'filter' => ['2101'=>'Blok 1','2110'=>'Blok 2', '3237'=>'Blok 3'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     if ($data->course_id==2101) return "B1";
                     if ($data->course_id==2110) return "B2";
+                    if ($data->course_id==3237) return "B3";
                 }
             ],
             [   'attribute' => 'module',
