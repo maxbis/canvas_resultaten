@@ -57,6 +57,7 @@ class QueryController extends Controller
         
         if ($export) {
             $this->exportExcel($data);
+            exit;
         } else {
             $data['title']=$title;
             return $data;
