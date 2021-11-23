@@ -148,7 +148,7 @@ class QueryController extends Controller
             from resultaat o
             $select
             group by module
-            order by id, module_id
+            order by module
         ";
 
         $data=$this->executeQuery($sql, "Modules voldaan", $export);
