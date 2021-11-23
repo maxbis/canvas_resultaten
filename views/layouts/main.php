@@ -42,7 +42,16 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Resultaat', 'url' => ['/resultaat']],
-            ['label' => 'Student', 'url' => ['/student']],
+            [
+                'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
+                'label' => 'Overig',
+                'items' => [
+                    ['label' => 'Student', 'url' => ['/student']],
+                    ['label' => '-----------------------------------'],
+                    ['label' => 'Activiteiten', 'url' => ['/query/actief?sort=desc']],
+                    ['label' => 'Voortgang', 'url' => ['/query/voortgang']],
+                ],
+            ],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (

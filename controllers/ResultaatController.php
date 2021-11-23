@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 
 use yii\filters\AccessControl;
 
-use vxm\async\Task;
+//use vxm\async\Task;
 use Spatie\Async\Pool;
 
 /**

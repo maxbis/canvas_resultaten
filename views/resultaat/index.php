@@ -139,7 +139,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
 
             ],
-
+            // [
+            //     'attribute' => 'module.position',
+            // ],
 
             //['class' => 'yii\grid\ActionColumn'],
         ],
