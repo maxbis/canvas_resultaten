@@ -83,13 +83,26 @@ class QueryController extends Controller
 
     public function actionActief($sort='desc', $export=false) {
 
-        $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief', module Module from resultaat group by 1,2,4 order by 3 $sort";
+        $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
 
         $data=$this->executeQuery($sql, "Laatste activiteit per student", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
+        ]);
+    }
+
+    public function actionActiefModule($sort='desc', $export=false) {
+
+        $sql="select student_naam Student, klas Klas,  module Module, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2,3 order by 4 $sort limit 100";
+
+        $data=$this->executeQuery($sql, "Laatste activiteit per student per module", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => '(max 100 regels)',
         ]);
     }
 

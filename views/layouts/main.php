@@ -48,7 +48,8 @@ AppAsset::register($this);
                 'items' => [
                     ['label' => 'Student', 'url' => ['/student']],
                     ['label' => '-----------------------------------'],
-                    ['label' => 'Activiteiten', 'url' => ['/query/actief?sort=desc']],
+                    ['label' => 'Actieve studenten', 'url' => ['/query/actief']],
+                    ['label' => 'Actieve studenten per module', 'url' => ['/query/actief-module']],
                     ['label' => 'Voortgang', 'url' => ['/query/voortgang']],
                 ],
             ],
