@@ -91,7 +91,7 @@ class QueryController extends Controller
             $select='';
         }
         $sql="
-            SELECT student_naam, klas, module, laatste_beoordeling
+            SELECT student_naam, klas, module, laatste_activiteit
             from resultaat o
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
@@ -144,13 +144,13 @@ class QueryController extends Controller
         }
 
         $sql="
-            select module Module, sum(case when voldaan='V' then 1 else 0 end) 'Afgerond door'
+            select Module, af 'Afgerond door' from
+                (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
             from resultaat o
-            $select
-            group by module
-            order by module
+            group by 1,2,3
+            order by 1,2) alias
         ";
-
+        // ToDo: order by werkt niet op server (order by moet in group by zitten)
         $data=$this->executeQuery($sql, "Modules voldaan", $export);
 
         return $this->render('output', [
