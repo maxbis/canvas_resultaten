@@ -16,11 +16,11 @@ echo Nav::widget([
     'options' => ['class' => 'navbar-nav'],
     'items' => [
         [
-            'label' => 'Resultaat', 'url' => ['/resultaat']
+            'label' => 'Resultaten', 'url' => ['/resultaat']
         ],
 
         [
-            'label' => 'Overig',
+            'label' => 'Rapporten',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Student', 'url' => ['/student']],
