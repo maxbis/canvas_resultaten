@@ -40,6 +40,7 @@ echo Nav::widget([
                 ['label' => '1B', 'url' => [Yii::$app->controller->action->id.'?klas=1B']],
                 ['label' => '1C', 'url' => [Yii::$app->controller->action->id.'?klas=1C']],
                 ['label' => '1D', 'url' => [Yii::$app->controller->action->id.'?klas=1D']],
+                ['label' => 'Allen', 'url' => [Yii::$app->controller->action->id]],
             ],
         ],
     ],
