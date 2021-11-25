@@ -20,15 +20,20 @@ echo Nav::widget([
         ],
 
         [
+            'label' => 'Student', 'url' => ['/student']
+        ],
+
+
+        [
             'label' => 'Rapporten',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
-                ['label' => 'Student', 'url' => ['/student']],
-                ['label' => '-----------------------------------'],
                 ['label' => 'Actieve studenten', 'url' => ['/query/actief']],
                 ['label' => 'Studenten werken aan', 'url' => ['/query/working-on']],
                 ['label' => 'Modules voldaan', 'url' => ['/query/modules-finished']],
                 ['label' => 'Voortgang', 'url' => ['/query/voortgang']],
+                // ['label' => 'Beoordeeld', 'url' => ['/query/beoordeeld']],
+                // ['label' => 'Aantal Beoordelingen', 'url' => ['/query/aantal-beoordelingen']],
             ],
         ],
         

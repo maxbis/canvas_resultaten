@@ -91,7 +91,7 @@ class QueryController extends Controller
             $select='';
         }
         $sql="
-            SELECT student_naam, klas, module, laatste_activiteit
+            SELECT student_naam Student, klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
             from resultaat o
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
@@ -117,7 +117,7 @@ class QueryController extends Controller
         }
 
         $sql="
-            SELECT module Module, sum(1) studenten
+            SELECT module Module, sum(1) Studenten
             from resultaat o
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
@@ -168,9 +168,9 @@ class QueryController extends Controller
             $select='';
         }
 
-        $sql="select student_nummer stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) 'Modules voldaan' from resultaat $select group by 1,2, 3 order by 4 $sort";
+        $sql="select student_nummer Stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) 'Voldaan' from resultaat $select group by 1,2, 3 order by 4 $sort";
 
-        $data=$this->executeQuery($sql, "Voortgang", $export);
+        $data=$this->executeQuery($sql, "Aantal modules voldaan", $export);
         
         return $this->render('output', [
             'data' => $data,
@@ -178,6 +178,41 @@ class QueryController extends Controller
         ]);
     }
 
+    public function actionBeoordeeld($export=false) {
+        $sql="
+            select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
+            from resultaat
+            group by 1
+            order by 2 desc
+        ";
+        $data=$this->executeQuery($sql, "Laatste beoordeling per module", $export);
 
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Minimaal één opdracht van de module is beoordeeld op...<br>(kan nog onbetrouwbaar zijn)',
+        ]);
+    }
+
+    public function actionAantalBeoordelingen($export=false) {
+        $sql="
+            select module Module,
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=2) then 1 else 0 end) '-2',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '-7',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=14) then 1 else 0 end) '-14',
+            sum(1) 'Aantal'   
+            from resultaat
+            group by 1
+            order by 2 desc
+        ";
+        $data=$this->executeQuery($sql, "Aantal beoordelingen per module", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Aantal beoordelingen de laatste 2, 7 en 14 dagen',
+        ]);
+    }
 }
+
 

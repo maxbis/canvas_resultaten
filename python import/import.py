@@ -7,16 +7,15 @@ import configparser
 config = configparser.ConfigParser()
 config.read("canvas.ini")
 
-baseUrl    = config.get('main', 'baseUrl')
-paramUrl   = config.get('main', 'paramUrl')
-api_key    = config.get('main', 'api_key')
-courses    = config.get('main', 'courses')
-criteria   = config.get('voldaan_criteria', 'criteria')
-dbName     = config.get('database', 'db')
-dbUser     = config.get('database', 'user')
+baseUrl = config.get('main', 'baseUrl')
+paramUrl = config.get('main', 'paramUrl')
+api_key = config.get('main', 'api_key')
+courses = config.get('main', 'courses')
+criteria = config.get('voldaan_criteria', 'criteria')
+dbName = config.get('database', 'db')
+dbUser = config.get('database', 'user')
 dbPassword = config.get('database', 'password')
 
-# parse voldaan criteria from ini file into a dict (key/value array)
 voldaan_criteria={}
 for item in criteria.split('\n'):
     [key, value] = item.split(':')
@@ -27,14 +26,12 @@ for item in criteria.split('\n'):
 #     sql="update resultaat set voldaan = 'V' WHERE module = '"+ item +"' and "+ voldaan_criteria[item]
 #     print(sql)
 
-# parse command line arguments
 parser = argparse.ArgumentParser(description='Update resultaten in Canvas Monitor')
 parser.add_argument('-c','--courses', nargs='+', type=int, help='update for course (ids) seperate list with spaces', required=True)
-parser.add_argument('-v','--verbose', help='Loglevel 0:no logging, 1:progress log, 2:advanced log', default=0, required=False)
+parser.add_argument('-v','--verbose', help='Loglevel 0: no logging, 1:progress log, 2:advanced log', default=0, required=False)
 args = vars(parser.parse_args())
 
 logLevel=args['verbose']
-
 
 # connect to MySQL
 from pymysql.constants import CLIENT
@@ -121,15 +118,15 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     for i, item in enumerate(json_data):
         fieldStrings=''
         fieldValues=''
-        first=True # first fieldname in list of fields; this field usually id is returned from this function as a list
+        first=True # first fieldname in list of fields; this field usually id is returned as a list
         for thisField in fields:
             if (first):
-                returnList.append(validate_string(thisField, item.get(thisField, None))) 
+                returnList.append(validate_string(thisField, item.get(thisField, None)))
                 first=False
             fieldStrings += thisField+','
             fieldValues += '\''+validate_string(thisField, item.get(thisField, courseId))+'\',' # if fieldname is not found in dict use course_id
-        fieldStrings = fieldStrings[:-1] # remove last , (only last item can not have a , other fileds and values are seperated by , )
-        fieldValues = fieldValues[:-1]   # remove last ,
+        fieldStrings = fieldStrings[:-1]
+        fieldValues = fieldValues[:-1]
         sql+="INSERT INTO " + tableName + " (" + fieldStrings + ") VALUES (" + fieldValues + ");\n"
 
         log(count,3)
@@ -141,7 +138,7 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
         cursor.execute(sql)
         con.commit()
 
-    return(returnList) # return list of first field values (usually ids/keys)
+    return(returnList)
 
 def createBlok(course_id):
     importTable(course_id,"assignment_groups", "assignment_group", ['id','name','course_id'])

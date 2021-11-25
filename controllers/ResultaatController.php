@@ -273,17 +273,20 @@ class ResultaatController extends Controller
 
         // update resultaten (V or -)
         $voldaan_criteria=[
-            '6345'=>'ingeleverd_eo=1',  //  Introductie
-            '6342' =>'ingeleverd>10',   // basic IT
+            '6345'=>'ingeleverd_eo=1',  // Introductie
+            '6342'=>'ingeleverd>10',    // basic IT
             '6347'=>'punten>=90',       // Front End Level 1
-            '6348'=>'punten_eo>30',     // Opdrachten Challenge
-            '6943'=>'punten > 30',      // CMS - Level 1
+            '6348'=>'punten_eo>30',     // Opdrachten Challenge1
+            '6943'=>'punten >= 30',     // CMS - Level 1
             '5034'=>'punten_eo> 2',     // Think Code - Level 1
             '5035'=>'punten_eo> 30',    // Front End - Level 2
             '6346'=>'punten_eo>=15',    // Opdrachten DevOps
+            '7736'=>'punten_eo>=40'     // Challenge B2
         ];
-     
-        $sql.="update resultaat set voldaan = 'V' WHERE module_id=$module_id and $voldaan_criteria[$module_id] and student_nummer=$student_nr;";
+        if ( array_key_exists($module_id,$voldaan_criteria) ) {
+            $sql.="update resultaat set voldaan = 'V' WHERE module_id=$module_id and $voldaan_criteria[$module_id] and student_nummer=$student_nr;";
+        }
+
         $result = Yii::$app->db->createCommand($sql)->execute();
 
         return $this->redirect(['index', 'ResultaatSearch[student_nummer]'=>$student_nr]);
