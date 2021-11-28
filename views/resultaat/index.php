@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) use($searchModel){
                     // first click when searchis partial show all data of this student in this view, then when clicked the search parameter has a the fulle name, show student overzicht
                     if ( isset($searchModel['student_naam']) and $searchModel['student_naam']==$data->student_naam) {
-                        return Html::a($data->student_naam, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Laat alles van '.$data->student_naam.' zien',]);
+                        return Html::a($data->student_naam, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Overzicht van '.$data->student_naam.' zien',]);
                     } else {
                         return Html::a($data->student_naam, ['/resultaat', 'ResultaatSearch[student_naam]'=>$data->student_naam], ['title'=> 'Laat alleen '.$data->student_naam.' zien',]);
                     }  
@@ -106,23 +106,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function ($data) {
                     if ( $data->voldaan=='V'){
-                        $value='V';    
+                        return 'V';    
                     } else {
-                        $value='-';
+                        return '-';
                     }
                     return Html::a($value, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Klik voor details']);
                      
                 }
             ],
             [   'attribute' => 'ingeleverd',
-                'label' => 'In',
+                'label' => 'Klaar',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Ingeleverde opdrachten - Ingeleverde eindopdrachten' ],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    $value = $data->ingeleverd;
-                    return Html::a($value,['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Aantal ingeleverde opdrachten']);
-                    return sprintf("<pre>%2d %2d</pre>", $data->ingeleverd, $data->ingeleverd_eo);
-                    return $data->ingeleverd."/".$data->ingeleverd_eo;
+                    if ($data->aantal_opdrachten){
+                        return round($data->ingeleverd*100/$data->aantal_opdrachten).' %';
+                    } else {
+                        return '0 %';
+                    }
+                    return $data->ingeleverd;
+                    // return Html::a($value,['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Aantal ingeleverde opdrachten']);
+                    // return sprintf("<pre>%2d %2d</pre>", $data->ingeleverd, $data->ingeleverd_eo);
+                    // return $data->ingeleverd."/".$data->ingeleverd_eo;
                 }
             ],
             [   'attribute' => 'punten',
@@ -131,9 +136,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function ($data) {
                     if ($data->punten_max){
-                        $value=round($data->punten*100/$data->punten_max).' %';
+                        return round($data->punten*100/$data->punten_max).' %';
                     } else {
-                        $value='0 %';
+                        return '0 %';
                     }
                     
                     return Html::a('<b>'.$value.'</b>',['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Score aan de hand van behaalde punten']);
@@ -178,6 +183,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         return "<p title=\"Update uit Canvas niet mogelijk\">".'&#x21BA'."</p>";
                     }
                 }
+
+            ],
+            [
+                'attribute' => 'aantal_opdrachten',
+                'label' => 'Aantal',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
 
             ],
             // [   

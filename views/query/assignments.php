@@ -45,6 +45,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             <?php
                  $totScore=0;
                  $totGraded=0;
+                 $tot=0;
                 if ( $data['row'] ) {
                     foreach($data['row'] as $item) {
                         // d( str_contains( strtolower($item['Opdrachtnaam']),'eind') );
@@ -53,13 +54,15 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                         } else {
                             echo "<tr>";
                         }
+                        $tot+=1;
                         if ( ! isset($nocount) ) {
                             $nr++;
                             echo "<td>".$nr."</td>";
                         }
                         for($i=$from;$i<count($data['col']);$i++) {
                             if (substr($item[$data['col'][$i]],0,4)=='http') {
-                                echo "<td><a href=\"".$item[$data['col'][$i]]."\">Link</a></td>";
+                                $link = substr( $item[$data['col'][$i]] , 0, strpos( $item[$data['col'][$i]] , "?") ) ;
+                                echo "<td><a target=_blank href=\"".$link."\">Link</a></td>";
                             } elseif( $item[$data['col'][$i]]=='1970-01-01 00:00:00') {
                                 echo "<td>-</td>";
                             } else {
@@ -77,10 +80,10 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                     }
                 }
                 echo "<tr style=\"background-color:#e8f0ff\">";
-                echo "<td><b>TOTAAL</b></td>";
-                echo "<td>$totGraded</td>";
+                echo "<td><b>TOTAAL $tot opdrachten</b></td>";
+                echo "<td><b>$totGraded</b></td>";
                 echo "<td></td>";
-                echo "<td>$totScore</td>";
+                echo "<td><b>$totScore</b></td>";
                 echo "<td></td>";
                 echo "<td></td>";
                 echo "<td></td>";
