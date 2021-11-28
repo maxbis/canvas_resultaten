@@ -52,7 +52,7 @@ class ResultaatSearch extends Resultaat
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 100,
+                'pageSize' => 25,
             ],
             'sort'=> ['defaultOrder' => ['laatste_activiteit' => SORT_DESC]],
         ]);
