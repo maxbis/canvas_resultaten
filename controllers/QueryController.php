@@ -168,7 +168,10 @@ class QueryController extends Controller
         }
 
         $sql="
-            select Module, af 'Afgerond door' from
+            select
+                Module,
+                af 'Afgerond door'
+                from
                 (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
             from resultaat o
             $select
@@ -192,9 +195,14 @@ class QueryController extends Controller
             $select='';
         }
 
-        $sql="select student_nummer Stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) 'Voldaan' from resultaat $select group by 1,2, 3 order by 4 $sort";
+        $sql="
+            select student_nummer Stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) 'Voldaan', sum(punten) 'Punten totaal'
+            from resultaat
+            $select
+            group by 1,2,3
+            order by 4 $sort, 5 DESC";
 
-        $data=$this->executeQuery($sql, "Voortgang ".$klas, $export);
+        $data=$this->executeQuery($sql, "Voortgang/Ranking ".$klas, $export);
         
         return $this->render('output', [
             'data' => $data,
