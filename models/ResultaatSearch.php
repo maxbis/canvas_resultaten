@@ -19,7 +19,7 @@ class ResultaatSearch extends Resultaat
     {
         return [
             [['id', 'course_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
-            [['module', 'student_nummer', 'klas', 'student_naam', 'voldaan', 'laatste_activiteit', 'laatste_beoordeling'], 'safe'],
+            [['module', 'module_id','student_nummer', 'klas', 'student_naam', 'voldaan', 'laatste_activiteit', 'laatste_beoordeling'], 'safe'],
         ];
     }
 
@@ -41,6 +41,10 @@ class ResultaatSearch extends Resultaat
      */
     public function search($params)
     {
+        // $query = Resultaat::find()->joinWith(['moduleDef'])->where('pos is not null')->orderBy(['pos'=>'DESC']);
+        // $query = Resultaat::find()->joinWith(['moduleDef'])->orderBy(['pos'=>'DESC']);
+        // Model::find()->orderBy([new \yii\db\Expression('-column_1 DESC')])->all();
+        //$query = Resultaat::find()->orderBy(['module_pos'=>'ASC'])->all();
         $query = Resultaat::find();
 
         // add conditions that should always apply here
@@ -50,6 +54,7 @@ class ResultaatSearch extends Resultaat
             'pagination' => [
                 'pageSize' => 100,
             ],
+            'sort'=> ['defaultOrder' => ['student_naam' => SORT_ASC, 'module_pos' => SORT_ASC]],
         ]);
 
         // $dataProvider->sort->attributes['module'] = [ // ADD this block to suppoer sorting
@@ -68,21 +73,20 @@ class ResultaatSearch extends Resultaat
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'module_id' => $this->module_id,
             'course_id' => $this->course_id,
-            'ingeleverd' => $this->ingeleverd,
-            'ingeleverd_eo' => $this->ingeleverd_eo,
-            'punten' => $this->punten,
-            'punten_max' => $this->punten_max,
-            'punten_eo' => $this->punten_eo,
+            'student_nummer'  => $this->student_nummer,
+            'voldaan' => $this->voldaan,
+            'klas' => $this->klas,
         ]);
 
-        $query->andFilterWhere(['like', 'module', $this->module])
-            ->andFilterWhere(['like', 'student_nummer', $this->student_nummer])
-            ->andFilterWhere(['like', 'student_naam', $this->student_naam])
-            ->andFilterWhere(['like', 'voldaan', $this->voldaan])
-            ->andFilterWhere(['like', 'klas', $this->klas])
+        $query->andFilterWhere(['like', 'student_naam', $this->student_naam])
+            ->andFilterWhere(['like', 'module',  $this->module])
             ->andFilterWhere(['<', 'datediff(now(), laatste_activiteit)',  $this->laatste_activiteit])
-            ->andFilterWhere(['<', 'datediff(now(), laatste_beoordeling)',  $this->laatste_beoordeling]);
+            ->andFilterWhere(['<', 'datediff(now(), laatste_beoordeling)',  $this->laatste_beoordeling])
+            ->andFilterWhere(['>', 'punten',  $this->punten])
+            ->andFilterWhere(['>', 'ingeleverd',  $this->ingeleverd]);
+
 
         return $dataProvider;
     }

@@ -5,6 +5,10 @@ namespace app\controllers;
 use Yii;
 use app\models\Resultaat;
 use app\models\ResultaatSearch;
+use app\models\ModuleDef;
+use app\models\Module;
+use app\models\Course;
+use app\models\Student;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,11 +20,27 @@ use yii\filters\AccessControl;
 //use vxm\async\Task;
 use Spatie\Async\Pool;
 
+
 /**
  * ResultaatController implements the CRUD actions for Resultaat model.
  */
 class ResultaatController extends Controller
+
 {
+
+    // update resultaten (V or -) - only for 'live' update -- keep in sync with Python import
+    // public $voldaan_criteria=[
+    //     '6345'=>'ingeleverd_eo=1',  // Introductie
+    //     '6342'=>'ingeleverd>10',    // basic IT
+    //     '6347'=>'punten>=90',       // Front End Level 1
+    //     '6348'=>'punten_eo>30',     // Opdrachten Challenge1
+    //     '6943'=>'punten >= 30',     // CMS - Level 1
+    //     '5034'=>'punten_eo> 2',     // Think Code - Level 1
+    //     '5035'=>'punten_eo> 30',    // Front End - Level 2
+    //     '6346'=>'punten_eo>=15',    // Opdrachten DevOps
+    //     '7736'=>'punten_eo>=40'     // Challenge B2
+    // ];
+
     /**
      * {@inheritdoc}
      */
@@ -55,12 +75,17 @@ class ResultaatController extends Controller
         $searchModel = new ResultaatSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $modules = ArrayHelper::map(Resultaat::find()->asArray()->all(), 'module', 'module');
+        $courses = ArrayHelper::map(Course::find()->asArray()->all(), 'id', 'korte_naam');
+        $klas = ArrayHelper::map(Student::find()->where(['not', ['klas' => '']])->orderBy('klas')->asArray()->all(), 'klas', 'klas');
+        $modules =  ArrayHelper::map(Resultaat::find()->orderBy('module_pos')->asArray()->all(), 'module_id', 'module');
         
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'courses' => $courses,
+            'klas' => $klas,
             'modules' => $modules,
+            'updates_available_for'=>array_keys( $this->getVoldaanCriteria() ),
         ]);
     }
 
@@ -144,6 +169,11 @@ class ResultaatController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function getVoldaanCriteria() {
+        // create $voldaan_criteria from DB
+        return ArrayHelper::map( ModuleDef::find()->asArray()->all(), 'id','voldaan_rule');
     }
 
     public function actionExport(){       
@@ -252,44 +282,43 @@ class ResultaatController extends Controller
         // delete and insert (todo: tranform insert into update statement in order to get rid of the delete)
         $sql="delete from resultaat where student_nummer=$student_nr and module_id=$module_id;";
 
-        // Insert new values
+        // Insert new values 
         $sql.="
-        insert into resultaat (course_id, module_id, module, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling)
-        SELECT a.course_id course_id,g.id module_id,g.name module, SUBSTRING_INDEX(u.login_id,'@',1) student_nummer, u.klas klas, u.name student_naam,
-        SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
-        SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
-        sum(s.entered_score) punten,
-        sum(a.points_possible) punten_max,
-        sum(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
-        max(submitted_at),
-        max(graded_at)
-        FROM assignment a
-        join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
-        join assignment_group g on g.id = a.assignment_group_id
-        where SUBSTRING_INDEX(u.login_id,'@',1) = $student_nr
-        and g.id = $module_id
-        group by 1, 2, 3, 4, 5, 6;
+            insert into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling)
+            SELECT
+                a.course_id course_id,
+                g.id module_id,
+                case when d.naam is null then g.name else d.naam end module,
+                case when d.pos is null then 999 else d.pos end module_pos,
+                SUBSTRING_INDEX(u.login_id,'@',1) student_nummer,
+                u.klas klas,
+                u.name student_naam,
+                SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
+                SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
+                sum(s.entered_score) punten,
+                sum(a.points_possible) punten_max,
+                sum(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
+                max(submitted_at),
+                max(case when s.grader_id>0 then graded_at else '1970-01-01 00:00:00' end)
+            FROM assignment a
+            join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            left outer join module_def d on d.id=g.id
+            where SUBSTRING_INDEX(u.login_id,'@',1) = $student_nr
+            and g.id = $module_id
+            group by 1, 2, 3, 4, 5, 6,7;
         ";
 
-        // update resultaten (V or -)
-        $voldaan_criteria=[
-            '6345'=>'ingeleverd_eo=1',  // Introductie
-            '6342'=>'ingeleverd>10',    // basic IT
-            '6347'=>'punten>=90',       // Front End Level 1
-            '6348'=>'punten_eo>30',     // Opdrachten Challenge1
-            '6943'=>'punten >= 30',     // CMS - Level 1
-            '5034'=>'punten_eo> 2',     // Think Code - Level 1
-            '5035'=>'punten_eo> 30',    // Front End - Level 2
-            '6346'=>'punten_eo>=15',    // Opdrachten DevOps
-            '7736'=>'punten_eo>=40'     // Challenge B2
-        ];
+        $voldaan_criteria = $this->getVoldaanCriteria(); // read voldaan criteria from DB (mapped in array)
         if ( array_key_exists($module_id,$voldaan_criteria) ) {
             $sql.="update resultaat set voldaan = 'V' WHERE module_id=$module_id and $voldaan_criteria[$module_id] and student_nummer=$student_nr;";
         }
 
         $result = Yii::$app->db->createCommand($sql)->execute();
 
-        return $this->redirect(['index', 'ResultaatSearch[student_nummer]'=>$student_nr]);
+        return $this->redirect(['index',
+                    'ResultaatSearch[student_nummer]'=>$student_nr,
+                ]);
     }
 
       

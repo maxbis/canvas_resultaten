@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ResultaatSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -32,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row  align-items-center">
             <div class="col">
                 <h1><?= Html::encode($this->title) ?></h1>
+                <small>Ga met je muis over een veld voor meer info</small>
             </div>
             <div class="col-md-auto">
                 <?= Html::a('Export', ['resultaat/export'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
@@ -41,7 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <br>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div id="main">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -50,33 +51,50 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Blok',
                 'attribute'=>'course_id',
-                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
-                'filter' => ['2101'=>'Blok 1','2110'=>'Blok 2', '3237'=>'Blok 3'],
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Blok'],
+                'filter' => $courses,
                 'format' => 'raw',
-                'value' => function ($data) {
-                    if ($data->course_id==2101) return "B1";
-                    if ($data->course_id==2110) return "B2";
-                    if ($data->course_id==3237) return "B3";
+                'value' => function ($data) use ($courses) {
+                    if (array_key_exists($data->course_id, $courses)) {
+                        return $courses[$data->course_id];
+                    } else {
+                        return '?';
+                    }
+                    
                 }
             ],
-            [   'attribute' => 'module',
-                'contentOptions' => ['style' => 'width:140px; white-space: normal;'],
-                'format' => 'raw',
+            [   'attribute' => 'module_id',
+                'label' => 'Module',
+                'contentOptions' => ['style' => 'width:140px; white-space: normal;', 'title'=>'Modulenaam' ],
                 'filter' => $modules,
+                'format' => 'raw',
                 'value' => function ($data) {
-                    return str_replace( "Opdrachten", "", $data->module);
+                    if ( $data->moduleDef['naam'] ) {
+                        // actionDetailsModule($userId, $moduleId){
+                        return Html::a($data->moduleDef['naam'],['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien']);
+                        return str_replace( "Opdrachten", "", $data->moduleDef['naam']);
+                    } else {
+                        return "<p title=\"Voldaan-criteria nog niet ingevoerd (".$data->module_id." )\" style=\"color:#808080;font-style: italic;\">".$data->module."</p>";
+                    }
+                    
                 }
             ],
             [   'attribute' => 'klas',
                 'label' => 'Klas',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;'],
+                'filter' => $klas,
+                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
             ],
             [   'attribute' => 'student_naam',
                 'label' => 'Student',
                 'contentOptions' => ['style' => 'width:160px; white-space: normal;'],
                 'format' => 'raw',
-                'value' => function ($data) {
-                    return Html::a($data->student_naam, ['/resultaat', 'ResultaatSearch[student_naam]'=>$data->student_naam], ['title'=> 'Show',]);
+                'value' => function ($data) use($searchModel){
+                    // first click when searchis partial show all data of this student in this view, then when clicked the search parameter has a the fulle name, show student overzicht
+                    if ( isset($searchModel['student_naam']) and $searchModel['student_naam']==$data->student_naam) {
+                        return Html::a($data->student_naam, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Laat alles van '.$data->student_naam.' zien',]);
+                    } else {
+                        return Html::a($data->student_naam, ['/resultaat', 'ResultaatSearch[student_naam]'=>$data->student_naam], ['title'=> 'Laat alleen '.$data->student_naam.' zien',]);
+                    }  
                 }
             ],
             [
@@ -84,12 +102,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'V',
                 'headerOptions' => [ 'style' => 'color:#F0F0F0;' ],
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
-                'options' => [ 'style' => 'voldaan' == 'V' ? 'color:#b4fac0':'color:#ffc7c7' ],
                 'filter' => ['-'=>'Niet Voldaan','V'=>'Voldaan'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    if ( $data->voldaan=='V'){
+                        // return "<p title=\"Voldaan\">V</p>";
+                        return Html::a('V', ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Voldaan, klik voor overzicht van '.$data->student_naam,]);
+                    } else {
+                        //return "<p title=\"Niet voldaan\">-</p>";
+                        return Html::a('-', ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Niet voldaan, klik voor overzicht van '.$data->student_naam,]);
+                    }
+                     
+                }
             ],
             [   'attribute' => 'ingeleverd',
-                'label' => 'ingel./eind.',
-                'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
+                'label' => 'Ingeleverd',
+                'contentOptions' => ['style' => 'width:80px; white-space: normal;', 'title'=>'Ingeleverde opdrachten - Ingeleverde eindopdrachten' ],
                 'format' => 'raw',
                 'value' => function ($data) {
                     return sprintf("<pre>%2d %2d</pre>", $data->ingeleverd, $data->ingeleverd_eo);
@@ -97,11 +125,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [   'attribute' => 'punten',
-                'label' => 'punten/eind/max',
-                'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
+                'label' => 'Punten',
+                'contentOptions' => ['style' => 'width:80px; white-space: normal;', 'title'=>'Punten - Punten Eindopdracht - Maximale punten - Percentage behaalde punten'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return sprintf("<pre>%2d %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten*100/$data->punten_max);
+                    return sprintf("<pre>%2d %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten_max==0 ? 0 : $data->punten*100/$data->punten_max);
                 }
             ],
             [   'attribute' => 'laatste_activiteit',
@@ -111,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_activiteit))/86400) ;
                     if ( $days<999) {
-                        return $days;
+                        return "<p title=\"Student $days dagen geleden voor het laatst actief\">".$days."</p>";
                     } else {
                         return "-";
                     }
@@ -125,7 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_beoordeling))/86400);
                     if ( $days<999) {
-                        return $days;
+                        return "<p title=\"Module $days dagen geleden voor het laatst nagekeken\">".$days."</p>";
                     } else {
                         return "-";
                     }
@@ -134,12 +162,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'contentOptions' => ['style' => 'width:20px; white-space: normal;'],
                 'format' => 'raw',
-                'value' => function ($data) {
-                    #return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['id'=> $data->module_id.$data->student_nummer, 'class'=>'', 'title'=> 'Update',]);
-                    return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['onclick'=>'hide()']);
+                'value' => function ($data) use ($updates_available_for) {
+                    //dd($updates_available_for);
+                    if ( in_array($data->module_id, $updates_available_for) ) {
+                        return Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['title'=> 'Update uit Canvas','onclick'=>'hide()']);
+                    } else {
+                        return "<p title=\"Update uit Canvas niet mogelijk\">".'&#x21BA'."</p>";
+                    }
                 }
 
             ],
+            // [   
+                // 'attribute' => 'moduleDef.pos',
+                // 'label' => 'pos',
+                // 'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
+                // 'format' => 'raw',
+                // 'value' => function ($data) {
+                //     return $data->moduleDef['pos'];
+                // }
+            // ],
             // [
             //     'attribute' => 'module.position',
             // ],

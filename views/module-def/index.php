@@ -4,18 +4,18 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\StudentSearch */
+/* @var $searchModel app\models\ModuleDefSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Students';
+$this->title = 'Module Defs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="student-index">
+<div class="module-def-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Student', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Module Def', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,10 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'name',
-            'login_id',
-            'student_nr',
-            'klas',
+            'naam',
+            'pos',
+            'voldaan_rule',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

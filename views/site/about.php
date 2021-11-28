@@ -4,15 +4,14 @@
 
 use yii\helpers\Html;
 
-$this->title = 'About';
+$this->title = 'Canvas Monitor';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        This is the About page. You may modify the following file to customize its content:
-    </p>
+    <p>Canvas Info</p>
 
-    <code><?= __FILE__ ?></code>
+    <p>Documentatie (beheer): <a href="https://www.roc.ovh/books/overig/page/canvas-monitor">https://www.roc.ovh/books/overig/page/canvas-monito</a></P>
+
 </div>

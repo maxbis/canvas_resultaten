@@ -40,7 +40,7 @@ class Resultaat extends \yii\db\ActiveRecord
         return [
             [['course_id', 'module_id', 'module', 'student_nummer', 'laatste_activiteit', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'required'],
             [['course_id', 'module_id', 'ingeleverd', 'ingeleverd_eo', 'punten', 'punten_max', 'punten_eo'], 'integer'],
-            [['laatste_activiteit', 'laatste_beoordeling'], 'safe'],
+            [['laatste_activiteit', 'laatste_beoordeling', 'module_id'], 'safe'],
             [['module'], 'string', 'max' => 100],
             [['student_nummer'], 'string', 'max' => 8],
             [['klas'], 'string', 'max' => 2],
@@ -77,7 +77,13 @@ class Resultaat extends \yii\db\ActiveRecord
     //{
     //    return $this->hasOne(Student::className(), ['student_nr' => 'student_nummer']);
     //}
-    public function getModule() {
-        return $this->hasOne(Module::className(), ['id' => 'module_id']);
+
+    public function getModuleDef() {
+        return $this->hasOne(ModuleDef::className(), ['id' => 'module_id']);
     }
+
+    public function getCourse() {
+        return $this->hasOne(Course::className(), ['id' => 'module_id']);
+    }
+
 }
