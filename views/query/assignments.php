@@ -7,6 +7,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 
 <div class="card">
 
+
     <div class="container">
         <div class="row  align-items-center">
             <div class="col">
@@ -42,25 +43,48 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             </thead>
             
             <?php
+                 $totScore=0;
+                 $totGraded=0;
                 if ( $data['row'] ) {
                     foreach($data['row'] as $item) {
+                        // d( str_contains( strtolower($item['Opdrachtnaam']),'eind') );
+                        if ( str_contains( strtolower($item['Opdrachtnaam']),'eind') ) {
+                            echo "<tr style=\"background-color:#ffffde\">";
+                        } else {
+                            echo "<tr>";
+                        }
                         if ( ! isset($nocount) ) {
                             $nr++;
-                            echo "<tr>";
                             echo "<td>".$nr."</td>";
                         }
                         for($i=$from;$i<count($data['col']);$i++) {
                             if (substr($item[$data['col'][$i]],0,4)=='http') {
                                 echo "<td><a href=\"".$item[$data['col'][$i]]."\">Link</a></td>";
+                            } elseif( $item[$data['col'][$i]]=='1970-01-01 00:00:00') {
+                                echo "<td>-</td>";
                             } else {
                                 echo "<td>".$item[$data['col'][$i]]."</td>";
-                            }   
+                            }
+                            if ($data['col'][$i] == "Score" ) {
+                                $totScore+=$item[$data['col'][$i]];
+                            }
+                            if ($item[$data['col'][$i]] == "graded" ) {
+                                $totGraded+=1;
+                            }
     
                         }
                         echo "</tr>";
                     }
                 }
-
+                echo "<tr style=\"background-color:#e8f0ff\">";
+                echo "<td><b>TOTAAL</b></td>";
+                echo "<td>$totGraded</td>";
+                echo "<td></td>";
+                echo "<td>$totScore</td>";
+                echo "<td></td>";
+                echo "<td></td>";
+                echo "<td></td>";
+                echo "</tr>";
             ?>
 
         </table>

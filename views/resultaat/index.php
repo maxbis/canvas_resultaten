@@ -106,30 +106,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function ($data) {
                     if ( $data->voldaan=='V'){
-                        // return "<p title=\"Voldaan\">V</p>";
-                        return Html::a('V', ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Voldaan, klik voor overzicht van '.$data->student_naam,]);
+                        $value='V';    
                     } else {
-                        //return "<p title=\"Niet voldaan\">-</p>";
-                        return Html::a('-', ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Niet voldaan, klik voor overzicht van '.$data->student_naam,]);
+                        $value='-';
                     }
+                    return Html::a($value, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Klik voor details']);
                      
                 }
             ],
             [   'attribute' => 'ingeleverd',
-                'label' => 'Ingeleverd',
-                'contentOptions' => ['style' => 'width:80px; white-space: normal;', 'title'=>'Ingeleverde opdrachten - Ingeleverde eindopdrachten' ],
+                'label' => 'In',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Ingeleverde opdrachten - Ingeleverde eindopdrachten' ],
                 'format' => 'raw',
                 'value' => function ($data) {
+                    $value = $data->ingeleverd;
+                    return Html::a($value,['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Aantal ingeleverde opdrachten']);
                     return sprintf("<pre>%2d %2d</pre>", $data->ingeleverd, $data->ingeleverd_eo);
                     return $data->ingeleverd."/".$data->ingeleverd_eo;
                 }
             ],
             [   'attribute' => 'punten',
-                'label' => 'Punten',
-                'contentOptions' => ['style' => 'width:80px; white-space: normal;', 'title'=>'Punten - Punten Eindopdracht - Maximale punten - Percentage behaalde punten'],
+                'label' => 'Score',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Punten - Punten Eindopdracht - Maximale punten - Percentage behaalde punten'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return sprintf("<pre>%2d %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten_max==0 ? 0 : $data->punten*100/$data->punten_max);
+                    if ($data->punten_max){
+                        $value=round($data->punten*100/$data->punten_max).' %';
+                    } else {
+                        $value='0 %';
+                    }
+                    
+                    return Html::a('<b>'.$value.'</b>',['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Score aan de hand van behaalde punten']);
+                    // return sprintf("<pre>%3.1f %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten_max==0 ? 0 : $data->punten*100/$data->punten_max);
                 }
             ],
             [   'attribute' => 'laatste_activiteit',
@@ -139,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_activiteit))/86400) ;
                     if ( $days<999) {
-                        return "<p title=\"Student $days dagen geleden voor het laatst actief\">".$days."</p>";
+                        return "<p title=\"Student $days dagen geleden voor het laatst actief in deze module\">".$days."</p>";
                     } else {
                         return "-";
                     }

@@ -45,9 +45,9 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             <?php
                 if ( $data['row'] ) {
                     foreach($data['row'] as $item) {
+                        echo "<tr>";
                         if ( ! isset($nocount) ) {
                             $nr++;
-                            echo "<tr>";
                             echo "<td>".$nr."</td>";
                         }
                         for($i=$from;$i<count($data['col']);$i++) {

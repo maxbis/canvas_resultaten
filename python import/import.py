@@ -105,12 +105,8 @@ def slashJoin(*args):
 
 def validate_string(fieldName, val):
     if val != None:
-        if type(val) is int:
-            # for x in val:
-            #   print(x)
+        if (type(val) is int or type(val) is float):
             return str(val)
-        elif type(val) is float:
-            return str(val*100)
         elif(type(val) is bool):
             if (val):
                 return('1')

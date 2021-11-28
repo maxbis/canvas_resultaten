@@ -266,7 +266,7 @@ class QueryController extends Controller
         $data['title'] = 'Module <i> '.$data['row'][0]['module'].'</i> van '.$data['row'][0]['naam'];
         $data['show_from'] = 2; // show from colum 2 
 
-        return $this->render('output', [
+        return $this->render('assignments', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
