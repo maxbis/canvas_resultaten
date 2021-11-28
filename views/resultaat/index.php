@@ -185,12 +185,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
 
             ],
-            [
-                'attribute' => 'aantal_opdrachten',
-                'label' => 'Aantal',
-                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
+            // [
+            //     'attribute' => 'aantal_opdrachten',
+            //     'label' => 'Aantal',
+            //     'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
 
-            ],
+            // ],
             // [   
                 // 'attribute' => 'moduleDef.pos',
                 // 'label' => 'pos',
