@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => $modules,
                 'format' => 'raw',
                 'value' => function ($data) {
-                    if ( $data->moduleDef['naam'] ) {
+                    if ( isset($data->moduleDef['naam']) ) {
                         // actionDetailsModule($userId, $moduleId){
                         return Html::a($data->moduleDef['naam'],['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien']);
                         return str_replace( "Opdrachten", "", $data->moduleDef['naam']);
