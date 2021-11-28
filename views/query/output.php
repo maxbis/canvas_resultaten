@@ -3,6 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 $nr=0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
+
 ?>
 
 <div class="card">
@@ -19,7 +20,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                     ?>
                 </div>
             <div class="col-md-auto">
-                <?= Html::a('Export', [$action.'?export=1'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
+                <?= Html::a('Export', [$action.'?export=1&'.$params], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
     </div>
