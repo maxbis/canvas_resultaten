@@ -54,7 +54,7 @@ class ResultaatSearch extends Resultaat
             'pagination' => [
                 'pageSize' => 100,
             ],
-            'sort'=> ['defaultOrder' => ['student_naam' => SORT_ASC, 'module_pos' => SORT_ASC]],
+            'sort'=> ['defaultOrder' => ['laatste_activiteit' => SORT_DESC]],
         ]);
 
         // $dataProvider->sort->attributes['module'] = [ // ADD this block to suppoer sorting

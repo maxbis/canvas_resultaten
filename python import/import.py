@@ -40,6 +40,7 @@ def getCourses(prio=3):
     cursor.execute(sql)
     for row in cursor:
         courses.append(row[0])
+        log('Course found: '+row,3)
     return(courses)
 
 
