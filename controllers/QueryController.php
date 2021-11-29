@@ -125,7 +125,7 @@ class QueryController extends Controller
             join assignment_group g on g.id = a.assignment_group_id
             $select
             group by 1
-            order by 2,3,4,5,6 desc
+            order by 2 desc,3 desc,4 desc,5 desc,6 desc
         ";
         $data=$this->executeQuery($sql, "Aantal activiteiten per student over tijd ".$klas, $export);
 
