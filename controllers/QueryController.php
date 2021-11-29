@@ -118,14 +118,16 @@ class QueryController extends Controller
             sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '-7',
             sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '-14',
             sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
-            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '-28'
+            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '-28',
+            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '-60',
+            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '-90'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             $select
             group by 1
-            order by 2 desc,3 desc,4 desc,5 desc,6 desc
+            order by 2 desc,3 desc,4 desc,5 desc,6 desc,7 desc
         ";
         $data=$this->executeQuery($sql, "Aantal activiteiten per student over tijd ".$klas, $export);
 
