@@ -302,7 +302,11 @@ class QueryController extends Controller
         ]);
     }
 
-  
+    public function actionGetAllResultaat($export=true) {
+        $sql="select * from resultaat";
+        $data=$this->executeQuery($sql, "", $export);
+    }
+
     public function actionStudent($studentNummer, $export=false) {
 
         $sql="SELECT r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Ingeleverd, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Act.'

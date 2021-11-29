@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <small>Ga met je muis over een veld voor meer info</small>
             </div>
             <div class="col-md-auto">
-                <?= Html::a('Export', ['resultaat/export'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
+                <?= Html::a('Export', ['query/get-all-resultaat'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
     </div>

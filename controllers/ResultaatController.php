@@ -176,17 +176,21 @@ class ResultaatController extends Controller
         return ArrayHelper::map( ModuleDef::find()->asArray()->all(), 'id','voldaan_rule');
     }
 
-    public function actionExport(){       
-        header('Content-type: text/csv');
-        header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
-         
+    public function actionExport(){    
+        // Code had bug: first line is replaced by headers and therefor teh first line is omited in download.
+        // Code not used, export redirected to query export.
+        
+        // header('Content-type: text/csv');
+        // header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
+         echo "<pre>";
         $data = Resultaat::find()->asArray()->all();
 
         $firstLine=True;
-        foreach ($data as $line) {
-            foreach ( $line as $key => $value) {
+        $header="";
+        foreach ($data as $line) {                  //regel
+            foreach ( $line as $key => $value) {    // column
                 if ($firstLine) {
-                    echo $key.",";
+                    $header.= $key.",";
                 } else {
                     echo "$value, ";
                 }
