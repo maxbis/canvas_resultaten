@@ -83,13 +83,13 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                             if ( $colName == "Score" ) {
                                 $totScore+=$colContent;
                             }
-                            if ( $colContent == "graded" ) {
+                            if ( $colContent == "graded" || $colContent == "submitted" ) {
                                 $totGraded+=1;
                             }
                             if ( $colContent == "V" ) {
                                 $totVoldaan+=1;
                             }                  
-                            if ( $colName == "Ingeleverd" ) {
+                            if ( $colName == "Ingeleverd" && is_int($colContent) ) {
                                 $totIngeleverd+=$colContent;
                             }
                             if ( $colName == "Punten %" && $colContent>0 ) {

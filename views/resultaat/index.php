@@ -21,6 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
     function waiting() {
         document.getElementById("main").innerHTML = document.getElementById("main").innerHTML + "..";
     }
+    function toggleHelp() {
+        $("#buttonHelp").toggleClass('d-none');
+        $("#helpText").toggleClass('d-none');
+    }
 </script>
 
 <style type="text/css">
@@ -30,12 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="resultaat-index">
 
     <div class="container">
-        <div class="row  align-items-center">
+        <div class="row align-items-start">
             <div class="col">
                 <h1><?= Html::encode($this->title) ?></h1>
-                <small>Ga met je muis over een veld voor meer info</small>
+                <div id="helpText" class="d-none" onclick="toggleHelp()">
+                    <p>Ga met je muis over een veld voor meer info.</P>
+                    <p>De student die het meest recent een opdracht heeft ingeleverd staat bovenaan.</p>
+                    <p>Zoek je een ander student? Tik dan de naam in de tekstbox (onder het kopje 'Student').</p>
+                    <p>Als je de juiste student hebt gevonden, klik dan op de naam van de student. Je ziet nu alles van deze student met de module waairn het meest recent wat veranderd is bovenaan.</p?>
+                    <p>Klik je nu <b>nog een keer</b> op de naam dan zie je een overzicht van alle modules en voortgang van deze student.</p>
+                    <p>Klik vanuit dit overzicht naar een module voor informatie over de voortgang van deze module.</p>
+                    <p>Klik hier om deze tekst te verbergen.</p>
+                </div>
+                
             </div>
-            <div class="col-md-auto">
+            <div class="col-lg-1">
+                <button id="buttonHelp" class="btn btn-secondary" onclick="toggleHelp()">Help</button>
+            </div> 
+            <div class="col-lg-1">
                 <?= Html::a('Export', ['query/get-all-resultaat'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
