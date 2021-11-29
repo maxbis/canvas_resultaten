@@ -43,13 +43,19 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             </thead>
             
             <?php
+                // this view is used for query/details-module $action='details-module'
+                // this view is used for query/student $action='student'
                  $totScore=0;
                  $totGraded=0;
                  $tot=0;
+                 $totVoldaan=0;
+                 $totIngeleverd=0;
+                 $totPrPunten=0;
+                 $totPrAantal=0;
+
                 if ( $data['row'] ) {
                     foreach($data['row'] as $item) {
-                        // d( str_contains( strtolower($item['Opdrachtnaam']),'eind') );
-                        if ( str_contains( strtolower($item['Opdrachtnaam']),'eind') ) {
+                        if ( array_key_exists('Opdrachtnaam', $item) && str_contains( strtolower($item['Opdrachtnaam']),'eind') ) {
                             echo "<tr style=\"background-color:#ffffde\">";
                         } else {
                             echo "<tr>";
@@ -60,34 +66,63 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                             echo "<td>".$nr."</td>";
                         }
                         for($i=$from;$i<count($data['col']);$i++) {
-                            if (substr($item[$data['col'][$i]],0,4)=='http') {
-                                $link = substr( $item[$data['col'][$i]] , 0, strpos( $item[$data['col'][$i]] , "?") ) ;
+                            $colContent = $item[$data['col'][$i]];
+                            $colName    = $data['col'][$i];
+
+                            if (substr( $colContent,0,4)=='http' ) {
+                                $link = substr( $colContent , 0, strpos( $colContent , "?") ) ;
                                 echo "<td><a target=_blank href=\"".$link."\">Link</a></td>";
-                            } elseif( $item[$data['col'][$i]]=='1970-01-01 00:00:00') {
+                            } elseif( $colContent=='1970-01-01 00:00:00') {
                                 echo "<td>-</td>";
+                            } elseif ( $colName == 'Module' ) {
+                                echo "<td><a href=\"/query/details-module?$params&moduleId=".$item[$data['col'][0]]."\">".$colContent."</a></td>";
                             } else {
-                                echo "<td>".$item[$data['col'][$i]]."</td>";
+                                echo "<td>".$colContent."</td>";
                             }
-                            if ($data['col'][$i] == "Score" ) {
-                                $totScore+=$item[$data['col'][$i]];
+                            
+                            if ( $colName == "Score" ) {
+                                $totScore+=$colContent;
                             }
-                            if ($item[$data['col'][$i]] == "graded" ) {
+                            if ( $colContent == "graded" ) {
                                 $totGraded+=1;
                             }
-    
+                            if ( $colContent == "V" ) {
+                                $totVoldaan+=1;
+                            }                  
+                            if ( $colName == "Ingeleverd" ) {
+                                $totIngeleverd+=$colContent;
+                            }
+                            if ( $colName == "Punten %" && $colContent>0 ) {
+                                $totPrPunten+=$colContent;
+                                $totPrAantal+=1;
+                            }    
                         }
                         echo "</tr>";
                     }
                 }
-                echo "<tr style=\"background-color:#e8f0ff\">";
-                echo "<td><b>TOTAAL $tot opdrachten</b></td>";
-                echo "<td><b>$totGraded</b></td>";
-                echo "<td></td>";
-                echo "<td><b>$totScore</b></td>";
-                echo "<td></td>";
-                echo "<td></td>";
-                echo "<td></td>";
-                echo "</tr>";
+                if ($action=='details-module') {
+                    echo "<tr style=\"background-color:#e8f0ff\">";
+                    echo "<td><b>TOTAAL $tot opdrachten</b></td>";
+                    echo "<td><b>$totGraded</b></td>";
+                    echo "<td></td>";
+                    echo "<td><b>$totScore</b></td>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "</tr>";
+                }
+                if ($action=='student') {
+                    echo "<tr style=\"background-color:#e8f0ff\">";
+                    echo "<td><b>TOTAAL / GEMIDDELD</b></td>";
+                    echo "<td></td>";
+                    echo "<td><b>$totVoldaan</b></td>";
+                    echo "<td>$totIngeleverd</td>";
+                    echo "<td>".round($totPrPunten/$totPrAantal,1)."</td>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "</tr>";
+                }
+
             ?>
 
         </table>

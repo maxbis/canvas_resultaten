@@ -309,7 +309,7 @@ class QueryController extends Controller
 
     public function actionStudent($studentNummer, $export=false) {
 
-        $sql="SELECT r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Ingeleverd, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Act.'
+        $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Ingeleverd, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Act.'
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 WHERE student_nummer=$studentNummer
@@ -318,9 +318,9 @@ class QueryController extends Controller
         $data=$this->executeQuery($sql, "Overzicht voor ", $export);
 
         $data['title'] = 'Overzicht voor '.$data['row'][0]['Student'];
-        $data['show_from'] = 1; // show from colum 2 
+        $data['show_from'] = 2; // show from colum 2 
 
-        return $this->render('output', [
+        return $this->render('assignments', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
