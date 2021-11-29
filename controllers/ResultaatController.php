@@ -246,6 +246,7 @@ class ResultaatController extends Controller
     }
 
     public function actionUpdateAssignment($student_nr, $module_id) { #this is too slow.....
+        // Live (async) update from GUI 
         # get submission_ids, let's get all submissions that are from this assignment group and this user
         $sql="  select s.id from submission s
                 inner join assignment a on a.id=s.assignment_id

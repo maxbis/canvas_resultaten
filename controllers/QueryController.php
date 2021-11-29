@@ -110,25 +110,29 @@ class QueryController extends Controller
 
     public function actionAantalActiviteiten($export=false, $klas='') {
 
-        if ($klas) $select="where klas='$klas'"; else $select='';
+        if ($klas) $select="where u.klas='$klas'"; else $select='';
         
         $sql="
-            select student_naam Student,
-            sum(case when (datediff(curdate(),laatste_activiteit)<=2) then 1 else 0 end) '-2',
-            sum(case when (datediff(curdate(),laatste_activiteit)<=7) then 1 else 0 end) '-7',
-            sum(case when (datediff(curdate(),laatste_activiteit)<=14) then 1 else 0 end) '-14',
-            sum(1) 'Aantal'   
-            from resultaat
+            select u.name Student,
+            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end) '-2',
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '-7',
+            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '-14',
+            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '-28'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
             $select
             group by 1
-            order by 2 desc
+            order by 2,3,4,5,6 desc
         ";
         $data=$this->executeQuery($sql, "Aantal activiteiten per student over tijd ".$klas, $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => 'Aantal activiteiten per student over de laatste 2, 7 en 14 dagen',
+            'descr' => 'Aantal activiteiten (ingeleverde opdrachten) per student over de laatste dagen en weken',
         ]);
     }
 
