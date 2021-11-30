@@ -69,13 +69,15 @@ class QueryController extends Controller
         header('Content-type: text/csv');
         header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
 
+        $seperator=";"; // NL version, use , for EN
+
         foreach ($data['col'] as $key => $value) {
-            echo $value.", ";
+            echo $value.$seperator;
         }
         echo "\n";
         foreach ($data['row'] as $line) {
             foreach ( $line as $key => $value) {
-                echo $value.", ";
+                echo $value.$seperator;
             }
             echo "\n";
         }
