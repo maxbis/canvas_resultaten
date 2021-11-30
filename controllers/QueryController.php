@@ -182,9 +182,10 @@ class QueryController extends Controller
                 from
                 (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
             from resultaat o
+            join module_def d on d.id=o.module_id
             $select
             group by 1,2,3
-            order by 1,2) alias
+            order by d.pos) alias
         ";
         // ToDo: order by werkt niet op server (order by moet in group by zitten)
         $data=$this->executeQuery($sql, "Modules voldaan ".$klas, $export);
