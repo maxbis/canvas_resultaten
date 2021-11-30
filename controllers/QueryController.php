@@ -230,7 +230,7 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => 'Minimaal één opdracht van de module is beoordeeld ... dagen gelden.',
+            'descr' => 'Minimaal één opdracht van de module is beoordeeld ... dagen gelden.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
         ]);
     }
 
@@ -246,7 +246,7 @@ class QueryController extends Controller
             sum(case when (datediff(curdate(),laatste_beoordeling)<=2) then 1 else 0 end) '-2',
             sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '-7',
             sum(case when (datediff(curdate(),laatste_beoordeling)<=14) then 1 else 0 end) '-14',
-            sum(1) 'Aantal'   
+            sum(1) 'Aantal'
             from resultaat
             $select
             group by 1
@@ -257,7 +257,7 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => '(minimaal 1 opdracht van) module voor x studenten beoordeeld over 2, 7 en 14 dagen.',
+            'descr' => '(minimaal 1 opdracht van) module voor x studenten beoordeeld over 2, 7 en 14 dagen.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
         ]);
     }
 
@@ -297,7 +297,7 @@ class QueryController extends Controller
             SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=2) then 1 else 0 end) 'week',
             sum(case when (datediff(curdate(),s.graded_at)<=14) then 1 else 0 end) 'twee weken',
             sum(case when (datediff(curdate(),s.graded_at)<=21) then 1 else 0 end) 'drie weken',
-            sum(case when (datediff(curdate(),s.graded_at)<=82) then 1 else 0 end) '82 dagen'
+            sum(case when (datediff(curdate(),s.graded_at)<=84) then 1 else 0 end) '84 dagen'
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
@@ -308,7 +308,7 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => 'Aantal beoordelingen per beoordeelaar over 1, 2, 3 en 12 weken',
+            'descr' => 'Aantal (handmatig) beoordelingen per beoordeelaar over 1, 2, 3 en 12 weken',
         ]);
     }
 
