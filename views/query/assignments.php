@@ -3,6 +3,8 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 $nr=0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
+$studentNummer = isset($studentNummer) ? $studentNummer : '';
+$moduleId = isset($moduleId) ? $moduleId : '';
 ?>
 
 <div class="card">
@@ -19,7 +21,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                     ?>
                 </div>
             <div class="col-md-auto">
-                <?= Html::a('Export', [$action.'?export=1'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
+                <?= Html::a('Export', [$action, 'export'=>1, 'studentNummer'=>$studentNummer, 'moduleId'=>$moduleId], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
     </div>
@@ -76,7 +78,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                                 echo "<td>-</td>";
                             } elseif ( $colName == 'Module' ) {
                                 echo "<td>";
-                                echo Html::a($colContent, ['/query/details-module?'.$params.'&moduleId='.$item[$data['col'][0]]]);
+                                echo Html::a($colContent, ['/query/details-module', 'moduleId'=>$item[$data['col'][0]], 'studentNummer'=>$studentNummer ] );
                                 // echo "<a href=\"/query/details-module?$params&moduleId=".$item[$data['col'][0]]."\">".$colContent."</a>";
                                 echo "</td>";
                             } else {

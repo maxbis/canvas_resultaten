@@ -286,6 +286,8 @@ class QueryController extends Controller
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
+            'moduleId' => $moduleId,
+            'studentNummer' => $studentNummer,
         ]);
     }
 
@@ -333,7 +335,7 @@ class QueryController extends Controller
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
-            'params' => 'studentNummer='.$studentNummer,
+            'studentNummer' => $studentNummer,
         ]);
     }
 
