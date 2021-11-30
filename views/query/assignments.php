@@ -75,7 +75,10 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                             } elseif( $colContent=='1970-01-01 00:00:00') {
                                 echo "<td>-</td>";
                             } elseif ( $colName == 'Module' ) {
-                                echo "<td><a href=\"/query/details-module?$params&moduleId=".$item[$data['col'][0]]."\">".$colContent."</a></td>";
+                                echo "<td>";
+                                echo Html::a($colContent, ['/query/details-module?'.$params.'&moduleId='.$item[$data['col'][0]]]);
+                                // echo "<a href=\"/query/details-module?$params&moduleId=".$item[$data['col'][0]]."\">".$colContent."</a>";
+                                echo "</td>";
                             } else {
                                 echo "<td>".$colContent."</td>";
                             }
