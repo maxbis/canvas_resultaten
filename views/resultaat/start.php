@@ -2,6 +2,7 @@
 
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
+use yii\helpers\Url;
 
 $this->title = 'Zoek student';
 
@@ -20,7 +21,7 @@ $this->title = 'Zoek student';
 
         <div class="card" >
             <div class="card-header align-items-start">
-                <form action="resultaat/start" method="post">
+                <form method="post" action=<?php Url::toRoute(['product/start']); ?> >
                     <input type="text" minlength="2" name="search">
                     <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
                     &nbsp; &nbsp; &nbsp;
