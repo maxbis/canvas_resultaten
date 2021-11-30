@@ -49,7 +49,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                  $totGraded=0;
                  $tot=0;
                  $totVoldaan=0;
-                 $totIngeleverd=0;
+                 $totOpdrachten=0;
                  $totPrPunten=0;
                  $totPrAantal=0;
 
@@ -71,7 +71,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 
                             if (substr( $colContent,0,4)=='http' ) {
                                 $link = substr( $colContent , 0, strpos( $colContent , "?") ) ;
-                                echo "<td><a target=_blank href=\"".$link."\">Link</a></td>";
+                                echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" href=\"".$link."\">&#10142;Canvas</a></td>";
                             } elseif( $colContent=='1970-01-01 00:00:00') {
                                 echo "<td>-</td>";
                             } elseif ( $colName == 'Module' ) {
@@ -89,8 +89,8 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                             if ( $colContent == "V" ) {
                                 $totVoldaan+=1;
                             }                  
-                            if ( $colName == "Ingeleverd" && is_int($colContent) ) {
-                                $totIngeleverd+=$colContent;
+                            if ( $colName == "Opdrachten" ) {
+                                $totOpdrachten+=$colContent;
                             }
                             if ( $colName == "Punten %" && $colContent>0 ) {
                                 $totPrPunten+=$colContent;
@@ -116,7 +116,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                     echo "<td><b>TOTAAL / GEMIDDELD</b></td>";
                     echo "<td></td>";
                     echo "<td><b>$totVoldaan</b></td>";
-                    echo "<td>$totIngeleverd</td>";
+                    echo "<td>$totOpdrachten</td>";
                     echo "<td>".round($totPrPunten/$totPrAantal,1)."</td>";
                     echo "<td></td>";
                     echo "<td></td>";

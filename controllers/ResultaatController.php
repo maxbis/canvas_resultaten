@@ -171,6 +171,30 @@ class ResultaatController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    public function actionStart() {
+  
+        if (Yii::$app->request->post() ) {
+            $search=Yii::$app->request->post()['search'];
+            $resultaten = resultaat::find()->select(['student_nummer','student_naam', 'klas'])->distinct()->where(['like', 'student_naam', $search])->orderBy(['student_naam' => 'SORT_ASC'])->all();
+            $found=count($resultaten);
+        } else {
+            $resultaten=[];
+            $found=-1;
+        }
+
+        if ($found == 1) {
+            return $this->redirect([
+                '/query/student','studentNummer'=>$resultaten[0]['student_nummer'],
+            ]);
+        } else {
+            return $this->render('start', [
+                'resultaten' => $resultaten,
+                'found' => $found,
+            ]);
+        }
+
+    }
+
     protected function getVoldaanCriteria() {
         // create $voldaan_criteria from DB
         return ArrayHelper::map( ModuleDef::find()->asArray()->all(), 'id','voldaan_rule');

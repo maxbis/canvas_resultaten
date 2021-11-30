@@ -15,8 +15,13 @@ NavBar::begin([
 echo Nav::widget([
     'options' => ['class' => 'navbar-nav'],
     'items' => [
+
         [
-            'label' => 'Resultaten', 'url' => ['/resultaat']
+            'label' => 'Zoek', 'url' => ['/resultaat/start']
+        ],
+
+        [
+            'label' => 'Resultaten', 'url' => ['/resultaat/index']
         ],
 
         [
@@ -40,15 +45,6 @@ echo Nav::widget([
         ],
 
         [
-            'label' => 'Beheer',
-            'items' => [
-                ['label' => 'Studenten', 'url' => ['/student']],
-                ['label' => 'Cursus (Blok)', 'url' => ['/course']],
-                ['label' => 'Modules', 'url' => ['/module-def']],
-            ],
-        ],
-
-        [
             'label' => 'Klas',
             'visible' => ( Yii::$app->controller->id == 'query' && array_key_exists( 'klas', Yii::$app->view->context->actionParams ) ),
             'items' => [
@@ -57,6 +53,15 @@ echo Nav::widget([
                 ['label' => '1C', 'url' => [Yii::$app->controller->action->id . '?klas=1C']],
                 ['label' => '1D', 'url' => [Yii::$app->controller->action->id . '?klas=1D']],
                 ['label' => 'Allen', 'url' => [Yii::$app->controller->action->id]],
+            ],
+        ],
+
+        [
+            'label' => 'Beheer',
+            'items' => [
+                ['label' => 'Studenten', 'url' => ['/student']],
+                ['label' => 'Cursus (Blok)', 'url' => ['/course']],
+                ['label' => 'Modules', 'url' => ['/module-def']],
             ],
         ],
     ],

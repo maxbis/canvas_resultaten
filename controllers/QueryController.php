@@ -262,7 +262,7 @@ class QueryController extends Controller
     public function actionDetailsModule($studentNummer, $moduleId, $export=false){
         $sql="
             SELECT u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
-            CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END Ingeleverd,
+            CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
             s.entered_score Score, 
             CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link
             FROM assignment a
@@ -315,9 +315,10 @@ class QueryController extends Controller
 
     public function actionStudent($studentNummer, $export=false) {
 
-        $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Ingeleverd, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Act.'
+        $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
+                INNER JOIN module_def d on d.id=r.module_id
                 WHERE student_nummer=$studentNummer
                 ORDER BY c.pos, r.module_pos";
 
