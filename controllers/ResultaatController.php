@@ -184,7 +184,7 @@ class ResultaatController extends Controller
 
         if ($found == 1) {
             return $this->redirect([
-                '/query/student','studentNummer'=>$resultaten[0]['student_nummer'],
+                'query/student','studentNummer'=>$resultaten[0]['student_nummer'],
             ]);
         } else {
             return $this->render('start', [

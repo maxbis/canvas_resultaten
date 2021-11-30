@@ -20,7 +20,7 @@ $this->title = 'Zoek student';
 
         <div class="card" >
             <div class="card-header align-items-start">
-                <form action="/resultaat/start" method="post">
+                <form action="resultaat/start" method="post">
                     <input type="text" minlength="2" name="search">
                     <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
                     &nbsp; &nbsp; &nbsp;
