@@ -316,6 +316,16 @@ class QueryController extends Controller
         $data=$this->executeQuery($sql, "", $export);
     }
 
+    public function actionLog($export=false) {
+        $sql="select * from log order by timestamp desc limit 100";
+        $data=$this->executeQuery($sql, "Log", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+        ]);
+    }
+
     private function addLogSql($sql, $subject='', $message='') {
         $route = Yii::$app->requestedRoute;
         $sql.=";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '".$message."', '".$route."');";
