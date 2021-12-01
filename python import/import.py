@@ -251,7 +251,11 @@ def calcVoldaan():
             str(item) + " and " + voldaan_criteria[item]
         log("Update resultaat: "+sql, 2)
         cursor.execute(sql)
-        con.commit()
+
+    # log import done    
+    sql="insert into log (subject, message, route) values('Import', (select concat(sum(1),'-',sum(ingeleverd))from resultaat), '');"
+    cursor.execute(sql);
+    con.commit()
 
 
 def createCsv():
@@ -273,6 +277,7 @@ cursor = con.cursor()
 
 # Read voldaan_criteria['module_id']='punten > 12' read from table module_def
 voldaan_criteria=getVoldaanCriteria()
+
 
 #if prio > 100 assume it is a course ID and only update that course (for debugging)
 if (int(args['course'])>100):

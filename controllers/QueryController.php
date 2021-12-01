@@ -48,8 +48,6 @@ class QueryController extends Controller
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
-       
-
         if ($result) { // column names are derived from query results
             $data['col']=array_keys($result[0]);
         }
@@ -283,7 +281,7 @@ class QueryController extends Controller
         $data['title'] = 'Module <i> '.$data['row'][0]['module'].'</i> van '.$data['row'][0]['naam'];
         $data['show_from'] = 2; // show from colum 2 
 
-        return $this->render('assignments', [
+        return $this->render('output-mod', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
@@ -318,21 +316,30 @@ class QueryController extends Controller
         $data=$this->executeQuery($sql, "", $export);
     }
 
-    public function actionStudent($studentNummer, $export=false) {
+    private function addLogSql($sql, $subject='', $message='') {
+        $route = Yii::$app->requestedRoute;
+        $sql.=";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '".$message."', '".$route."');";
+        return $sql;
+    }
 
+    public function actionStudent($studentNummer, $export=false) {
+        // Create report for one student(status)
         $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
                 WHERE student_nummer=$studentNummer
-                ORDER BY c.pos, r.module_pos";
+                ORDER BY c.pos, r.module_pos;
+            ";
 
-        $data=$this->executeQuery($sql, "Overzicht voor ", $export);
+        $sql = $this->addLogSql($sql, 'Studentrapport', $studentNummer); // add log to sql statement
+        $data = $this->executeQuery($sql, "Overzicht voor ", $export);
+
 
         $data['title'] = 'Overzicht voor '.$data['row'][0]['Student'];
         $data['show_from'] = 2; // show from colum 2 
 
-        return $this->render('assignments', [
+        return $this->render('output-mod', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
@@ -343,4 +350,4 @@ class QueryController extends Controller
 
 }
 
-
+// $sql.="; INSERT INTO log (subject, message) VALUES ('Report','$message');";

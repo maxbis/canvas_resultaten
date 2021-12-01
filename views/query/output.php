@@ -20,8 +20,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                     ?>
                 </div>
             <div class="col-md-auto">
-                <?php $params = isset($params) ? $params : ''; ?>
-                <?= Html::a('Export', [$action.'?export=1&'.$params], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
+                <?= Html::a('Export', [$action.'?export=1'], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
     </div>

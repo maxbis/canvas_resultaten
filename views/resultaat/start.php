@@ -50,8 +50,8 @@ $this->title = 'Zoek student';
             <?php endif; ?>
         </div>
     </div>
-    
- 
+    <br/>
+    <small style="color:#999;">Bijgewerkt tot: <?= $timestamp ?></small>
 </div>
 
 <p></br></br></br></p>

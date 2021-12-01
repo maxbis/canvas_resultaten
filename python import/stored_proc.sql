@@ -35,3 +35,26 @@ END$$
 -- CALL updateResultaat(1,1,1)
 
 -- working on
+DELIMITER $$
+CREATE OR REPLACE PROCEDURE insertLog( IN in_message VARCHAR(300) )
+BEGIN
+    INSERT into log (message) values (in_message);
+END$$
+
+-- CALL insertLog('Message')
+
+DELIMITER $$
+CREATE OR REPLACE PROCEDURE finisImport()
+BEGIN
+insert into log (message) values(
+    (select concat(sum(1), '-', sum(ingeleverd)) from resultaat)
+);
+END$$
+
+DELIMITER $$
+CREATE OR REPLACE PROCEDURE finisImport()
+BEGIN
+insert into log (message) values(
+    (select concat('Import finished. records imported:',sum(1), ', sum(ingeleverd):', sum(ingeleverd)) from resultaat)
+);
+END$$

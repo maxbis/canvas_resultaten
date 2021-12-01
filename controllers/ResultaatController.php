@@ -182,6 +182,9 @@ class ResultaatController extends Controller
             $found=-1;
         }
 
+        $sql="select max(timestamp) timestamp from log where subject='Import'";
+        $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
+
         if ($found == 1) {
             return $this->redirect([
                 'query/student','studentNummer'=>$resultaten[0]['student_nummer'],
@@ -190,6 +193,7 @@ class ResultaatController extends Controller
             return $this->render('start', [
                 'resultaten' => $resultaten,
                 'found' => $found,
+                'timestamp' => $timestamp['timestamp']
             ]);
         }
 
@@ -269,7 +273,7 @@ class ResultaatController extends Controller
         return $result;
     }
 
-    public function actionUpdateAssignment($student_nr, $module_id) { #this is too slow.....
+    public function actionUpdateAssignment($student_nr, $module_id) { 
         // Live (async) update from GUI 
         # get submission_ids, let's get all submissions that are from this assignment group and this user
         $sql="  select s.id from submission s
