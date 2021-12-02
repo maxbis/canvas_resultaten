@@ -75,7 +75,7 @@ class ResultaatController extends Controller
         $searchModel = new ResultaatSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $courses = ArrayHelper::map(Course::find()->asArray()->all(), 'id', 'korte_naam');
+        $courses = ArrayHelper::map(Course::find()->orderBy('pos')->asArray()->all(), 'id', 'korte_naam');
         $klas = ArrayHelper::map(Student::find()->where(['not', ['klas' => '']])->orderBy('klas')->asArray()->all(), 'klas', 'klas');
         $modules =  ArrayHelper::map(Resultaat::find()->orderBy('module_pos')->asArray()->all(), 'module_id', 'module');
         

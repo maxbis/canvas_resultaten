@@ -44,7 +44,7 @@ AppAsset::register($this);
 <footer class="footer" >
     <div class="container">
         <small>
-            <p class="pull-left">v 2811.01 &copy; ROCvA Maxware :) <?= date('Y') ?></p>
+            <p class="pull-left">v 2811.01 &copy; ROCvA MaxWare :) <?= date('Y') ?></p>
             <p class="pull-right"><?= Yii::powered() ?></p>
         </small>
     </div>

@@ -46,6 +46,7 @@ class ModuleDefSearch extends ModuleDef
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['pos' => SORT_ASC]],
         ]);
 
         $this->load($params);

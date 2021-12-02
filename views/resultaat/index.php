@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     if ( isset($data->moduleDef['naam']) ) {
                         // actionDetailsModule($userId, $moduleId){
-                        return Html::a($data->moduleDef['naam'],['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien']);
+                        return Html::a($data->moduleDef['naam'],['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien ('.$data->module_id.')']);
                         return str_replace( "Opdrachten", "", $data->moduleDef['naam']);
                     } else {
                         return "<p title=\"Voldaan-criteria nog niet ingevoerd (".$data->module_id." )\" style=\"color:#808080;font-style: italic;\">".$data->module."</p>";
@@ -148,7 +148,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [   'attribute' => 'punten',
                 'label' => 'Score',
-                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Punten - Punten Eindopdracht - Maximale punten - Percentage behaalde punten'],
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Score als percentage'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     if ($data->punten_max){
@@ -161,9 +161,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     // return sprintf("<pre>%3.1f %2d %3d %3d%%</pre>", $data->punten, $data->punten_eo, $data->punten_max,  $data->punten_max==0 ? 0 : $data->punten*100/$data->punten_max);
                 }
             ],
+            [   'attribute' => 'ingeleverd',
+                'label' => 'I',
+                'contentOptions' => ['style' => 'width:20px; white-space: normal; ', 'title'=>'Aantal ingeleverde opdrachten'],
+            ],
+            [   'attribute' => 'punten',
+                'label' => 'P',
+                'contentOptions' => ['style' => 'width:20px; white-space: normal; ', 'title'=>'Totaal aantal punten'],
+            ],
+            [   'attribute' => 'punten_eo',
+                'label' => 'E',
+                'contentOptions' => ['style' => 'width:20px; white-space: normal; ', 'title'=>'Totaal aantal punten voor eindopdracht'],
+            ],
             [   'attribute' => 'laatste_activiteit',
-                'label' => 'Act.',
-                'contentOptions' => ['style' => 'width:40px; white-space: normal; '],
+                'label' => 'A',
+                'contentOptions' => ['style' => 'width:20px; white-space: normal; '],
                 'format' => 'raw',
                 'value' => function ($data) {
                     $days = intval((time()-strtotime($data->laatste_activiteit))/86400) ;
@@ -176,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [   'attribute' => 'laatste_beoordeling',
-                'label' => 'Beo.',
+                'label' => 'B',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
                 'format' => 'raw',
                 'value' => function ($data) {

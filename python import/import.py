@@ -128,6 +128,8 @@ def validate_string(fieldName, val):
 def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     json_data = getJsonData(apiPath, courseId)
 
+    # ToDo check if data is returned else exit(1)
+
     # parse json data to SQL insert
 
     if doDelete:

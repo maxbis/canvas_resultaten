@@ -126,6 +126,7 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                     echo "<td></td>";
                     echo "<td></td>";
                     echo "</tr>";
+                    // Html::a('&#x21BA', ['resultaat/update-assignment', 'student_nr'=>$data->student_nummer, 'module_id'=>$data->module_id], ['title'=> 'Update uit Canvas','onclick'=>'hide()']);
                 }
 
             ?>

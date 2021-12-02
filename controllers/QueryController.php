@@ -312,7 +312,7 @@ class QueryController extends Controller
     }
 
     public function actionGetAllResultaat($export=true) {
-        $sql="select * from resultaat";
+        $sql="select * from resultaat order student_nummer, module_id";
         $data=$this->executeQuery($sql, "", $export);
     }
 
@@ -339,12 +339,11 @@ class QueryController extends Controller
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
                 WHERE student_nummer=$studentNummer
-                ORDER BY c.pos, r.module_pos;
+                ORDER BY c.pos, r.module_pos
             ";
 
         $sql = $this->addLogSql($sql, 'Studentrapport', $studentNummer); // add log to sql statement
         $data = $this->executeQuery($sql, "Overzicht voor ", $export);
-
 
         $data['title'] = 'Overzicht voor '.$data['row'][0]['Student'];
         $data['show_from'] = 2; // show from colum 2 
@@ -359,5 +358,3 @@ class QueryController extends Controller
 
 
 }
-
-// $sql.="; INSERT INTO log (subject, message) VALUES ('Report','$message');";

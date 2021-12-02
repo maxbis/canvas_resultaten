@@ -232,3 +232,9 @@ vendor/bin/codecept run functional,unit --coverage --coverage-html --coverage-xm
 
 You can see code coverage output under the `tests/_output` directory.
 "# canvas_resultaten" 
+
+#ToDO
+01 query/student naar resutlaat met eigen view en in de view een live update zelfde als in de gridview
+02 update via stored proc zodat python en php code dezelfde code gebruiken -> lastig omdat je een dynamische stored proc nodig hebt.
+03 robuust maken import (no )
+04 (voor theo) export sorteervolgorde module_id, student_nr
