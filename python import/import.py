@@ -287,23 +287,18 @@ if (int(args['course'])>100):
         deleteBlok(int(args['course']))
     else:
         createBlok(int(args['course']))
-    count=1
-
 else:
     # Read course_id's that need to be updated from database table course
-    courses=getCourses( args['course'] )
+    if (int(args['course']) != 0):
+        courses=getCourses( args['course'] )
+        for blok in courses:
+            if (blok != 0 ):
+                log("Create "+str(blok),1)
+                createBlok(blok)
 
-    count = 0
-    for blok in courses:
-        if (blok != 0 ):
-            log("Create "+str(blok),1)
-            createBlok(blok)
-        count += 1
-
-if ( count ):
-    createResultaat()
-    calcVoldaan()
-    log("Recalc Voldaan Done",1)
+createResultaat()
+calcVoldaan()
+log("Recalc Voldaan Done",1)
 
 
 con.close()
