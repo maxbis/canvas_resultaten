@@ -312,7 +312,7 @@ class QueryController extends Controller
     }
 
     public function actionGetAllResultaat($export=true) {
-        $sql="select * from resultaat order student_nummer, module_id";
+        $sql="select * from resultaat order by student_nummer, module_id";
         $data=$this->executeQuery($sql, "", $export);
     }
 
