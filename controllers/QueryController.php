@@ -356,5 +356,16 @@ class QueryController extends Controller
         ]);
     }
 
+    public function actionStudentenLijst($export=false){
+        $sql="SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
+
+        $data=$this->executeQuery($sql, "Studentenlijst", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Studentenlijst (voor Export naar Excel)',
+        ]);
+    }
 
 }

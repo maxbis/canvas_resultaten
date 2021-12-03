@@ -26,14 +26,29 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'naam',
-            'pos',
-            'voldaan_rule',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [   'attribute' => 'id',
+                'label' => 'ID',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
+            ],
+            [   'attribute' => 'naam',
+                'label' => 'Naam',
+            ],
+            [   'attribute' => 'pos',
+                'label' => 'Pos',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
+            ],
+            [   'attribute' => 'voldaan_rule',
+                'label' => 'Voldaan Rule',
+                'contentOptions' => ['style' => 'width:260px; white-space: normal;'],
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+                'template' => '{view} - {delete} - {update}',
+            ],
         ],
     ]); ?>
 
 
 </div>
+

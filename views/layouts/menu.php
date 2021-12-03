@@ -65,6 +65,7 @@ echo Nav::widget([
                 ['label' => 'Studenten', 'url' => ['/student']],
                 ['label' => 'Cursus (Blok)', 'url' => ['/course']],
                 ['label' => 'Modules', 'url' => ['/module-def']],
+                ['label' => 'Studentenlijst', 'url' => ['/query/studenten-lijst']],
             ],
         ],
     ],
