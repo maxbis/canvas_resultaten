@@ -17,11 +17,13 @@ echo Nav::widget([
     'items' => [
 
         [
-            'label' => 'Zoek', 'url' => ['/resultaat/start']
+            'label' => 'Zoek', 'url' => ['/resultaat/start'],
+            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
         ],
 
         [
-            'label' => 'Resultaten', 'url' => ['/resultaat/index']
+            'label' => 'Resultaten', 'url' => ['/resultaat/index'],
+            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
         ],
 
         [
@@ -58,6 +60,7 @@ echo Nav::widget([
 
         [
             'label' => 'Beheer',
+            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Studenten', 'url' => ['/student']],
                 ['label' => 'Cursus (Blok)', 'url' => ['/course']],
@@ -71,11 +74,13 @@ echo Nav::widget([
     'options' => ['class' => 'navbar-nav ml-auto'],
     'items' => [
 
-        [
-            'label' => 'About', 'url' => ['/site/about']
-        ],
+        // [
+        //     'label' => 'About', 'url' => ['/site/about']
+        // ],
         
-            Yii::$app->user->isGuest ? (['label' => 'Login', 'url' => ['/site/login'],]) : ('<li>'
+            Yii::$app->user->isGuest ? (['label' => 'Login',
+                'visible' => (isset(Yii::$app->controller->id ) && Yii::$app->controller->id != 'public'),
+                'url' => ['/site/login'],]) : ('<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
                 . Html::submitButton(
                     'Logout (' . Yii::$app->user->identity->username . ')',

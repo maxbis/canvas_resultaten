@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\ModuleDef */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<h3><i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i></h3>
 <div class="module-def-form">
 
     <?php $form = ActiveForm::begin(); ?>

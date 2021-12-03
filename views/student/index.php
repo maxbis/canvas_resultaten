@@ -30,7 +30,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'login_id',
             'student_nr',
-            'klas',
+            [
+                'attribute' => 'klas',
+                'label' => 'Klas',
+                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
+            ],
+            'code',
+            [
+                'label' => 'Link',
+                'attribute'=>'code',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Secret public access code'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return "<a href='https://wwww.student.ovh/canvas?code='".$data->code.">link</a>";
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

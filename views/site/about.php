@@ -12,6 +12,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>Canvas Info</p>
 
-    <p>Documentatie (beheer): <a href="https://www.roc.ovh/books/overig/page/canvas-monitor">https://www.roc.ovh/books/overig/page/canvas-monito</a></P>
 
 </div>

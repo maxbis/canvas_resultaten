@@ -65,18 +65,24 @@ class PublicController extends Controller
     public function actionGenerate($code=0) {
         // if you want new code, change the $salt, everyone will get a new code
         if ($code=="doehetmaar") {
+            echo "<pre>";
             MyHelpers::CheckIP();
-            $sql = "select student_nr studentNummer from user where student_nr > 100";
+            $sql = "select student_nr studentNummer, name from user where student_nr > 100";
             $data = Yii::$app->db->createCommand($sql)->queryAll();
 
+            echo "Lines to be updated: ".count($data);
+            $count=0;
+            $sql="";
             foreach( $data as $item) {
+                $count+=1;
+                echo "<br>Line ".$count." update ".$item['name'];
                 $salt="MaxBis";
                 $code=md5($salt.$item['studentNummer']);
-                $sql="update user set code='".$code."' where student_nr=".$item['studentNummer'];
-                $result = Yii::$app->db->createCommand($sql)->execute();
-                echo "<pre>";
-                echo $sql;
+                $sql.="update user set code='".$code."' where student_nr=".$item['studentNummer'].";\n";
             }
+            echo "\n\nExecute now\n";
+            Yii::$app->db->createCommand($sql)->execute();
+            echo "<b>Done</b><br>";
         }
     }
 
