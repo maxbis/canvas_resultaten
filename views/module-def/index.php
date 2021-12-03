@@ -41,6 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Voldaan Rule',
                 'contentOptions' => ['style' => 'width:260px; white-space: normal;'],
             ],
+            [   'attribute' => 'generiek',
+                'label' => 'Gen',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],

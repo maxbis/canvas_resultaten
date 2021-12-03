@@ -203,11 +203,14 @@ class QueryController extends Controller
         }
 
         $sql="
-            select student_nummer Stdntnr, student_naam Student, klas Klas, SUM(case when voldaan='V' then 1 else 0 end) 'Voldaan', sum(punten) 'Punten totaal'
-            from resultaat
+            select student_nummer Stdntnr, student_naam Student, klas Klas,
+                SUM(case when voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
+                SUM(case when voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
+                sum(punten) 'Punten totaal'
+                FROM resultaat r INNER JOIN module_def d on d.id=r.module_id
             $select
             group by 1,2,3
-            order by 4 $sort, 5 DESC";
+            order by 4 $sort, 5 $sort, 6 $sort";
 
         $data=$this->executeQuery($sql, "Voortgang/Ranking ".$klas, $export);
         
@@ -307,7 +310,7 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => 'Aantal (handmatig) beoordelingen per beoordeelaar over 1, 2, 3 en 12 weken',
+            'descr' => 'Aantal (handmatige) beoordelingen per beoordeelaar over 1, 2, 3 en 12 weken',
         ]);
     }
 

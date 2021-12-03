@@ -17,7 +17,7 @@ class ModuleDefSearch extends ModuleDef
     public function rules()
     {
         return [
-            [['id', 'pos'], 'integer'],
+            [['id', 'pos', 'generiek'], 'integer'],
             [['naam', 'voldaan_rule'], 'safe'],
         ];
     }
@@ -61,6 +61,7 @@ class ModuleDefSearch extends ModuleDef
         $query->andFilterWhere([
             'id' => $this->id,
             'pos' => $this->pos,
+            'generiek' => $this->generiek,
         ]);
 
         $query->andFilterWhere(['like', 'naam', $this->naam])
