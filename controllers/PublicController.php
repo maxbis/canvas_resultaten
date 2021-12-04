@@ -35,7 +35,8 @@ class PublicController extends Controller
      */
     public function actionIndex($code=0, $export=false) {
 
-        MyHelpers::CheckIP();
+        // ipcheck for testing off
+        // MyHelpers::CheckIP();
         // Create report for one student(status)
         $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
                 FROM resultaat r
