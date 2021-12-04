@@ -24,9 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
+            [
+                'label' => 'Canvas Id',
+                'attribute'=>'id',
+                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+            ],
             'name',
             'login_id',
             'student_nr',
@@ -35,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Klas',
                 'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
             ],
-            'code',
+            //'code',
             [
                 'label' => 'Link',
                 'attribute'=>'code',
@@ -47,7 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+            ],
         ],
     ]); ?>
 
