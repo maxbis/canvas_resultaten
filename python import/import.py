@@ -259,6 +259,17 @@ def calcVoldaan():
     cursor.execute(sql);
     con.commit()
 
+def calcRanking():
+    sql="""
+        update user u set ranking_score=
+        (
+            select (SUM(case when voldaan='V' then 1 else 0 end))*200+sum(punten) 'Ranking Score'
+            FROM resultaat r
+            inner join module_def d on d.id=r.module_id 
+            where u.student_nr=r.student_nummer
+        )"""
+    cursor.execute(sql);
+    con.commit()
 
 def createCsv():
     sql = "select * from resultaat"
@@ -298,6 +309,7 @@ else:
 
 createResultaat()
 calcVoldaan()
+calcRanking()
 log("Recalc Voldaan Done",1)
 
 
