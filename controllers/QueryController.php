@@ -203,14 +203,17 @@ class QueryController extends Controller
         }
 
         $sql="
-            select student_nummer Stdntnr, student_naam Student, klas Klas,
-                SUM(case when voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
-                SUM(case when voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
-                sum(punten) 'Punten totaal'
-                FROM resultaat r INNER JOIN module_def d on d.id=r.module_id
+            select student_nummer Stdntnr, r.student_naam Student, r.klas Klas,
+                u.ranking_score 'Score',
+                SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
+                SUM(case when r.voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
+                sum(r.punten) 'Punten totaal'
+                FROM resultaat r
+                INNER JOIN module_def d ON d.id=r.module_id
+                INNER JOIN user u ON u.student_nr = r.student_nummer
             $select
-            group by 1,2,3
-            order by 4 $sort, 5 $sort, 6 $sort";
+            group by 1,2,3,4
+            order by 4 $sort";
 
         $data=$this->executeQuery($sql, "Voortgang/Ranking ".$klas, $export);
         

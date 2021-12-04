@@ -42,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Secret public access code'],
                 'format' => 'raw',
                 'value' => function ($data) {
+                    return  Html::a('link',['/public', 'code'=>$data['code']]);
                     return "<a href='https://www.student.ovh/canvas/public?code=".$data['code']."'>link</a>";
                 }
             ],

@@ -71,7 +71,17 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                             $colContent = $item[$data['col'][$i]];
                             $colName    = $data['col'][$i];
 
-                            if (substr( $colContent,0,4)=='http' ) {
+                            if($colName=='Laatste Actief' ){
+                                $dagen=intval((time()-strtotime($item['Laatste Actief']))/86400);
+                                if ($dagen<=7) {
+                                    $color='#fdffe3';
+                                } elseif ($dagen<=14) {
+                                    $color='#fff8e3';
+                                } else {
+                                    $color='#ffffff';
+                                }
+                                echo "<td style=\"background-color:".$color."\">".$colContent."</td>";
+                            } elseif (substr( $colContent,0,4)=='http' ) {
                                 $link = substr( $colContent , 0, strpos( $colContent , "?") ) ;
                                 echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" href=\"".$link."\">&#10142;Canvas</a></td>";
                             } elseif( $colContent=='1970-01-01 00:00:00') {

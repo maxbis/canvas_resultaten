@@ -52,12 +52,20 @@ class PublicController extends Controller
             exit(0);
         }
 
+        $sql="
+        select count(id)+1 rank
+            from user u1
+            where u1.ranking_score>
+            (select u2.ranking_score from user u2 where u2.code='$code')
+        ";
+        $ranking = Yii::$app->db->createCommand($sql)->queryOne();
         $sql="select max(timestamp) timestamp from log where subject='Import'";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         return $this->render('index', [
             'data' => $data,
             'timeStamp' => $timestamp['timestamp'],
+            'rank' => $ranking['rank'],
         ]);
     }
 
