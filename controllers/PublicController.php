@@ -53,7 +53,7 @@ class PublicController extends Controller
         }
 
         $sql="
-        select count(id)+1 rank
+        select (count(id)+1) 'rank'
             from user u1
             where u1.ranking_score>
             (select u2.ranking_score from user u2 where u2.code='$code')
