@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) {
                     if ( isset($data->moduleDef['naam']) ) {
                         // actionDetailsModule($userId, $moduleId){
-                        return Html::a($data->moduleDef['naam'],['/query/details-module','studentNummer'=>$data->student_nummer,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien ('.$data->module_id.')']);
+                        return Html::a($data->moduleDef['naam'],['/public/details-module','code'=>$data->student->code,'moduleId'=>$data->module_id],['title'=>'Laat opdrachten zien ('.$data->module_id.')']);
                         return str_replace( "Opdrachten", "", $data->moduleDef['naam']);
                     } else {
                         return "<p title=\"Voldaan-criteria nog niet ingevoerd (".$data->module_id." )\" style=\"color:#808080;font-style: italic;\">".$data->module."</p>";
@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) use($searchModel){
                     // first click when searchis partial show all data of this student in this view, then when clicked the search parameter has a the fulle name, show student overzicht
                     if ( isset($searchModel['student_naam']) and $searchModel['student_naam']==$data->student_naam) {
-                        return Html::a($data->student_naam, ['/query/student', 'studentNummer'=>$data->student_nummer], ['title'=> 'Overzicht van '.$data->student_naam.' zien',]);
+                        return Html::a($data->student_naam, ['/public/index', 'code'=>$data->student->code], ['title'=> 'Overzicht van '.$data->student_naam.' zien',]);
                     } else {
                         return Html::a($data->student_naam, ['/resultaat', 'ResultaatSearch[student_naam]'=>$data->student_naam], ['title'=> 'Laat alleen '.$data->student_naam.' zien',]);
                     }  

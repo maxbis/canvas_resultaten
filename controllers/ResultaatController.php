@@ -175,7 +175,7 @@ class ResultaatController extends Controller
   
         if (Yii::$app->request->post() ) {
             $search=Yii::$app->request->post()['search'];
-            $resultaten = resultaat::find()->select(['student_nummer','student_naam', 'klas'])->distinct()->where(['like', 'student_naam', $search])->orderBy(['student_naam' => 'SORT_ASC'])->all();
+            $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->orderBy(['name' => 'SORT_ASC'])->all();
             $found=count($resultaten);
         } else {
             $resultaten=[];
@@ -187,7 +187,7 @@ class ResultaatController extends Controller
 
         if ($found == 1) {
             return $this->redirect([
-                'query/student','studentNummer'=>$resultaten[0]['student_nummer'],
+                'public/index','code'=>$resultaten[0]['code'],
             ]);
         } else {
             return $this->render('start', [

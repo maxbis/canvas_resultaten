@@ -86,4 +86,7 @@ class Resultaat extends \yii\db\ActiveRecord
         return $this->hasOne(Course::className(), ['id' => 'module_id']);
     }
 
+    public function getStudent() {
+        return $this->hasOne(Student::className(), ['student_nr'=>'student_nummer']);
+    }
 }

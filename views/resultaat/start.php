@@ -33,7 +33,7 @@ $this->title = 'Zoek student';
                     <?php
                         foreach ($resultaten as $resultaat) {
                             echo "<li class=\"list-group-item\">";
-                            echo Html::a($resultaat->student_naam." (".$resultaat->klas.")", ['/query/student', 'studentNummer'=>$resultaat->student_nummer], ['title'=> 'Naar overzicht van '.$resultaat->student_naam.'',
+                            echo Html::a($resultaat->name." (".$resultaat->klas.")", ['/public/index', 'code'=>$resultaat->code], ['title'=> 'Naar overzicht van '.$resultaat->name.'',
                                 'onmouseover'=>"this.style.background='yellow'", 'onmouseout'=>"this.style.background='none'"]);
                             echo "</li>";
                         }

@@ -3,6 +3,7 @@
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Html;
+use yii\helpers\Url;
 
 NavBar::begin([
     'brandLabel' => Yii::$app->name,
@@ -70,6 +71,17 @@ echo Nav::widget([
         ],
     ],
 ]);
+
+if (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin') {
+    //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    echo "<div class=\"col-1\"></div>";
+    echo "<div style=\"color:#d0d0d0;\">Search: </div>";
+   
+    echo "<div class=\"col-1\"><form class=\"col-1\" method=\"post\" action=\"".Url::toRoute(['/resultaat/start'])."\"><input placeholder=\"Studentnaam\" size=\"8\" type=\"text\" minlength=\"2\" name=\"search\">";
+    echo "<input type=\"hidden\" name=\"_csrf\" value=\"".Yii::$app->request->getCsrfToken()."\" />";
+    echo "</input></form></div>";
+}
+
 
 echo Nav::widget([
     'options' => ['class' => 'navbar-nav ml-auto'],

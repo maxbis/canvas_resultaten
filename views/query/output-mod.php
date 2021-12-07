@@ -5,6 +5,7 @@ $nr=0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 $studentNummer = isset($studentNummer) ? $studentNummer : '';
 $moduleId = isset($moduleId) ? $moduleId : '';
+// dd($data);
 ?>
 
 <div class="card">
@@ -21,6 +22,8 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                     ?>
                 </div>
             <div class="col-md-auto">
+                <?= Html::a('Delen', ['/public/index','code'=>$code ], ['class'=>'btn btn-info', 'title'=> 'Deel met student',]) ?>
+                &nbsp;
                 <?= Html::a('Export', [$action, 'export'=>1, 'studentNummer'=>$studentNummer, 'moduleId'=>$moduleId], ['class'=>'btn btn-primary', 'title'=> 'Export to CSV',]) ?>
             </div>
         </div>
@@ -51,7 +54,6 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                  $totGraded=0;
                  $tot=0;
                  $totVoldaan=0;
-                 $totOpdrachten=0;
                  $totPrPunten=0;
                  $totPrAantal=0;
 
@@ -88,7 +90,7 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                                 echo "<td>-</td>";
                             } elseif ( $colName == 'Module' ) {
                                 echo "<td>";
-                                echo Html::a($colContent, ['/query/details-module', 'moduleId'=>$item[$data['col'][0]], 'studentNummer'=>$studentNummer ] );
+                                echo Html::a($colContent, ['/query/details-module', 'moduleId'=>$item[$data['col'][0]], 'code'=>$code ] );
                                 // echo "<a href=\"/query/details-module?$params&moduleId=".$item[$data['col'][0]]."\">".$colContent."</a>";
                                 echo "</td>";
                             } else {
@@ -104,9 +106,6 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                             if ( $colContent == "V" ) {
                                 $totVoldaan+=1;
                             }                  
-                            if ( $colName == "Opdrachten" ) {
-                                $totOpdrachten+=$colContent;
-                            }
                             if ( $colName == "Punten %" && $colContent>0 ) {
                                 $totPrPunten+=$colContent;
                                 $totPrAantal+=1;
@@ -120,7 +119,7 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                     echo "<td><b>TOTAAL $tot opdrachten</b></td>";
                     echo "<td><b>$totGraded</b></td>";
                     echo "<td></td>";
-                    echo "<td><b>$totScore</b></td>";
+                    echo "<td></td>";
                     echo "<td></td>";
                     echo "<td></td>";
                     echo "<td></td>";
@@ -131,7 +130,7 @@ $moduleId = isset($moduleId) ? $moduleId : '';
                     echo "<td><b>TOTAAL / GEMIDDELD</b></td>";
                     echo "<td></td>";
                     echo "<td><b>$totVoldaan</b></td>";
-                    echo "<td>$totOpdrachten</td>";
+                    echo "<td></td>";
                     echo "<td>".round($totPrPunten/$totPrAantal,1)."</td>";
                     echo "<td></td>";
                     echo "<td></td>";

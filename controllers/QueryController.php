@@ -266,7 +266,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionDetailsModule($studentNummer, $moduleId, $export=false){
+    public function actionDetailsModule($code, $moduleId, $export=false){
         $sql="
             SELECT u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
             CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
@@ -279,7 +279,7 @@ class QueryController extends Controller
             join assignment_group g on g.id = a.assignment_group_id
             left outer join module_def m on m.id = g.id
             where g.id=$moduleId
-            and u.student_nr=$studentNummer
+            and u.code='$code'
             order by  a.position
         ";
 
@@ -292,7 +292,7 @@ class QueryController extends Controller
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
             'moduleId' => $moduleId,
-            'studentNummer' => $studentNummer,
+            'code' => $code,
         ]);
     }
 
@@ -340,10 +340,11 @@ class QueryController extends Controller
 
     public function actionStudent($studentNummer, $export=false) {
         // Create report for one student(status)
-        $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, r.ingeleverd Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
+        $sql="SELECT r.module_id, r.student_naam Student, u.code code, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, concat(r.ingeleverd,'/',r.aantal_opdrachten) Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
+                INNER JOIN user u on u.student_nr = r.student_nummer
                 WHERE student_nummer=$studentNummer
                 ORDER BY c.pos, r.module_pos
             ";
@@ -352,13 +353,14 @@ class QueryController extends Controller
         $data = $this->executeQuery($sql, "Overzicht voor ", $export);
 
         $data['title'] = 'Overzicht voor '.$data['row'][0]['Student'];
-        $data['show_from'] = 2; // show from colum 2 
+        $data['show_from'] = 3; // show from colum 2 
 
         return $this->render('output-mod', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'nocount' => 'True',
             'studentNummer' => $studentNummer,
+            'code' => $data['row'][0]['code']
         ]);
     }
 
