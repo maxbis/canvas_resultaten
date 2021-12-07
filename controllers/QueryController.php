@@ -82,7 +82,25 @@ class QueryController extends Controller
         
     }
 
-    public function actionActief($sort='desc', $export=false, $klas='') {
+
+
+    public function actionLog($export=false) {
+        $sql="select * from log order by timestamp desc limit 100";
+        $data=$this->executeQuery($sql, "Log", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+        ]);
+    }
+
+    private function addLogSql($sql, $subject='', $message='') {
+        $route = Yii::$app->requestedRoute;
+        $sql.=";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '".$message."', '".$route."');";
+        return $sql;
+    }
+
+    public function actionActief($sort='desc', $export=false, $klas='') { // menu Rapporten - Student laatst actief op....
 
         // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
         if ($klas) {
@@ -108,7 +126,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalActiviteiten($export=false, $klas='') {
+    public function actionAantalActiviteiten($export=false, $klas='') { // menu Rapporten - Actieve studenten over tijd
 
         if ($klas) $select="where u.klas='$klas'"; else $select='';
         
@@ -138,7 +156,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionWorkingOn($sort='desc', $export=false, $klas='') {
+    public function actionWorkingOn($sort='desc', $export=false, $klas='') { // menu Rapporten - Student werken aan...
 
         if ($klas) {
             $select="and klas='$klas'";
@@ -165,36 +183,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionModulesFinished($export=false, $klas='') {
-
-        if ($klas) {
-            $select="where klas='$klas'";
-        } else {
-            $select='';
-        }
-
-        $sql="
-            select
-                Module,
-                af 'Afgerond door'
-                from
-                (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
-            from resultaat o
-            join module_def d on d.id=o.module_id
-            $select
-            group by 1,2,3
-            order by d.pos) alias
-        ";
-        // ToDo: order by werkt niet op server (order by moet in group by zitten)
-        $data=$this->executeQuery($sql, "Modules voldaan ".$klas, $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id,
-        ]);
-    }
-
-    public function actionVoortgang($sort='desc', $export=false, $klas='') {
+    public function actionVoortgang($sort='desc', $export=false, $klas='') { // menu Rapporten - Ranking studenten
 
         if ($klas) {
             $select="where klas='$klas'";
@@ -223,7 +212,38 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionBeoordeeld($export=false) {
+    public function actionModulesFinished($export=false, $klas='') { // menu Rapporten - Module is c keer voldaan
+
+        if ($klas) {
+            $select="where klas='$klas'";
+        } else {
+            $select='';
+        }
+
+        $sql="
+            select
+                Module,
+                af 'Afgerond door'
+                from
+                (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
+            from resultaat o
+            join module_def d on d.id=o.module_id
+            $select
+            group by 1,2,3
+            order by d.pos) alias
+        ";
+        // ToDo: order by werkt niet op server (order by moet in group by zitten)
+        $data=$this->executeQuery($sql, "Modules voldaan ".$klas, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+        ]);
+    }
+
+ 
+
+    public function actionBeoordeeld($export=false) { // menu Rapporten - Laatste beoordeling per module
         $sql="
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
             from resultaat
@@ -239,7 +259,15 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalBeoordelingen($export=false, $klas='') {
+    public function actionAantalBeoordelingen($export=false, $klas='') { // menu Rapporten - Beoordelingen per module over tijd
+        $sql="
+            select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
+            from resultaat
+            group by 1
+            order by 2 desc
+        ";
+        $data=$this->executeQuery($sql, "Laatste beoordeling per module", $export);
+
         if ($klas) {
             $select="where klas='$klas'";
         } else {
@@ -266,37 +294,12 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionDetailsModule($code, $moduleId, $export=false){
-        $sql="
-            SELECT u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
-            CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
-            s.entered_score Score, 
-            CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            left outer join user r on r.id=s.grader_id
-            join assignment_group g on g.id = a.assignment_group_id
-            left outer join module_def m on m.id = g.id
-            where g.id=$moduleId
-            and u.code='$code'
-            order by  a.position
-        ";
-
-        $data=$this->executeQuery($sql, "Module", $export);
-        $data['title'] = 'Module <i> '.$data['row'][0]['module'].'</i> van '.$data['row'][0]['naam'];
-        $data['show_from'] = 2; // show from colum 2 
-
-        return $this->render('output-mod', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id,
-            'nocount' => 'True',
-            'moduleId' => $moduleId,
-            'code' => $code,
-        ]);
+    public function actionGetAllResultaat($export=true) {  // export voor Theo - staat onder knop bij Gridview van alle resutlaten
+        $sql="select * from resultaat order by student_nummer, module_id";
+        $data=$this->executeQuery($sql, "", $export);
     }
 
-    public function actionNakijken($export=false) {
+    public function actionNakijken($export=false) { // menu Rapporten - Aantal beoordeligen per docent
 
         $sql="
             SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=2) then 1 else 0 end) 'week',
@@ -317,54 +320,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionGetAllResultaat($export=true) {
-        $sql="select * from resultaat order by student_nummer, module_id";
-        $data=$this->executeQuery($sql, "", $export);
-    }
-
-    public function actionLog($export=false) {
-        $sql="select * from log order by timestamp desc limit 100";
-        $data=$this->executeQuery($sql, "Log", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id,
-        ]);
-    }
-
-    private function addLogSql($sql, $subject='', $message='') {
-        $route = Yii::$app->requestedRoute;
-        $sql.=";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '".$message."', '".$route."');";
-        return $sql;
-    }
-
-    public function actionStudent($studentNummer, $export=false) {
-        // Create report for one student(status)
-        $sql="SELECT r.module_id, r.student_naam Student, u.code code, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan, concat(r.ingeleverd,'/',r.aantal_opdrachten) Opdrachten, round(r.punten*100/r.punten_max) 'Punten %', r.laatste_activiteit 'Laatste Actief'
-                FROM resultaat r
-                LEFT OUTER JOIN course c on c.id = r.course_id
-                INNER JOIN module_def d on d.id=r.module_id
-                INNER JOIN user u on u.student_nr = r.student_nummer
-                WHERE student_nummer=$studentNummer
-                ORDER BY c.pos, r.module_pos
-            ";
-
-        $sql = $this->addLogSql($sql, 'Studentrapport', $studentNummer); // add log to sql statement
-        $data = $this->executeQuery($sql, "Overzicht voor ", $export);
-
-        $data['title'] = 'Overzicht voor '.$data['row'][0]['Student'];
-        $data['show_from'] = 3; // show from colum 2 
-
-        return $this->render('output-mod', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id,
-            'nocount' => 'True',
-            'studentNummer' => $studentNummer,
-            'code' => $data['row'][0]['code']
-        ]);
-    }
-
-    public function actionStudentenLijst($export=false){
+    public function actionStudentenLijst($export=false){ // menu Beheer - Studentencodes export
         $sql="SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
 
         $data=$this->executeQuery($sql, "Studentenlijst", $export);
@@ -375,5 +331,22 @@ class QueryController extends Controller
             'descr' => 'Studentenlijst (voor Export naar Excel)',
         ]);
     }
+
+    public function actionSubmissions($export=false) { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
+        $sql="
+            SELECT  week(submitted_at,1) week, DATE_FORMAT(submitted_at,'%y') jaar, DATE_FORMAT(submitted_at,'%m') maand,DATE_FORMAT(submitted_at,'%d') dag, dayofweek(submitted_at) weekdag, sum(1) aantal FROM `submission` 
+            group by 1,2,3,4,5
+            order by 1,2,3,4,5
+        ";
+
+        $data=$this->executeQuery($sql, "Submissions", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Submissions (voor Export naar Excel)',
+        ]);
+    }
+
 
 }

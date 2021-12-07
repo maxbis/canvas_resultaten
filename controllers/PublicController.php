@@ -70,6 +70,7 @@ class PublicController extends Controller
         ";
         $ranking = Yii::$app->db->createCommand($sql)->queryOne();
         $sql="select max(timestamp) timestamp from log where subject='Import'";
+        $sql.=";INSERT INTO log (subject, message, route) VALUES ('Student Rapport', '".$data[0]['Student']."', '/public/index');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         return $this->render('index', [
