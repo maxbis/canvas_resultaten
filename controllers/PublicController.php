@@ -58,6 +58,8 @@ class PublicController extends Controller
 
         $data = Yii::$app->db->createCommand($sql)->queryAll();
         if (! count($data)) {
+            $sql="INSERT INTO log (subject, message, route) VALUES ('Wrong code', '".$code."', '".$_SERVER['REMOTE_ADDR']."');";
+            Yii::$app->db->createCommand($sql)->execute();
             sleep(3);
             exit(0);
         }
