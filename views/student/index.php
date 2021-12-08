@@ -52,6 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+                'visible' =>  (Yii::$app->user->identity->username=='admin'), 
+                'template' => '{view} - {delete} - {update}',
             ],
         ],
     ]); ?>

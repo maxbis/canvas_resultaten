@@ -20,6 +20,14 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
             'accessToken' => '100-token',
             'role' => 'admin',
         ],
+        '101' => [
+            'id' => '101',
+            'username' => 'beheer',
+            'password' => 'showmetheresults',
+            'authKey' => 'test101key',
+            'accessToken' => '101-token',
+            'role' => 'admin',
+        ],
     ];
 
 

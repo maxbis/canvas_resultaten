@@ -31,9 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'korte_naam',
             'pos',
             'update_prio',
-
-            [   'class' => 'yii\grid\ActionColumn',
-                'template' => '{view}',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+                'visible' =>  (Yii::$app->user->identity->username=='beheer'), 
+                'template' => '{view} - {delete} - {update}',
             ],
         ],
     ]); ?>
