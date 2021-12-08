@@ -131,20 +131,20 @@ class QueryController extends Controller
         if ($klas) $select="where u.klas='$klas'"; else $select='';
         
         $sql="
-            select u.name Student,
-            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end) '-2',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '-7',
-            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '-14',
-            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
-            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '-28',
-            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '-60',
-            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '-90'
+            select u.klas klas, u.name Student,
+            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
+            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+-14',
+            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '+-21',
+            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '+-28',
+            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '+-60',
+            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '+-90'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             $select
-            group by 1
+            group by 1,2
             order by 2 desc,3 desc,4 desc,5 desc,6 desc,7 desc
         ";
         $data=$this->executeQuery($sql, "Aantal activiteiten per student over tijd ".$klas, $export);
@@ -302,10 +302,10 @@ class QueryController extends Controller
     public function actionNakijken($export=false) { // menu Rapporten - Aantal beoordeligen per docent
 
         $sql="
-            SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=2) then 1 else 0 end) 'week',
-            sum(case when (datediff(curdate(),s.graded_at)<=14) then 1 else 0 end) 'twee weken',
-            sum(case when (datediff(curdate(),s.graded_at)<=21) then 1 else 0 end) 'drie weken',
-            sum(case when (datediff(curdate(),s.graded_at)<=84) then 1 else 0 end) '84 dagen'
+            SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=2) then 1 else 0 end) '+week',
+            sum(case when (datediff(curdate(),s.graded_at)<=14) then 1 else 0 end) '+twee weken',
+            sum(case when (datediff(curdate(),s.graded_at)<=21) then 1 else 0 end) '+drie weken',
+            sum(case when (datediff(curdate(),s.graded_at)<=84) then 1 else 0 end) '+12 weken'
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id

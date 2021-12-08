@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 $nr=0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
-
+$tot=[];
 ?>
 
 <div class="card">
@@ -35,14 +35,19 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                         if ( ! isset($nocount) ) echo "<td>#</td>";
                         if ( $data['row'] ) {
                             for($i=$from;$i<count($data['col']);$i++) {
-                                echo "<th>".$data['col'][$i]."</th>";
+                                $columnName=$data['col'][$i];
+                                if ( substr($columnName,0,1)=='+' ) {
+                                    $tot[$columnName]=0;
+                                    $columnName=substr($columnName,1);
+                                }
+                                echo "<th>".$columnName."</th>";
                             }
                         } else {
                             echo "<td>Empty result set</td>";
                         }
                     ?>
             </thead>
-            
+
             <?php
                 if ( $data['row'] ) {
                     foreach($data['row'] as $item) {
@@ -51,18 +56,32 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                             $nr++;
                             echo "<td>".$nr."</td>";
                         }
-                        for($i=$from;$i<count($data['col']);$i++) {
-                            if (substr($item[$data['col'][$i]],0,4)=='http') {
-                                echo "<td><a href=\"".$item[$data['col'][$i]]."\">Link</a></td>";
-                            } elseif( $item[$data['col'][$i]]=='1970-01-01 00:00:00') {
-                                echo "<td>-</td>";
-                            } else {
-                                echo "<td>".$item[$data['col'][$i]]."</td>";
-                            }   
-    
+                        foreach($data['col'] as $columnName) {
+                            if ( substr($columnName,0,1)=='+' ) {
+                                $tot[$columnName]+=$item[$columnName];
+                            }
+                            echo "<td>".$item[$columnName]."</td>";
                         }
                         echo "</tr>";
                     }
+
+                    if ( count($tot) ) {
+                        echo "<tr style=\"background-color:#e8f0ff\" >";
+                        if ( ! isset($nocount) ) {
+                            echo "<td></td>";
+                        }
+                        foreach($data['col'] as $columnName) {
+                            if ( substr($columnName,0,1)=='+' ) {
+                                echo "<td>";
+                                echo $tot[$columnName];
+                                echo "</td>";
+                            } else {
+                                echo "<td></td>";
+                            }
+                        }
+                        echo "</tr>";
+                    }
+
                 }
 
             ?>
