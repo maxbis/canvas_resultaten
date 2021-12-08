@@ -84,7 +84,7 @@ class PublicController extends Controller
 
     public function actionDetailsModule($code, $moduleId){
         $sql="
-            SELECT u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
+            SELECT u.id u_id, a.id a_id, a.course_id, u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
             CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
             s.entered_score Score, 
             CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link

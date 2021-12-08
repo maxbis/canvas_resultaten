@@ -34,25 +34,35 @@ $totScore=0;
             echo "<th>Score</th>";
             echo "<th>Beoordeeld</th>";
             echo "<th>Door</th>";
-            echo "<th>Link</th>";
+            echo "<th></th>";
             echo "</tr>";
             foreach ($data as $item) {
                 $totScore+=$item['Score'];
                 if ( $item['Status']=='submitted' || $item['Status']=='graded' ) {
                     $totSubmitted+=1;
                 }
-                $link = substr( $item['Link'] , 0, strpos( $item['Link'] , "?") ) ;
+                $link1 = substr( $item['Link'] , 0, strpos( $item['Link'] , "?") ) ;
+                $link2 = "https://talnet.instructure.com/courses/".$item['course_id']."/gradebook/speed_grader?assignment_id=".$item['a_id']."&student_id=".$item['u_id'];
                 echo "<tr>";
-                echo "<td>".$item['Opdrachtnaam']."</td>";
+
+                echo "<td>";
+                    echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"";
+                    echo $link1;
+                    echo "\">".$item['Opdrachtnaam']."</a>";
+                echo "</td>";
+
                 echo "<td>".$item['Status']."</td>";
                 echo "<td>".$item['Ingeleverd']."</td>";
                 echo "<td>".$item['Score']."</td>";
                 echo "<td>".$item['Beoordeeld']."</td>";
                 echo "<td>".$item['Door']."</td>";
+
                 echo "<td>";
-                echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" href=\"";
-                echo $link;
-                echo "\">&#10142;Canvas</a></td>";
+                    if (  (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin') ) {
+                        echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Speedgrader\" href=\"";
+                        echo $link2;
+                        echo "\">Grade&#10142;</a>";
+                    }
                 echo "</td>";
                 echo "</tr>";
             }
