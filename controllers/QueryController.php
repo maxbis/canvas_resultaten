@@ -310,6 +310,7 @@ class QueryController extends Controller
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
             group by 1
+            order by 1
         ";
         $data=$this->executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
 
