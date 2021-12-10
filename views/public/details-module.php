@@ -100,7 +100,7 @@ function getStatus($status) {
                 echo "<td>".getInitials($item['Door'])."</td>";
 
                 echo "<td>";
-                    if (  $item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                    if (  $item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] !="" ) {
                         $style="#a6ff66";
                     } else {
                         $style="none";
