@@ -110,7 +110,7 @@ class QueryController extends Controller
         }
         $sql="
             SELECT
-            concat(u.name,'|/public/index|code=',u.code) '!Student',
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
             o.klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
             from resultaat o
             inner join user u on u.student_nr=o.student_nummer
@@ -134,7 +134,7 @@ class QueryController extends Controller
         if ($klas) $select="where u.klas='$klas'"; else $select='';
         
         $sql="
-            select u.klas klas, concat(u.name,'|/public/index?code=',u.code) '!Student',
+            select u.klas klas, concat(u.name,'|/public/index|code|',u.code) '!Student',
             sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
             sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
             sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+-14',
@@ -196,7 +196,7 @@ class QueryController extends Controller
 
         $sql="
             select student_nummer Stdntnr,
-                concat(u.name,'|/public/index?code=',u.code) '!Student',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
                 r.klas Klas,
                 u.ranking_score 'Score',
                 SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
@@ -356,7 +356,7 @@ class QueryController extends Controller
 
     public function actionResubmitted($export=false){
         $sql="
-            SELECT  concat(m.naam,'|/public/details-module', '?moduleId=',m.id,'&code=',u.code) '!Module', u.name Student, sum(1) Aantal
+            SELECT  concat(m.naam,'|/public/details-module', '|moduleId|',m.id,'|code|',u.code) '!Module', u.name Student, sum(1) Aantal
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id

@@ -65,8 +65,11 @@ $tot=[];
                             }
                             if ( substr($columnName,0,1)=='!' ) { #hack, column namen starts with ! link in format naam|link
                                 $part=explode('|', $item[$columnName]);
-                                //dd($part);
-                                echo "<td>".Html::a($part[0],[$part[1],$part[2]])."</td>";
+                                if (count($part)==4){
+                                    echo "<td>".Html::a($part[0],[$part[1],$part[2]=>$part[3]])."</td>";
+                                } else {
+                                    echo "<td>Err: Inlvalid link data</td>";
+                                }
                             } else {
                                 echo "<td>".$item[$columnName]."</td>";
                             }
