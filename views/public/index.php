@@ -61,9 +61,9 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             echo "<tr>";
             echo "<th class=\"\">&nbsp;</th>";
             echo "<th colspan=2>Module</th>";
-            echo "<th colspan=2 class=\"bleft\" style=\"text-align:center;\" title=\"Aantal opdrachten en percentage opdrachten ingeleverd\"\>Opdrachten</th>";
-            echo "<th colspan=2 class=\"bleft\" style=\"text-align:center;\" title=\"Aantal punten en percentage van totaal te behalen\">Punten</th>";
-            echo "<th title=\"Wanneer is er voor het laatst gewerkt aan deze module\" class=\"tcenter bleft\">Laatst Actief</th>";
+            echo "<th colspan=2 class=\"bleft\" style=\"text-align:center;\" title=\"Aantal en percentage ingeleverd\"\>Opdrachten</th>";
+            echo "<th colspan=2 class=\"bleft\" style=\"text-align:center;\" title=\"Aantal en percentage van totaal te behalen\">Punten</th>";
+            echo "<th title=\"Wanneer is er voor deze module het laatst iets ingeleverd\" class=\"tcenter bleft\">Laatst Actief</th>";
             echo "</tr>";
             foreach ($data as $item) {
                 if ( $item['Voldaan'] == 'V' ) {
@@ -87,10 +87,10 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                 echo "<tr>";
 
                 if ( $item['Voldaan']=='V') {
-                    echo "<td title=\"Voldaan\" width=60px class=\"\">&#10004;</td>";
+                    echo "<td title=\"Voldaan (".$item['voldaanRule'].")\" width=60px class=\"\">&#10004;</td>";
       
                 } else {
-                    echo "<td title=\"Niet voldaan\" width=60px class=\"\">-</td>";
+                    echo "<td title=\"Niet voldaan (".$item['voldaanRule'].")\" width=60px class=\"\">-</td>";
                 }
 
                 echo "<td width=60px>".$item['Blok']."</td>";

@@ -32,14 +32,14 @@ class ModuleDefController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     // when logged in, any user
-                    [   'actions' => ['index'],
+                    [
+                        'actions' => ['update', 'delete', 'create', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [
-                        'actions' => ['update', 'delete'],
+                    [   'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['beheer'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],

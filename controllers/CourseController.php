@@ -31,14 +31,14 @@ class CourseController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    [   'actions' => ['index'],
+                    [
+                        'actions' => ['update', 'delete', 'create', 'view'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [
-                        'actions' => ['update', 'delete'],
+                    [   'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['beheer'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
