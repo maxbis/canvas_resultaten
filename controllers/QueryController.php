@@ -110,7 +110,7 @@ class QueryController extends Controller
         }
         $sql="
             SELECT
-            concat(u.name,'|/public/index?code=',u.code) '!Student',
+            concat(u.name,'|public/index?code=',u.code) '!Student',
             o.klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
             from resultaat o
             inner join user u on u.student_nr=o.student_nummer
