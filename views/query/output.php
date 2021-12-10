@@ -65,7 +65,8 @@ $tot=[];
                             }
                             if ( substr($columnName,0,1)=='!' ) { #hack, column namen starts with ! link in format naam|link
                                 $part=explode('|', $item[$columnName]);
-                                echo "<td>".Html::a($part[0],$part[1])."</td>";
+                                //dd($part);
+                                echo "<td>".Html::a($part[0],[$part[1],$part[2]])."</td>";
                             } else {
                                 echo "<td>".$item[$columnName]."</td>";
                             }
