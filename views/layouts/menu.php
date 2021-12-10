@@ -61,7 +61,7 @@ echo Nav::widget([
 
         [
             'label' => 'Beheer',
-            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
+            'visible' => (isset(Yii::$app->user->identity->username) && Yii::$app->user->identity->username == 'beheer'),
             'items' => [
                 ['label' => 'Studenten', 'url' => ['/student']],
                 ['label' => 'Studentencodes (export)', 'url' => ['/query/studenten-lijst']],
