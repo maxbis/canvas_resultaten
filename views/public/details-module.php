@@ -84,7 +84,7 @@ function getStatus($status) {
 
                 echo "<td>".getStatus($item['Status'])."</td>";
 
-                if ( $item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                if ( $item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] !="" )  {
                     echo "<td style=\"background:#f5ffed;\">".strtok($item['Ingeleverd']," ")."</td>";
                 } else {
                     echo "<td>".strtok($item['Ingeleverd']," ")."</td>";
@@ -111,7 +111,7 @@ function getStatus($status) {
                         echo "\">Grade&#10142;</a>";
                     }
                 echo "</td>";
-                
+
                 echo "</tr>";
             }
             echo "<tr style=\"background-color:#e8f0ff\">";
