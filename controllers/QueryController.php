@@ -186,7 +186,7 @@ class QueryController extends Controller
     public function actionVoortgang($sort='desc', $export=false, $klas='') { // menu Rapporten - Ranking studenten
 
         if ($klas) {
-            $select="where klas='$klas'";
+            $select="where r.klas='$klas'";
         } else {
             $select='';
         }

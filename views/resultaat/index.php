@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p>Ga met je muis over een veld voor meer info.</P>
                     <p>De student die het meest recent een opdracht heeft ingeleverd staat bovenaan.</p>
                     <p>Zoek je een ander student? Tik dan de naam in de tekstbox (onder het kopje 'Student').</p>
-                    <p>Als je de juiste student hebt gevonden, klik dan op de naam van de student. Je ziet nu alles van deze student met de module waairn het meest recent wat veranderd is bovenaan.</p?>
+                    <p>Als je de juiste student hebt gevonden, klik dan op de naam van de student. Je ziet nu alles van deze student met de module waarin het meest recent wat veranderd is bovenaan.</p?>
                     <p>Klik je nu <b>nog een keer</b> op de naam dan zie je een overzicht van alle modules en voortgang van deze student.</p>
                     <p>Klik vanuit dit overzicht naar een module voor informatie over de voortgang van deze module.</p>
                     <p>Klik hier om deze tekst te verbergen.</p>
