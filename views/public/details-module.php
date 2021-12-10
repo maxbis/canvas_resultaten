@@ -32,6 +32,7 @@ function getStatus($status) {
 <style>
 .right { text-align:right;border-right:dashed 1px #c0c0c0;background:#fdffff; }
 .left  { text-align:right;border-left:dashed 1px #c0c0c0;background:#fdffff; }
+.nakijken { background:#eeffa8; }
 </style>
 
 <div class="card shadow">
@@ -80,26 +81,37 @@ function getStatus($status) {
                     echo $link1;
                     echo "\">".$item['Opdrachtnaam']."</a>";
                 echo "</td>";
+
                 echo "<td>".getStatus($item['Status'])."</td>";
+
                 if ( $item['Ingeleverd'] > $item['Beoordeeld'] ) {
-                    echo "<td><b>".strtok($item['Ingeleverd']," ")."</b></td>";
+                    echo "<td style=\"background:#f5ffed;\">".strtok($item['Ingeleverd']," ")."</td>";
                 } else {
                     echo "<td>".strtok($item['Ingeleverd']," ")."</td>";
                 }
                 
                 
                 echo "<td class=\"left\">".$item['Score']."</td>";
+
                 echo "<td class=\"right\">".$item['MaxScore']."</td>";
+
                 echo "<td>".strtok($item['Beoordeeld'], " ")."</td>";
+
                 echo "<td>".getInitials($item['Door'])."</td>";
 
                 echo "<td>";
+                    if (  $item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                        $style="#a6ff66";
+                    } else {
+                        $style="none";
+                    }
                     if (  (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin') ) {
-                        echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Speedgrader\" href=\"";
+                        echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='".$style."'\" style=\"background:".$style.";\" title=\"Speedgrader\" href=\"";
                         echo $link2;
                         echo "\">Grade&#10142;</a>";
                     }
                 echo "</td>";
+                
                 echo "</tr>";
             }
             echo "<tr style=\"background-color:#e8f0ff\">";
