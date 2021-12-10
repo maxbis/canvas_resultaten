@@ -76,8 +76,8 @@ def getJsonData(url, courseId):
         page = urllib.request.urlopen(request).read()
     except:
         # if urllib.error.HTTPError == 404:  <- werk niet nog uitzoeken
-        print('Error: API does not return anything (key error?)')
-        # print('api_keu used: '+api_key)
+        print('Error: API does not return anything (key error, geen rechten?)')
+        print('URL: '+thisUrl)
         exit(1)
         # return(json_obj)
 

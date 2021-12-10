@@ -80,9 +80,14 @@ function getStatus($status) {
                     echo $link1;
                     echo "\">".$item['Opdrachtnaam']."</a>";
                 echo "</td>";
-
                 echo "<td>".getStatus($item['Status'])."</td>";
-                echo "<td>".strtok($item['Ingeleverd']," ")."</td>";
+                if ( $item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                    echo "<td><b>".strtok($item['Ingeleverd']," ")."</b></td>";
+                } else {
+                    echo "<td>".strtok($item['Ingeleverd']," ")."</td>";
+                }
+                
+                
                 echo "<td class=\"left\">".$item['Score']."</td>";
                 echo "<td class=\"right\">".$item['MaxScore']."</td>";
                 echo "<td>".strtok($item['Beoordeeld'], " ")."</td>";
