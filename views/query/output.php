@@ -40,6 +40,9 @@ $tot=[];
                                     $tot[$columnName]=0;
                                     $columnName=substr($columnName,1);
                                 }
+                                if ( substr($columnName,0,1)=='!' ) {
+                                    $columnName=substr($columnName,1);
+                                }
                                 echo "<th>".$columnName."</th>";
                             }
                         } else {
@@ -60,7 +63,12 @@ $tot=[];
                             if ( substr($columnName,0,1)=='+' ) {
                                 $tot[$columnName]+=$item[$columnName];
                             }
-                            echo "<td>".$item[$columnName]."</td>";
+                            if ( substr($columnName,0,1)=='!' ) { #hack, column namen starts with ! link in format naam|link
+                                $part=explode('|', $item[$columnName]);
+                                echo "<td>".Html::a($part[0],$part[1])."</td>";
+                            } else {
+                                echo "<td>".$item[$columnName]."</td>";
+                            }
                         }
                         echo "</tr>";
                     }

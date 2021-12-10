@@ -104,13 +104,16 @@ class QueryController extends Controller
 
         // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
         if ($klas) {
-            $select="and klas='$klas'";
+            $select="and o.klas='$klas'";
         } else {
             $select='';
         }
         $sql="
-            SELECT student_naam Student, klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
+            SELECT
+            concat(u.name,'|/public/index?code=',u.code) '!Student',
+            o.klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
             from resultaat o
+            inner join user u on u.student_nr=o.student_nummer
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
             and year(laatste_activiteit) > 2020
@@ -131,7 +134,7 @@ class QueryController extends Controller
         if ($klas) $select="where u.klas='$klas'"; else $select='';
         
         $sql="
-            select u.klas klas, u.name Student,
+            select u.klas klas, concat(u.name,'|/public/index?code=',u.code) '!Student',
             sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
             sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
             sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+-14',
@@ -192,7 +195,9 @@ class QueryController extends Controller
         }
 
         $sql="
-            select student_nummer Stdntnr, r.student_naam Student, r.klas Klas,
+            select student_nummer Stdntnr,
+                concat(u.name,'|/public/index?code=',u.code) '!Student',
+                r.klas Klas,
                 u.ranking_score 'Score',
                 SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
                 SUM(case when r.voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
@@ -349,5 +354,26 @@ class QueryController extends Controller
         ]);
     }
 
+    public function actionResubmitted($export=false){
+        $sql="
+            SELECT  concat(m.naam,'|/public/details-module', '?moduleId=',m.id,'&code=',u.code) '!Module', u.name Student, sum(1) Aantal
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            left outer join module_def m on m.id = g.id
+            where s.graded_at > '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1,2
+            order by m.pos, u.name
+        ";
+
+        $data=$this->executeQuery($sql, "Opnieuw ingeleverde opdrachten", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Details',
+        ]);
+    }
 
 }
