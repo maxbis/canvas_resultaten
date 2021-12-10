@@ -126,6 +126,7 @@ function getStatus($status) {
             echo "</tr>";
             ?>
         </table>
+        <?= Html::a( '<< Terug', Yii::$app->request->referrer , ['class'=>'btn btn-light']); ?>
     </div>
 </div>
 <br>
