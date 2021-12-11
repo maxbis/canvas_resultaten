@@ -46,7 +46,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             </div>
 
             <div class="col-md-auto">
-                <?php if ($rank<=12): ?>
+                <?php if ($rank<=16): ?>
                 <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
             </div>
