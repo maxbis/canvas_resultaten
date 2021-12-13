@@ -193,7 +193,7 @@ class PublicController extends Controller
             'data' => $chartArray,
             'options' => [  'title' => 'Wekelijkse Activiteiten',
                             'hAxis' => array('title' => 'Weeknummer'),
-                            'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0,5,10,15,20] ),
+                            'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0,5,10,15] ),
                             'legend' => array('position' => 'top'),
                          ]
         ];
