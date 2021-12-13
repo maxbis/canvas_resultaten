@@ -337,7 +337,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionSubmissions($export=false, $code='5d3ff58b44f1b2242e0f0af7bd083c49') { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
+    public function actionSubmissions($export=false, $code) { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
         $sql="
             SELECT  u.name Student, DATE_FORMAT(s.submitted_at,'%y') Jaar,
             lpad(week(s.submitted_at,1),2,0) Week,
@@ -357,6 +357,7 @@ class QueryController extends Controller
             'action' => Yii::$app->controller->action->id,
             'descr' => 'Submissions per week',
             'nocount' => 'True',
+            'code' => $code,
         ]);
     }
 
