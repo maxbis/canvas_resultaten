@@ -53,6 +53,15 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
  
         </div>
     </div>
+    
+    <p>
+    <?php
+    use scotthuangzl\googlechart\GoogleChart;
+    if ( gettype($chart) == 'array' && count($chart) > 1 ) {
+        echo GoogleChart::widget($chart);
+    }
+    ?>
+    </p>
 
     <div class="card-body table-responsive">
         <table class="table">

@@ -134,7 +134,7 @@ class QueryController extends Controller
         if ($klas) $select="where u.klas='$klas'"; else $select='';
         
         $sql="
-            select u.klas klas, concat(u.name,'|/public/index|code|',u.code) '!Student',
+            select u.klas klas, concat(u.name,'|/query/submissions|code|',u.code) '!Student',
             sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
             sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
             sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+-14',
@@ -246,7 +246,6 @@ class QueryController extends Controller
         ]);
     }
 
- 
 
     public function actionBeoordeeld($export=false) { // menu Rapporten - Laatste beoordeling per module
         $sql="
@@ -338,21 +337,29 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionSubmissions($export=false) { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
+    public function actionSubmissions($export=false, $code='5d3ff58b44f1b2242e0f0af7bd083c49') { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
         $sql="
-            SELECT  week(submitted_at,1) week, DATE_FORMAT(submitted_at,'%y') jaar, DATE_FORMAT(submitted_at,'%m') maand,DATE_FORMAT(submitted_at,'%d') dag, dayofweek(submitted_at) weekdag, sum(1) aantal FROM `submission` 
-            group by 1,2,3,4,5
-            order by 1,2,3,4,5
+            SELECT  u.name Student, DATE_FORMAT(s.submitted_at,'%y') Jaar,
+            lpad(week(s.submitted_at,1),2,0) Week,
+            sum(1) '+Aantal'
+            FROM `submission`  s
+            inner join user u on u.id = s.user_id
+            and u.code='$code'
+            and s.submitted_at > '1970-01-01 00:00:00'
+            group by 1,2,3
+            order by 1,2,3
         ";
 
         $data=$this->executeQuery($sql, "Submissions", $export);
 
-        return $this->render('output', [
+        return $this->render('/public/chart', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
-            'descr' => 'Submissions (voor Export naar Excel)',
+            'descr' => 'Submissions per week',
+            'nocount' => 'True',
         ]);
     }
+
 
     public function actionResubmitted($export=false){
         $sql="
