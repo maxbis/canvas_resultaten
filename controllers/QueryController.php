@@ -85,7 +85,10 @@ class QueryController extends Controller
 
 
     public function actionLog($export=false) {
-        $sql="select * from log order by timestamp desc limit 100";
+        $sql="select *
+                from log
+                where subject <> 'Student Report' || route <> '82.217.135.153'
+                order by timestamp desc limit 100";
         $data=$this->executeQuery($sql, "Log", $export);
 
         return $this->render('output', [
