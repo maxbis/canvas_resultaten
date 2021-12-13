@@ -54,6 +54,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                 <?php
                     use scotthuangzl\googlechart\GoogleChart;
                     if ( gettype($chart) == 'array' && count($chart) > 1 ) {
+                        echo "<br>";
                         echo GoogleChart::widget($chart);
                     }
                 ?>
