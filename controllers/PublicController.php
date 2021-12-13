@@ -192,9 +192,12 @@ class PublicController extends Controller
             'visualization' => 'ColumnChart',
             'data' => $chartArray,
             'options' => [  'title' => 'Wekelijkse Activiteiten',
+                            'height' => '160',
+                            'width' => '600',
                             'hAxis' => array('title' => 'Weeknummer'),
                             'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0,5,10,15] ),
                             'legend' => array('position' => 'top'),
+                            'colors' => [ '#82b0ff' ],
                          ]
         ];
 

@@ -39,28 +39,31 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 <div class="card shadow">
 
     <div class="container">
-        <div class="row  align-items-center">
+        <div class="row align-items-end justify-content-between">
+
             <div class="col">
-                <h2>Voortgangsoverzicht van <?= $data[0]['Student']?></h2>
+                <?php if ($rank<=16): ?>
+                    <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
+                <?php endif; ?>
+                <br>
+                <h3>Voortgangsoverzicht van<br><?= $data[0]['Student']?></h3>
                 <small style="color:#999;">Bijgewerkt tot: <?= $timeStamp ?></small>
             </div>
 
-            <div class="col-md-auto">
-                <?php if ($rank<=16): ?>
-                <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
-                <?php endif; ?>
+            <div class="col">
+                <?php
+                    use scotthuangzl\googlechart\GoogleChart;
+                    if ( gettype($chart) == 'array' && count($chart) > 1 ) {
+                        echo GoogleChart::widget($chart);
+                    }
+                ?>
             </div>
- 
+
         </div>
     </div>
     
     <p>
-    <?php
-    use scotthuangzl\googlechart\GoogleChart;
-    if ( gettype($chart) == 'array' && count($chart) > 1 ) {
-        echo GoogleChart::widget($chart);
-    }
-    ?>
+
     </p>
 
     <div class="card-body table-responsive">
