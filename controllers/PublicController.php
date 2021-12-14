@@ -35,12 +35,13 @@ class PublicController extends Controller
      * Lists all Course models.
      * @return mixed
      */
-    public function actionIndex($code=0) {
+    public function actionIndex($code = 0)
+    {
 
         // ipcheck for testing off
         // MyHelpers::CheckIP();
         // Create report for one student(status)
-        $sql="SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan,
+        $sql = "SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
                     round(r.punten*100/r.punten_max) 'Punten %',
                     r.laatste_activiteit 'Laatste Actief',
@@ -60,14 +61,14 @@ class PublicController extends Controller
             ";
 
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        if (! count($data)) {
-            $sql="INSERT INTO log (subject, message, route) VALUES ('Wrong code', '".$code."', '".$_SERVER['REMOTE_ADDR']."');";
+        if (!count($data)) {
+            $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
             sleep(3);
             exit(0);
         }
 
-        $sql="
+        $sql = "
             SELECT DATE_FORMAT(s.submitted_at,'%y') Jaar,
             lpad(week(s.submitted_at,1),2,0) Week,
             sum(1) 'Aantal'
@@ -80,7 +81,7 @@ class PublicController extends Controller
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         $chart = $this->chart($result);
 
-        $sql="
+        $sql = "
         select (count(id)+1) 'rank'
             from user u1
             where u1.ranking_score>
@@ -88,8 +89,8 @@ class PublicController extends Controller
         ";
         $ranking = Yii::$app->db->createCommand($sql)->queryOne();
 
-        $sql="select max(timestamp) timestamp from log where subject='Import'";
-        $sql.=";INSERT INTO log (subject, message, route) VALUES ('Student Rapport', '".$data[0]['Student']."', '".$_SERVER['REMOTE_ADDR']."');";
+        $sql = "select max(timestamp) timestamp from log where subject='Import'";
+        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('Student Rapport', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         return $this->render('index', [
@@ -100,8 +101,9 @@ class PublicController extends Controller
         ]);
     }
 
-    public function actionDetailsModule($code, $moduleId){
-        $sql="
+    public function actionDetailsModule($code, $moduleId)
+    {
+        $sql = "
             SELECT u.id u_id, a.id a_id, a.course_id, u.name naam, m.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
             CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
             s.entered_score Score,
@@ -118,7 +120,7 @@ class PublicController extends Controller
             order by  a.position
         ";
 
-        $data=Yii::$app->db->createCommand($sql)->queryAll();
+        $data = Yii::$app->db->createCommand($sql)->queryAll();
 
         return $this->render('details-module', [
             'data' => $data,
@@ -126,23 +128,24 @@ class PublicController extends Controller
     }
 
     // generate  hash codes used to access overview for a student. Run this to (re) set all hash codes.
-    public function actionGenerate($code=0) {
+    public function actionGenerate($code = 0)
+    {
         // if you want new code, change the $salt, everyone will get a new code
-        if ($code=="doehetmaar") {
+        if ($code == "doehetmaar") {
             echo "<pre>";
             MyHelpers::CheckIP();
             $sql = "select student_nr studentNummer, name from user where student_nr > 100";
             $data = Yii::$app->db->createCommand($sql)->queryAll();
 
-            echo "Lines to be updated: ".count($data);
-            $count=0;
-            $sql="";
-            foreach( $data as $item) {
-                $count+=1;
-                echo "<br>Line ".$count." update ".$item['name'];
-                $salt="MaxBis";
-                $code=md5($salt.$item['studentNummer']);
-                $sql.="update user set code='".$code."' where student_nr=".$item['studentNummer'].";\n";
+            echo "Lines to be updated: " . count($data);
+            $count = 0;
+            $sql = "";
+            foreach ($data as $item) {
+                $count += 1;
+                echo "<br>Line " . $count . " update " . $item['name'];
+                $salt = "MaxBis";
+                $code = md5($salt . $item['studentNummer']);
+                $sql .= "update user set code='" . $code . "' where student_nr=" . $item['studentNummer'] . ";\n";
             }
             echo "\n\nExecute now\n";
             Yii::$app->db->createCommand($sql)->execute();
@@ -150,63 +153,63 @@ class PublicController extends Controller
         }
     }
 
-    private function getIsoWeeksInYear($year) {
+    private function getIsoWeeksInYear($year)
+    {
         $date = new DateTime;
         $date->setISODate($year, 53);
         return ($date->format("W") === "53" ? 53 : 52);
     }
 
-    private function chart($data) {
-        $workLoadperWeek=[];
+    private function chart($data)
+    {
+        $workLoadperWeek = [];
 
-        foreach($data as $item) { // read all weeks from query into ass. array.
-            $workLoadperWeek[ $item['Week'] ] = intval($item['Aantal']);
+        foreach ($data as $item) { // read all weeks from query into ass. array.
+            $workLoadperWeek[$item['Week']] = intval($item['Aantal']);
         }
 
         $aantalWeken = 10;                                  // Number of weeks in graph
         $weekNumber = date("W");                            // This week number
-        $weeksThisYear = $this->getIsoWeeksInYear( date("Y") );    // max. week number of this year
+        $weeksThisYear = $this->getIsoWeeksInYear(date("Y"));    // max. week number of this year
 
         $start = $weekNumber - $aantalWeken;
-        if ($start<0) { // roll over to last year
+        if ($start < 0) { // roll over to last year
             $start += $weeksThisYear;
         }
 
-        $chartArray=[ ['Week','norm 5/week' ]  ];
+        $chartArray = [['Week', 'norm 5/week']];
 
-        for($i=0; $i<$aantalWeken; $i++){
-            $week=$start+$i;
-            if ( $week > $weeksThisYear ) { // roll over to next year
+        for ($i = 0; $i < $aantalWeken; $i++) {
+            $week = $start + $i;
+            if ($week > $weeksThisYear) { // roll over to next year
                 $week -= $weeksThisYear;
             }
-            if ( array_key_exists($week,$workLoadperWeek) ) {
-                    array_push( $chartArray,[ strval($week), intval($workLoadperWeek[$week])  ] ); // value from query
+            if (array_key_exists($week, $workLoadperWeek)) {
+                array_push($chartArray, [strval($week), intval($workLoadperWeek[$week])]); // value from query
             } else {
-                    array_push( $chartArray,[ strval($week), 0 ]); // no value means 0
+                array_push($chartArray, [strval($week), 0]); // no value means 0
             }
         }
 
         //dd($chartArray);
 
-        $chart=[
+        $chart = [
             'visualization' => 'ColumnChart',
             'data' => $chartArray,
-            'options' => [  'title' => 'Wekelijkse Activiteiten',
-                            'height' => '160',
-                            'width' => '600',
-                            'hAxis' => array('title' => 'Weeknummer'),
-                            'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0,5,10,15] ),
-                            'legend' => array('position' => 'top'),
-                            'colors' => [ '#82b0ff' ],
-                         ]
+            'options' => [
+                'title' => 'Wekelijkse Activiteiten',
+                'height' => '160',
+                'width' => '600',
+                'hAxis' => array('title' => 'Weeknummer'),
+                'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0, 5, 10, 15]),
+                'legend' => array('position' => 'top'),
+                'colors' => ['#82b0ff'],
+            ]
         ];
 
         return $chart;
         //use scotthuangzl\googlechart\GoogleChart;
-        
+
         //echo GoogleChart::widget($chart);
-   }    
-
-
-
+    }
 }

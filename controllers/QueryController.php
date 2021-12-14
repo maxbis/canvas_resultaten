@@ -33,7 +33,8 @@ class QueryController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     // when logged in, any user
-                    [ 'actions' => [],
+                    [
+                        'actions' => [],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -44,52 +45,53 @@ class QueryController extends Controller
     }
 
 
-    private function executeQuery($sql, $title="no title", $export=false) {
+    private function executeQuery($sql, $title = "no title", $export = false)
+    {
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         if ($result) { // column names are derived from query results
-            $data['col']=array_keys($result[0]);
+            $data['col'] = array_keys($result[0]);
         }
-        $data['row']=$result;
-        
+        $data['row'] = $result;
+
         if ($export) {
             $this->exportExcel($data);
             exit;
         } else {
-            $data['title']=$title;
+            $data['title'] = $title;
             return $data;
         }
-
     }
 
-    public function exportExcel($data) {
+    public function exportExcel($data)
+    {
         header('Content-type: text/csv');
-        header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
+        header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') . '.csv"');
 
-        $seperator=";"; // NL version, use , for EN
+        $seperator = ";"; // NL version, use , for EN
 
         foreach ($data['col'] as $key => $value) {
-            echo $value.$seperator;
+            echo $value . $seperator;
         }
         echo "\n";
         foreach ($data['row'] as $line) {
-            foreach ( $line as $key => $value) {
-                echo $value.$seperator;
+            foreach ($line as $key => $value) {
+                echo $value . $seperator;
             }
             echo "\n";
         }
-        
     }
 
 
 
-    public function actionLog($export=false) {
-        $sql="select *
+    public function actionLog($export = false)
+    {
+        $sql = "select *
                 from log
                 where subject <> 'Student Rapport' || route <> '82.217.135.153'
-                order by timestamp desc limit 100";
-        $data=$this->executeQuery($sql, "Log", $export);
+                order by timestamp desc limit 200";
+        $data = $this->executeQuery($sql, "Log", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -97,21 +99,23 @@ class QueryController extends Controller
         ]);
     }
 
-    private function addLogSql($sql, $subject='', $message='') {
+    private function addLogSql($sql, $subject = '', $message = '')
+    {
         $route = Yii::$app->requestedRoute;
-        $sql.=";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '".$message."', '".$route."');";
+        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('" . $subject . "', '" . $message . "', '" . $route . "');";
         return $sql;
     }
 
-    public function actionActief($sort='desc', $export=false, $klas='') { // menu Rapporten - Student laatst actief op....
+    public function actionActief($sort = 'desc', $export = false, $klas = '')
+    { // menu Rapporten - Student laatst actief op....
 
         // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
         if ($klas) {
-            $select="and o.klas='$klas'";
+            $select = "and o.klas='$klas'";
         } else {
-            $select='';
+            $select = '';
         }
-        $sql="
+        $sql = "
             SELECT
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             o.klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
@@ -124,7 +128,7 @@ class QueryController extends Controller
             order by 4 desc
         ";
 
-        $data=$this->executeQuery($sql, "Laatste activiteit per student ".$klas, $export);
+        $data = $this->executeQuery($sql, "Laatste activiteit per student " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -132,11 +136,13 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalActiviteiten($export=false, $klas='') { // menu Rapporten - Actieve studenten over tijd
+    public function actionAantalActiviteiten($export = false, $klas = '')
+    { // menu Rapporten - Actieve studenten over tijd
 
-        if ($klas) $select="where u.klas='$klas'"; else $select='';
-        
-        $sql="
+        if ($klas) $select = "where u.klas='$klas'";
+        else $select = '';
+
+        $sql = "
             select u.klas klas, concat(u.name,'|/query/submissions|code|',u.code) '!Student',
             sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
             sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
@@ -153,7 +159,7 @@ class QueryController extends Controller
             group by 1,2
             order by 4 DESC, 5 DESC, 6 DESC
         ";
-        $data=$this->executeQuery($sql, "Aantal activiteiten per student over tijd ".$klas, $export);
+        $data = $this->executeQuery($sql, "Aantal activiteiten per student over tijd " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -162,15 +168,16 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionWorkingOn($sort='desc', $export=false, $klas='') { // menu Rapporten - Student werken aan...
+    public function actionWorkingOn($sort = 'desc', $export = false, $klas = '')
+    { // menu Rapporten - Student werken aan...
 
         if ($klas) {
-            $select="and klas='$klas'";
+            $select = "and klas='$klas'";
         } else {
-            $select='';
+            $select = '';
         }
 
-        $sql="
+        $sql = "
             SELECT module Module, sum(1) Studenten
             from resultaat o
             where laatste_activiteit =
@@ -181,7 +188,7 @@ class QueryController extends Controller
             order by 2 $sort
         ";
 
-        $data=$this->executeQuery($sql, "Studenten ".$klas." werken aan", $export);
+        $data = $this->executeQuery($sql, "Studenten " . $klas . " werken aan", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -189,15 +196,16 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionVoortgang($sort='desc', $export=false, $klas='') { // menu Rapporten - Ranking studenten
+    public function actionVoortgang($sort = 'desc', $export = false, $klas = '')
+    { // menu Rapporten - Ranking studenten
 
         if ($klas) {
-            $select="where r.klas='$klas'";
+            $select = "where r.klas='$klas'";
         } else {
-            $select='';
+            $select = '';
         }
 
-        $sql="
+        $sql = "
             select student_nummer Stdntnr,
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 r.klas Klas,
@@ -212,23 +220,24 @@ class QueryController extends Controller
             group by 1,2,3,4
             order by 4 $sort";
 
-        $data=$this->executeQuery($sql, "Voortgang/Ranking ".$klas, $export);
-        
+        $data = $this->executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
+
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
         ]);
     }
 
-    public function actionModulesFinished($export=false, $klas='') { // menu Rapporten - Module is c keer voldaan
+    public function actionModulesFinished($export = false, $klas = '')
+    { // menu Rapporten - Module is c keer voldaan
 
         if ($klas) {
-            $select="where klas='$klas'";
+            $select = "where klas='$klas'";
         } else {
-            $select='';
+            $select = '';
         }
 
-        $sql="
+        $sql = "
             select
                 Module,
                 af 'Afgerond door'
@@ -241,7 +250,7 @@ class QueryController extends Controller
             order by d.pos) alias
         ";
         // ToDo: order by werkt niet op server (order by moet in group by zitten)
-        $data=$this->executeQuery($sql, "Modules voldaan ".$klas, $export);
+        $data = $this->executeQuery($sql, "Modules voldaan " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -250,14 +259,15 @@ class QueryController extends Controller
     }
 
 
-    public function actionBeoordeeld($export=false) { // menu Rapporten - Laatste beoordeling per module
-        $sql="
+    public function actionBeoordeeld($export = false)
+    { // menu Rapporten - Laatste beoordeling per module
+        $sql = "
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
             from resultaat
             group by 1
             order by 2 desc
         ";
-        $data=$this->executeQuery($sql, "Laatste beoordeling per module", $export);
+        $data = $this->executeQuery($sql, "Laatste beoordeling per module", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -266,22 +276,23 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalBeoordelingen($export=false, $klas='') { // menu Rapporten - Beoordelingen per module over tijd
-        $sql="
+    public function actionAantalBeoordelingen($export = false, $klas = '')
+    { // menu Rapporten - Beoordelingen per module over tijd
+        $sql = "
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
             from resultaat
             group by 1
             order by 2 desc
         ";
-        $data=$this->executeQuery($sql, "Laatste beoordeling per module", $export);
+        $data = $this->executeQuery($sql, "Laatste beoordeling per module", $export);
 
         if ($klas) {
-            $select="where klas='$klas'";
+            $select = "where klas='$klas'";
         } else {
-            $select='';
+            $select = '';
         }
 
-        $sql="
+        $sql = "
             select module Module,
             sum(case when (datediff(curdate(),laatste_beoordeling)<=2) then 1 else 0 end) '-2',
             sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '-7',
@@ -292,7 +303,7 @@ class QueryController extends Controller
             group by 1
             order by 2 desc
         ";
-        $data=$this->executeQuery($sql, "Beoordelingen over tijd ".$klas, $export);
+        $data = $this->executeQuery($sql, "Beoordelingen over tijd " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -301,14 +312,16 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionGetAllResultaat($export=true) {  // export voor Theo - staat onder knop bij Gridview van alle resutlaten
-        $sql="select * from resultaat order by student_nummer, module_id";
-        $data=$this->executeQuery($sql, "", $export);
+    public function actionGetAllResultaat($export = true)
+    {  // export voor Theo - staat onder knop bij Gridview van alle resutlaten
+        $sql = "select * from resultaat order by student_nummer, module_id";
+        $data = $this->executeQuery($sql, "", $export);
     }
 
-    public function actionNakijken($export=false) { // menu Rapporten - Aantal beoordeligen per docent
+    public function actionNakijken($export = false)
+    { // menu Rapporten - Aantal beoordeligen per docent
 
-        $sql="
+        $sql = "
             SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=2) then 1 else 0 end) '+week',
             sum(case when (datediff(curdate(),s.graded_at)<=14) then 1 else 0 end) '+twee weken',
             sum(case when (datediff(curdate(),s.graded_at)<=21) then 1 else 0 end) '+drie weken',
@@ -319,7 +332,7 @@ class QueryController extends Controller
             group by 1
             order by 1
         ";
-        $data=$this->executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+        $data = $this->executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -328,10 +341,11 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionStudentenLijst($export=false){ // menu Beheer - Studentencodes export
-        $sql="SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
+    public function actionStudentenLijst($export = false)
+    { // menu Beheer - Studentencodes export
+        $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
 
-        $data=$this->executeQuery($sql, "Studentenlijst", $export);
+        $data = $this->executeQuery($sql, "Studentenlijst", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -340,8 +354,9 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionSubmissions($export=false, $code) { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
-        $sql="
+    public function actionSubmissions($export = false, $code)
+    { // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
+        $sql = "
             SELECT  u.name Student, DATE_FORMAT(s.submitted_at,'%y') Jaar,
             lpad(week(s.submitted_at,1),2,0) Week,
             sum(1) '+Aantal'
@@ -353,7 +368,7 @@ class QueryController extends Controller
             order by 1,2,3
         ";
 
-        $data=$this->executeQuery($sql, "Submissions", $export);
+        $data = $this->executeQuery($sql, "Submissions", $export);
 
         return $this->render('/public/chart', [
             'data' => $data,
@@ -365,8 +380,9 @@ class QueryController extends Controller
     }
 
 
-    public function actionResubmitted($export=false){
-        $sql="
+    public function actionResubmitted($export = false)
+    {
+        $sql = "
             SELECT  concat(m.naam,'|/public/details-module', '|moduleId|',m.id,'|code|',u.code) '!Module', u.name Student, sum(1) Aantal
             FROM assignment a
             join submission s on s.assignment_id= a.id
@@ -378,7 +394,7 @@ class QueryController extends Controller
             order by m.pos, u.name
         ";
 
-        $data=$this->executeQuery($sql, "Opnieuw ingeleverde opdrachten", $export);
+        $data = $this->executeQuery($sql, "Opnieuw ingeleverde opdrachten", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -386,5 +402,4 @@ class QueryController extends Controller
             'descr' => 'Details',
         ]);
     }
-
 }
