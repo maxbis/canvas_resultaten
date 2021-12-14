@@ -65,6 +65,7 @@ class PublicController extends Controller
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
             sleep(3);
+            return $this->redirect('https://whatismyipaddress.com/');
             exit(0);
         }
 

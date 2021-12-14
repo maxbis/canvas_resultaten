@@ -6,6 +6,12 @@ use yii\helpers\Html;
 $nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 // dd($data);
+
+function isMobileDevice() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|
+                        tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+
 ?>
 <style>
     .numberCircle {
@@ -42,13 +48,14 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
     }
 </style>
 
-<div class="card shadow">
+<div class="card shadow table-responsive">
 
     <div class="container">
         <div class="row align-items-end justify-content-between">
 
             <div class="col">
                 <?php if ($rank <= 16) : ?>
+                    <br>
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
                 <br>
@@ -58,12 +65,14 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 
             <div class="col">
                 <?php
-
                 use scotthuangzl\googlechart\GoogleChart;
-
-                if (gettype($chart) == 'array' && count($chart) > 1) {
-                    echo "<br>";
-                    echo GoogleChart::widget($chart);
+                if( ! isMobileDevice() ){
+                    if (gettype($chart) == 'array' && count($chart) > 1) {
+                        echo "<br>";
+                        echo GoogleChart::widget($chart);
+                    }
+                } else {
+                    echo "<i style=\"color:#fc030f\">Meer informatie via laptop/pc browser</i>";
                 }
                 ?>
             </div>
@@ -116,6 +125,7 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
                 }
 
                 echo "<td width=60px>" . $item['Blok'] . "</td>";
+                
                 echo "<td>" . Html::a($item['Module'], ['/public/details-module', 'moduleId' => $item['module_id'], 'code' => $item['Code']]) . "</td>";
                 echo "<td class=\"tright bleft\">" . $item['Opdrachten'] . "</td>";
                 echo "<td class=\"tright bright\">" . $item['Opdrachten %'] . "%</td>";
