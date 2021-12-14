@@ -37,7 +37,8 @@ class ModuleDefController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [   'actions' => ['index'],
+                    [
+                        'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

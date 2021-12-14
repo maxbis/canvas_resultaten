@@ -28,6 +28,14 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
             'accessToken' => '101-token',
             'role' => 'admin',
         ],
+        '102' => [
+            'id' => '102',
+            'username' => 'team-50514',
+            'password' => 'showmetheresults',
+            'authKey' => 'test102key',
+            'accessToken' => '102-token',
+            'role' => 'admin',
+        ],
     ];
 
 

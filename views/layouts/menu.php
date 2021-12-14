@@ -36,11 +36,11 @@ echo Nav::widget([
                 ['label' => 'Studenten werken aan...',           'url' => ['/query/working-on']],
                 ['label' => 'Ranking studenten',                 'url' => ['/query/voortgang']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/query/modules-finished']],
-                ['label' => '----------------',  ],
+                ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url' => ['/query/beoordeeld']],
-                ['label' => 'Beoordelingen per module over tijd','url' => ['/query/aantal-beoordelingen']],
-                ['label' => 'Aantal beoordelingen per docent','url'    => ['/query/nakijken']],
-               
+                ['label' => 'Beoordelingen per module over tijd', 'url' => ['/query/aantal-beoordelingen']],
+                ['label' => 'Aantal beoordelingen per docent', 'url'    => ['/query/nakijken']],
+
 
                 // ['label' => 'Beoordeeld', 'url' => ['/query/beoordeeld']],
                 // ['label' => 'Aantal Beoordelingen', 'url' => ['/query/aantal-beoordelingen']],
@@ -49,7 +49,7 @@ echo Nav::widget([
 
         [
             'label' => 'Klas',
-            'visible' => ( Yii::$app->controller->id == 'query' && array_key_exists( 'klas', Yii::$app->view->context->actionParams ) ),
+            'visible' => (Yii::$app->controller->id == 'query' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
             'items' => [
                 ['label' => '1A', 'url' => [Yii::$app->controller->action->id . '?klas=1A']],
                 ['label' => '1B', 'url' => [Yii::$app->controller->action->id . '?klas=1B']],
@@ -76,9 +76,9 @@ if (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role ==
     //echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     echo "<div class=\"col-1\"></div>";
     echo "<div style=\"color:#d0d0d0;\">Search: </div>";
-   
-    echo "<div class=\"col-1\"><form class=\"col-1\" method=\"post\" action=\"".Url::toRoute(['/resultaat/start'])."\"><input placeholder=\"Studentnaam\" size=\"8\" type=\"text\" minlength=\"2\" name=\"search\">";
-    echo "<input type=\"hidden\" name=\"_csrf\" value=\"".Yii::$app->request->getCsrfToken()."\" />";
+
+    echo "<div class=\"col-1\"><form class=\"col-1\" method=\"post\" action=\"" . Url::toRoute(['/resultaat/start']) . "\"><input placeholder=\"Studentnaam\" size=\"8\" type=\"text\" minlength=\"2\" name=\"search\">";
+    echo "<input type=\"hidden\" name=\"_csrf\" value=\"" . Yii::$app->request->getCsrfToken() . "\" />";
     echo "</input></form></div>";
 }
 
@@ -90,18 +90,20 @@ echo Nav::widget([
         // [
         //     'label' => 'About', 'url' => ['/site/about']
         // ],
-        
-            Yii::$app->user->isGuest ? (['label' => 'Login',
-                'visible' => (isset(Yii::$app->controller->id ) && Yii::$app->controller->id != 'public'),
-                'url' => ['/site/login'],]) : ('<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>')
-        
+
+        Yii::$app->user->isGuest ? ([
+            'label' => 'Login',
+            'visible' => (isset(Yii::$app->controller->id) && Yii::$app->controller->id != 'public'),
+            'url' => ['/site/login'],
+        ]) : ('<li>'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>')
+
     ],
 ]);
 

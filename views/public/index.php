@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
-$nr=0;
+
+$nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 // dd($data);
 ?>
@@ -18,9 +20,11 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 
         font: 12 Arial, sans-serif;
     }
+
     .bleft {
         border-left: dashed 1px #c0c0c0;
     }
+
     .bright {
         border-right: dashed 1px #c0c0c0;
     }
@@ -28,9 +32,11 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
     .tleft {
         text-align: left;
     }
+
     .tright {
         text-align: right;
     }
+
     .tcenter {
         text-align: center;
     }
@@ -42,27 +48,29 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
         <div class="row align-items-end justify-content-between">
 
             <div class="col">
-                <?php if ($rank<=16): ?>
+                <?php if ($rank <= 16) : ?>
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
                 <br>
-                <h3>Voortgangsoverzicht van<br><?= $data[0]['Student']?></h3>
+                <h3>Voortgangsoverzicht van<br><?= $data[0]['Student'] ?></h3>
                 <small style="color:#999;">Bijgewerkt tot: <?= $timeStamp ?></small>
             </div>
 
             <div class="col">
                 <?php
-                    use scotthuangzl\googlechart\GoogleChart;
-                    if ( gettype($chart) == 'array' && count($chart) > 1 ) {
-                        echo "<br>";
-                        echo GoogleChart::widget($chart);
-                    }
+
+                use scotthuangzl\googlechart\GoogleChart;
+
+                if (gettype($chart) == 'array' && count($chart) > 1) {
+                    echo "<br>";
+                    echo GoogleChart::widget($chart);
+                }
                 ?>
             </div>
 
         </div>
     </div>
-    
+
     <p>
 
     </p>
@@ -70,7 +78,9 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
     <div class="card-body table-responsive">
         <table class="table">
             <?php
-            $totVoldaan=0; $totOpdrachten=0; $totPunten=0;
+            $totVoldaan = 0;
+            $totOpdrachten = 0;
+            $totPunten = 0;
             echo "<tr>";
             echo "<th class=\"\">&nbsp;</th>";
             echo "<th colspan=2>Module</th>";
@@ -79,50 +89,49 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
             echo "<th title=\"Wanneer is er voor deze module het laatst iets ingeleverd\" class=\"tcenter bleft\">Laatst Actief</th>";
             echo "</tr>";
             foreach ($data as $item) {
-                if ( $item['Voldaan'] == 'V' ) {
-                    $totVoldaan+=1;
-                    $totPunten+=$item['Punten %'];
-                    $totOpdrachten+=$item['Opdrachten %'];
+                if ($item['Voldaan'] == 'V') {
+                    $totVoldaan += 1;
+                    $totPunten += $item['Punten %'];
+                    $totOpdrachten += $item['Opdrachten %'];
                 }
-                
-                $dagen=intval((time()-strtotime($item['Laatste Actief']))/86400);
-                if ($dagen<=7) {
-                    $color='#fdffe3';
-                    $title='Afgelopen week actief geweest';
-                } elseif ($dagen<=14) {
-                    $color='#fff8e3';
-                    $title='Afgelopen twee weken actief geweest';
+
+                $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
+                if ($dagen <= 7) {
+                    $color = '#fdffe3';
+                    $title = 'Afgelopen week actief geweest';
+                } elseif ($dagen <= 14) {
+                    $color = '#fff8e3';
+                    $title = 'Afgelopen twee weken actief geweest';
                 } else {
-                    $color='#ffffff';
-                    $title='Activiteit langer dan twee weken geleden';
+                    $color = '#ffffff';
+                    $title = 'Activiteit langer dan twee weken geleden';
                 }
 
                 echo "<tr>";
 
-                if ( $item['Voldaan']=='V') {
-                    echo "<td title=\"Voldaan (".$item['voldaanRule'].")\" width=60px class=\"\">&#10004;</td>";
-      
+                if ($item['Voldaan'] == 'V') {
+                    echo "<td title=\"Voldaan (" . $item['voldaanRule'] . ")\" width=60px class=\"\">&#10004;</td>";
                 } else {
-                    echo "<td title=\"Niet voldaan (".$item['voldaanRule'].")\" width=60px class=\"\">-</td>";
+                    echo "<td title=\"Niet voldaan (" . $item['voldaanRule'] . ")\" width=60px class=\"\">-</td>";
                 }
 
-                echo "<td width=60px>".$item['Blok']."</td>";
-                echo "<td>".Html::a($item['Module'], ['/public/details-module', 'moduleId'=>$item['module_id'], 'code'=>$item['Code'] ] )."</td>";
-                echo "<td class=\"tright bleft\">".$item['Opdrachten']."</td>";
-                echo "<td class=\"tright bright\">".$item['Opdrachten %']."%</td>";
-                echo "<td class=\"tright bleft\">".$item['Punten']."</td>";
-                echo "<td class=\"tright bright\">".$item['Punten %']."%</td>";
-                if ( substr( $item['Laatste Actief'], 0, 4) == "1970" ) {
+                echo "<td width=60px>" . $item['Blok'] . "</td>";
+                echo "<td>" . Html::a($item['Module'], ['/public/details-module', 'moduleId' => $item['module_id'], 'code' => $item['Code']]) . "</td>";
+                echo "<td class=\"tright bleft\">" . $item['Opdrachten'] . "</td>";
+                echo "<td class=\"tright bright\">" . $item['Opdrachten %'] . "%</td>";
+                echo "<td class=\"tright bleft\">" . $item['Punten'] . "</td>";
+                echo "<td class=\"tright bright\">" . $item['Punten %'] . "%</td>";
+                if (substr($item['Laatste Actief'], 0, 4) == "1970") {
                     echo "<td class=\"tcenter\"> - </td>";
                 } else {
-                    echo "<td title=\"".$title."\" class=\"tcenter\" style=\"background-color:".$color."\">".$item['Laatste Actief']."</td>";
+                    echo "<td title=\"" . $title . "\" class=\"tcenter\" style=\"background-color:" . $color . "\">" . $item['Laatste Actief'] . "</td>";
                 }
                 echo "</tr>";
             }
 
             echo "<tr style=\"background-color:#e8f0ff\">";
             echo "<td></td>";
-            echo "<td colspan=3><b>TOTAAL: ".$totVoldaan."</b> modules voldaan</td>";       
+            echo "<td colspan=3><b>TOTAAL: " . $totVoldaan . "</b> modules voldaan</td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "<td></td>";
@@ -135,5 +144,4 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 </div>
 <br>
 <small>Aan dit overzicht kunnen geen rechten worden ontleend.
-De gegevens in Canvas zijn leidend.</small>
-
+    De gegevens in Canvas zijn leidend.</small>

@@ -32,7 +32,8 @@ class StudentController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     // when logged in, any user
-                    [   'actions' => [],
+                    [
+                        'actions' => [],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -100,7 +101,7 @@ class StudentController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $sql = "update resultaat set klas=:klas, student_naam=:naam  where student_nummer=:student_nummer";
-            $params = array(':klas'=>$model->klas,':naam'=>$model->name,':student_nummer'=>$model->student_nr);
+            $params = array(':klas' => $model->klas, ':naam' => $model->name, ':student_nummer' => $model->student_nr);
             $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
             return $this->redirect(['/student']);
         }
