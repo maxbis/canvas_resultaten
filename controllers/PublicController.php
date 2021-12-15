@@ -37,7 +37,7 @@ class PublicController extends Controller
      */
     public function actionIndex($code = 0)
     {
-
+        if($code==0) exit;
         // ipcheck for testing off
         // MyHelpers::CheckIP();
         // Create report for one student(status)
