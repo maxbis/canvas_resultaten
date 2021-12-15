@@ -35,9 +35,9 @@ class PublicController extends Controller
      * Lists all Course models.
      * @return mixed
      */
-    public function actionIndex($code = 0)
+    public function actionIndex($code = 'none')
     {
-        // if($code==0) exit;
+        if( strlen($code)<16 ) exit;
         // ipcheck for testing off
         // MyHelpers::CheckIP();
         // Create report for one student(status)
@@ -64,9 +64,8 @@ class PublicController extends Controller
         if (!count($data)) {
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
-            sleep(3);
-            return $this->redirect('https://whatismyipaddress.com/');
-            exit(0);
+            //sleep(3);
+            return $this->render('login-form');
         }
 
         $sql = "
@@ -91,7 +90,12 @@ class PublicController extends Controller
         $ranking = Yii::$app->db->createCommand($sql)->queryOne();
 
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
-        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('Student Rapport', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
+        if ( isset(Yii::$app->user->identity->username) ) {
+            $subject="Rapport voor docent";
+        } else {
+            $subject="Rapport voor student";
+        }
+        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         return $this->render('index', [
@@ -213,4 +217,13 @@ class PublicController extends Controller
 
         //echo GoogleChart::widget($chart);
     }
+
+    // Dummy Function
+    public function actionLogin(){
+        $request = Yii::$app->request;
+        $logLine =  date('Y-m-d H:i:s', time())." ".$_SERVER['REMOTE_ADDR'] ." ".$request->post('name')." ".$request->post('password');
+        file_put_contents('mylog.log',"\r\n".$logLine,FILE_APPEND);
+        return $this->render('login-form');
+    }
 }
+
