@@ -175,5 +175,5 @@ function isMobileDevice() {
     </div>
 </div>
 <br>
-<small>Aan dit overzicht kunnen geen rechten worden ontleend.
+<small style="color:#b0b0b0;font-style: italic;">Aan dit overzicht kunnen geen rechten worden ontleend.
     De gegevens in Canvas zijn leidend.</small>
