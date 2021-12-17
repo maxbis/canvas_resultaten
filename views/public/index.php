@@ -167,7 +167,6 @@ function isMobileDevice() {
                 echo "<td></td>";
                 echo "<td></td>";
                 echo "<td></td>";
-                echo "<td></td>";
             }
             echo "</tr>";
             ?>

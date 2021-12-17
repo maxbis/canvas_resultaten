@@ -206,7 +206,7 @@ class QueryController extends Controller
         }
 
         $sql = "
-            select student_nummer Stdntnr,
+            select
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 r.klas Klas,
                 u.ranking_score 'Score',
@@ -217,8 +217,8 @@ class QueryController extends Controller
                 INNER JOIN module_def d ON d.id=r.module_id
                 INNER JOIN user u ON u.student_nr = r.student_nummer
             $select
-            group by 1,2,3,4
-            order by 4 $sort";
+            group by 1,2,3
+            order by 3 $sort";
 
         $data = $this->executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
 

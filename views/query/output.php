@@ -8,8 +8,13 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 $tot = [];
 ?>
 
-<div class="card">
+<style>
+   .hoverTable tr:hover {
+        background-color: #f6f6ff;
+    }
+</style>
 
+<div class="card">
 
     <div class="container">
         <div class="row  align-items-center">
@@ -30,7 +35,7 @@ $tot = [];
     <p></p>
 
     <div class="card-body">
-        <table class="table">
+        <table class="table table-sm hoverTable">
             <thead>
                 <tr>
                     <?php
@@ -80,7 +85,7 @@ $tot = [];
                 }
 
                 if (count($tot)) {
-                    echo "<tr style=\"background-color:#e8f0ff\" >";
+                    echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
                     if (!isset($nocount)) {
                         echo "<td></td>";
                     }
