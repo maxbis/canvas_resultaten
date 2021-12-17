@@ -64,7 +64,7 @@ class PublicController extends Controller
         if (!count($data)) {
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
-            //sleep(3);
+            sleep(3);
             return $this->render('login-form');
         }
 
@@ -91,9 +91,9 @@ class PublicController extends Controller
 
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
         if ( isset(Yii::$app->user->identity->username) ) {
-            $subject="Rapport voor docent";
+            $subject="Docent";
         } else {
-            $subject="Rapport voor student";
+            $subject="Student /public/index";
         }
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
@@ -165,7 +165,7 @@ class PublicController extends Controller
         return ($date->format("W") === "53" ? 53 : 52);
     }
 
-    private function chart($data)
+    private function chart($data )
     {
         $workLoadperWeek = [];
 
@@ -174,6 +174,7 @@ class PublicController extends Controller
         }
 
         $aantalWeken = 10;                                  // Number of weeks in graph
+
         $weekNumber = date("W");                            // This week number
         $weeksThisYear = $this->getIsoWeeksInYear(date("Y"));    // max. week number of this year
 
@@ -182,21 +183,27 @@ class PublicController extends Controller
             $start += $weeksThisYear;
         }
 
-        $chartArray = [['Week', 'norm 5/week']];
+        $chartArray = [['Week', 'norm 5/week', ['role' => 'style' ] ]];
 
-        for ($i = 0; $i < $aantalWeken; $i++) {
+        for ($i = 1; $i <= $aantalWeken; $i++) {
             $week = $start + $i;
             if ($week > $weeksThisYear) { // roll over to next year
                 $week -= $weeksThisYear;
             }
+           
+            $barColor = '#c0d6eb';
             if (array_key_exists($week, $workLoadperWeek)) {
-                array_push($chartArray, [strval($week), intval($workLoadperWeek[$week])]); // value from query
+                if ( intval($workLoadperWeek[$week])<4 ) {
+                    $barColor='#ff9e9e';
+                    $barColor = '#c0d6eb';
+                }elseif ( intval($workLoadperWeek[$week])>5 ) {
+                    $barColor='#c4ebc0';
+                }
+                array_push($chartArray, [strval($week), intval($workLoadperWeek[$week]),$barColor]); // value from query
             } else {
-                array_push($chartArray, [strval($week), 0]); // no value means 0
+                array_push($chartArray, [strval($week), 0, $barColor]); // no value means 0
             }
         }
-
-        //dd($chartArray);
 
         $chart = [
             'visualization' => 'ColumnChart',
@@ -211,12 +218,9 @@ class PublicController extends Controller
                 'colors' => ['#82b0ff'],
             ]
         ];
-
         return $chart;
-        //use scotthuangzl\googlechart\GoogleChart;
-
-        //echo GoogleChart::widget($chart);
     }
+
 
     // Dummy Function
     public function actionLogin(){

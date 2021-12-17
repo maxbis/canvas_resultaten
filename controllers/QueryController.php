@@ -367,7 +367,6 @@ class QueryController extends Controller
             group by 1,2,3
             order by 1,2,3
         ";
-
         $data = $this->executeQuery($sql, "Submissions", $export);
 
         return $this->render('/public/chart', [
