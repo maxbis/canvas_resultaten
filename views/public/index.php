@@ -47,6 +47,16 @@ function isMobileDevice() {
     .tcenter {
         text-align: center;
     }
+    .hoverTable tr:hover {
+        background-color: #f6f6ff;
+    }
+    .recent7 {
+        background-color: #fdffe3;
+    }
+    .recent14 {
+        background-color: #fff8e3;
+    }
+
 </style>
 
 <div class="card shadow table-responsive">
@@ -83,13 +93,13 @@ function isMobileDevice() {
 
     </p>
 
-    <div class="card-body table-responsive">
-        <table class="table">
+    <div class="card-body table-responsive hoverTable">
+        <table class="table table-sm">
             <?php
             $totVoldaan = 0;
             $totOpdrachten = 0;
             $totPunten = 0;
-            echo "<tr>";
+            echo "<tr style=\"background:#ffffff;height=10px\">";
             echo "<th class=\"\">&nbsp;</th>";
             echo "<th colspan=2>Module</th>";
             if( ! isMobileDevice() ){
@@ -110,12 +120,15 @@ function isMobileDevice() {
                 if ($dagen <= 7) {
                     $color = '#fdffe3';
                     $title = 'Afgelopen week actief geweest';
+                    $dateClass = 'recent7';
                 } elseif ($dagen <= 14) {
                     $color = '#fff8e3';
                     $title = 'Afgelopen twee weken actief geweest';
+                    $dateClass = 'recent14';
                 } else {
                     $color = '#ffffff';
                     $title = 'Activiteit langer dan twee weken geleden';
+                    $dateClass = '';
                 }
 
                 echo "<tr>";
@@ -137,7 +150,8 @@ function isMobileDevice() {
                     if (substr($item['Laatste Actief'], 0, 4) == "1970") {
                         echo "<td class=\"tcenter\"> - </td>";
                     } else {
-                        echo "<td title=\"" . $title . "\" class=\"tcenter\" style=\"background-color:" . $color . "\">" . $item['Laatste Actief'] . "</td>";
+                        // echo "<td title=\"" . $title . "\" class=\"tcenter\" style=\"background-color:" . $color . "\">" . $item['Laatste Actief'] . "</td>";
+                        echo "<td title=\"" . $title . "\" class=\"tcenter ".$dateClass."\" >" . $item['Laatste Actief'] . "</td>";
                     }
                 } else {
                     echo "<td>" . $item['Module'] . "</td>";
@@ -145,7 +159,7 @@ function isMobileDevice() {
                 echo "</tr>";
             }
 
-            echo "<tr style=\"background-color:#e8f0ff\">";
+            echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             echo "<td></td>";
             echo "<td colspan=3><b>TOTAAL: " . $totVoldaan . "</b> modules voldaan</td>";
             if( ! isMobileDevice() ){

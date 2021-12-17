@@ -45,9 +45,11 @@ function getStatus($status)
         border-left: dashed 1px #c0c0c0;
         background: #fdffff;
     }
-
     .nakijken {
         background: #eeffa8;
+    }
+    .hoverTable tr:hover td {
+            background-color: #f6f6ff;
     }
 </style>
 
@@ -67,7 +69,7 @@ function getStatus($status)
     </div>
 
     <div class="card-body">
-        <table class="table">
+        <table class="table hoverTable">
             <?php
             $totScore = 0;
             $totMaxScore = 0;
@@ -130,7 +132,7 @@ function getStatus($status)
 
                 echo "</tr>";
             }
-            echo "<tr style=\"background-color:#e8f0ff\">";
+            echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             echo "<td></td>";
             echo "<td><b>" . $totSubmitted . "</b></td>";
             echo "<td></td>";
