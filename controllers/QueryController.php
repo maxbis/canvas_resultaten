@@ -416,7 +416,7 @@ class QueryController extends Controller
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1
+            group by 1, 2
             order by m.pos
         ";
 
