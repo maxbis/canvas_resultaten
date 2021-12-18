@@ -9,7 +9,7 @@ $tot = [];
 ?>
 
 <style>
-   .hoverTable tr:hover {
+   .hoverTable tr:hover td {
         background-color: #f6f6ff;
     }
 </style>
