@@ -74,8 +74,12 @@ $tot = [];
                             $part = explode('|', $item[$columnName]);
                             if (count($part) == 4) {
                                 echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3]]) . "</td>";
+                            } elseif ( count($part) == 6 ) {
+                                echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3], $part[4] => $part[5]]) . "</td>";
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
+                                echo "<pre><hr>";
+                                dd( $data);
                             }
                         } else {
                             echo "<td>" . $item[$columnName] . "</td>";

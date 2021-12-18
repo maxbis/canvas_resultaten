@@ -382,26 +382,50 @@ class QueryController extends Controller
     public function actionResubmitted($export = false)
     {
         $sql = "
-            SELECT  concat(u.name,'|/public/index|code|',u.code) '!Student',
-                    m.naam Module,
-                    s.submitted_at Ingeleverd,
+            SELECT  concat(m.naam, '|/public/details-module|moduleId|', m.id, '|code|', u.code) '!Module',
+                    concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    max(s.submitted_at) Ingeleverd,
                     sum(1) Aantal
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
-            left outer join module_def m on m.id = g.id
+            join module_def m on m.id = g.id
             where s.graded_at > '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1,2,3
-            order by s.submitted_at DESC
+            group by 1,2
+            order by 1,2
         ";
 
-        $data = $this->executeQuery($sql, "Opnieuw ingeleverde opdrachten", $export);
+        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id,
             'descr' => 'Gesorteerd van meest recent naar ouder',
+        ]);
+    }
+
+    public function actionNotGraded($export = false)
+    {
+        $sql = "
+            SELECT  m.pos '#', m.naam 'Module',
+                    sum(1) Aantal
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1
+            order by m.pos
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'nocount' => True
         ]);
     }
 }
