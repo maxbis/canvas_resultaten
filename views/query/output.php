@@ -39,7 +39,7 @@ $tot = [];
             <thead>
                 <tr>
                     <?php
-                    if (!isset($nocount)) echo "<td>#</td>";
+                    if (!isset($nocount)) echo "<th>#</th>";
                     if ($data['row']) {
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
