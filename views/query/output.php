@@ -50,7 +50,9 @@ $tot = [];
                             if (substr($columnName, 0, 1) == '!') {
                                 $columnName = substr($columnName, 1);
                             }
-                            echo "<th>" . $columnName . "</th>";
+                            if (substr($columnName, 0, 1) <>'-') {
+                                echo "<th>" . $columnName . "</th>";
+                            }
                         }
                     } else {
                         echo "<td>Empty result set</td>";
@@ -72,7 +74,9 @@ $tot = [];
                         }
                         if (substr($columnName, 0, 1) == '!') { #hack, column namen starts with ! link in format naam|link
                             $part = explode('|', $item[$columnName]);
-                            if (count($part) == 4) {
+                            if (count($part) == 2) {
+                                echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
+                            } elseif (count($part) == 4) {
                                 echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3]]) . "</td>";
                             } elseif ( count($part) == 6 ) {
                                 echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3], $part[4] => $part[5]]) . "</td>";
@@ -81,7 +85,7 @@ $tot = [];
                                 echo "<pre><hr>";
                                 dd( $data);
                             }
-                        } else {
+                        } elseif (substr($columnName, 0, 1) <> '-') {
                             echo "<td>" . $item[$columnName] . "</td>";
                         }
                     }
