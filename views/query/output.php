@@ -27,7 +27,11 @@ $tot = [];
                 ?>
             </div>
             <div class="col-md-auto">
-                <?= Html::a('Export', [$action . '?export=1'], ['class' => 'btn btn-primary', 'title' => 'Export to CSV',]) ?>
+                <?php
+                    if ( isset($action)) {
+                        echo Html::a('Export', [$action . 'export=1'], ['class' => 'btn btn-primary', 'title' => 'Export to CSV',]);
+                    }
+                ?>
             </div>
         </div>
     </div>
