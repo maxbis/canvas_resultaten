@@ -448,7 +448,7 @@ class QueryController extends Controller
     {
 
         $sql = "
-            SELECT  m.pos '#',
+            SELECT  m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id) '!Module',
             sum(1) Aantal
             FROM assignment a
@@ -466,7 +466,6 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'nocount' => True,
         ]);
     }
 
@@ -489,6 +488,34 @@ class QueryController extends Controller
         ";
 
         $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'nocount' => True,
+            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
+        ]);
+    }
+
+    public function actionNotGradedModuleAssignment($moduleId, $assignmentId, $export = false) // Overzicht van module en dan één opdracht ingeleverd en nog geen beoordeling van één module 7736 23127
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+                concat(m.naam,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Module',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                s.submitted_at Ingeleverd,
+                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            and m.id=$moduleId
+            and a.id=$assignmentId
+            order by submitted_at DESC
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling van een module/opdracht", $export);
 
         return $this->render('output', [
             'data' => $data,
