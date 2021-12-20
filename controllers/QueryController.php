@@ -96,6 +96,9 @@ class QueryController extends Controller
             if ( substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' ) {
                 $item = str_replace(['!','+','-'], "", $item);
             }
+            if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, sincee limit is the last statement return query as is at this moment
+                return $newQuery;
+            }
             $newQuery .= " ".$item;
         }
  
@@ -131,7 +134,7 @@ class QueryController extends Controller
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id,
+            'action' => Yii::$app->controller->action->id."?",
         ]);
     }
 
@@ -182,13 +185,13 @@ class QueryController extends Controller
         $sql = "
             select u.klas klas,
             concat(u.name,'|/query/submissions|code|',u.code) '!Student',
-            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+-2',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+-7',
-            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+-14',
-            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '+-21',
-            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '+-28',
-            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '+-60',
-            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '+-90'
+            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+2',
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+7',
+            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+14',
+            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '+21',
+            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '+28',
+            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '+60',
+            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '+90'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
