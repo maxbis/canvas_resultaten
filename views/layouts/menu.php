@@ -32,7 +32,7 @@ echo Nav::widget([
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Student laatste actief op...',      'url' => ['/query/actief']],
-                ['label' => 'Actieve studenten over tijd',       'url' => ['/query/aantal-activiteiten']],
+                ['label' => '12 wekenoverzicht',       'url' => ['/query/aantal-activiteiten']],
                 ['label' => 'Studenten werken aan...',           'url' => ['/query/working-on']],
                 ['label' => 'Ranking studenten',                 'url' => ['/query/voortgang']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/query/modules-finished']],

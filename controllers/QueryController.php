@@ -183,34 +183,40 @@ class QueryController extends Controller
         else $select = '';
 
         $sql = "
-            select u.klas klas,
+            select
+            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+            u.klas Klas,
             concat(u.name,'|/query/submissions|code|',u.code) '!Student',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+1',
-            sum(case when (datediff(curdate(),submitted_at)<=14 && datediff(curdate(),submitted_at)>7 ) then 1 else 0 end) '+2',
-            sum(case when (datediff(curdate(),submitted_at)<=21 && datediff(curdate(),submitted_at)>14 ) then 1 else 0 end) '+3',
-            sum(case when (datediff(curdate(),submitted_at)<=28 && datediff(curdate(),submitted_at)>21 ) then 1 else 0 end) '+4',
-            sum(case when (datediff(curdate(),submitted_at)<=35 && datediff(curdate(),submitted_at)>28 ) then 1 else 0 end) '+5',
-            sum(case when (datediff(curdate(),submitted_at)<=42 && datediff(curdate(),submitted_at)>35 ) then 1 else 0 end) '+6',
-            sum(case when (datediff(curdate(),submitted_at)<=49 && datediff(curdate(),submitted_at)>42 ) then 1 else 0 end) '+7',
-            sum(case when (datediff(curdate(),submitted_at)<=56 && datediff(curdate(),submitted_at)>49 ) then 1 else 0 end) '+8',
-            sum(case when (datediff(curdate(),submitted_at)<=63 && datediff(curdate(),submitted_at)>56 ) then 1 else 0 end) '+9',
-            sum(case when (datediff(curdate(),submitted_at)<=70 && datediff(curdate(),submitted_at)>63 ) then 1 else 0 end) '+10',
-            sum(case when (datediff(curdate(),submitted_at)<=77 && datediff(curdate(),submitted_at)>70 ) then 1 else 0 end) '+11',
-            sum(case when (datediff(curdate(),submitted_at)<=84 && datediff(curdate(),submitted_at)>77 ) then 1 else 0 end) '+12'
+            sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
+            sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
+            0 'Graph',
+            sum(case when (datediff(curdate(),submitted_at)<=84 && datediff(curdate(),submitted_at)>77 ) then 1 else 0 end) '+-12',
+            sum(case when (datediff(curdate(),submitted_at)<=77 && datediff(curdate(),submitted_at)>70 ) then 1 else 0 end) '+-11',
+            sum(case when (datediff(curdate(),submitted_at)<=70 && datediff(curdate(),submitted_at)>63 ) then 1 else 0 end) '+-10',
+            sum(case when (datediff(curdate(),submitted_at)<=63 && datediff(curdate(),submitted_at)>56 ) then 1 else 0 end) '+-9',
+            sum(case when (datediff(curdate(),submitted_at)<=56 && datediff(curdate(),submitted_at)>49 ) then 1 else 0 end) '+-8',
+            sum(case when (datediff(curdate(),submitted_at)<=49 && datediff(curdate(),submitted_at)>42 ) then 1 else 0 end) '+-7',
+            sum(case when (datediff(curdate(),submitted_at)<=42 && datediff(curdate(),submitted_at)>35 ) then 1 else 0 end) '+-6',
+            sum(case when (datediff(curdate(),submitted_at)<=35 && datediff(curdate(),submitted_at)>28 ) then 1 else 0 end) '+-5',
+            sum(case when (datediff(curdate(),submitted_at)<=28 && datediff(curdate(),submitted_at)>21 ) then 1 else 0 end) '+-4',
+            sum(case when (datediff(curdate(),submitted_at)<=21 && datediff(curdate(),submitted_at)>14 ) then 1 else 0 end) '+-3',
+            sum(case when (datediff(curdate(),submitted_at)<=14 && datediff(curdate(),submitted_at)>7 ) then 1 else 0 end) '+-2',
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             $select
-            group by 1,2
-            order by 4 DESC, 5 DESC, 6 DESC
+            group by 2,3
+            order by 3 DESC
         ";
         $data = $this->executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
+        $data['show_from']=1;
 
-        return $this->render('output', [
+        return $this->render('studentActivity', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'Onder het getal staan het aantal ingeleverde opdrachtne in die week (1 is één week geleden, 2 is twee weken geleden, etc)',
+            'descr' => 'Weken zijn \'rollende\' weken (dus geen kalenderweken). Gesorteerd op activiteiten over laatse drie weken.',
         ]);
     }
 
