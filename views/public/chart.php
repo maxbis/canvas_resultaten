@@ -49,5 +49,5 @@ $chart = [
 use scotthuangzl\googlechart\GoogleChart;
 
 echo GoogleChart::widget($chart);
-
-echo  Html::a('<< Volledig Overzicht', ['/public/index', 'code' => $code], ['class' => 'btn btn-info', 'title' => 'Student Overzicht',]);
+echo Html::a('<< Terug', Yii::$app->request->referrer, ['class' => 'btn btn-light']);
+// echo  Html::a('<< Volledig Overzicht', ['/public/index', 'code' => $code], ['class' => 'btn btn-info', 'title' => 'Student Overzicht',]);

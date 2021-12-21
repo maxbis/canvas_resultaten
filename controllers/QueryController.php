@@ -185,13 +185,18 @@ class QueryController extends Controller
         $sql = "
             select u.klas klas,
             concat(u.name,'|/query/submissions|code|',u.code) '!Student',
-            sum(case when (datediff(curdate(),submitted_at)<=2) then 1 else 0 end)  '+2',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+7',
-            sum(case when (datediff(curdate(),submitted_at)<=14) then 1 else 0 end) '+14',
-            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '+21',
-            sum(case when (datediff(curdate(),submitted_at)<=28) then 1 else 0 end) '+28',
-            sum(case when (datediff(curdate(),submitted_at)<=60) then 1 else 0 end) '+60',
-            sum(case when (datediff(curdate(),submitted_at)<=90) then 1 else 0 end) '+90'
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end)  '+1',
+            sum(case when (datediff(curdate(),submitted_at)<=14 && datediff(curdate(),submitted_at)>7 ) then 1 else 0 end) '+2',
+            sum(case when (datediff(curdate(),submitted_at)<=21 && datediff(curdate(),submitted_at)>14 ) then 1 else 0 end) '+3',
+            sum(case when (datediff(curdate(),submitted_at)<=28 && datediff(curdate(),submitted_at)>21 ) then 1 else 0 end) '+4',
+            sum(case when (datediff(curdate(),submitted_at)<=35 && datediff(curdate(),submitted_at)>28 ) then 1 else 0 end) '+5',
+            sum(case when (datediff(curdate(),submitted_at)<=42 && datediff(curdate(),submitted_at)>35 ) then 1 else 0 end) '+6',
+            sum(case when (datediff(curdate(),submitted_at)<=49 && datediff(curdate(),submitted_at)>42 ) then 1 else 0 end) '+7',
+            sum(case when (datediff(curdate(),submitted_at)<=56 && datediff(curdate(),submitted_at)>49 ) then 1 else 0 end) '+8',
+            sum(case when (datediff(curdate(),submitted_at)<=63 && datediff(curdate(),submitted_at)>56 ) then 1 else 0 end) '+9',
+            sum(case when (datediff(curdate(),submitted_at)<=70 && datediff(curdate(),submitted_at)>63 ) then 1 else 0 end) '+10',
+            sum(case when (datediff(curdate(),submitted_at)<=77 && datediff(curdate(),submitted_at)>70 ) then 1 else 0 end) '+11',
+            sum(case when (datediff(curdate(),submitted_at)<=84 && datediff(curdate(),submitted_at)>77 ) then 1 else 0 end) '+12'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -200,12 +205,12 @@ class QueryController extends Controller
             group by 1,2
             order by 4 DESC, 5 DESC, 6 DESC
         ";
-        $data = $this->executeQuery($sql, "Aantal activiteiten per student over tijd " . $klas, $export);
+        $data = $this->executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'Aantal activiteiten (ingeleverde opdrachten) per student over de laatste dagen en weken',
+            'descr' => 'Onder het getal staan het aantal ingeleverde opdrachtne in die week (1 is één week geleden, 2 is twee weken geleden, etc)',
         ]);
     }
 
@@ -319,14 +324,6 @@ class QueryController extends Controller
 
     public function actionAantalBeoordelingen($export = false, $klas = '') // menu Rapporten - Beoordelingen per module over tijd
     { 
-        $sql = "
-            select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
-            from resultaat
-            group by 1
-            order by 2 desc
-        ";
-        $data = $this->executeQuery($sql, "Laatste beoordeling per module", $export);
-
         if ($klas) {
             $select = "where klas='$klas'";
         } else {
@@ -335,9 +332,10 @@ class QueryController extends Controller
 
         $sql = "
             select module Module,
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=2) then 1 else 0 end) '-2',
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '-7',
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=14) then 1 else 0 end) '-14',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '+7',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=14  && datediff(curdate(),laatste_beoordeling)>7 ) then 1 else 0 end) '+14',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=21 && datediff(curdate(),laatste_beoordeling)>14 ) then 1 else 0 end) '+21',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=28 && datediff(curdate(),laatste_beoordeling)>21 ) then 1 else 0 end) '+28',
             sum(1) 'Aantal'
             from resultaat
             $select
@@ -494,7 +492,6 @@ class QueryController extends Controller
 
         return $this->render('output', [
             'data' => $data,
-            'nocount' => True,
             //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
         ]);
     }
