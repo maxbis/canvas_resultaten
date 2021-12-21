@@ -209,7 +209,7 @@ class QueryController extends Controller
             join assignment_group g on g.id = a.assignment_group_id
             $select
             group by 2,3
-            order by 3 DESC
+            order by 1 DESC
         ";
         $data = $this->executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
         $data['show_from']=1;
