@@ -186,7 +186,8 @@ class QueryController extends Controller
             select
             sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
             u.klas Klas,
-            concat(u.name,'|/query/submissions|code|',u.code) '!Student',
+            -- concat(u.name,'|/query/submissions|code|',u.code) '!Student',
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
             sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
             sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
             0 'Graph',
