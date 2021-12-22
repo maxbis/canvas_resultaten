@@ -480,8 +480,10 @@ class QueryController extends Controller
     public function actionNotGradedModule($moduleId = '', $export = false) // Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
         $sql = "
-            SELECT  m.pos '-pos',
-                concat(m.naam,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Module',
+            SELECT  
+                m.naam Module,
+                m.pos '-pos',
+                concat(substring(a.name,1,20),'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 s.submitted_at Ingeleverd,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
@@ -492,10 +494,12 @@ class QueryController extends Controller
             join module_def m on m.id = g.id
             where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
             and m.id=$moduleId
-            order by submitted_at DESC
+            order by a.name, u.name
         ";
 
         $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
+        $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
+        $data['show_from']=1;
 
         return $this->render('output', [
             'data' => $data,
