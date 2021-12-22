@@ -202,7 +202,8 @@ class QueryController extends Controller
             sum(case when (datediff(curdate(),submitted_at)<=28 && datediff(curdate(),submitted_at)>21 ) then 1 else 0 end) '+-4',
             sum(case when (datediff(curdate(),submitted_at)<=21 && datediff(curdate(),submitted_at)>14 ) then 1 else 0 end) '+-3',
             sum(case when (datediff(curdate(),submitted_at)<=14 && datediff(curdate(),submitted_at)>7 ) then 1 else 0 end) '+-2',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1'
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
+            sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id

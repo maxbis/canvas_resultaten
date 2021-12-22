@@ -65,6 +65,7 @@ $tot = [];
                     <td colspan=4><-- oud</td>
                     <td colspan=4 style="text-align: center;">weken</td>
                     <td colspan=4 style="text-align: right;">recent --></td>
+                    <td></td>
      
                 </tr>
                 <tr>
