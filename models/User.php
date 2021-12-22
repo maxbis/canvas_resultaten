@@ -30,7 +30,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
         ],
         '102' => [
             'id' => '102',
-            'username' => 'team-50514',
+            'username' => 'docent',
             'password' => 'showmetheresults',
             'authKey' => 'test102key',
             'accessToken' => '102-token',
