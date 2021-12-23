@@ -41,7 +41,6 @@ def getCourses(prio=3):
         log('Course found: '+str(row[0]),3)
     return(courses)
 
-
 # Read voldaanCriteria (these are where clauses needed to determnine if module is 'Voldaan')
 def getVoldaanCriteria():
     voldaan_criteria = {}
@@ -101,7 +100,6 @@ def slashJoin(*args):
 
 # do validation and checks before insert
 
-
 def validate_string(fieldName, val):
     if val != None:
         if (type(val) is int or type(val) is float):
@@ -123,7 +121,6 @@ def validate_string(fieldName, val):
             return "1970-01-01 00:00:00"
         else:
             return '0'
-
 
 def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     json_data = getJsonData(apiPath, courseId)
@@ -183,8 +180,6 @@ def deleteBlok(course_id):
 
     cursor.execute(sql)
     con.commit()
-    
-
 
 def createBlok(course_id):
     importTable(course_id, "assignment_groups",
@@ -201,7 +196,6 @@ def createBlok(course_id):
                               'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'graded_at', 'excused', 'entered_score', 'workflow_state', 'course_id'], deleteAll)
         log("return: "+str(len(inserts)), 3)
         deleteAll = False  # since we itterate through all submissions in this course, only clean up entire table in the first itteration
-
 
 def createResultaat():
     # put all results as displayed in GUI in one table (for performance reason)
@@ -238,7 +232,6 @@ def createResultaat():
     log("Create aggregate into resultaat", 1)
     cursor.execute(sql)
     con.commit()
-
 
 def calcVoldaan():
     # reset all V to - (nothing is 'voldaan')
