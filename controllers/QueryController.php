@@ -263,10 +263,10 @@ class QueryController extends Controller
             select
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 r.klas Klas,
-                u.ranking_score 'Score',
+                u.ranking_score '+Score',
                 SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
                 SUM(case when r.voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
-                sum(r.punten) 'Punten totaal'
+                sum(r.punten) '+Punten totaal'
                 FROM resultaat r
                 INNER JOIN module_def d ON d.id=r.module_id
                 INNER JOIN user u ON u.student_nr = r.student_nummer

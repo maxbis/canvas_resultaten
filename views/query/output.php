@@ -108,7 +108,7 @@ $tot = [];
                         if (++$count<=$from) continue;
                         if (substr($columnName, 0, 1) == '+') {
                             echo "<td>";
-                            echo $tot[$columnName];
+                            echo number_format($tot[$columnName], 0, ',', ' ');
                             echo "</td>";
                         } elseif (substr($columnName, 0, 1) <> '-') {
                             echo "<td></td>";
