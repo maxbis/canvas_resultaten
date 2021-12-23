@@ -461,7 +461,7 @@ class QueryController extends Controller
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id) '!Module',
             sum(1) Aantal
             FROM assignment a
-            join submission s on s.assignment_id= a.id
+            left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
