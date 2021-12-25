@@ -112,8 +112,8 @@ function isMobileDevice() {
             foreach ($data as $item) {
                 if ($item['Voldaan'] == 'V') {
                     $totVoldaan += 1;
-                    $totPunten += $item['Punten %'];
-                    $totOpdrachten += $item['Opdrachten %'];
+                    $totPunten += $item['Punten'];
+                    $totOpdrachten += $item['Opdrachten'];
                 }
 
                 $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
@@ -160,13 +160,14 @@ function isMobileDevice() {
             }
 
             echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
-            echo "<td></td>";
-            echo "<td colspan=3><b>TOTAAL: " . $totVoldaan . "</b> modules voldaan</td>";
+            
+            echo "<td colspan=3><b>" .$totVoldaan . "</b></td>";
             if( ! isMobileDevice() ){
+                echo "<td class=\"tright\">". $totOpdrachten ."</td>";
                 echo "<td></td>";
+                echo "<td class=\"tright\">". $totPunten ."</td>";
                 echo "<td></td>";
-                echo "<td></td>";
-                echo "<td></td>";
+                echo "<td title=\"Deze score bepaald jouw positie in het klassement\" class=\"tright\">(score: ".($totVoldaan*200+$totPunten).")</td>";
             }
             echo "</tr>";
             ?>

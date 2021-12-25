@@ -259,6 +259,7 @@ class QueryController extends Controller
             $select = '';
         }
 
+        # if a teacher is also student he has no code (code is null), so only get students with a code
         $sql = "
             select
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
@@ -270,6 +271,7 @@ class QueryController extends Controller
                 FROM resultaat r
                 INNER JOIN module_def d ON d.id=r.module_id
                 INNER JOIN user u ON u.student_nr = r.student_nummer
+                where u.code is not null
             $select
             group by 1,2,3
             order by 3 $sort";
