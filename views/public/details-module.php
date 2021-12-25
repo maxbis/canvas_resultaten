@@ -136,8 +136,8 @@ function getStatus($status)
             echo "<td></td>";
             echo "<td><b>" . $totSubmitted . "</b></td>";
             echo "<td></td>";
-            echo "<td><b>" . $totScore . "</b></td>";
-            echo "<td><b>" . $totMaxScore . "</b></td>";
+            echo "<td style=\"text-align: right;\"><b>" . $totScore . "</b></td>";
+            echo "<td style=\"text-align: right;\"><b>" . $totMaxScore . "</b></td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "<td></td>";
