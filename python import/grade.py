@@ -137,6 +137,7 @@ for submission in submissions:
         # submission.edit(submission={'posted_grade':10})
         # submission.edit(submission={'posted_grade':0})
         # submission.edit(submission={'entered_grade':'complete'})
+        # (To Test) submission.edit(submission={'comments':'Automated rated'})
 
     print('\n------------------\n')
 

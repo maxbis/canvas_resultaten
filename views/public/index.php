@@ -59,12 +59,20 @@ function isMobileDevice() {
 
 </style>
 
+<div class="d-flex justify-content-center">
+    <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
+    <?= Html::img('@web/happy_2022-small.png', ['alt'=>'some', 'class'=>'']);?>
+    <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
+</div>
+
 <div class="card shadow table-responsive">
 
     <div class="container">
+
         <div class="row align-items-end justify-content-between">
 
             <div class="col">
+
                 <?php if ($rank <= 16) : ?>
                     <br>
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>

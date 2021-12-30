@@ -3,6 +3,8 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+/* <!-- body { background-color: #fbfdfd; background-image: url("<?=Yii::getAlias("@web")?>/vecteezyfestivityfireworksbackgroundap0521_generated.jpg");} --> */
+
 use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap4\Breadcrumbs;
@@ -21,7 +23,6 @@ AppAsset::register($this);
     <?php $this->head() ?>
     <style type="text/css">
         html { font-size: 1rem;  }
-        body { background-color: #fbfdfd; }
     </style>
 </head>
 <body class="d-flex flex-column h-100">

@@ -486,7 +486,7 @@ class QueryController extends Controller
             SELECT  
                 m.naam Module,
                 m.pos '-pos',
-                concat(substring(a.name,1,20),'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 s.submitted_at Ingeleverd,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'

@@ -78,14 +78,25 @@ $tot = [];
                         if (substr($columnName, 0, 1) == '+') {
                             $tot[$columnName] += $item[$columnName];
                         }
-                        if (substr($columnName, 0, 1) == '!') { #hack, column namen starts with ! link in format naam|link
+                        if (substr($columnName, 0, 1) == '!') { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
-                            if (count($part) == 2) {
-                                echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
-                            } elseif (count($part) == 4) {
-                                echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3]]) . "</td>";
-                            } elseif ( count($part) == 6 ) {
-                                echo "<td>" . Html::a($part[0], [$part[1], $part[2] => $part[3], $part[4] => $part[5]]) . "</td>";
+                            if (strlen($part[0])>20) { # if name for link is larger tahn 20, concat it and put complete link in help (title)
+                                $help=$part[0];
+                                $link=substr($part[0],0,20);
+                            } else {
+                                $help='';
+                                $link=$part[0];
+                            }
+                            if (count($part) == 2){
+                                if (substr($part[0],0,5)=='Grade') { # Only for Grade Link
+                                    echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
+                                } else { # Generic
+                                    echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
+                                }
+                            } elseif (count($part) == 4) { # Generic
+                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help ]) . "</td>";
+                            } elseif ( count($part) == 6 ) { # Generic
+                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help] ) . "</td>";
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
                                 echo "<pre><hr>";
