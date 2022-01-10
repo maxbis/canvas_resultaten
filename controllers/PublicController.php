@@ -170,7 +170,7 @@ class PublicController extends Controller
         $workLoadperWeek = [];
 
         foreach ($data as $item) { // read all weeks from query into ass. array.
-            $workLoadperWeek[$item['Week']] = intval($item['Aantal']);
+            $workLoadperWeek[intval($item['Week'])] = intval($item['Aantal']);
         }
 
         $aantalWeken = 10;                                  // Number of weeks in graph
@@ -185,12 +185,12 @@ class PublicController extends Controller
 
         $chartArray = [['Week', 'norm 5/week', ['role' => 'style' ] ]];
 
-        for ($i = 1; $i <= $aantalWeken; $i++) {
+        for ($i = 1; $i <= $aantalWeken; $i++) { // show $i weeks
             $week = $start + $i;
             if ($week > $weeksThisYear) { // roll over to next year
                 $week -= $weeksThisYear;
             }
-           
+
             $barColor = '#c0d6eb';
             if (array_key_exists($week, $workLoadperWeek)) {
                 if ( intval($workLoadperWeek[$week])<4 ) {
@@ -201,7 +201,7 @@ class PublicController extends Controller
                 }
                 array_push($chartArray, [strval($week), intval($workLoadperWeek[$week]),$barColor]); // value from query
             } else {
-                array_push($chartArray, [strval($week), 0, $barColor]); // no value means 0
+                array_push($chartArray, [strval($week), 0, $barColor]); // no value means 0, the first loop in this function did not fill the value because thjere was no vlaue returned from query.
             }
         }
 
@@ -218,6 +218,7 @@ class PublicController extends Controller
                 'colors' => ['#82b0ff'],
             ]
         ];
+
         return $chart;
     }
 
