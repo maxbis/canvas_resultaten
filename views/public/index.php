@@ -59,11 +59,13 @@ function isMobileDevice() {
 
 </style>
 
+<!--
 <div class="d-flex justify-content-center">
     <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
     <?= Html::img('@web/happy_2022-small.png', ['alt'=>'some', 'class'=>'']);?>
     <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
 </div>
+-->
 
 <div class="card shadow table-responsive">
 
