@@ -481,7 +481,32 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionNotGradedModule($moduleId = '', $export = false) // Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    public function actionNotRegraded($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
+    {
+
+        $sql = "
+            SELECT  m.pos '-pos',
+            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|true') '!Module',
+            sum(1) Aantal
+            FROM assignment a
+            left outer join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at <> '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1, 2
+            order by m.pos
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+        ]);
+    }
+
+    public function actionNotGradedModule($moduleId = '', $export = false, $regrading = false) // Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
         $sql = "
             SELECT  
@@ -496,7 +521,9 @@ class QueryController extends Controller
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            where s.graded_at ";
+            $sql .= $regrading ? '<>' : '=';
+            $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
             and m.id=$moduleId
             order by a.name, u.name
         ";

@@ -51,6 +51,16 @@ echo Nav::widget([
         ],
 
         [
+            'label' => 'Beoordelen',
+            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
+            'items' => [
+                ['label' => 'Wachten op eerste beoordeling',     'url' => ['/query/not-graded']],
+                ['label' => 'Wachten op herbeoordeling',         'url' => ['/query/not-regraded']],
+            ],
+
+        ],
+
+        [
             'label' => 'Klas',
             'visible' => (Yii::$app->controller->id == 'query' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
             'items' => [
