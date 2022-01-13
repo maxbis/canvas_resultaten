@@ -36,6 +36,14 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
             'accessToken' => '102-token',
             'role' => 'admin',
         ],
+        '103' => [
+            'id' => '103',
+            'username' => 'extern',
+            'password' => 'showalltheresults',
+            'authKey' => 'test103key',
+            'accessToken' => '103-token',
+            'role' => 'admin',
+        ],
     ];
 
 

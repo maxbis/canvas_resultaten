@@ -432,7 +432,8 @@ class QueryController extends Controller
     {
         $sql = "
             SELECT  m.pos '-pos',
-                    concat(m.naam,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Module',
+                    m.naam Module,
+                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
                     s.submitted_at Ingeleverd,
                     concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
@@ -442,7 +443,7 @@ class QueryController extends Controller
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             where s.graded_at > '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            order by 1 ASC, 4 DESC
+            order by 1 ASC, 3 ASC, 4 ASC
             limit 250
         ";
 
