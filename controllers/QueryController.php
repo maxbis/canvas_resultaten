@@ -479,7 +479,7 @@ class QueryController extends Controller
             $sql .= $regrading ? '<>' : '=';
             $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
             and m.id=$moduleId
-            order by 5 ASC
+            order by 3, 5
         ";
 
         $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
