@@ -371,7 +371,7 @@ class QueryController extends Controller
     { 
 
         $sql = "
-            SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            SELECT u.name naam, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
             sum(1) '+Schooljaar'
@@ -379,14 +379,14 @@ class QueryController extends Controller
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
             group by 1
-            order by 1
+            order by 2 DESC
         ";
         $data = $this->executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal (handmatige) beoordelingen per beoordeelaar over 1, 2, 3 en 12 weken',
+            'descr' => 'Aantal beoordelingen per beoordeelaar.',
         ]);
     }
 
@@ -463,7 +463,8 @@ class QueryController extends Controller
                     m.naam Module,
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
-                    s.submitted_at Ingeleverd,
+                    concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                    s.attempt Poging,
                     concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id

@@ -37,12 +37,9 @@ echo Nav::widget([
                 ['label' => 'Ranking studenten',                 'url' => ['/query/voortgang']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/query/modules-finished']],
                 ['label' => '----------------',],
-                ['label' => 'Wachten op eerste beoordeling',     'url' => ['/query/not-graded']],
-                ['label' => 'Wachten op herbeoordeling',         'url' => ['/query/resubmitted']],
-                ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url' => ['/query/beoordeeld']],
                 ['label' => 'Beoordelingen per module over tijd', 'url' => ['/query/aantal-beoordelingen']],
-                ['label' => 'Aantal beoordelingen per docent', 'url'    => ['/query/nakijken']],
+                ['label' => 'Aantal beoordelingen per docent',    'url'    => ['/query/nakijken']],
 
 
                 // ['label' => 'Beoordeeld', 'url' => ['/query/beoordeeld']],
@@ -54,8 +51,9 @@ echo Nav::widget([
             'label' => 'Beoordelen',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
-                ['label' => 'Wachten op eerste beoordeling',     'url' => ['/query/not-graded']],
-                ['label' => 'Wachten op herbeoordeling',         'url' => ['/query/not-regraded']],
+                ['label' => 'Eerste beoordelingen',        'url' => ['/query/not-graded']],
+                ['label' => 'Herbeoordelingen',            'url' => ['/query/not-regraded']],
+                ['label' => 'Alle beoordelingen op datum', 'url' => ['/query/not-regraded']],
             ],
 
         ],
