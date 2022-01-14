@@ -456,6 +456,34 @@ class QueryController extends Controller
         ]);
     }
 
+    public function actionOld($export = false) // Wachten op herbeoordeling
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+                    m.naam Module,
+                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                    concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    s.submitted_at Ingeleverd,
+                    concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            order by 5 ASC
+            limit 250
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling op datum", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
+        ]);
+    }
+
     public function actionNotGraded($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
     {
 
