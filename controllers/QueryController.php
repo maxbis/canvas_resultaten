@@ -273,11 +273,11 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionVoortgang($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
+    public function actionRanking($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
         if ($klas) {
-            $select = "where r.klas='$klas'";
+            $select = "and r.klas='$klas'";
         } else {
             $select = '';
         }

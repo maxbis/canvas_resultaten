@@ -34,7 +34,7 @@ echo Nav::widget([
                 ['label' => 'Student laatste actief op...',      'url' => ['/query/actief']],
                 ['label' => '12 wekenoverzicht',       'url' => ['/query/aantal-activiteiten']],
                 ['label' => 'Studenten werken aan...',           'url' => ['/query/working-on']],
-                ['label' => 'Ranking studenten',                 'url' => ['/query/voortgang']],
+                ['label' => 'Ranking studenten',                 'url' => ['/query/ranking']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/query/modules-finished']],
                 ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url'  => ['/query/beoordeeld']],
@@ -53,6 +53,7 @@ echo Nav::widget([
             'items' => [
                 ['label' => 'Eerste beoordelingen',        'url' => ['/query/menu41']],
                 ['label' => 'Herbeoordelingen',            'url' => ['/query/menu42']],
+                ['label' => '----------------',],
                 ['label' => 'Eerste beoordelingen op datum', 'url' => ['/query/not-graded-per-date']],
                 ['label' => 'Herbeoordelingen beoordelingen op datum', 'url' => ['/query/not-graded-per-date?regrading=true']],
             ],
