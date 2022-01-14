@@ -124,7 +124,7 @@ class QueryController extends Controller
         }
     }
 
-    public function actionLog($export = false)
+    public function actionLog($export = false) // show access log (not part of any menu)
     {
         $sql = "select *
                 from log
@@ -138,14 +138,37 @@ class QueryController extends Controller
         ]);
     }
 
-    private function addLogSql($sql, $subject = '', $message = '')
-    {
-        $route = Yii::$app->requestedRoute;
-        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('" . $subject . "', '" . $message . "', '" . $route . "');";
-        return $sql;
+    public function actionSubmissions($export = false, $code) // niet in het menu (hidden feature) - export all submissions
+    { 
+        $sql = "
+            SELECT  u.name Student, DATE_FORMAT(s.submitted_at,'%y') Jaar,
+            lpad(week(s.submitted_at,1),2,0) Week,
+            sum(1) '+Aantal'
+            FROM `submission`  s
+            inner join user u on u.id = s.user_id
+            and u.code='$code'
+            and s.submitted_at > '1970-01-01 00:00:00'
+            group by 1,2,3
+            order by 1,2,3
+        ";
+        $data = $this->executeQuery($sql, "Submissions", $export);
+
+        return $this->render('/public/chart', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Submissions per week',
+            'nocount' => 'True',
+            'code' => $code,
+        ]);
     }
 
-    public function actionActief($sort = 'desc', $export = false, $klas = '') // menu Rapporten - Student laatst actief op....
+    public function actionGetAllResultaat($export = true) // export voor Theo - staat onder knop bij Gridview van alle resutlaten
+    {  
+        $sql = "select * from resultaat order by student_nummer, module_id";
+        $data = $this->executeQuery($sql, "", $export);
+    }
+
+    public function actionActief($sort = 'desc', $export = false, $klas = '') // menu 3.1 - Student laatst actief op....
     { 
 
         // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
@@ -176,7 +199,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalActiviteiten($export = false, $klas = '') // menu Rapporten - Actieve studenten over tijd
+    public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
     { 
 
         if ($klas) $select = "where u.klas='$klas'";
@@ -222,7 +245,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionWorkingOn($sort = 'desc', $export = false, $klas = '') // menu Rapporten - Student werken aan...
+    public function actionWorkingOn($sort = 'desc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
     { 
 
         if ($klas) {
@@ -250,7 +273,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionVoortgang($sort = 'desc', $export = false, $klas = '') // menu Rapporten - Ranking studenten
+    public function actionVoortgang($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
         if ($klas) {
@@ -284,7 +307,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionModulesFinished($export = false, $klas = '') // menu Rapporten - Module is c keer voldaan
+    public function actionModulesFinished($export = false, $klas = '') // menu 3.5 - Module is c keer voldaan
     { 
 
         if ($klas) {
@@ -315,7 +338,7 @@ class QueryController extends Controller
     }
 
 
-    public function actionBeoordeeld($export = false) // menu Rapporten - Laatste beoordeling per module
+    public function actionBeoordeeld($export = false) // menu 3.6 - Laatste beoordeling per module
     { 
         $sql = "
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
@@ -332,7 +355,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionAantalBeoordelingen($export = false, $klas = '') // menu Rapporten - Beoordelingen per module over tijd
+    public function actionAantalBeoordelingen($export = false, $klas = '') // menu 3.7 - Beoordelingen per module over tijd
     { 
         if ($klas) {
             $select = "where klas='$klas'";
@@ -361,13 +384,8 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionGetAllResultaat($export = true) // export voor Theo - staat onder knop bij Gridview van alle resutlaten
-    {  
-        $sql = "select * from resultaat order by student_nummer, module_id";
-        $data = $this->executeQuery($sql, "", $export);
-    }
 
-    public function actionNakijken($export = false) // menu Rapporten - Aantal beoordeligen per docent
+    public function actionNakijken($export = false) // menu 3.8 - Aantal beoordeligen per docent
     { 
 
         $sql = "
@@ -390,7 +408,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionStudentenLijst($export = false) // menu Beheer - Studentencodes export
+    public function actionStudentenLijst($export = false) // menu 6.2 - Studentencodes (export)
     { 
         $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
 
@@ -403,32 +421,143 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionSubmissions($export = false, $code) // tijdelijk om een export te krijgen - niet in het menu (hidden feature)
-    { 
-        $sql = "
-            SELECT  u.name Student, DATE_FORMAT(s.submitted_at,'%y') Jaar,
-            lpad(week(s.submitted_at,1),2,0) Week,
-            sum(1) '+Aantal'
-            FROM `submission`  s
-            inner join user u on u.id = s.user_id
-            and u.code='$code'
-            and s.submitted_at > '1970-01-01 00:00:00'
-            group by 1,2,3
-            order by 1,2,3
-        ";
-        $data = $this->executeQuery($sql, "Submissions", $export);
 
-        return $this->render('/public/chart', [
+
+    public function actionMenu41($export=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, false);
+    }
+
+    public function actionMenu42($export=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, true);
+    }
+
+    public function actionNotGraded($export=false, $regrading=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
+            sum(1) Aantal
+            FROM assignment a
+            left outer join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at ";
+        $sql .= $regrading ? '<>' : '=';
+        $sql .= "'1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1, 2
+            order by m.pos
+        ";
+
+        $reportTitle = $regrading ? "Wachten op herbeoordeling" : "Wachten op eerste beoordeling";
+
+        $data = $this->executeQuery($sql, $reportTitle, $export);
+
+        return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id,
-            'descr' => 'Submissions per week',
-            'nocount' => 'True',
-            'code' => $code,
+            'action' => Yii::$app->controller->action->id."?",
+        ]);
+    }
+
+    public function actionNotGradedModule($moduleId = '', $export = false, $regrading = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    {
+        $sql = "
+            SELECT  
+                m.naam Module,
+                m.pos '-pos',
+                concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                s.attempt poging,
+                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at ";
+            $sql .= $regrading ? '<>' : '=';
+            $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            and m.id=$moduleId
+            order by 5 ASC
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
+        $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
+        $data['show_from']=1;
+
+        return $this->render('output', [
+            'data' => $data,
+            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
         ]);
     }
 
 
-    public function actionResubmitted($export = false) // Wachten op herbeoordeling
+    public function actionNotGradedPerDate($export=false, $regrading=false) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+                    m.naam Module,
+                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                    concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                    s.attempt Poging,
+                    concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at ";
+        $sql .= $regrading ? '<>' : '=';
+        $sql.=" '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            order by 5 ASC
+            limit 250
+        ";
+
+        $reportTitle = $regrading ? "Wachten op herbeoordeling op datum" : "Wachten op eerste beoordeling op datum";
+
+        $data = $this->executeQuery($sql, $reportTitle, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
+        ]);
+    }
+
+
+    public function actionNotGradedModuleAssignment($moduleId, $assignmentId, $export = false) // Overzicht van module en dan één opdracht ingeleverd en nog geen beoordeling van één module 7736 23127
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+                concat(m.naam,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Module',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                s.submitted_at Ingeleverd,
+                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            and m.id=$moduleId
+            and a.id=$assignmentId
+            order by submitted_at DESC
+        ";
+
+        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling van een module/opdracht", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'nocount' => True,
+            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
+        ]);
+    }
+
+
+
+    public function actionResubmittedXXX($export = false) // Wachten op herbeoordeling -- wordt niet meer gebruikt
     {
         $sql = "
             SELECT  m.pos '-pos',
@@ -456,61 +585,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionNotGradedPerDate($export = false) // Wachten op herbeoordeling
-    {
-        $sql = "
-            SELECT  m.pos '-pos',
-                    m.naam Module,
-                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
-                    concat(u.name,'|/public/index|code|',u.code) '!Student',
-                    concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
-                    s.attempt Poging,
-                    concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            order by 5 ASC
-            limit 250
-        ";
-
-        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling op datum", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
-        ]);
-    }
-
-    public function actionNotGraded($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
-    {
-
-        $sql = "
-            SELECT  m.pos '-pos',
-            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id) '!Module',
-            sum(1) Aantal
-            FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1, 2
-            order by m.pos
-        ";
-
-        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-        ]);
-    }
-
-    public function actionNotRegraded($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
+    public function actionNotRegradedXXX($export = false) // Menu 4.2 Wachten op herbeoordeling
     {
 
         $sql = "
@@ -535,64 +610,28 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionNotGradedModule($moduleId = '', $export = false, $regrading = false) // Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    public function actionNotRegradedXXX2($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
     {
-        $sql = "
-            SELECT  
-                m.naam Module,
-                m.pos '-pos',
-                concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                s.submitted_at Ingeleverd,
-                s.attempt poging,
-                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at ";
-            $sql .= $regrading ? '<>' : '=';
-            $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            and m.id=$moduleId
-            order by a.name, u.name
-        ";
 
-        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
-        $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
-        $data['show_from']=1;
-
-        return $this->render('output', [
-            'data' => $data,
-            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
-        ]);
-    }
-
-    public function actionNotGradedModuleAssignment($moduleId, $assignmentId, $export = false) // Overzicht van module en dan één opdracht ingeleverd en nog geen beoordeling van één module 7736 23127
-    {
         $sql = "
             SELECT  m.pos '-pos',
-                concat(m.naam,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Module',
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                s.submitted_at Ingeleverd,
-                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|true') '!Module',
+            sum(1) Aantal
             FROM assignment a
-            join submission s on s.assignment_id= a.id
+            left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            where s.graded_at = '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            and m.id=$moduleId
-            and a.id=$assignmentId
-            order by submitted_at DESC
+            where s.graded_at <> '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1, 2
+            order by m.pos
         ";
 
-        $data = $this->executeQuery($sql, "Wachten op eerste beoordeling van een module/opdracht", $export);
+        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
 
         return $this->render('output', [
             'data' => $data,
-            'nocount' => True,
-            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
+            'action' => Yii::$app->controller->action->id."?",
         ]);
     }
 }

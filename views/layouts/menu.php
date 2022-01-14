@@ -51,9 +51,10 @@ echo Nav::widget([
             'label' => 'Beoordelen',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
-                ['label' => 'Eerste beoordelingen',        'url' => ['/query/not-graded']],
-                ['label' => 'Herbeoordelingen',            'url' => ['/query/not-regraded']],
+                ['label' => 'Eerste beoordelingen',        'url' => ['/query/menu41']],
+                ['label' => 'Herbeoordelingen',            'url' => ['/query/menu42']],
                 ['label' => 'Eerste beoordelingen op datum', 'url' => ['/query/not-graded-per-date']],
+                ['label' => 'Herbeoordelingen beoordelingen op datum', 'url' => ['/query/not-graded-per-date?regrading=true']],
             ],
 
         ],
