@@ -543,6 +543,7 @@ class QueryController extends Controller
                 concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 s.submitted_at Ingeleverd,
+                s.attempt poging,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id

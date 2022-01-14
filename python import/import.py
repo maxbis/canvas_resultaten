@@ -193,7 +193,7 @@ def createBlok(course_id):
     for item in returnList:
         log("Item: "+item, 3)
         inserts = importTable(course_id, "assignments/"+item+"/submissions", "submission", [
-                              'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'graded_at', 'excused', 'entered_score', 'workflow_state', 'course_id'], deleteAll)
+                              'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'attempt', 'graded_at', 'excused', 'entered_score', 'workflow_state', 'course_id'], deleteAll)
         log("return: "+str(len(inserts)), 3)
         deleteAll = False  # since we itterate through all submissions in this course, only clean up entire table in the first itteration
 
