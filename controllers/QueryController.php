@@ -456,7 +456,7 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionOld($export = false) // Wachten op herbeoordeling
+    public function actionNotGradedPerDate($export = false) // Wachten op herbeoordeling
     {
         $sql = "
             SELECT  m.pos '-pos',
