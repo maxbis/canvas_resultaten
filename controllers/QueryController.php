@@ -374,7 +374,7 @@ class QueryController extends Controller
             SELECT u.name, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
-            sum(case when (datediff(curdate(),s.graded_at)>21 && datediff(curdate(),s.graded_at)<=84 ) then 1 else 0 end) '+3-12 weken'
+            sum(1) '+Schooljaar'
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
