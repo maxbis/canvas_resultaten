@@ -436,7 +436,7 @@ class QueryController extends Controller
         $sql = "
             SELECT  m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
-            sum(1) Aantal
+            sum(1) '+Aantal'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -486,9 +486,40 @@ class QueryController extends Controller
         $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
         $data['show_from']=1;
 
+
+        // Create lastLineButton
+        $lastLine= "<script>\n";
+        $count=0;
+        $pagesPerButton=10;
+        $buttons=[];
+
+        foreach ($data['row'] as $item) {
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "function openAllInNewTab".$count."() {\n";
+                array_push($buttons, $count);
+            }
+            // dd( explode('|',$item['!Link'])[1] );
+            $lastLine.= "window.open('". explode('|',$item['!Link'])[1] ."', '_blank');\n";
+            $count++;
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "}\n";
+            }
+        }
+        if ( $count%$pagesPerButton != 0) {
+            $lastLine.= "}\n";
+        }
+        $lastLine.= "</script><hr>\n";
+
+        foreach (array_reverse($buttons) as $elem) {
+            $start=$elem+1;
+            $stop=min($elem+10,count($data['row']));
+            $lastLine.=  "<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+        }
+
+
         return $this->render('output', [
             'data' => $data,
-            //'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
+            'lastLine' => $lastLine,
         ]);
     }
 

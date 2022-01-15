@@ -132,5 +132,8 @@ $tot = [];
             ?>
 
         </table>
+
+    <?php if ( isset($lastLine) ) echo $lastLine; ?>
+
     </div>
 </div>

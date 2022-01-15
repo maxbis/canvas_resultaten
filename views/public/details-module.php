@@ -74,19 +74,24 @@ function getStatus($status)
             $totScore = 0;
             $totMaxScore = 0;
             $totSubmitted = 0;
+            $totPoging = 0;
+            $totCount = 0;
             echo "<tr>";
             echo "<th>Opdrachtnaam</th>";
             echo "<th>Status</th>";
             echo "<th>Ingeleverd</th>";
             echo "<th class=\"left\" title=\"Behaalde score\">Score</th>";
             echo "<th class=\"right\" title=\"Maximum te behalen\">Max</th>";
+            echo "<th class=\"right\" title=\"Aantal pogingen\">Pog.</th>";
             echo "<th>Beoordeeld</th>";
             echo "<th>Door</th>";
             echo "<th></th>";
             echo "</tr>";
             foreach ($data as $item) {
                 $totScore += $item['Score'];
+                $totPoging += $item['Poging'];
                 $totMaxScore += $item['MaxScore'];
+                $totCount += 1;
                 if ($item['Status'] == 'submitted' || $item['Status'] == 'graded') {
                     $totSubmitted += 1;
                 }
@@ -113,6 +118,8 @@ function getStatus($status)
 
                 echo "<td class=\"right\">" . $item['MaxScore'] . "</td>";
 
+                echo "<td class=\"right\">" . $item['Poging'] . "</td>";
+
                 echo "<td>" . strtok($item['Beoordeeld'], " ") . "</td>";
 
                 echo "<td>" . getInitials($item['Door']) . "</td>";
@@ -134,10 +141,11 @@ function getStatus($status)
             }
             echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             echo "<td></td>";
-            echo "<td><b>" . $totSubmitted . "</b></td>";
+            echo "<td>" . $totSubmitted . "</td>";
             echo "<td></td>";
             echo "<td style=\"text-align: right;\"><b>" . $totScore . "</b></td>";
             echo "<td style=\"text-align: right;\"><b>" . $totMaxScore . "</b></td>";
+            echo "<td style=\"text-align: right;\">" . $totPoging . "</td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "<td></td>";

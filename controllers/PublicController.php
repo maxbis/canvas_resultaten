@@ -113,6 +113,7 @@ class PublicController extends Controller
             CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
             s.entered_score Score,
             a.points_possible MaxScore,
+            s.attempt Poging,
             CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link
             FROM assignment a
             join submission s on s.assignment_id= a.id
