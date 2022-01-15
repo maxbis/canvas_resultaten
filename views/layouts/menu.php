@@ -48,6 +48,18 @@ echo Nav::widget([
         ],
 
         [
+            'label' => 'Klas',
+            'visible' => (Yii::$app->controller->id == 'query' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
+            'items' => [
+                ['label' => '1A', 'url' => [Yii::$app->controller->action->id . '?klas=1A']],
+                ['label' => '1B', 'url' => [Yii::$app->controller->action->id . '?klas=1B']],
+                ['label' => '1C', 'url' => [Yii::$app->controller->action->id . '?klas=1C']],
+                ['label' => '1D', 'url' => [Yii::$app->controller->action->id . '?klas=1D']],
+                ['label' => 'Allen', 'url' => [Yii::$app->controller->action->id]],
+            ],
+        ],
+
+        [
             'label' => 'Beoordelen',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
@@ -58,18 +70,6 @@ echo Nav::widget([
                 ['label' => 'Herbeoordelingen beoordelingen op datum', 'url' => ['/query/not-graded-per-date?regrading=true']],
             ],
 
-        ],
-
-        [
-            'label' => 'Klas',
-            'visible' => (Yii::$app->controller->id == 'query' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
-            'items' => [
-                ['label' => '1A', 'url' => [Yii::$app->controller->action->id . '?klas=1A']],
-                ['label' => '1B', 'url' => [Yii::$app->controller->action->id . '?klas=1B']],
-                ['label' => '1C', 'url' => [Yii::$app->controller->action->id . '?klas=1C']],
-                ['label' => '1D', 'url' => [Yii::$app->controller->action->id . '?klas=1D']],
-                ['label' => 'Allen', 'url' => [Yii::$app->controller->action->id]],
-            ],
         ],
 
         [
