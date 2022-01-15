@@ -586,7 +586,22 @@ class QueryController extends Controller
         ]);
     }
 
+    public function actionNever($export=false) {
+        $sql = "
+            SELECT klas Klas, name Student FROM `user` WHERE student_nr not IN
+            ( select message from log)
+            and klas in ('1A','1B','1C')
+            order by 1,2
+        ";
 
+        $data = $this->executeQuery($sql, "Student never logged in Canvas Monitor", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+        ]);
+
+    }
 
     public function actionResubmittedXXX($export = false) // Wachten op herbeoordeling -- wordt niet meer gebruikt
     {
