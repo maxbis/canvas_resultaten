@@ -14,7 +14,20 @@ $tot = [];
     }
 </style>
 
-<div class="card">
+<script>
+    function hide() {
+        document.getElementById("main").style.display = "none";
+        document.getElementById("wait").style.display = "block";
+   }
+</script>
+
+<div class="card" id="wait" style="display:none;">
+    <div class="container">
+        <br><h1>Processing...</h1></br>
+    </div>
+</div>
+
+<div class="card" id="main">
 
     <div class="container">
         <div class="row  align-items-center">
@@ -80,7 +93,7 @@ $tot = [];
                         }
                         if (substr($columnName, 0, 1) == '!') { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
-                            if (strlen($part[0])>20) { # if name for link is larger tahn 20, concat it and put complete link in help (title)
+                            if (strlen($part[0])>20) { # if name for link is larger than 20, concat it and put complete link in help (title)
                                 $help=$part[0];
                                 $link=substr($part[0],0,20);
                             } else {
@@ -94,9 +107,9 @@ $tot = [];
                                     echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
                                 }
                             } elseif (count($part) == 4) { # Generic
-                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help ]) . "</td>";
+                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help]) . "</td>";
                             } elseif ( count($part) == 6 ) { # Generic
-                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help] ) . "</td>";
+                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help, 'onclick'=>"hide();"] ) . "</td>";
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
                                 echo "<pre><hr>";

@@ -423,12 +423,12 @@ class QueryController extends Controller
 
 
 
-    public function actionMenu41($export=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, false);
+    public function actionMenu41($export=false, $test=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, false, isset($test)&&$test);
     }
 
-    public function actionMenu42($export=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, true);
+    public function actionMenu42($export=false, $test=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, true, isset($test)&&$test);
     }
 
     public function actionNotGraded($export=false, $regrading=false, $test=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
@@ -474,9 +474,12 @@ class QueryController extends Controller
 
         $data = $this->executeQuery($sql, $reportTitle, $export);
 
+        $lastLine =  "<hr><a href=\"".Yii::$app->request->url."?&test=1\">Test (beta)</a>";
+
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
+            'lastLine' => $lastLine,
         ]);
     }
 

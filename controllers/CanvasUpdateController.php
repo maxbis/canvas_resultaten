@@ -145,7 +145,7 @@ class CanvasUpdateController extends Controller {
         
         // dd('end');
         // return $this->actionNotGraded(false, $regrading);
-        Yii::$app->session->setFlash('success', "Updated $count assignments in ".$elem['module']);
+        Yii::$app->session->setFlash('success', "Updated $count assignments in <i>".$elem['module']."</i>");
         return $this->redirect(['query/not-graded?regrading='.$regrading]);
     }
 
