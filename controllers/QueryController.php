@@ -436,7 +436,8 @@ class QueryController extends Controller
         $sql = "
             SELECT  m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
-            sum(1) '+Aantal'
+            sum(1) '+Aantal',
+            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Canvas update'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -459,10 +460,13 @@ class QueryController extends Controller
         ]);
     }
 
+
     public function actionNotGradedModule($moduleId = '', $export = false, $regrading = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
+        //$this->actionUpdateModuleGrading($moduleId, $regrading);
+
         $sql = "
-            SELECT  
+            SELECT
                 m.naam Module,
                 m.pos '-pos',
                 concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
@@ -483,11 +487,16 @@ class QueryController extends Controller
         ";
 
         $data = $this->executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
-        $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
+        if ($regrading) {
+            $data['title']="Wachten op herbeoordeling voor <i>".$data['row'][0]['Module']."</i>";
+        } else {
+            $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
+        }
+        
         $data['show_from']=1;
 
 
-        // Create lastLineButton
+        // Create lastLineButton with buttons to open $pagesPerButton in one go
         $lastLine= "<script>\n";
         $count=0;
         $pagesPerButton=10;
@@ -603,82 +612,5 @@ class QueryController extends Controller
 
     }
 
-    public function actionResubmittedXXX($export = false) // Wachten op herbeoordeling -- wordt niet meer gebruikt
-    {
-        $sql = "
-            SELECT  m.pos '-pos',
-                    m.naam Module,
-                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
-                    concat(u.name,'|/public/index|code|',u.code) '!Student',
-                    s.submitted_at Ingeleverd,
-                    concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at > '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            order by 1 ASC, 3 ASC, 4 ASC
-            limit 250
-        ";
-
-        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
-        ]);
-    }
-
-    public function actionNotRegradedXXX($export = false) // Menu 4.2 Wachten op herbeoordeling
-    {
-
-        $sql = "
-            SELECT  m.pos '-pos',
-            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|true') '!Module',
-            sum(1) Aantal
-            FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at <> '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1, 2
-            order by m.pos
-        ";
-
-        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-        ]);
-    }
-
-    public function actionNotRegradedXXX2($export = false) // Wachten op eerste beoordeling = ingeleverd en nog geen beoordelin
-    {
-
-        $sql = "
-            SELECT  m.pos '-pos',
-            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|true') '!Module',
-            sum(1) Aantal
-            FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            where s.graded_at <> '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1, 2
-            order by m.pos
-        ";
-
-        $data = $this->executeQuery($sql, "Wachten op herbeoordeling", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-        ]);
-    }
 }
 

@@ -1,3 +1,5 @@
+# https://canvasapi.readthedocs.io/en/stable/getting-started.html
+
 from canvasapi import Canvas
 import configparser
 
@@ -32,20 +34,31 @@ API_KEY = config.get('main', 'api_key')
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
+def checkAssignment(assignment):
+    print(assignment)
+
+    submissions = assignment.get_submissions()
+
+    #submission = assignment.get_submission(user_id)
+    fileSize={}
+    for submission in submissions:
+
+        if (hasattr(submission,'attachments')):
+            for att in submission.attachments:
+                # print(submission.user_id, att['size'], att['display_name'], att['content-type'])
+                if att['size'] in fileSize:
+                    print("*** double found, users: ", submission.user_id, fileSize[att['size']])
+                else:
+                    fileSize[att['size']]=submission.user_id
+
 course = canvas.get_course(3237)
 print(course.name)
 
-assignment = course.get_assignment(24236)
+assignments = course.get_assignments()
 
-print(assignment)
+for assignment in assignments:
+    print(assignment.id)
+    checkAssignment(assignment)
 
-submissions = assignment.get_submissions()
-
-
-
-#submission = assignment.get_submission(user_id)
-for submission in submissions:
-    
-    if (hasattr(submission,'attachments')):
-        for att in submission.attachments:
-            print(submission.user_id, att['size'], att['display_name'], att['content-type'])
+# assignment = course.get_assignment(24210)
+# checkAssignment(assignment)
