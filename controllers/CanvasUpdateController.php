@@ -12,6 +12,9 @@ use yii\filters\AccessControl;
 
 use yii\helpers\ArrayHelper;
 
+//use vxm\async\Task;
+use Spatie\Async\Pool;
+
 
 class CanvasUpdateController extends Controller {
 
@@ -108,27 +111,38 @@ class CanvasUpdateController extends Controller {
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
         $count=0;
 
+        $pool = Pool::create();
+        $timerStart=round(microtime(true) * 1000);
+
         foreach ($sqlResult as $elem) {
-            //ToDo create function for convert data and submittedAt convert!!!
-            $apiResult = $this->getSubmissionFromApi($elem['submission']);
+            $pool->add(function () use ($elem) {
+                $apiResult = $this->getSubmissionFromApi($elem['submission']);
+                return $apiResult;
+            })->then(function ($apiResult) use ($timerStart, $count, $elem) {
+                $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
+                $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
 
-            $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
-            $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
-
-            if ( $elem['graded']<> $gradedAt ) {
-                $count++;
-                // Update submission
-                // $sql = "update submission set graded_at=:gradedAt, entered_score=:score, submitted_at=:submittedAt, workflow_state=:state where id=:id";
-                // $params=[':gradedAt'=>$gradedAt, ':score'=>$apiResult['score'], ':submittedAt'=>$submittedAt, ':id'=>$elem['submission'], ':state'=>$apiResult['state']];
-                if ( $apiResult['score'] ) {
-                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
-                } else {
-                    $sql = "update submission set graded_at='".$gradedAt."', submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                if ( $elem['graded']<> $gradedAt ) {
+                    $count++;
+                    // Update submission
+                    // $sql = "update submission set graded_at=:gradedAt, entered_score=:score, submitted_at=:submittedAt, workflow_state=:state where id=:id";
+                    // $params=[':gradedAt'=>$gradedAt, ':score'=>$apiResult['score'], ':submittedAt'=>$submittedAt, ':id'=>$elem['submission'], ':state'=>$apiResult['state']];
+                    if ( $apiResult['score'] ) {
+                        $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                    } else {
+                        $sql = "update submission set graded_at='".$gradedAt."', submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                    }
+                    $result = Yii::$app->db->createCommand($sql)->execute();
                 }
-                $result = Yii::$app->db->createCommand($sql)->execute();
-            }
+            })->catch(function (Throwable $exception) {
+                writeLog("Error async: ".$exception );
+            });
 
         }
+
+        await($pool); 
+        writeLog("Async Pool(".$count." threads) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
+        
         // dd('end');
         // return $this->actionNotGraded(false, $regrading);
         Yii::$app->session->setFlash('success', "Updated $count assignments in ".$elem['module']);

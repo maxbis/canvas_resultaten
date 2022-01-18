@@ -431,9 +431,28 @@ class QueryController extends Controller
         return $this->actionNotGraded(isset($export)&&$export, true);
     }
 
-    public function actionNotGraded($export=false, $regrading=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
+    public function actionNotGraded($export=false, $regrading=false, $test=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
     {
         $sql = "
+            SELECT  m.pos '-pos',
+            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
+            sum(1) '+Aantal'
+            -- , concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Canvas update'
+            FROM assignment a
+            left outer join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.graded_at ";
+        $sql .= $regrading ? '<>' : '=';
+        $sql .= "'1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            group by 1, 2
+            order by m.pos
+        ";
+
+        // hidden feature to be tested
+        if ($test) {
+            $sql = "
             SELECT  m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum(1) '+Aantal',
@@ -449,6 +468,7 @@ class QueryController extends Controller
             group by 1, 2
             order by m.pos
         ";
+        }
 
         $reportTitle = $regrading ? "Wachten op herbeoordeling" : "Wachten op eerste beoordeling";
 
