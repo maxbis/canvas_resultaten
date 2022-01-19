@@ -113,7 +113,7 @@ $tot = [];
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
                                 echo "<pre><hr>";
-                                dd( [$part, $data] );
+                                dd( ["Err: Inlvalid link data", $item, $part] );
                             }
                         } elseif (substr($columnName, 0, 1) <> '-') {
                             echo "<td>" . $item[$columnName] . "</td>";

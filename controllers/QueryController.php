@@ -187,6 +187,7 @@ class QueryController extends Controller
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
             and year(laatste_activiteit) > 2020
+            and o.klas is not NULL
             $select
             order by 4 desc
         ";
