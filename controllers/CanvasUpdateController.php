@@ -115,8 +115,8 @@ class CanvasUpdateController extends Controller {
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
-                return $apiResult;
-            })->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
+            //    return $apiResult;
+            //})->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
                 $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
 
