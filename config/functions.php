@@ -31,7 +31,7 @@ function dd($var)
 
 function writeLog($msg="")
 {
-    $log  = date("j-m-Y,H:i:s")." "
+    $log  = date("j-m-Y H:i:s")." "
             .$_SERVER['REMOTE_ADDR']." "
             .Yii::$app->controller->id."Controller "
             ."action".Yii::$app->controller->action->id." "

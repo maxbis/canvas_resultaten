@@ -105,21 +105,23 @@ class CanvasUpdateController extends Controller {
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
-        $count=0;
+        $countUpdates=0;
+        $countThreads=0;
 
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
         foreach ($sqlResult as $elem) {
-            $result=$pool->add(function () use ($elem) {
+            $result=$pool->add(function () use ($elem, &$countThreads) {
+                $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
                 return $apiResult;
-            })->then(function ($apiResult) use ($timerStart, &$count, $elem) {
+            })->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
                 $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
 
                 if ( $elem['graded']<> $gradedAt ) {
-                    $count++;
+                    $countUpdates++;
                     // Update submission
                     // $sql = "update submission set graded_at=:gradedAt, entered_score=:score, submitted_at=:submittedAt, workflow_state=:state where id=:id";
                     // $params=[':gradedAt'=>$gradedAt, ':score'=>$apiResult['score'], ':submittedAt'=>$submittedAt, ':id'=>$elem['submission'], ':state'=>$apiResult['state']];
@@ -137,11 +139,11 @@ class CanvasUpdateController extends Controller {
         }
 
         await($pool); 
-        writeLog("Async Pool(".$count." threads) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
+        writeLog("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         
         // dd('end');
         // return $this->actionNotGraded(false, $regrading);
-        Yii::$app->session->setFlash('success', "Updated $count assignments in <i>".$elem['module']."</i>");
+        Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".$elem['module']."</i>");
         $regrading = $regrading ? 1 : 0;
         return $this->redirect(['query/not-graded?test=1&regrading='.$regrading]);
     }
