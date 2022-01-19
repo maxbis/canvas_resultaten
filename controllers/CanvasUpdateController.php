@@ -111,10 +111,10 @@ class CanvasUpdateController extends Controller {
         $timerStart=round(microtime(true) * 1000);
 
         foreach ($sqlResult as $elem) {
-            $pool->add(function () use ($elem) {
+            $result=$pool->add(function () use ($elem) {
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
                 return $apiResult;
-            })->then(function ($apiResult) use ($timerStart, $count, $elem) {
+            })->then(function ($apiResult) use ($timerStart, &$count, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
                 $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
 
@@ -143,8 +143,7 @@ class CanvasUpdateController extends Controller {
         // return $this->actionNotGraded(false, $regrading);
         Yii::$app->session->setFlash('success', "Updated $count assignments in <i>".$elem['module']."</i>");
         $regrading = $regrading ? 1 : 0;
-        return $this->redirect(['query/not-graded?regrading='.$regrading]);
+        return $this->redirect(['query/not-graded?test=1&regrading='.$regrading]);
     }
-
 
 }

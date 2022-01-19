@@ -458,7 +458,7 @@ class QueryController extends Controller
             m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum(1) '+Aantal',
-            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Canvas update'
+            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading|show_processing') '!Canvas update'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -476,7 +476,7 @@ class QueryController extends Controller
 
         $data = $this->executeQuery($sql, $reportTitle, $export);
 
-        $lastLine =  "<hr><a href=\"".Yii::$app->request->url."?test=1\">Test (beta)</a>";
+        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->request->url."?test=1\">Test (beta)</a></div";
 
         return $this->render('output', [
             'data' => $data,

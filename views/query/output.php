@@ -109,6 +109,8 @@ $tot = [];
                             } elseif (count($part) == 4) { # Generic
                                 echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help]) . "</td>";
                             } elseif ( count($part) == 6 ) { # Generic
+                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help] ) . "</td>";
+                            } elseif ( count($part) == 7 ) { # show processing (hack)
                                 echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help, 'onclick'=>"hide();"] ) . "</td>";
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
