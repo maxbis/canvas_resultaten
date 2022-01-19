@@ -90,10 +90,6 @@ class CanvasUpdateController extends Controller {
         return $thisDate->format('Y-m-d H:i:s');
     }
 
-    public function actionIndex() {
-        echo "Hello World!";
-    }
-
     public function actionUpdateGradingStatus($moduleId, $regrading) {
 
         $sql = "
@@ -146,6 +142,7 @@ class CanvasUpdateController extends Controller {
         // dd('end');
         // return $this->actionNotGraded(false, $regrading);
         Yii::$app->session->setFlash('success', "Updated $count assignments in <i>".$elem['module']."</i>");
+        $regrading = $regrading ? 1 : 0;
         return $this->redirect(['query/not-graded?regrading='.$regrading]);
     }
 

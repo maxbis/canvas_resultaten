@@ -476,7 +476,7 @@ class QueryController extends Controller
 
         $data = $this->executeQuery($sql, $reportTitle, $export);
 
-        $lastLine =  "<hr><a href=\"".Yii::$app->request->url."?&test=1\">Test (beta)</a>";
+        $lastLine =  "<hr><a href=\"".Yii::$app->request->url."?test=1\">Test (beta)</a>";
 
         return $this->render('output', [
             'data' => $data,
