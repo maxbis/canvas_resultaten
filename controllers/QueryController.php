@@ -454,7 +454,8 @@ class QueryController extends Controller
         // hidden feature to be tested
         if ($test) {
             $sql = "
-            SELECT  m.pos '-pos',
+            SELECT
+            m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum(1) '+Aantal',
             concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Canvas update'
@@ -466,7 +467,7 @@ class QueryController extends Controller
             where s.graded_at ";
         $sql .= $regrading ? '<>' : '=';
         $sql .= "'1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1, 2
+            group by 1, 2, 4
             order by m.pos
         ";
         }
