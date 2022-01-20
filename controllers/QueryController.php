@@ -656,7 +656,7 @@ class QueryController extends Controller
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Hoeveel dagen geleden raadpleegde de student de Canvas Monitor?',
+            'descr' => 'Hoeveel dagen is het geleden dat het studentrapport is opgevraagd door iemand die <i>niet</i> is aangelogd in de Canvas Monitor?',
         ]);
     }
 
