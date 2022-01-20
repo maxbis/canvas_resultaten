@@ -57,7 +57,6 @@ def getVoldaanCriteria():
 def log(message, level=3):
     if level <= int(logLevel):
         print(message)
-    
 
 def getJsonData(url, courseId):
     pageNr = 1

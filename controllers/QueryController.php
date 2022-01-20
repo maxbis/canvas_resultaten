@@ -637,5 +637,28 @@ class QueryController extends Controller
 
     }
 
+    public function actionLastReportByStudent($export=false, $klas = '') {
+        if ($klas) {
+            $select = "where klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
+                FROM user u
+                LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" ) ";
+        $sql.=  $select;
+        $sql.= " group by 1,2
+                order by 3 ASC";
+
+        $data = $this->executeQuery($sql, "Studenten keken in Canvas Monitor", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Hoeveel dagen geleden raadpleegde de student de Canvas Monitor?',
+        ]);
+    }
+
 }
 

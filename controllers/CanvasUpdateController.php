@@ -55,6 +55,7 @@ class CanvasUpdateController extends Controller {
               state
               submittedAt
               gradedAt
+              grader
               submissionStatus
               excused
               assignment {
@@ -67,8 +68,8 @@ class CanvasUpdateController extends Controller {
 
         curl_setopt_array($ch, array(
             CURLOPT_HTTPHEADER  => array($authorization),
-            CURLOPT_RETURNTRANSFER  =>true,
-            CURLOPT_VERBOSE     => 1
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_VERBOSE => 1
         ));
 
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -115,6 +116,7 @@ class CanvasUpdateController extends Controller {
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
+                //dd($apiResult);
                 return $apiResult;
             })->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
@@ -123,14 +125,13 @@ class CanvasUpdateController extends Controller {
                 if ( $elem['graded']<> $gradedAt ) {
                     $countUpdates++;
                     // Update submission
-                    // $sql = "update submission set graded_at=:gradedAt, entered_score=:score, submitted_at=:submittedAt, workflow_state=:state where id=:id";
-                    // $params=[':gradedAt'=>$gradedAt, ':score'=>$apiResult['score'], ':submittedAt'=>$submittedAt, ':id'=>$elem['submission'], ':state'=>$apiResult['state']];
                     if ( $apiResult['score'] ) {
                         $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
                     } else {
                         $sql = "update submission set graded_at='".$gradedAt."', submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
                     }
                     $result = Yii::$app->db->createCommand($sql)->execute();
+                    //dd([$result,$sql]);
                 }
             })->catch(function (Throwable $exception) {
                 writeLog("Error async: ".$exception );
