@@ -55,7 +55,6 @@ class CanvasUpdateController extends Controller {
               state
               submittedAt
               gradedAt
-              grader
               submissionStatus
               excused
               assignment {
@@ -78,6 +77,8 @@ class CanvasUpdateController extends Controller {
         $out = json_decode(curl_exec($ch), true);
         curl_close($ch);
         
+        //dd($out);
+
         return $out['data']['submission'];
     }
 
@@ -109,6 +110,8 @@ class CanvasUpdateController extends Controller {
         $countUpdates=0;
         $countThreads=0;
 
+        //dd($sqlResult);
+
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
@@ -116,7 +119,7 @@ class CanvasUpdateController extends Controller {
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
-                //dd($apiResult);
+                // dd($apiResult);
                 return $apiResult;
             })->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
