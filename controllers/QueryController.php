@@ -639,14 +639,15 @@ class QueryController extends Controller
 
     public function actionLastReportByStudent($export=false, $klas = '') {
         if ($klas) {
-            $select = "where klas='$klas'";
+            $select = "and klas='$klas'";
         } else {
             $select = '';
         }
 
         $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
                 FROM user u
-                LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" ) ";
+                LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
+                WHERE u.klas in ('1A','1B','1C','1D')";
         $sql.=  $select;
         $sql.= " group by 1,2
                 order by 3 ASC, 1";
