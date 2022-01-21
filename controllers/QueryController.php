@@ -649,7 +649,7 @@ class QueryController extends Controller
                 LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" ) ";
         $sql.=  $select;
         $sql.= " group by 1,2
-                order by 3 ASC";
+                order by 3 ASC, 1";
 
         $data = $this->executeQuery($sql, "Studenten keken in Canvas Monitor", $export);
 
