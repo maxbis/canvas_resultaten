@@ -122,9 +122,9 @@ function isMobileDevice() {
             foreach ($data as $item) {
                 if ($item['Voldaan'] == 'V') {
                     $totVoldaan += 1;
-                    $totPunten += $item['Punten'];
-                    $totOpdrachten += $item['Opdrachten'];
                 }
+                $totPunten += $item['Punten'];
+                $totOpdrachten += $item['Opdrachten'];
 
                 $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
                 if ($dagen <= 7) {
