@@ -484,7 +484,7 @@ class QueryController extends Controller
                 $sql .= "'1970-01-01 00:00:00'";
             }
             $sql .= "
-            group by 1, 2
+            group by 1, 2, 4
             order by m.pos
         ";
         }
