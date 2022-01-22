@@ -290,6 +290,7 @@ if (int(args['course'])>100):
     if ( args['delete'] ):
         deleteBlok(int(args['course']))
     else:
+        print("Create one block: "+str(args['course']))
         createBlok(int(args['course']))
 else:
     # Read course_id's that need to be updated from database table course

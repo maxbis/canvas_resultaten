@@ -66,6 +66,7 @@ echo Nav::widget([
             'items' => [
                 ['label' => 'Eerste beoordelingen',        'url' => ['/query/menu41']],
                 ['label' => 'Herbeoordelingen',            'url' => ['/query/menu42']],
+                ['label' => 'Alle beoordelingen',          'url' => ['/query/menu43']],
                 ['label' => '----------------',],
                 ['label' => 'Eerste beoordelingen op datum', 'url' => ['/query/not-graded-per-date']],
                 ['label' => 'Herbeoordelingen beoordelingen op datum', 'url' => ['/query/not-graded-per-date?regrading=true']],

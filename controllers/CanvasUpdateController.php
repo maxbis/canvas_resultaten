@@ -77,7 +77,7 @@ class CanvasUpdateController extends Controller {
         $out = json_decode(curl_exec($ch), true);
         curl_close($ch);
         
-        //dd($out);
+        // dd($out);
 
         return $out['data']['submission'];
     }
