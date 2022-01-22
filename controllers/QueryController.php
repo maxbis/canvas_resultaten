@@ -246,7 +246,6 @@ class QueryController extends Controller
         ]);
     }
 
-    // ToDO aantal ingelverde opdrachten per module over de afgelopen 14 dagen.
     public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
     { 
 
@@ -257,7 +256,7 @@ class QueryController extends Controller
         }
 
         $sql = "
-            select m.pos, m.naam,
+            select m.pos, m.naam Module,
             sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
             sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Waarvan nagekeken'
             from module_def m
@@ -447,9 +446,9 @@ class QueryController extends Controller
     {
         $sql = "
             SELECT  m.pos '-pos',
+            -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum(1) '+Aantal'
-            -- , concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Canvas update'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -478,10 +477,14 @@ class QueryController extends Controller
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            where s.graded_at ";
-        $sql .= $regrading ? '<>' : '=';
-        $sql .= "'1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            group by 1, 2, 4
+            where s.submitted_at > s.graded_at";
+            if ( $regrading <= 1 ) {
+                $sql .= " and s.graded_at ";
+                $sql .= $regrading ? '<>' : '=';
+                $sql .= "'1970-01-01 00:00:00'";
+            }
+            $sql .= "
+            group by 1, 2
             order by m.pos
         ";
         }
@@ -496,7 +499,7 @@ class QueryController extends Controller
 
         $data = $this->executeQuery($sql, $reportTitle, $export);
 
-        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->request->url."?test=1\">Test (beta)</a></div";
+        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->request->url."?test=1\">Update</a></div";
 
         return $this->render('output', [
             'data' => $data,

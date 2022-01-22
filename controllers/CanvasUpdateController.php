@@ -100,9 +100,13 @@ class CanvasUpdateController extends Controller {
             JOIN submission s on s.assignment_id= a.id
             JOIN assignment_group g on g.id = a.assignment_group_id
             JOIN module_def m on m.id = g.id
-            WHERE s.graded_at ";
-            $sql .= $regrading ? '<>' : '=';
-            $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            WHERE s.submitted_at > s.graded_at";
+            if ( $regrading <= 1 ) {
+                $sql .= " and s.graded_at ";
+                $sql .= $regrading ? '<>' : '=';
+                $sql .= "'1970-01-01 00:00:00'";
+            }
+            $sql .= "
             AND m.id=$moduleId
         ";
 
@@ -148,7 +152,7 @@ class CanvasUpdateController extends Controller {
         // dd('end');
         // return $this->actionNotGraded(false, $regrading);
         Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".$elem['module']."</i>");
-        $regrading = $regrading ? 1 : 0;
+        // $regrading = $regrading ? 1 : 0;
         return $this->redirect(['query/not-graded?test=1&regrading='.$regrading]);
     }
 
