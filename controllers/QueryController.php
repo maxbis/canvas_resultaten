@@ -246,31 +246,38 @@ class QueryController extends Controller
         ]);
     }
 
-    public function actionWorkingOn($sort = 'desc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
+    // ToDO aantal ingelverde opdrachten per module over de afgelopen 14 dagen.
+    public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
     { 
 
         if ($klas) {
-            $select = "and klas='$klas'";
+            $select = "where klas='$klas'";
         } else {
             $select = '';
         }
 
         $sql = "
-            SELECT module Module, sum(1) Studenten
-            from resultaat o
-            where laatste_activiteit =
-            (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
-            and year(laatste_activiteit) > 2020
+            select m.pos, m.naam,
+            sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
+            sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Waarvan nagekeken'
+            from module_def m
+            join assignment_group g on g.id = m.id
+            join assignment a on a.assignment_group_id=g.id
+            left outer join submission s on s.assignment_id=a.id
+            join user u on u.id = s.user_id
             $select
-            group by 1
-            order by 2 $sort
+            group by 1,2
+            order by m.pos $sort
         ";
 
         $data = $this->executeQuery($sql, "Studenten " . $klas . " werken aan", $export);
 
+        $data['show_from']=1;
+
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'descr' => 'Aantal opdrachten ingeleverd en nageken per module over de afgelopen 14 dagen <br><i>Nakijken</i> telt alleen de modules die ook over de laatste twee weken zijn ingeleverd.',
         ]);
     }
 
@@ -343,7 +350,7 @@ class QueryController extends Controller
     { 
         $sql = "
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
-            from resultaat
+            from resultaat 
             group by 1
             order by 2 desc
         ";
@@ -432,6 +439,10 @@ class QueryController extends Controller
         return $this->actionNotGraded(isset($export)&&$export, true, isset($test)&&$test);
     }
 
+    public function actionMenu43($export=false, $test=false){ // menu 4.3 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, 2, isset($test)&&$test);
+    }
+
     public function actionNotGraded($export=false, $regrading=false, $test=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
     {
         $sql = "
@@ -444,14 +455,17 @@ class QueryController extends Controller
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            where s.graded_at ";
-        $sql .= $regrading ? '<>' : '=';
-        $sql .= "'1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            where s.submitted_at > s.graded_at";
+            if ( $regrading <= 1 ) {
+                $sql .= " and s.graded_at ";
+                $sql .= $regrading ? '<>' : '=';
+                $sql .= "'1970-01-01 00:00:00'";
+            }
+            $sql .= "
             group by 1, 2
             order by m.pos
         ";
 
-        // hidden feature to be tested
         if ($test) {
             $sql = "
             SELECT
@@ -472,7 +486,13 @@ class QueryController extends Controller
         ";
         }
 
-        $reportTitle = $regrading ? "Wachten op herbeoordeling" : "Wachten op eerste beoordeling";
+        if ($regrading == 0 ) {
+            $reportTitle = "Wachten op eerste beoordeling";
+        } elseif ( $regrading == 1) {
+            $reportTitle = "Wachten op herbeoordeling";
+        } else {
+            $reportTitle = "Wachten op beoordeling";
+        }
 
         $data = $this->executeQuery($sql, $reportTitle, $export);
 
@@ -504,9 +524,13 @@ class QueryController extends Controller
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            where s.graded_at ";
-            $sql .= $regrading ? '<>' : '=';
-            $sql .= " '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
+            where s.submitted_at > s.graded_at";
+            if ( $regrading <= 1 ) {
+                $sql .= " and s.graded_at ";
+                $sql .= $regrading ? '<>' : '=';
+                $sql .= "'1970-01-01 00:00:00'";
+            }
+            $sql .="
             and m.id=$moduleId
             order by 3, 5
         ";
