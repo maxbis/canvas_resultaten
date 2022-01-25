@@ -259,6 +259,7 @@ class QueryController extends Controller
             select m.pos, m.naam Module,
             sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
             sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Waarvan nagekeken'
+            -- round ( (sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end)*100)/ ( sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) ) ,0) '+Test'
             from module_def m
             join assignment_group g on g.id = m.id
             join assignment a on a.assignment_group_id=g.id
@@ -448,7 +449,9 @@ class QueryController extends Controller
             SELECT  m.pos '-pos',
             -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
-            sum(1) '+Aantal'
+            sum( case when (not m.generiek) then 1 else 0 end ) '+Dev',
+            sum( case when (m.generiek) then 1 else 0 end ) '+Gen',
+            sum(1) '+Totaal'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
