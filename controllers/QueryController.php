@@ -473,7 +473,7 @@ class QueryController extends Controller
             SELECT
             m.pos '-pos',
             concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
-            sum(1) '+Aantal',
+            sum(1) '+Totaal',
             concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading|show_processing') '!Canvas update'
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
