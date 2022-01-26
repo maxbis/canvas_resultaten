@@ -445,6 +445,7 @@ class QueryController extends Controller
 
     public function actionNotGraded($export=false, $regrading=false, $test=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
     {
+       
         $sql = "
             SELECT  m.pos '-pos',
             -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
@@ -688,6 +689,42 @@ class QueryController extends Controller
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Hoeveel dagen is het geleden dat het studentrapport is opgevraagd door iemand die <i>niet</i> is aangelogd in de Canvas Monitor?',
+        ]);
+    }
+
+
+    public function actionOverview($export=false) {
+
+        $sql = "SELECT id, naam, substring(naam,1,4) 'mod' from module_def where generiek = 0 order by pos";
+
+        $modules = Yii::$app->db->createCommand($sql)->queryAll();
+
+        $query = "";
+        $count = 0;
+        foreach($modules as $module) {
+            $count++;
+            $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+        }
+
+        $sql = "
+            SELECT 
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            sum( case when r.voldaan='V' then 1 else 0 end) 'Tot'
+            $query
+            FROM resultaat r
+            LEFT OUTER JOIN course c on c.id = r.course_id
+            INNER JOIN module_def d on d.id=r.module_id
+            INNER JOIN user u on u.student_nr=r.student_nummer
+            WHERE d.generiek = 0
+            GROUP BY 1
+            ORDER BY 1
+        ";
+        $data = $this->executeQuery($sql, "Overview Dev Modules", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'nocount' => 'True',
         ]);
     }
 
