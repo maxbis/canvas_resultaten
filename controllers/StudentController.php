@@ -1,5 +1,7 @@
 <?php
 
+// Stadard Yii CRUD controller
+
 namespace app\controllers;
 
 use Yii;

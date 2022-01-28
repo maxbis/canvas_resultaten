@@ -1,5 +1,7 @@
 <?php
 
+// Standard Yii course controller, created via CRUD creator
+
 namespace app\controllers;
 
 use Yii;

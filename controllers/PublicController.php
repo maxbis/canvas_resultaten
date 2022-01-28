@@ -1,5 +1,7 @@
 <?php
 
+// controller for Student report (public accesible; without logging in)
+
 namespace app\controllers;
 
 use Yii;

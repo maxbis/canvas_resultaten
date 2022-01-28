@@ -1,5 +1,7 @@
 <?php
 
+// Standard Yii controller
+
 namespace app\controllers;
 
 use Yii;

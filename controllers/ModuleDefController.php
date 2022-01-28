@@ -1,5 +1,7 @@
 <?php
 
+// Standard YII CRUD controller
+
 namespace app\controllers;
 
 use Yii;

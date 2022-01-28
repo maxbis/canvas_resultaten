@@ -1,5 +1,9 @@
 <?php
 
+// This class is used to update the grading status.
+// This class connects to Canvas via GraphIQ it calls the API n times where n is the number of submissions open for grading.
+// This class should also update information about the grader(id) but atm the GraphIQ interface does not return thsi info nor can we select more than one ID at a time 
+
 namespace app\controllers;
 
 use Yii;
@@ -149,11 +153,8 @@ class CanvasUpdateController extends Controller {
         await($pool); 
         writeLog("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         
-        // dd('end');
-        // return $this->actionNotGraded(false, $regrading);
         Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".$elem['module']."</i>");
-        // $regrading = $regrading ? 1 : 0;
-        return $this->redirect(['query/not-graded?test=1&regrading='.$regrading]);
+        return $this->redirect(['grade/not-graded?test=1&regrading='.$regrading]);
     }
 
 }
