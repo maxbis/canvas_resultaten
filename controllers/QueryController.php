@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use Yii;
+use DateTime;
 
 /**
  * BeoordelingController implements the CRUD actions for Beoordeling model.
@@ -55,17 +56,21 @@ class QueryController extends QueryBaseController
 
     public function actionNakijken($export = false) { 
 
+        $weekday=['zo', 'ma','di','wo','do','vr','za'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ); // 0 for zondag
+       // dd($dayNr);
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
         $sql = "
-            SELECT u.name naam,
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -1 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+1dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -2 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+2dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -3 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+3dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -4 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+4dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -5 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+5dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -6 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+6dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+7dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -8 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+8dag',
-            sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -9 DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+9dag'
+            SELECT u.name naam
+            $select
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
