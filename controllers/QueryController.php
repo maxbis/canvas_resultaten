@@ -51,7 +51,7 @@ class QueryController extends QueryBaseController
         ];
     }
 
-    public function actionAantal($export = false) { 
+    public function actionNakijken($export = false) { 
 
         $sql = "
             SELECT u.name naam,
