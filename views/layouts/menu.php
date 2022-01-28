@@ -46,7 +46,7 @@ echo Nav::widget([
 
         [
             'label' => 'Klas',
-            'visible' => (Yii::$app->controller->id == 'query' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
+            'visible' => (Yii::$app->controller->id == 'report' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
             'items' => [
                 ['label' => '1A', 'url' => [Yii::$app->controller->action->id . '?klas=1A']],
                 ['label' => '1B', 'url' => [Yii::$app->controller->action->id . '?klas=1B']],
