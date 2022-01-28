@@ -5,6 +5,8 @@
 
 namespace app\controllers;
 use yii\web\Controller;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use Yii;
 
 /**
