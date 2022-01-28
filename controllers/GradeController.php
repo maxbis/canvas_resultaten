@@ -43,7 +43,7 @@ class GradeController extends QueryBaseController
         $sql = "
             SELECT  m.pos '-pos',
             -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
-            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
+            concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum( case when (not m.generiek) then 1 else 0 end ) '+Dev',
             sum( case when (m.generiek) then 1 else 0 end ) '+Gen',
             sum(1) '+Totaal'
@@ -67,7 +67,7 @@ class GradeController extends QueryBaseController
             $sql = "
             SELECT
             m.pos '-pos',
-            concat(m.naam,'|/query/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
+            concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum(1) '+Totaal',
             concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading|show_processing') '!Canvas update'
             FROM assignment a
