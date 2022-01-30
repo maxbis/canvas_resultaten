@@ -56,10 +56,9 @@ class QueryController extends QueryBaseController
 
     public function actionNakijken($export = false) { 
 
-        $weekday=['zo', 'ma','di','wo','do','vr','za'];
+        $weekday=['ma','di','wo','do','vr','za','zo'];
         $date = new DateTime();
-        $dayNr = $date->format( 'N' ); // 0 for zondag
-       // dd($dayNr);
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
 
         $select='';
         for($i=0; $i<7; $i++){  
@@ -140,6 +139,89 @@ class QueryController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Gemiddeld aantal pogingen en maximaal aantal per student/module.<br>Alleen als het gemiddel aantal pogingen > 1.5 voor de module is.'
         ]);
+    }
+
+    public function actionDayOfWeek($export=false) {
+        $sql = "
+        select weekday(s.submitted_at) nr, dayname(s.submitted_at) Dag,
+        sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+        sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
+        sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
+        sum(case when (datediff(curdate(),s.graded_at)>21 && datediff(curdate(),s.graded_at)<=28 ) then 1 else 0 end) '+21-21 dagen',
+        sum(case when (datediff(curdate(),s.graded_at)>28 && datediff(curdate(),s.graded_at)<=35 ) then 1 else 0 end) '+28-35 dagen',
+        sum(1) '+Schooljaar'
+        from submission s
+        inner join user u on u.id = s.user_id
+        inner join assignment a on a.id = s.assignment_id
+        inner join assignment_group g on g.id = a.assignment_group_id
+        where datediff(curdate(),s.graded_at) < 400
+        group by 1,2
+        order by 1
+        ";
+
+        $data = $this->executeQuery($sql, "Productiefste dagen studenten", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Op welke dag van de week zijn de meeste opdrachten ingeleverd.',
+            'nocount' => 'True',
+        ]);
+    }
+
+    public function actionDagdeel($export=false) {
+        $sql = "
+        select u.name Student,
+        sum(case when (hour(s.submitted_at)>=7 && hour(s.submitted_at)<9 ) then 1 else 0 end) '+Morgens 0700-0900',
+        sum(case when (hour(s.submitted_at)>=9 && hour(s.submitted_at)<15 ) then 1 else 0 end) '+Overdag 0900-1500',
+        sum(case when (hour(s.submitted_at)>=15 && hour(s.submitted_at)<18 ) then 1 else 0 end) '+Namiddag 1500-1800',
+        sum(case when (hour(s.submitted_at)>=18 && hour(s.submitted_at)<=23 ) then 1 else 0 end) '+Avond 1800-2400',
+        sum(case when (hour(s.submitted_at)>=0 && hour(s.submitted_at)<6 ) then 1 else 0 end) '+Nacht 2400-0600',
+        sum(1) '+Totaal'
+        from submission s
+        inner join user u on u.id = s.user_id
+        inner join assignment a on a.id = s.assignment_id
+        inner join assignment_group g on g.id = a.assignment_group_id
+        where datediff(curdate(),s.graded_at) < 400
+        group by 1
+        ";
+
+        $data = $this->executeQuery($sql, "Productiefste dagen studenten", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Op welke dag van de week zijn de meeste opdrachten ingeleverd.',
+            'nocount' => 'True',
+        ]);
+    }
+
+    public function actionMoeilijk($export=false) {
+        $sql = "
+        select g.name,
+        sum( s.entered_score ) '+score behaald',
+        sum( a.points_possible ) '+score mogelijk',
+        round(sum( s.entered_score )*100 / sum( a.points_possible ),1) 'perc',
+        avg(s.attempt) '+gem_pogingen',
+        count(*) 'aantal'
+        from submission s
+        inner join user u on u.id = s.user_id
+        inner join assignment a on a.id = s.assignment_id
+        inner join assignment_group g on g.id = a.assignment_group_id
+        inner join module_def d on d.id=g.id
+        where s.submitted_at < s.graded_at and d.generiek=0
+        group by 1
+        having count(*) > 50 and sum( a.points_possible ) > 0
+        order by 5 DESC
+    ";
+
+    $data = $this->executeQuery($sql, "Moeilijke dev modules", $export);
+
+    return $this->render('output', [
+        'data' => $data,
+        'action' => Yii::$app->controller->action->id."?",
+        'descr' => 'Aantal behaalde punten als percentage van het totaal.'
+    ]);
     }
 
 }
