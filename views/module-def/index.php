@@ -46,6 +46,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
             ],
             [
+                'attribute'=>'id',
+                'label' => 'update',
+                'contentOptions' => ['style' => 'width:20px; white-space: normal;'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return Html::a($data->id, ['/canvas-update/update-grading-status','moduleId'=>$data->id,'regrading'=>'2'],['title'=> 'Edit',]);
+                 },
+            ],
+            [
                 'class' => 'yii\grid\ActionColumn',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
                 'visible' =>  (Yii::$app->user->identity->username=='beheer'), 

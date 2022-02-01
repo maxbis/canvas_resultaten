@@ -153,7 +153,7 @@ class CanvasUpdateController extends Controller {
         await($pool); 
         writeLog("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         
-        Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".$elem['module']."</i>");
+        Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
         return $this->redirect(['grade/not-graded?test=1&regrading='.$regrading]);
     }
 

@@ -37,7 +37,7 @@ class PublicController extends Controller
      * Lists all Course models.
      * @return mixed
      */
-    public function actionIndex($code = 'none')
+    public function actionIndex($code = 'none', $test=0)
     {
         if( strlen($code)<16 ) exit;
         // ipcheck for testing off
@@ -100,7 +100,7 @@ class PublicController extends Controller
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
-        return $this->render('index', [
+        return $this->render( $test ? 'index-new' : 'index', [
             'data' => $data,
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],

@@ -1,0 +1,66 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
+
+/* button[aria-expanded="true"] .bi-chevron-double-down::before {
+    display:none;
+}
+
+button[aria-expanded="false"] .bi-chevron-double-up::before {
+    display:none;
+} */
+
+.table-header[data-show="true"],
+.table-results[data-show="true"]{
+    display:block;
+}
+
+.table-header[data-show="false"],
+.table-results[data-show="false"]{
+    display:none;
+}
+
+   .bg-danger[data-setcolor="false"],
+   .bg-success[data-setcolor="false"],
+   .bg-warning[data-setcolor="false"] {
+    color:#000000;
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important
+}
+
+.bg-danger[data-setcolor="true"],
+.bg-success[data-setcolor="true"],
+.bg-warning[data-setcolor="true"] {
+ color:#ffffff;
+}
+
+
+
+.success[data-setcolor="true"]{
+    background-color: #c3e6cb;
+}
+
+.warning[data-setcolor="true"]{
+    background-color: #ffeeba;
+}
+
+.danger[data-setcolor="true"]{
+    background-color: #f5c6cb;
+}
+
+#btn-color{
+    text-decoration:underline;
+}
+
+.info .tooltiptext {
+    visibility: hidden;
+    color:#ffffff;
+    padding:8px;
+    border-radius: 3px;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+  }
+  
+  .info:hover .tooltiptext {
+    visibility: visible;
+  }
