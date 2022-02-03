@@ -60,6 +60,7 @@ class QueryBaseController extends Controller
         if ($export) {
             $sql=$this->exportQueryFilter($sql);
         }
+
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         if ($result) { // column names are derived from query results
@@ -82,7 +83,7 @@ class QueryBaseController extends Controller
         $components = (array_filter($components, function($value) { return !is_null($value) && $value !== ''; }));
 
         $newQuery = "";
-        foreach($components as $item) {
+        foreach($components as $item) { // itterate through the whole query
             if (strtolower(substr($item, 0, 6))=='concat') {
                 $sub= $components = preg_split("/[,(]/", $item);
                 if ( count($sub) < 2 ) {
@@ -93,12 +94,12 @@ class QueryBaseController extends Controller
             if ( substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' ) {
                 $item = str_replace(['!','+','-'], "", $item);
             }
-            if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, sincee limit is the last statement return query as is at this moment
-                return $newQuery;
+            if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, since limit is the last statement return query as is at this moment
+                break;
             }
             $newQuery .= " ".$item;
         }
- 
+
         return($newQuery);
     }
 

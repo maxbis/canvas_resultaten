@@ -189,7 +189,7 @@ class GradeController extends QueryBaseController
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
                     concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
-                    s.attempt Poging,
+                    s.attempt 'Poging',
                     concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id
@@ -209,9 +209,39 @@ class GradeController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
         ]);
     }
+
+    public function actionNotGradedPerStudent($export=false) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
+    {
+        $sql = "
+            SELECT  m.pos '-pos',
+                    m.naam Module,
+                    concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                    concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                    s.attempt Poging,
+                    concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            where s.submitted_at > s.graded_at
+            order by 4 ASC
+            limit 250
+        ";
+
+        $reportTitle = "Alle beoordelingen gesorteerd op student";
+
+        $data = parent::executeQuery($sql, $reportTitle, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
+        ]);
+    }
+
 
 }
