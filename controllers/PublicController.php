@@ -39,9 +39,10 @@ class PublicController extends Controller
      */
     public function actionIndex($code = 'none', $test=0)
     {
-        if( strlen($code)<16 ) exit;
+        if( strlen($code)<16 ) exit; // invalid code in any case
         // ipcheck for testing off
         // MyHelpers::CheckIP();
+
         // Create report for one student(status)
         $sql = "SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
@@ -62,6 +63,8 @@ class PublicController extends Controller
                 ORDER BY c.pos, r.module_pos
             ";
 
+
+        // Create log if invalid code is received
         $data = Yii::$app->db->createCommand($sql)->queryAll();
         if (!count($data)) {
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
@@ -69,6 +72,30 @@ class PublicController extends Controller
             sleep(3);
             return $this->render('login-form');
         }
+
+        // Course data for aggregated data when details are hidden and only block/course dat ais shown
+        // $sql = "SELECT c.korte_naam Blok,
+        //             sum(case when r.voldaan='V' then 1 else 0 end) Voldaan,
+        //             round(sum(r.ingeleverd*100)/sum(r.aantal_opdrachten)) 'Opdrachten %',
+        //             round(sum(r.punten*100)/sum(r.punten_max)) 'Punten %',
+        //             max(r.laatste_activiteit) 'Laatste Actief',
+        //             sum(r.ingeleverd) Opdrachten_ingeleverd,
+        //             sum(r.aantal_opdrachten) Aantal_opdrachten,
+        //             sum(r.punten) Punten_behaald,
+        //             sum(r.punten_max) Punten_mogelijk,
+        //             count(distinct d.id) Aantal_modules
+        //         FROM resultaat r
+        //         LEFT OUTER JOIN course c on c.id = r.course_id
+        //         INNER JOIN module_def d on d.id=r.module_id
+        //         INNER JOIN user u on u.student_nr=r.student_nummer
+        //         WHERE code='$code'
+        //         GROUP BY 1
+        //         ORDER BY 1
+        //     ";
+
+        // $course = Yii::$app->db->createCommand($sql)->queryAll();
+
+        // ---
 
         $sql = "
             SELECT DATE_FORMAT(s.submitted_at,'%y') Jaar,
@@ -102,6 +129,7 @@ class PublicController extends Controller
 
         return $this->render( $test ? 'index-new' : 'index', [
             'data' => $data,
+            // 'course' => $course,
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],
             'chart' => $chart,

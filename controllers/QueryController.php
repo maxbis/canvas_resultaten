@@ -213,15 +213,21 @@ class QueryController extends QueryBaseController
         group by 1
         having count(*) > 50 and sum( a.points_possible ) > 0
         order by 5 DESC
-    ";
+        ";
 
-    $data = $this->executeQuery($sql, "Moeilijke dev modules", $export);
+        $data = $this->executeQuery($sql, "Moeilijke dev modules", $export);
 
-    return $this->render('output', [
-        'data' => $data,
-        'action' => Yii::$app->controller->action->id."?",
-        'descr' => 'Aantal behaalde punten als percentage van het totaal.'
-    ]);
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Aantal behaalde punten als percentage van het totaal.'
+        ]);
+    }
+
+    public function actionGetAllResultaat($export = true) // export voor Theo - staat onder knop bij Gridview van alle resutlaten
+    {  
+        $sql = "select * from resultaat order by student_nummer, module_id";
+        $data = $this->executeQuery($sql, "", $export);
     }
 
 }
