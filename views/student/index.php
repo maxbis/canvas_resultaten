@@ -37,10 +37,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Klas',
                 'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
             ],
+            [
+                'label'=>'Activiteiten',
+                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return  Html::a('link',['/query/activity', 'studentnr'=>$data['student_nr']]);
+                }
+            ],
             //'code',
             [
-                'label' => 'Link',
-                'attribute'=>'code',
+                'label' => 'Status',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Secret public access code'],
                 'format' => 'raw',
                 'value' => function ($data) {

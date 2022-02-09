@@ -224,6 +224,28 @@ class QueryController extends QueryBaseController
         ]);
     }
 
+    // http://localhost:8080/query/activity?studentnr=2153757
+    public function actionActivity($studentnr='99', $export=false){
+        $sql = "
+            select u.name Student, u.klas Klas, g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where u.student_nr = $studentnr
+            order by submitted_at DESC
+            limit 30
+        ";
+
+        $data = $this->executeQuery($sql, "Activity report for $studentnr", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Laaste 30 inzendingen van '.$data['row'][0]['Student']. '.'
+        ]);
+    }
+
     public function actionGetAllResultaat($export = true) // export voor Theo - staat onder knop bij Gridview van alle resutlaten
     {  
         $sql = "select * from resultaat order by student_nummer, module_id";
