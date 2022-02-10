@@ -95,7 +95,9 @@ class QueryController extends QueryBaseController
         $count = 0;
         foreach($modules as $module) {
             $count++;
-            $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            $query.=",sum( case when r.module_id=".$module['id']." then round((r.punten*100/r.punten_max),0) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+
         }
 
         $sql = "
