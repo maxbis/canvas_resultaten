@@ -85,6 +85,7 @@ class QueryController extends QueryBaseController
         ]);
     }
 
+    // (case  when r.voldaan='V' then 1 else round(r.punten*100/r.punten_max,0) end)
     public function actionOverview($export=false) {
 
         $sql = "SELECT id, naam, substring(naam,1,4) 'mod' from module_def where generiek = 0 order by pos";
@@ -96,7 +97,7 @@ class QueryController extends QueryBaseController
         foreach($modules as $module) {
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-            $query.=",sum( case when r.module_id=".$module['id']." then round((r.punten*100/r.punten_max),0) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
 
         }
 
@@ -111,13 +112,14 @@ class QueryController extends QueryBaseController
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
             GROUP BY 1
-            ORDER BY 1
+            ORDER BY 2 DESC, 1
         ";
-        $data = $this->executeQuery($sql, "Overview Dev Modules", $export);
+        $data = $this->executeQuery($sql, "Overview Voortgang", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'nocount' => 'True',
         ]);
     }

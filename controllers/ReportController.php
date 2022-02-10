@@ -281,5 +281,45 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionVoortgang($export=false) {
+
+        $sql = "SELECT id, naam, substring(naam,1,4) 'mod' from module_def where generiek = 0 order by pos";
+
+        $modules = Yii::$app->db->createCommand($sql)->queryAll();
+
+        $query = "";
+        $count = 0;
+        foreach($modules as $module) {
+            $count++;
+            // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+
+        }
+
+        $sql = "
+            SELECT
+            ranking_score Rank,
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            sum( case when r.voldaan='V' then 1 else 0 end) 'Tot'
+            $query
+            FROM resultaat r
+            LEFT OUTER JOIN course c on c.id = r.course_id
+            INNER JOIN module_def d on d.id=r.module_id
+            INNER JOIN user u on u.student_nr=r.student_nummer
+            WHERE d.generiek = 0
+            GROUP BY 1,2
+            ORDER BY 1 DESC
+        ";
+        $data = $this->executeQuery($sql, "Voortgang Dev Modules (voor BSA)", $export);
+
+        $data['show_from']=1;
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
+        ]);
+    }
+
 }
 
