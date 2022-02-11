@@ -256,4 +256,18 @@ class QueryController extends QueryBaseController
         $data = $this->executeQuery($sql, "", $export);
     }
 
+    public function actionLog($export = false) // show access log (not part of any menu)
+    {
+        $sql = "select *
+                from log
+                where subject <> 'Student Rapport' || route <> '82.217.135.153'
+                order by timestamp desc limit 200";
+        $data = $this->executeQuery($sql, "Log", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+        ]);
+    }
+
 }
