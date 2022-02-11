@@ -9,8 +9,7 @@ use Yii;
 class ReportController extends QueryBaseController
 {
 
-    public function actionActief($sort = 'desc', $export = false, $klas = '') // menu 3.1 - Student laatst actief op....
-    { 
+    public function actionActief($export = false, $klas = '') { // menu 3.1 - Student laatst actief op....
 
         // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
         if ($klas) {
