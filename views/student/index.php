@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return  Html::a('link',['/query/activity', 'studentnr'=>$data['student_nr']]);
                 }
             ],
-            //'code',
+
             [
                 'label' => 'Status',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Secret public access code'],
@@ -59,8 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
-                'visible' =>  (Yii::$app->user->identity->username=='admin'), 
-                'template' => '{view} - {delete} - {update}',
+                'visible' =>  (Yii::$app->user->identity->username=='beheer'), 
+                'template' => '{delete} - {update}',
             ],
         ],
     ]); ?>
