@@ -238,7 +238,7 @@ class QueryController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             where u.student_nr = $studentnr
             order by submitted_at DESC
-            limit 30
+            limit 120
         ";
 
         $data = $this->executeQuery($sql, "Activity report for $studentnr", $export);
@@ -246,7 +246,7 @@ class QueryController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Laaste 30 inzendingen van '.$data['row'][0]['Student']. '.'
+            'descr' => 'Laaste 120 inzendingen van '.$data['row'][0]['Student']. '.'
         ]);
     }
 
