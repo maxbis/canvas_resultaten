@@ -320,5 +320,67 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionClusterSubmissions($clusterSize=8, $clusterTime=300, $export=false){
+        $sql = "
+            select u.name Student, g.name Module, UNIX_TIMESTAMP(s.submitted_at) unix_ts, s.submitted_at Submitted
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where s.submitted_at <> '1970-01-01 00:00:00'
+            -- and g.name like 'PHP - Level 1'
+            -- and u.name like 'Daniel%'
+            order by 1,2,3
+        ";
+
+        $result =  Yii::$app->db->createCommand($sql)->queryAll();
+
+        $clusters=[];
+        $cStudent='';
+        $cModule='';
+        $prevTime=0;
+        $thisCluster=0;
+        $start=0;
+        $prevDate='';
+
+        foreach($result as $item) {
+            // d([$thisCluster, $item, ($item['unix_ts']-$prevTime)]);
+            if($cStudent!=$item['Student'] || $cModule!=$item['Module'] ) {
+                $cStudent=$item['Student'];
+                $cModule=$item['Module'];
+                $thisCluster=0;
+                $start=$item['Submitted'];
+            } else {
+                if ( ($item['unix_ts']-$prevTime) < $clusterTime) {
+                    $thisCluster++;
+                } else {
+                    if ($thisCluster >= $clusterSize) {
+                        //d([$start, $thisCluster, $item]);
+                        array_push($clusters, [ 'Student'=>$item['Student'], 'Module'=>$item['Module'], 'Start'=>$start, 'Eind'=>$prevDate, 'Aantal'=>$thisCluster ]);
+                    }
+                    $thisCluster=0;
+                    $start=$item['Submitted'];
+                }
+            }
+            $prevTime = $item['unix_ts'];
+            $prevDate = $item['Submitted'];
+        }
+
+        if ($result) $data['col'] = array_keys($clusters[0]);
+        $data['row'] = $clusters;
+        $data['title'] = "Cluster Submissions";
+        //dd(['end']);
+
+        // $data['col'] = array_keys($result[0]);
+        // $data['row'] = $result;
+        // $data['title'] = "Cluster submissions";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Een cluster is een serie opdrachten van minimaal 5 waarbij er minimaal elke 5 minuten een opdracht is ingeleverd.<br>Change URL params f.e. ..report/cluster-submissions?clusterSize=3&clusterTime=180'
+        ]);
+    }
+
 }
 
