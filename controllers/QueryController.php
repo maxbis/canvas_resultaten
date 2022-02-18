@@ -250,6 +250,34 @@ class QueryController extends QueryBaseController
         ]);
     }
 
+    public function actionRapid($export=false){
+        $sql = "
+        select Student, Module,sum(1) Clusters, sum(aantal) Aantal
+        from
+        (
+        select u.name Student, g.name Module, CAST(UNIX_TIMESTAMP(s.submitted_at)/180 AS UNSIGNED INTEGER) Ingeleverd, sum(1) aantal
+        from submission s
+        join assignment a on a.id=s.assignment_id
+        join user u on u.id = s.user_id
+        join assignment_group g on g.id = a.assignment_group_id
+        group by 1,2,3
+        having Ingeleverd <> 0 and aantal>2
+        order by 4 desc
+        ) alias
+        group by 1,2
+        having clusters > 2 or aantal > 10
+        order by 3 DESC, 4 DESC
+        ";
+
+        $data = $this->executeQuery($sql, "Snel inleveren", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Een cluster is een tijdsslot van 3 minuten waarin 3 of meer opgaven zijn ingeleverd. Totaal geeft het totaal aantal opgaven van alle clusters aan.'
+        ]);
+    }
+
     public function actionGetAllResultaat($export = true) // export voor Theo - staat onder knop bij Gridview van alle resutlaten
     {  
         $sql = "select * from resultaat order by student_nummer, module_id";
