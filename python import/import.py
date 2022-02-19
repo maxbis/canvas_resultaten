@@ -205,7 +205,7 @@ def createResultaat():
 
     # Note Grader id < 0 are automatically graded assignments; where s.grader_id > 0
     sql = """
-        INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
+        INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
         SELECT
             a.course_id course_id,
             g.id module_id,
@@ -217,6 +217,7 @@ def createResultaat():
             SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
             SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
             sum(s.entered_score) punten,
+            min(s.entered_score) minpunten,
             sum(a.points_possible) punten_max,
             sum(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
             max(submitted_at),

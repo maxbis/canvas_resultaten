@@ -53,6 +53,7 @@ class PublicController extends Controller
                     r.student_nummer,
                     r.aantal_opdrachten,
                     r.punten Punten,
+                    r.minpunten Minpunten,
                     u.code Code,
                     d.voldaan_rule voldaanRule
                 FROM resultaat r
