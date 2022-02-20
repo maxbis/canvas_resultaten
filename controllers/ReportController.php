@@ -232,7 +232,6 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-
     public function actionNakijken($export = false) // menu 3.8 - Aantal beoordeligen per docent
     { 
 
