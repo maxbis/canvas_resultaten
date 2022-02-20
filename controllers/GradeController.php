@@ -249,7 +249,7 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionBlocked() { // Show Modules Blocked for Grading
+    public function actionBlocked($export=false) { // Show Modules Blocked for Grading
         $sql = "
             SELECT  m.pos '-pos',
             concat(u.name,'|/public/index|code|',u.code) '!Student',
@@ -264,7 +264,7 @@ class GradeController extends QueryBaseController
             order by m.pos
         ";
 
-        $data = parent::executeQuery($sql, 'Geblokkeerde modules', false);
+        $data = parent::executeQuery($sql, 'Geblokkeerde modules', $export);
 
         return $this->render('output', [
             'data' => $data,
