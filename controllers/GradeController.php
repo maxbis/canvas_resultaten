@@ -25,19 +25,19 @@ use Yii;
 class GradeController extends QueryBaseController
 {
 
-    public function actionMenu41($export=false, $test=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, false, isset($test)&&$test);
+    public function actionMenu41($export=false, $update=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, false, isset($update)&&$update);
     }
 
-    public function actionMenu42($export=false, $test=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, true, isset($test)&&$test);
+    public function actionMenu42($export=false, $update=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, true, isset($update)&&$update);
     }
 
-    public function actionMenu43($export=false, $test=false){ // menu 4.3 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, 2, isset($test)&&$test);
+    public function actionMenu43($export=false, $update=false){ // menu 4.3 wrapper voor menu highlight - each menu needs to have a unique function
+        return $this->actionNotGraded(isset($export)&&$export, 2, isset($update)&&$update);
     }
 
-    public function actionNotGraded($export=false, $regrading=false, $test=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
+    public function actionNotGraded($export=false, $regrading=false, $update=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
     {
        
         $sql = "
@@ -52,6 +52,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where s.submitted_at > s.graded_at";
             if ( $regrading <= 1 ) {
                 $sql .= " and s.graded_at ";
@@ -63,7 +64,7 @@ class GradeController extends QueryBaseController
             order by m.pos
         ";
 
-        if ($test) {
+        if ($update) {
             $sql = "
             SELECT
             m.pos '-pos',
@@ -75,6 +76,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where s.submitted_at > s.graded_at";
             if ( $regrading <= 1 ) {
                 $sql .= " and s.graded_at ";
@@ -97,7 +99,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->controller->action->id."?test=".abs($test-1)."\">Update</a></div";
+        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div";
 
         return $this->render('output', [
             'data' => $data,
@@ -124,6 +126,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where s.submitted_at > s.graded_at";
             if ( $regrading <= 1 ) {
                 $sql .= " and s.graded_at ";
@@ -196,6 +199,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where s.graded_at ";
         $sql .= $regrading ? '<>' : '=';
         $sql.=" '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
@@ -228,6 +232,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where s.submitted_at > s.graded_at
             order by 4 ASC
             limit 250
