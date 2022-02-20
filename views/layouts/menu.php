@@ -69,6 +69,8 @@ echo Nav::widget([
                 ['label' => 'Eerste beoordelingen op datum', 'url' => ['/grade/not-graded-per-date']],
                 ['label' => 'Herbeoordelingen beoordelingen op datum', 'url' => ['/grade/not-graded-per-date?regrading=true']],
                 ['label' => 'All beoordelingen per student', 'url' => ['/grade/not-graded-per-student']],
+                ['label' => '----------------',],
+                ['label' => 'Geblokkeerde beoordelingen',    'url' => ['/grade/blocked']],
             ],
 
         ],

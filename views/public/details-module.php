@@ -96,7 +96,8 @@ function getStatus($status)
                     $totSubmitted += 1;
                 }
                 $link1 = substr($item['Link'], 0, strpos($item['Link'], "?"));
-                $link2 = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['a_id'] . "&student_id=" . $item['u_id'];
+                // $link2 = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['a_id'] . "&student_id=" . $item['u_id'];
+                $link2 = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['a_id'];
                 echo "<tr>";
 
                 echo "<td>";

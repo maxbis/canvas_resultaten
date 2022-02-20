@@ -39,8 +39,9 @@ class GradeController extends QueryBaseController
 
     public function actionNotGraded($export=false, $regrading=false, $update=false) // Menu 4.1 - 4.2 - Wachten op beoordeling 
     {
-       
-        $sql = "
+
+        if (!$update){
+            $sql = "
             SELECT  m.pos '-pos',
             -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
@@ -62,9 +63,9 @@ class GradeController extends QueryBaseController
             $sql .= "
             group by 1, 2
             order by m.pos
-        ";
+            ";
 
-        if ($update) {
+        } else {
             $sql = "
             SELECT
             m.pos '-pos',
@@ -86,7 +87,7 @@ class GradeController extends QueryBaseController
             $sql .= "
             group by 1, 2, 4
             order by m.pos
-        ";
+            ";
         }
 
         if ($regrading == 0 ) {
@@ -246,6 +247,31 @@ class GradeController extends QueryBaseController
             'data' => $data,
             'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
         ]);
+    }
+
+    public function actionBlocked() { // Show Modules Blocked for Grading
+        $sql = "
+            SELECT  m.pos '-pos',
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            m.naam Modue
+            FROM assignment a
+            left outer join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten < 0
+            group by 1, 2
+            order by m.pos
+        ";
+
+        $data = parent::executeQuery($sql, 'Geblokkeerde modules', false);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Modules met opdrachten met een negatieve score worden niet in de beoordelingsoverzichten gegeven.',
+        ]);
+
     }
 
 
