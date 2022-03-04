@@ -299,6 +299,8 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT
             ranking_score 'Rank',
+            u.student_nr Nummer,
+            u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             sum( case when r.voldaan='V' then 1 else 0 end) 'Tot'
             $query
