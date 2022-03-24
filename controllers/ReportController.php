@@ -147,7 +147,7 @@ class ReportController extends QueryBaseController
                 INNER JOIN user u ON u.student_nr = r.student_nummer
                 where u.code is not null
             $select
-            group by 1,2,3,4
+            group by 1,2,3,4,5
             order by 3 $sort";
 
         $data = parent::executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
