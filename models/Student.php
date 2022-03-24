@@ -32,7 +32,7 @@ class Student extends \yii\db\ActiveRecord
             [['id', 'name', 'login_id', 'student_nr'], 'required'],
             [['id', 'student_nr'], 'integer'],
             [['name'], 'string', 'max' => 100],
-            [['login_id'], 'string', 'max' => 80],
+            [['login_id', 'comment'], 'string', 'max' => 80],
             [['klas'], 'string', 'max' => 2],
             [['code'], 'string', 'max' => 64],
             [['id'], 'unique'],
@@ -51,6 +51,7 @@ class Student extends \yii\db\ActiveRecord
             'student_nr' => 'Student Nr',
             'klas' => 'Klas',
             'code' => 'Code',
+            'comment' => 'Comment',
         ];
     }
 }

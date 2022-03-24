@@ -207,24 +207,25 @@ class QueryController extends QueryBaseController
         sum( a.points_possible ) '+score mogelijk',
         round(sum( s.entered_score )*100 / sum( a.points_possible ),1) 'perc',
         avg(s.attempt) '+gem_pogingen',
-        count(*) 'aantal'
+        count(*) 'opdrachten'
         from submission s
         inner join user u on u.id = s.user_id
         inner join assignment a on a.id = s.assignment_id
         inner join assignment_group g on g.id = a.assignment_group_id
         inner join module_def d on d.id=g.id
+        -- inner join resultaat r on r.module_id = d.id and r.student_nummer = u.student_nr and voldaan = 'V'
         where s.submitted_at < s.graded_at and d.generiek=0
         group by 1
         having count(*) > 50 and sum( a.points_possible ) > 0
         order by 5 DESC
         ";
 
-        $data = $this->executeQuery($sql, "Moeilijke dev modules", $export);
+        $data = $this->executeQuery($sql, "Moeilijke dev modules ", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal behaalde punten als percentage van het totaal.'
+            'descr' => 'Aantal behaalde punten als percentage van het totaal voor alle afgeronde modules.'
         ]);
     }
 

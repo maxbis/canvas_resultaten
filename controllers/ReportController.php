@@ -136,6 +136,7 @@ class ReportController extends QueryBaseController
         $sql = "
             select
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
+                u.comment Comment,
                 r.klas Klas,
                 u.ranking_score '+Score', u.student_nr,
                 SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
