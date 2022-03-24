@@ -136,7 +136,6 @@ class ReportController extends QueryBaseController
         $sql = "
             select
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
-                u.comment Comment,
                 r.klas Klas,
                 u.ranking_score '+Score', u.student_nr,
                 SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
@@ -147,7 +146,7 @@ class ReportController extends QueryBaseController
                 INNER JOIN user u ON u.student_nr = r.student_nummer
                 where u.code is not null
             $select
-            group by 1,2,3,4,5
+            group by 1,2,3,4
             order by 3 $sort";
 
         $data = parent::executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
@@ -303,6 +302,7 @@ class ReportController extends QueryBaseController
             u.student_nr Nummer,
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
+            u.comment Comment,
             sum( case when r.voldaan='V' then 1 else 0 end) 'Tot'
             $query
             FROM resultaat r
@@ -310,7 +310,7 @@ class ReportController extends QueryBaseController
             INNER JOIN module_def d on d.id=r.module_id
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
-            GROUP BY 1,2,3,4
+            GROUP BY 1,2,3,4,5
             ORDER BY 1 DESC
         ";
         $data = $this->executeQuery($sql, "Voortgang Dev Modules (voor BSA)", $export);
