@@ -83,6 +83,7 @@ echo Nav::widget([
                 ['label' => 'Studentencodes (export)', 'url' => ['/query/studenten-lijst']],
                 ['label' => 'Cursus (Blok)', 'url' => ['/course']],
                 ['label' => 'Modules', 'url' => ['/module-def']],
+                ['label' => 'Module IDs', 'url' => ['/report/modules']],
             ],
         ],
     ],

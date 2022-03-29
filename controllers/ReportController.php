@@ -386,5 +386,25 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionModules($export=false){
+        $sql = "
+        select  distinct c.id 'Cursus ID', c.korte_naam 'Korte Naam', c.naam 'Naam',
+                r.module_id 'Module ID', d.naam 'Module Naam',
+                case when d.naam is null then concat(r.module,'|/module-def/create|id|',r.module_id,'|name|',r.module) else concat(r.module,'|/module-def/update|id|',r.module_id) end '!Module C-aam',
+                d.pos 'Positie'
+        from resultaat r
+        left outer join module_def d on r.module_id=d.id
+        join course c on c.id=r.course_id
+        order by d.pos
+        ";
+
+        $data = parent::executeQuery($sql, "Laat alle cursuusen en modules in alle cursussen zien", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
+        ]);
+    }
+
 }
 

@@ -299,4 +299,17 @@ class QueryController extends QueryBaseController
         ]);
     }
 
+    public function actionStudentenLijst($export = false) // menu 6.2 - Studentencodes (export)
+    { 
+        $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
+
+        $data = $this->executeQuery($sql, "Studentenlijst", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id,
+            'descr' => 'Studentenlijst (voor Export naar Excel)',
+        ]);
+    }
+
 }
