@@ -63,9 +63,11 @@ class QueryBaseController extends Controller
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
-        if ($result) { // column names are derived from query results
-            $data['col'] = array_keys($result[0]);
+        if (! $result) { // column names are derived from query results
+            return null;
         }
+
+        $data['col'] = array_keys($result[0]);
         $data['row'] = $result;
 
         if ($export) {

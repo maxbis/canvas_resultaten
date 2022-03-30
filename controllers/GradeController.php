@@ -140,6 +140,13 @@ class GradeController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
+        
+        if (! $data) {
+            return $this->render('output', [
+                'data' => $data,
+            ]);
+        }
+
         if ($regrading) {
             $data['title']="Wachten op herbeoordeling voor <i>".$data['row'][0]['Module']."</i>";
         } else {
