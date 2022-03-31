@@ -107,8 +107,12 @@ class QueryBaseController extends Controller
 
     public function exportExcel($data)
     {
-        header('Content-type: text/csv');
+        header('Content-type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') . '.csv"');
+        // header("Pragma: no-cache");
+        // header("Expires: 0");
+        header('Content-Transfer-Encoding: binary');
+        echo "\xEF\xBB\xBF";
 
         $seperator = ";"; // NL version, use , for EN
 
