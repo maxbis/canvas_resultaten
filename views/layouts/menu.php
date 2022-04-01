@@ -34,6 +34,7 @@ echo Nav::widget([
                 ['label' => 'Student laatste actief op...',      'url' => ['/report/actief']],
                 ['label' => '12 wekenoverzicht',                 'url' => ['/report/aantal-activiteiten']],
                 ['label' => 'Voortgang',                         'url' => ['/report/voortgang']],
+                // ['label' => 'Voortgang punten',                  'url' => ['/report/voortgang-punten']],
                 ['label' => 'Studenten werken aan...',           'url' => ['/report/working-on']],
                 ['label' => 'Ranking studenten',                 'url' => ['/report/ranking']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/report/modules-finished']],

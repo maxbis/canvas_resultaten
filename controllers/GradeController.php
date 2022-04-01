@@ -119,6 +119,7 @@ class GradeController extends QueryBaseController
                 m.pos '-pos',
                 concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
+                substring(u.comment,1,3) 'Code',
                 concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                 s.attempt poging,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
@@ -199,6 +200,7 @@ class GradeController extends QueryBaseController
                     m.naam Module,
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    substring(u.comment,1,3) 'Code',
                     concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                     s.attempt 'Poging',
                     concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
@@ -232,6 +234,7 @@ class GradeController extends QueryBaseController
                     m.naam Module,
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    substring(u.comment,1,3) 'Code',
                     concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                     s.attempt Poging,
                     concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
