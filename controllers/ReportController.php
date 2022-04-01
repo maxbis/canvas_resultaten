@@ -337,7 +337,7 @@ class ReportController extends QueryBaseController
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
             // $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
             $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 0 else (r.aantal_opdrachten - r.ingeleverd) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-
+            if ($count == 16 ) break;
         }
 
         $sql = "
