@@ -142,4 +142,12 @@ class StudentController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionToggleActief($id) {
+        // function toggles boolean actief
+        $sql="update user set grade=abs(grade-1) where id = :id;";
+        $params = array(':id'=> $id);
+        Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
+        return $this->redirect(Yii::$app->request->referrer);
+    }
 }

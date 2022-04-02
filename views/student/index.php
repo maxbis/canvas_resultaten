@@ -25,6 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             [
+                'attribute'=>'grade',
+                'contentOptions' => ['style' => 'width:10px;'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                  $status = $data->grade ? '&#10004' : '&#10060';
+                  return Html::a($status, ['/student/toggle-actief?id='.$data->id],['title'=> 'Toggle Status',]);
+                }
+            ],
+            [
                 'label' => 'Canvas Id',
                 'attribute'=>'id',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
