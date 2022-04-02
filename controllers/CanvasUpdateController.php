@@ -104,6 +104,7 @@ class CanvasUpdateController extends Controller {
             JOIN submission s on s.assignment_id= a.id
             JOIN assignment_group g on g.id = a.assignment_group_id
             JOIN module_def m on m.id = g.id
+            JOIN user u on u.id = s.user_id
             WHERE s.submitted_at > s.graded_at";
             if ( $regrading <= 1 ) {
                 $sql .= " and s.graded_at ";
