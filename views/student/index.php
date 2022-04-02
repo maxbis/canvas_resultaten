@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\StudentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Students';
+$this->title = 'Studenten';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="student-index">
@@ -26,7 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
                 'attribute'=>'grade',
-                'contentOptions' => ['style' => 'width:10px;'],
+                'filter' => [ '1' => 'Ja', '0' => 'Nee'],
+                'filterInputOptions' => [
+                    'class' => 'form-control',
+                    'prompt' => '...'
+                ],
+                'contentOptions' => ['style' => 'width:5px;'],
                 'format' => 'raw',
                 'value' => function ($data) {
                   $status = $data->grade ? '&#10004' : '&#10060';
@@ -38,7 +43,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'id',
                 'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
             ],
-            'name',
+            [
+                'label' => 'Student',
+                'attribute'=>'name',
+                'contentOptions' => ['style' => 'width:240px; white-space: normal;', 'title'=>'Secret public access link'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return  Html::a($data->name,['/public', 'code'=>$data['code']]);
+                    return "<a href='https://www.student.ovh/canvas/public?code=".$data['code']."'>$data->name</a>";
+                }
+            ],
             'login_id',
             'student_nr',
             [
@@ -52,16 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function ($data) {
                     return  Html::a('link',['/query/activity', 'studentnr'=>$data['student_nr']]);
-                }
-            ],
-
-            [
-                'label' => 'Status',
-                'contentOptions' => ['style' => 'width:40px; white-space: normal;', 'title'=>'Secret public access code'],
-                'format' => 'raw',
-                'value' => function ($data) {
-                    return  Html::a('link',['/public', 'code'=>$data['code']]);
-                    return "<a href='https://www.student.ovh/canvas/public?code=".$data['code']."'>link</a>";
                 }
             ],
 
