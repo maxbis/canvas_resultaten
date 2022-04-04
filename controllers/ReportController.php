@@ -187,7 +187,6 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-
     public function actionBeoordeeld($export = false) // menu 3.6 - Laatste beoordeling per module
     { 
         $sql = "
@@ -247,6 +246,30 @@ class ReportController extends QueryBaseController
             inner join user u on u.id=s.grader_id
             group by 1
             order by 2 DESC
+        ";
+        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Aantal beoordelingen per beoordeelaar.',
+        ]);
+    }
+
+    public function actionNakijkenWie($export = false) // menu 3.8 - Aantal beoordeligen per docent
+    { 
+
+        $sql = "
+            SELECT u.name naam, g.name, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
+            sum(1) '+Schooljaar'
+            FROM submission s
+            inner join assignment a on s.assignment_id=a.id
+            inner join user u on u.id=s.grader_id
+            inner join assignment_group g on g.id = a.assignment_group_id
+            group by 1,2
+            order by 1,2 DESC
         ";
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
 
