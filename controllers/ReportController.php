@@ -131,7 +131,7 @@ class ReportController extends QueryBaseController
 
     public function actionActivity($studentnr='99', $export=false){
         $sql = "
-            select u.name '-Student', u.klas '-Klas', g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
+            select u.name '-Student', u.student_nr '-Student_nr', u.klas '-Klas', g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
             from submission s
             join assignment a on a.id=s.assignment_id
             join user u on u.id = s.user_id
@@ -144,11 +144,13 @@ class ReportController extends QueryBaseController
 
         $data = $this->executeQuery($sql, "place_holder", $export);
 
-        $data['title'] = "Activity report for ".$data['row'][0]['-Student']." / ".$data['row'][0]['-Klas'];
+        if ( $data ) {
+            $data['title'] = "Activity report for ".$data['row'][0]['-Student']." / ".$data['row'][0]['-Klas'];
+        } 
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => Yii::$app->controller->action->id."?studentnr=".$data['row'][0]['-Student_nr']."&",
             'descr' => 'Laaste 400 inzendingen',
         ]);
     }
