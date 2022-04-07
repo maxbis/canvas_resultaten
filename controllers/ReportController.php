@@ -539,5 +539,34 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionTotalen($export = false, $klas='') 
+    { 
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+        
+        $sql = "
+            select u.name, u.klas, sum(case when s.attempt=1 then 1 else 0 end) poging1, sum(case when s.attempt>1 then 1 else 0 end) herkansing,
+            round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) 'Percentage'
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where s.submitted_at <> '1970-01-01 00:00:00'
+            $select
+            group by 1,2 
+            order by 3 desc
+        ";
+        $data = parent::executeQuery($sql, "Aantal opdrachten ingeleverd", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging.',
+        ]);
+    }
+
 }
 
