@@ -91,32 +91,33 @@ class ReportController extends QueryBaseController
         ";
 
         $sql2 = "
-        select
-        sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
-        u.klas Klas,
-        concat(u.name,'|/public/index|code|',u.code) '!Student',
-        sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
-        sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
-        0 'Graph',
-        $sum_column
-        sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
-        sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
-        FROM assignment a
-        join submission s on s.assignment_id= a.id
-        join user u on u.id=s.user_id
-        join assignment_group g on g.id = a.assignment_group_id
-        where klas is not null
-        $select
-        group by 2,3
-        order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
-        limit 200
-    ";
+            select
+            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+            u.klas Klas,
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            u.student_nr '-student_nr',
+            sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
+            sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
+            0 'Graph',
+            $sum_column
+            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
+            sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where klas is not null
+            $select
+            group by 2,3,4
+            order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
+            limit 200
+        ";
 
-    // echo "<pre>";
-    // echo $sql;
-    // echo "<br>";
-    // echo $sql2;
-    // exit;
+        // echo "<pre>";
+        // echo $sql;
+        // echo "<br>";
+        // echo $sql2;
+        // exit;
 
         $data = parent::executeQuery($sql2, "Activiteiten over de laatste 12 weken" . $klas, $export);
         $data['show_from']=1;
@@ -125,6 +126,30 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
             'descr' => 'Weken zijn \'rollende\' weken (dus geen kalenderweken). Gesorteerd op activiteiten over laatse drie weken.',
+        ]);
+    }
+
+    public function actionActivity($studentnr='99', $export=false){
+        $sql = "
+            select u.name '-Student', u.klas '-Klas', g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where u.student_nr = $studentnr
+            and s.submitted_at <> '1970-01-01 00:00:00'
+            order by submitted_at DESC
+            limit 400
+        ";
+
+        $data = $this->executeQuery($sql, "place_holder", $export);
+
+        $data['title'] = "Activity report for ".$data['row'][0]['-Student']." / ".$data['row'][0]['-Klas'];
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Laaste 400 inzendingen',
         ]);
     }
 

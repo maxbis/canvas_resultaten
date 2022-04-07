@@ -243,12 +243,14 @@ class QueryController extends QueryBaseController
             limit 120
         ";
 
-        $data = $this->executeQuery($sql, "Activity report for $studentnr", $export);
+        $data = $this->executeQuery($sql, "place_holder", $export);
+
+        $data['title'] = "Activity report for ".$data['row'][0]['Student'];
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Laaste 120 inzendingen van '.$data['row'][0]['Student']. '.'
+            'descr' => 'Laaste 120 inzendingen',
         ]);
     }
 

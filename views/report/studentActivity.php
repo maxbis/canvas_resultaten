@@ -81,7 +81,9 @@ $tot = [];
                             if (substr($columnName, 0, 1) == '!') {
                                 $columnName = substr($columnName, 1);
                             }
-                            echo "<th>" . $columnName . "</th>";
+                            if  (substr($columnName, 0, 1) != '-')  {
+                                echo "<th>" . $columnName . "</th>";
+                            }
                         }
                     } else {
                         echo "<td>Empty result set</td>";
@@ -109,7 +111,7 @@ $tot = [];
                         }
 
                         if ( $columnName == 'Graph') {
-                            echo "<td>";
+                            echo "<td><a href=\"activity?studentnr=".$item['-student_nr']."\">";
                                 echo "<div class=\"graph\">";
                                     echo "<div style=\"position:absolute; left: 1px; top: 1px; right: 1px; bottom: 1px\">";
                                         for($i=0; $i<12; $i++) {
@@ -126,7 +128,7 @@ $tot = [];
                                         }
                                     echo "</div>";
                                 echo "</div>";
-                            echo "</td>";
+                            echo "</a></td>";
                         }
 
                         elseif (substr($columnName, 0, 1) == '!') { #hack, column namen starts with ! link in format naam|link
@@ -140,7 +142,7 @@ $tot = [];
                             } else {
                                 echo "<td>Err: Inlvalid link data</td>";
                             }
-                        } else {
+                        } elseif  (substr($columnName, 0, 1) != '-')  {
                             echo "<td>" . $item[$columnName] . "</td>";
                         }
                     }
