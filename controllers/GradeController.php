@@ -43,7 +43,6 @@ class GradeController extends QueryBaseController
         if (!$update){
             $sql = "
             SELECT  m.pos '-pos',
-            -- concat('&#8634;','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading') '!Upd',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
             sum( case when (not m.generiek) then 1 else 0 end ) '+Dev',
             sum( case when (m.generiek) then 1 else 0 end ) '+Gen',

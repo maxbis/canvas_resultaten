@@ -60,7 +60,7 @@ class QueryBaseController extends Controller
         if ($export) {
             $sql=$this->exportQueryFilter($sql);
         }
-
+        
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         if (! $result) { // column names are derived from query results

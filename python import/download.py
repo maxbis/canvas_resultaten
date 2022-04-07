@@ -51,7 +51,7 @@ def checkAssignment(assignment):
                 else:
                     fileSize[att['size']]=submission.user_id
 
-course = canvas.get_course(3237)
+course = canvas.get_course(3238)
 print(course.name)
 
 assignments = course.get_assignments()

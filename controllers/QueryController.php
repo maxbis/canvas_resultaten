@@ -131,6 +131,7 @@ class QueryController extends QueryBaseController
             inner join user u on u.id = s.user_id
             inner join assignment a on a.id = s.assignment_id
             inner join assignment_group g on g.id = a.assignment_group_id
+            where s.attempt >=1
             group by 1,2, 3
             having sum(s.attempt)/sum(1) >1.5
             order by 4 desc

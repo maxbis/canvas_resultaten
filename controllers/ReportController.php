@@ -46,6 +46,17 @@ class ReportController extends QueryBaseController
         if ($klas) $select = "and u.klas='$klas'";
         else $select = '';
 
+        $sum_column="";
+        for($i=12; $i>=2; $i--){
+            $sum_column .= "sum(case when (datediff(curdate(),submitted_at)<=";
+            $sum_column .= $i*7;
+            $sum_column .= " && datediff(curdate(),submitted_at)>";
+            $sum_column .= ($i-1)*7;
+            $sum_column .= ") then 1 else 0 end) '+-$i',";
+            $sum_column .= "\n";
+        }
+       
+
         $sql = "
             select
             sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
@@ -78,7 +89,36 @@ class ReportController extends QueryBaseController
             group by 2,3
             order by 1 DESC
         ";
-        $data = parent::executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
+
+        $sql2 = "
+        select
+        sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+        u.klas Klas,
+        concat(u.name,'|/public/index|code|',u.code) '!Student',
+        sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
+        sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
+        0 'Graph',
+        $sum_column
+        sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
+        sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
+        FROM assignment a
+        join submission s on s.assignment_id= a.id
+        join user u on u.id=s.user_id
+        join assignment_group g on g.id = a.assignment_group_id
+        where klas is not null
+        $select
+        group by 2,3
+        order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
+        limit 200
+    ";
+
+    // echo "<pre>";
+    // echo $sql;
+    // echo "<br>";
+    // echo $sql2;
+    // exit;
+
+        $data = parent::executeQuery($sql2, "Activiteiten over de laatste 12 weken" . $klas, $export);
         $data['show_from']=1;
 
         return $this->render('studentActivity', [
