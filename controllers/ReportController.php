@@ -551,10 +551,10 @@ class ReportController extends QueryBaseController
             select
             u.name Student,
             u.klas Klas,
-            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) 'Poging1 R',
-            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) 'Herkansingen R',
-            sum(case when s.attempt=1 then 1 else 0 end) 'Poging1 T',
-            sum(case when s.attempt>1 then 1 else 0 end) 'Herkansingen T',
+            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) '+Poging1 R',
+            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) '+Herkansingen R',
+            sum(case when s.attempt=1 then 1 else 0 end) '+Poging1 T',
+            sum(case when s.attempt>1 then 1 else 0 end) '+Herkansingen T',
             round(sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) '% R',
             round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% T'    
             from submission s
@@ -571,7 +571,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. R staat voor recent en T voor totaal.<br>De laatset twee percentages laten een trend zien. Stijgt deze dan zakt de kwaliteit van het ingeleverde werk.
+            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. R staat voor recent en T voor totaal.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
                         <br>Alles van de laatste 21 dagen wordt als recent beschouwd.',
         ]);
     }
