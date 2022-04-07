@@ -539,7 +539,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionTotalen($export = false, $klas='') 
+    public function actionHerkansen($export = false, $klas='') 
     { 
         if ($klas) {
             $select = "and klas='$klas'";
