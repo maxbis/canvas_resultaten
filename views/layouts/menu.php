@@ -39,6 +39,7 @@ echo Nav::widget([
                 ['label' => 'Ranking studenten',                 'url' => ['/report/ranking']],
                 ['label' => 'Module is x keer voldaan',          'url' => ['/report/modules-finished']],
                 ['label' => 'Student keek in monitor',           'url' => ['/report/last-report-by-student']],
+                ['label' => 'Herkansingen',                      'url' => ['/report/herkansen']],
                 ['label' => 'Cluster Submissions',               'url' => ['/report/cluster-submissions']],
                 ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url'  => ['/report/beoordeeld']],
