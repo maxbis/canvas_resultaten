@@ -185,7 +185,8 @@ function isMobileDevice() {
                 if ( Yii::$app->user->isGuest ) {
                     echo "(score: ".($totVoldaan*200+$totPunten).")";
                 } else {
-                    echo  "<a href=\"/report/activity?studentnr=".$data[0]['student_nummer']."\">(score: ".($totVoldaan*200+$totPunten).") </a>";
+                    echo Html::a("(score: ".($totVoldaan*200+$totPunten).")", ['/report/activity', 'studentnr'=>$data[0]['student_nummer'] ], ['title'=> 'Details',]);
+                    // echo  "<a href=\"/report/activity?studentnr=".$data[0]['student_nummer']."\">(score: ".($totVoldaan*200+$totPunten).") </a>";
                 }
                 echo "</td>";
             }
