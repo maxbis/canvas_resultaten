@@ -58,9 +58,9 @@ $tot = [];
                 <tr>
                     <th>#</th>
                     <th>Week</th>
-                    <th  width="200px">Module</th>
+                    <th  width="250px">Module</th>
                     <th>opdracht</th>
-                    <th width="200px">Ingeleverd</th>
+                    <th width="250px">Ingeleverd</th>
                     <th>Poging</th>
                     <th colspan=2 style="color:#7d2e2e;">Punten</th>
                 </tr>
@@ -99,7 +99,7 @@ $tot = [];
                         echo "<td>&nbsp;</td>";
                     }
                     
-                    echo "<td>". $item['module'] ."</td>";
+                    echo "<td>". substr($item['module'],0,40) ."</td>";
 
                     if ( ! $item['graded']) {
                         $accent='yellow';
@@ -110,7 +110,7 @@ $tot = [];
                     $link = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['assignment_id'] . "&student_id=" . $item['student_id'];
                     echo "<td>";
                     echo "<a href=\"".$link."\" style=\"background-color:$accent;\" target=\"_blank\">";
-                    echo substr($item['opdracht'],0,50)."</a>";
+                    echo substr($item['opdracht'],0,40)."</a>";
                     echo "</td>";
 
                     echo "<td>". $item['ingeleverd'] ."</td>";
