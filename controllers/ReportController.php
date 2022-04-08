@@ -122,7 +122,7 @@ class ReportController extends QueryBaseController
         $data = parent::executeQuery($sql2, "Activiteiten over de laatste 12 weken" . $klas, $export);
         $data['show_from']=1;
 
-        return $this->render('studentActivity', [
+        return $this->render('studentenActivity', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
             'descr' => 'Weken zijn \'rollende\' weken (dus geen kalenderweken). Gesorteerd op activiteiten over laatse drie weken.',
@@ -131,7 +131,10 @@ class ReportController extends QueryBaseController
 
     public function actionActivity($studentnr='99', $export=false){
         $sql = "
-            select u.name '-Student', u.student_nr '-Student_nr', u.klas '-Klas', g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
+            select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, s.submitted_at ingeleverd, s.attempt poging,
+            s.course_id 'course_id', a.id 'assignment_id', u.id 'student_id',
+            case when s.submitted_at <= s.graded_at then 1 else 0 end 'graded',
+            a.points_possible 'max_points', s.entered_score 'points'
             from submission s
             join assignment a on a.id=s.assignment_id
             join user u on u.id = s.user_id
@@ -145,13 +148,13 @@ class ReportController extends QueryBaseController
         $data = $this->executeQuery($sql, "place_holder", $export);
 
         if ( $data ) {
-            $data['title'] = "Activity report for ".$data['row'][0]['-Student']." / ".$data['row'][0]['-Klas'];
+            $data['title'] = "Activity report for ".$data['row'][0]['student']." / ".$data['row'][0]['klas'];
         } 
 
-        return $this->render('output', [
+        return $this->render('studentActivity', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?studentnr=".$data['row'][0]['-Student_nr']."&",
-            'descr' => 'Laaste 400 inzendingen',
+            'action' => Yii::$app->controller->action->id."?studentnr=".$data['row'][0]['student_nr']."&",
+            'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
         ]);
     }
 
