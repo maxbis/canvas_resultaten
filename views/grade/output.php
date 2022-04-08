@@ -93,9 +93,9 @@ $tot = [];
                         }
                         if (substr($columnName, 0, 1) == '!') { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
-                            if (strlen($part[0])>20) { # if name for link is larger than 20, concat it and put complete link in help (title)
+                            if (strlen($part[0])>26) { # if name for link is larger than 26, concat it and put complete link in help (title)
                                 $help=$part[0];
-                                $link=substr($part[0],0,20);
+                                $link=substr($part[0],0,26);
                             } else {
                                 $help='';
                                 $link=$part[0];
