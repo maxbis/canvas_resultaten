@@ -80,7 +80,9 @@ function isMobileDevice() {
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
                 <br>
-                <h3>Voortgangsoverzicht van<br><?= $data[0]['Student'] ?></h3>
+                <h3>Voortgangsoverzicht van<br>
+                    <?= $data[0]['Student'] ?>
+                </h3>
                 <small style="color:#999;">Bijgewerkt tot: <?= $timeStamp ?></small>
             </div>
 
@@ -179,7 +181,13 @@ function isMobileDevice() {
                 echo "<td></td>";
                 echo "<td class=\"tright\">". $totPunten ."</td>";
                 echo "<td></td>";
-                echo "<td title=\"Deze score bepaald jouw positie in het klassement\" class=\"tright\">(score: ".($totVoldaan*200+$totPunten).")</td>";
+                echo "<td title=\"Deze score bepaald jouw positie in het klassement\" class=\"tright\">";
+                if ( Yii::$app->user->isGuest ) {
+                    echo "(score: ".($totVoldaan*200+$totPunten).")";
+                } else {
+                    echo  "<a href=\"/report/activity?studentnr=".$data[0]['student_nummer']."\">(score: ".($totVoldaan*200+$totPunten).") </a>";
+                }
+                echo "</td>";
             }
             echo "</tr>";
             ?>
