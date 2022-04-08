@@ -109,8 +109,8 @@ $tot = [];
 
                     $link = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['assignment_id'] . "&student_id=" . $item['student_id'];
                     echo "<td>";
-                    echo "<a href=\"".$link."\" style=\"background-color:$accent;\"   >";
-                    echo substr($item['opdracht'],0,60)."</a>";
+                    echo "<a href=\"".$link."\" style=\"background-color:$accent;\" target=\"_blank\">";
+                    echo substr($item['opdracht'],0,50)."</a>";
                     echo "</td>";
 
                     echo "<td>". $item['ingeleverd'] ."</td>";
