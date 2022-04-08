@@ -92,7 +92,11 @@ function isMobileDevice() {
                 if( ! isMobileDevice() ){
                     if (gettype($chart) == 'array' && count($chart) > 1) {
                         echo "<br>";
-                        echo GoogleChart::widget($chart);
+                        if ( Yii::$app->user->isGuest ) {
+                            echo GoogleChart::widget($chart);
+                        } else {
+                            echo Html::a(GoogleChart::widget($chart), ['/report/activity', 'studentnr'=>$data[0]['student_nummer'] ], ['title'=> 'Details',]);
+                        }
                     }
                 }
                 ?>
@@ -182,12 +186,8 @@ function isMobileDevice() {
                 echo "<td class=\"tright\">". $totPunten ."</td>";
                 echo "<td></td>";
                 echo "<td title=\"Deze score bepaald jouw positie in het klassement\" class=\"tright\">";
-                if ( Yii::$app->user->isGuest ) {
-                    echo "(score: ".($totVoldaan*200+$totPunten).")";
-                } else {
-                    echo Html::a("(score: ".($totVoldaan*200+$totPunten).")", ['/report/activity', 'studentnr'=>$data[0]['student_nummer'] ], ['title'=> 'Details',]);
-                    // echo  "<a href=\"/report/activity?studentnr=".$data[0]['student_nummer']."\">(score: ".($totVoldaan*200+$totPunten).") </a>";
-                }
+                echo "(score: ".($totVoldaan*200+$totPunten).")";
+
                 echo "</td>";
             }
             echo "</tr>";
