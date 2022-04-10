@@ -192,7 +192,7 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionNotGradedPerDate($export=false, $regrading=false) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
+    public function actionNotGradedPerDate($export=false, $regrading=false, $grade=1) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
     {
         $sql = "
             SELECT  m.pos '-pos',
@@ -209,7 +209,7 @@ class GradeController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=1 and s.graded_at ";
+            where u.grade=$grade and s.graded_at ";
         $sql .= $regrading ? '<>' : '=';
         $sql.=" '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
             order by 5 ASC
