@@ -6,12 +6,13 @@ use yii\helpers\Html;
 $nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 $tot = [];
+$wday=['zo','ma','di','wo','do','vr','za'];
 
 ?>
 
 <style>
    .hoverTable tr:hover td {
-        background-color: #f6f6ff;
+        background-color: #f6f6ff!important;
     }
 </style>
 
@@ -60,9 +61,9 @@ $tot = [];
                     <th>Week</th>
                     <th  width="250px">Module</th>
                     <th>opdracht</th>
-                    <th width="250px">Ingeleverd</th>
+                    <th colspan=3 style="text-align: center;width:140px;">Ingeleverd</th>
                     <th>Poging</th>
-                    <th colspan=2 style="color:#7d2e2e;">Punten</th>
+                    <th colspan=2>Punten</th>
                 </tr>
             </thead>
 
@@ -74,14 +75,15 @@ $tot = [];
                 foreach ($data['row'] as $item) {
                     $date_ingeleverd = new DateTime($item['ingeleverd']);
                     $date_ingeleverd_week = $date_ingeleverd->format("W");
+                    $date_ingeleverd_day = $wday[ $date_ingeleverd->format("w") ];
 
                     if ( $date_ingeleverd_week <> $prev_week ) {
                         if ( $prev_week ) {
                             if ( abs($date_ingeleverd_week - $prev_week) > 1 ) {
-                                echo "<tr style=\"background-color:#edf9ff;\"><td colspan=8></td></tr>";
-                                echo "<tr><td colspan=6></td></tr>";
+                                echo "<tr style=\"background-color:#fdf9ff;\"><td colspan=10></td></tr>";
+                                echo "<tr><td colspan=10></td></tr>";
                             }
-                            echo "<tr style=\"background-color:#edf9ff;\"><td colspan=8></td></tr>";
+                            echo "<tr style=\"background-color:#fdf9ff;\"><td colspan=10></td></tr>";
                         }
                         $prev_week = $date_ingeleverd_week;
                         $firstLine=1;
@@ -113,9 +115,12 @@ $tot = [];
                     echo substr($item['opdracht'],0,40)."</a>";
                     echo "</td>";
 
-                    echo "<td>". $item['ingeleverd'] ."</td>";
+                    // echo "<td>". $date_ingeleverd_day ." ".  date_format($date_ingeleverd, 'd-m H:i') ."</td>";
+                    echo "<td style=\"border-left: dashed 1px #c0c0c0;background-color:#fffdfd;\">". $date_ingeleverd_day ."</td>";
+                    echo "<td style=\"background-color:#fffdfd;\">". date_format($date_ingeleverd, 'd-m') ."</td>";
+                    echo "<td style=\"color:#C09090;border-right: dashed 1px #c0c0c0;background-color:#fffdfd;\">". date_format($date_ingeleverd, 'H:i') ."</td>";
                     
-                    echo "<td>". $item['poging'] ."</td>";
+                    echo "<td style=\"text-align: center;\">". $item['poging'] ."</td>";
 
                     echo "<td style=\"color:#7d2e2e;\">". $item['points'] ."</td>";
                     echo "<td style=\"color:#C09090;\">". $item['max_points'] ."</td>";
