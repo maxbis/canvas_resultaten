@@ -115,7 +115,7 @@ class GradeController extends QueryBaseController
         $sql = "
             SELECT
                 m.naam Module,
-                m.pos '-pos',
+                a.position '-pos',
                 concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 substring(u.comment,1,3) 'Code',
@@ -136,7 +136,7 @@ class GradeController extends QueryBaseController
             }
             $sql .="
             and m.id=$moduleId
-            order by 3, 5
+            order by 2
         ";
 
         $data = parent::executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
