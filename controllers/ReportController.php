@@ -288,7 +288,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'In het overzicht staan aleen studenten die waarvna de grade aan staat'
+            'descr' => 'In het overzicht staan aleen studenten die waarvna de grading aan staat',
         ]);
     }
 
@@ -321,6 +321,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
+            'descr' => 'In het overzicht staan aleen studenten die waarvna de grading aan staat',
         ]);
     }
 
