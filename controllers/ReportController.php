@@ -294,7 +294,6 @@ class ReportController extends QueryBaseController
 
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
-            r.student_naam Student,
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
             r.ingeleverd ingeleverd, round(r.punten*100/r.punten_max) 'Punten %'
             FROM resultaat r
