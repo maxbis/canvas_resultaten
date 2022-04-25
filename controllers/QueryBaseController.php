@@ -85,14 +85,16 @@ class QueryBaseController extends Controller
         $components = (array_filter($components, function($value) { return !is_null($value) && $value !== ''; }));
 
         $newQuery = "";
-        foreach($components as $item) { // itterate through the whole query
+        foreach($components as $item) { // itterate through the whole query *** !be aware, no spaces in concat! ***
+            if ( str_contains(substr($item,0,4), "|") ) { // if the first 4 chars of this item contains | then we probably have a space in the oncat string of the !item column
+                dd('Part of Query ('.$item.') has |, possible space in concat of the !row in select?');
+            }
             if (strtolower(substr($item, 0, 6))=='concat') {
                 $sub= $components = preg_split("/[,(]/", $item);
                 if ( count($sub) < 2 ) {
                     dd('concat in SQL query can not be tranformed for export; unknown syntax in concat.');
                 }
                 $item=$sub[1];
-                d($item);
             }
             if ( substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' ) {
                 $item = str_replace(['!','+','-'], "", $item);
