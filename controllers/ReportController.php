@@ -262,7 +262,7 @@ class ReportController extends QueryBaseController
     { 
 
         if ($klas) {
-            $select = "where klas='$klas'";
+            $select = "and klas='$klas'";
         } else {
             $select = '';
         }
@@ -274,8 +274,10 @@ class ReportController extends QueryBaseController
                 concat(naf, '|/report/modules-open|moduleId|', module_id) '!Niet Afgerond'
                 from
                     (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
-                    from resultaat o
-                    join module_def d on d.id=o.module_id
+                    FROM resultaat o
+                    JOIN module_def d on d.id=o.module_id
+                    JOIN user u on u.student_nr=o.student_nummer
+                    where u.grade = 1
                     $select
                     group by 1,2,3
                     order by d.pos) alias
@@ -286,6 +288,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'descr' => 'In het overzicht staan aleen studenten die waarvna de grade aan staat'
         ]);
     }
 
@@ -298,7 +301,6 @@ class ReportController extends QueryBaseController
         }
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
-            grade 'A',
             u.comment 'Comment',
             u.klas 'Klas',
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
@@ -309,6 +311,7 @@ class ReportController extends QueryBaseController
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE $voldaanQuery
             and r.module_id=$moduleId
+            and u.grade=1
             order by r.ingeleverd, r.punten
         ";
         $data = parent::executeQuery($sql, "placeholder", $export);
