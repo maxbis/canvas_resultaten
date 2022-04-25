@@ -56,8 +56,8 @@ $tot = [];
             <thead>
                 <tr>
                     <?php
-                    if (!isset($nocount)) echo "<th>#</th>";
-                    if ($data['row']) {
+                    if (isset($data['row'])) {
+                        if (!isset($nocount)) echo "<th>#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
                             if (substr($columnName, 0, 1) == '+') {
@@ -72,13 +72,13 @@ $tot = [];
                             }
                         }
                     } else {
-                        echo "<td>Empty result set</td>";
+                        echo "<td><i>Empty result set</i></td>";
                     }
                     ?>
             </thead>
 
             <?php
-            if ($data['row']) {
+            if (isset($data['row'])) {
                 foreach ($data['row'] as $item) {
                     echo "<tr>";
                     if (!isset($nocount)) {

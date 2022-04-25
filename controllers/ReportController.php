@@ -299,7 +299,7 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
-            r.ingeleverd ingeleverd, round(r.punten*100/r.punten_max) 'Punten %', voldaan 'Voldaan'
+            r.ingeleverd ingeleverd, round(r.punten*100/r.punten_max) 'Punten %'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
             INNER JOIN module_def d on d.id=r.module_id
@@ -310,8 +310,7 @@ class ReportController extends QueryBaseController
         ";
         $data = parent::executeQuery($sql, "placeholder", $export);
 
-        $data['title'] = "Open opdrachten voor ".$data['row'][0]['-Module']
-        ;
+        $data['title'] = ( $voldaan ? 'Afgeronde' : 'Open' )." opdrachten voor ".$data['row'][0]['-Module'];
 
         return $this->render('output', [
             'data' => $data,
