@@ -92,6 +92,7 @@ class QueryBaseController extends Controller
                     dd('concat in SQL query can not be tranformed for export; unknown syntax in concat.');
                 }
                 $item=$sub[1];
+                d($item);
             }
             if ( substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' ) {
                 $item = str_replace(['!','+','-'], "", $item);
@@ -100,6 +101,7 @@ class QueryBaseController extends Controller
                 break;
             }
             $newQuery .= " ".$item;
+
         }
 
         return($newQuery);
