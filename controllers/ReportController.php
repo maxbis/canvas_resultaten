@@ -269,7 +269,7 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-                Module,
+                concat(Module, '|/report/modules-open|moduleId|', module_id) '!Module',
                 af 'Afgerond door'
                 from
                 (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af
@@ -285,6 +285,35 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'descr' => 'Klik op modulenaam voor overzicht studenten die deze module nog niet af hebben.',
+        ]);
+    }
+
+    public function actionModulesOpen($moduleId, $export = false) // report accessible via ModuleFinished
+    { 
+
+        $sql = "
+            SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
+            r.student_naam Student,
+            concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
+            r.ingeleverd ingeleverd, round(r.punten*100/r.punten_max) 'Punten %'
+            FROM resultaat r
+            LEFT OUTER JOIN course c on c.id = r.course_id
+            INNER JOIN module_def d on d.id=r.module_id
+            INNER JOIN user u on u.student_nr=r.student_nummer
+            WHERE voldaan != 'V'
+            and r.module_id=$moduleId
+            order by 1,2,3,5
+        ";
+        $data = parent::executeQuery($sql, "placeholder", $export);
+
+        // dd($data['row'][0]['Module']);
+        $data['title'] = "Open opdrachten voor ".$data['row'][0]['-Module']
+        ;
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
         ]);
     }
 
