@@ -270,7 +270,6 @@ class ReportController extends QueryBaseController
         $sql = "
             select
                 Module,
-                af 'Afgerond',
                 concat(af, '|/report/modules-open|moduleId|', module_id, '|voldaan|1') '!Afgerond',
                 concat(naf, '|/report/modules-open|moduleId|', module_id) '!Niet Afgerond'
                 from
