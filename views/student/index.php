@@ -61,12 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
             ],
             [
-                'label'=>'Activiteiten',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
-                'format' => 'raw',
-                'value' => function ($data) {
-                    return  Html::a('link',['/query/activity', 'studentnr'=>$data['student_nr']]);
-                }
+                'label'=>'Comment',
+                'attribute'=>'comment',
+                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
             ],
 
             [
