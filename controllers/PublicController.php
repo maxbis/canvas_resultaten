@@ -101,7 +101,7 @@ class PublicController extends Controller
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
-        return $this->render( $test ? 'index-new' : 'index', [
+        return $this->render( $test ? $test : 'index', [
             'data' => $data,
             // 'course' => $course,
             'timeStamp' => $timestamp['timestamp'],
