@@ -5,10 +5,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Resultaat;
-use app\models\ResultaatSearch;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use DateTime;
@@ -73,30 +70,6 @@ class PublicController extends Controller
             sleep(3);
             return $this->render('login-form');
         }
-
-        // Course data for aggregated data when details are hidden and only block/course dat ais shown
-        // $sql = "SELECT c.korte_naam Blok,
-        //             sum(case when r.voldaan='V' then 1 else 0 end) Voldaan,
-        //             round(sum(r.ingeleverd*100)/sum(r.aantal_opdrachten)) 'Opdrachten %',
-        //             round(sum(r.punten*100)/sum(r.punten_max)) 'Punten %',
-        //             max(r.laatste_activiteit) 'Laatste Actief',
-        //             sum(r.ingeleverd) Opdrachten_ingeleverd,
-        //             sum(r.aantal_opdrachten) Aantal_opdrachten,
-        //             sum(r.punten) Punten_behaald,
-        //             sum(r.punten_max) Punten_mogelijk,
-        //             count(distinct d.id) Aantal_modules
-        //         FROM resultaat r
-        //         LEFT OUTER JOIN course c on c.id = r.course_id
-        //         INNER JOIN module_def d on d.id=r.module_id
-        //         INNER JOIN user u on u.student_nr=r.student_nummer
-        //         WHERE code='$code'
-        //         GROUP BY 1
-        //         ORDER BY 1
-        //     ";
-
-        // $course = Yii::$app->db->createCommand($sql)->queryAll();
-
-        // ---
 
         $sql = "
             SELECT DATE_FORMAT(s.submitted_at,'%y') Jaar,
