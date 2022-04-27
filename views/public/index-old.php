@@ -1,11 +1,6 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
-
-$nr = 0;
-$from = isset($data['show_from']) ? $data['show_from'] : 0;
-// dd($data);
 
 function isMobileDevice() {
 
@@ -16,56 +11,20 @@ function isMobileDevice() {
 ?>
 <style>
     .numberCircle {
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        padding: 4px;
-
-        background: #a3586d;
-        color: #ffffff;
-        text-align: center;
-
-        font: 12 Arial, sans-serif;
+        border-radius:50%;width:32px;height:32px;padding:4px;
+        background:#a3586d;color:#ffffff;text-align:center;
+        font:12 Arial,sans-serif;
     }
 
-    .bleft {
-        border-left: dashed 1px #c0c0c0;
-    }
-
-    .bright {
-        border-right: dashed 1px #c0c0c0;
-    }
-
-    .tleft {
-        text-align: left;
-    }
-
-    .tright {
-        text-align: right;
-    }
-
-    .tcenter {
-        text-align: center;
-    }
-    .hoverTable tr:hover {
-        background-color: #f6f6ff;
-    }
-    .recent7 {
-        background-color: #fdffe3;
-    }
-    .recent14 {
-        background-color: #fff8e3;
-    }
-
+    .bleft  { border-left:dashed 1px #c0c0c0; }
+    .bright { border-right:dashed 1px #c0c0c0; }
+    .tleft  { text-align:left; }
+    .tright { text-align:right; }
+    .tcenter { text-align:center; }
+    .hoverTable tr:hover td { background-color: #f6f6ff; }
+    .recent7  { background-color:#fdffe3; }
+    .recent14 { background-color:#fff8e3; }
 </style>
-
-<!--
-<div class="d-flex justify-content-center">
-    <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
-    <?= Html::img('@web/happy_2022-small.png', ['alt'=>'some', 'class'=>'']);?>
-    <?= Html::img('@web/Bell-small.png', ['alt'=>'some', 'class'=>'']);?>
-</div>
--->
 
 <div class="card shadow table-responsive">
 

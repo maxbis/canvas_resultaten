@@ -38,7 +38,7 @@ $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $t
 <style>
     .numberCircle {
         border-radius:50%;width:32px;height:32px;padding:4px;
-        background #a3586d;color:#ffffff;text-align:center;
+        background:#a3586d;color:#ffffff;text-align:center;
         font:12 Arial,sans-serif;
     }
 
@@ -114,4 +114,3 @@ $(document).ready(function(){
         <p>v 2204.27 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>
-
