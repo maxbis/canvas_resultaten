@@ -51,7 +51,7 @@ use yii\helpers\Html;
                     echo "\n<tr><td>&#10004;</td><td class=\"voldaan\">".$item['Blok']."</td><td class=\"voldaan\">Alle $done modules voldaan <i class=\"bi bi-emoji-smile\"></i></td><td></td><td></td><td></td><td></td><td></td></tr>";
                 } else {
                     $nog = $aggregatedData[$item['Blok']]['count']-$aggregatedData[$item['Blok']]['countVoldaan'];
-                    echo "\n<tr><td></td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
+                    echo "\n<tr><td style=\"color:#ff0000\">&#11096;</td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
                 }
                 $prevBlok= $item['Blok'];
             }
