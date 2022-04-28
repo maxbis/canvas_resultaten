@@ -1,5 +1,8 @@
 <?php
 
+dd('Not active anymore');
+
+
 use yii\helpers\Html;
 
 function getIsoWeeksInYear($year)
@@ -38,7 +41,7 @@ for ($i = 0; $i < $aantalWeken; $i++) {
     }
 }
 
-//dd($chartArray);
+// dd($chartArray);
 
 $chart = [
     'visualization' => 'LineChart',

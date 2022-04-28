@@ -1,12 +1,5 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
-
-$nr = 0;
-$from = isset($data['show_from']) ? $data['show_from'] : 0;
-// dd($data);
-
 //first sort the data to make sure you can show it in the right order and with the right colors
 $countV = 0;
 $counter = 0;
