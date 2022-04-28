@@ -283,7 +283,7 @@ class ReportController extends QueryBaseController
                     order by d.pos) alias
         ";
         // ToDo: order by werkt niet op server (order by moet in group by zitten)
-        $data = parent::executeQuery($sql, "Modules voldaan " . $klas, $export);
+        $data = parent::executeQuery($sql, "Voortgang per Module " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,

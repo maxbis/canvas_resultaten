@@ -47,9 +47,7 @@
     .tleft  { text-align:left; }
     .tright { text-align:right; }
     .tcenter { text-align:center; }
-    .hoverTable tr:hover td { background-color: #f6f6ff; }
-    .recent7  { background-color:#fdffe3; }
-    .recent14 { background-color:#fff8e3; }
+    .hoverTable tr:hover > td { background-color: #f6f6ff !important; }
     .voldaan  { background-color:#f8fff8; }
     .niet-voldaan { background-color:#fff4f4; }
 </style>
@@ -70,7 +68,7 @@
             $(".line-"+thisBlok).toggle();
         });
 
-        // get stored tab
+        // get stored last viewed tab
         var activeTab = localStorage.getItem('activeTab');
         if(activeTab){
             $('#myTab a[href="' + activeTab + '"]').tab('show');

@@ -30,20 +30,18 @@ use yii\helpers\Html;
                 $totPunten += $item['Punten'];
                 $totOpdrachten += $item['Opdrachten'];
 
-                $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
+                $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400)-8;
                 if ($dagen <= 7) {
-                    $color = '#fdffe3';
                     $title = 'Afgelopen week actief geweest';
                     $dateClass = 'recent7';
                 } elseif ($dagen <= 14) {
-                    $color = '#fff8e3';
                     $title = 'Afgelopen twee weken actief geweest';
                     $dateClass = 'recent14';
                 } else {
-                    $color = '#ffffff';
                     $title = 'Activiteit langer dan twee weken geleden';
                     $dateClass = '';
                 }
+                $daysAgoColor="rgb(253,255,".min(255,(199+$dagen*4)).")"; // color fades away from yellow as the age is older
 
                 // Module wrap-up line, print on all reports except in the standard report
                 if ( $item['Blok'] != $prevBlok && $style!='standard') {
@@ -57,10 +55,6 @@ use yii\helpers\Html;
                     $prevBlok= $item['Blok'];
                 }
                 
-                // if ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact' ) {
-                //     continue;
-                // }
-
                 if ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact' ) {
                     // only voldaan blok in compact tab can be clicked open: init-hide hides on load and line-blok-<block name> is used to identify line in order to show/hide
                     echo "\n<tr class=\"init-hide line-blok-".$item['Blok']."\">";
@@ -95,7 +89,7 @@ use yii\helpers\Html;
                     if (substr($item['Laatste Actief'], 0, 4) == "1970") {
                         echo "<td class=\"tcenter\"> - </td>";
                     } else {
-                        echo "<td title=\"" . $title . "\" class=\"tcenter ".$dateClass."\" >" . $item['Laatste Actief'] . "</td>";
+                        echo "<td title=\"" . $title . "\" style=\"background-color:".$daysAgoColor.";\" class=\"tcenter\">" . $item['Laatste Actief'] . "</td>";
                     }
                 } else {
                     echo "<td>" . $item['Module'] . "</td>";
