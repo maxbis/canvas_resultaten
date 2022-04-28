@@ -59,17 +59,31 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        // remember last tab selected when clicked on tab
         $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
             localStorage.setItem('activeTab', $(e.target).attr('href'));
         });
+
+        // make some tr lines clickable (show/hide)
+        $(document).on("click", ".clickable", function() {
+            thisBlok = $(this).closest('tr').attr('id');
+            $(".line-"+thisBlok).toggle();
+        });
+
+        // get stored tab
         var activeTab = localStorage.getItem('activeTab');
         if(activeTab){
             $('#myTab a[href="' + activeTab + '"]').tab('show');
         } else {
             $('#myTab a[href="#standard"]').tab('show');
         }
+
+        // hide all classes init-hide
+        $(".init-hide").hide();
     });
 </script>
+
+
 
 <div class="m-4">
     

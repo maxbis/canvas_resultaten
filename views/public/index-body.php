@@ -49,19 +49,26 @@ use yii\helpers\Html;
                 if ( $item['Blok'] != $prevBlok && $style!='standard') {
                     if ($aggregatedData[$item['Blok']]['voldaan']) {
                         $done=$aggregatedData[$item['Blok']]['countVoldaan'];
-                        echo "\n<tr><td>&#10004;</td><td class=\"voldaan\">".$item['Blok']."</td><td class=\"voldaan\">Alle $done modules voldaan <i class=\"bi bi-emoji-smile\"></i></td><td></td><td></td><td></td><td></td><td></td></tr>";
+                        echo "\n<tr class=\"clickable\" id=\"blok-".$item['Blok']."\"><td>&#10004;</td><td class=\"voldaan\">".$item['Blok']."</td><td class=\"voldaan\">Alle $done modules voldaan <i class=\"bi bi-emoji-smile\"></i></td><td></td><td></td><td></td><td></td><td></td></tr>";
                     } else {
                         $nog = $aggregatedData[$item['Blok']]['count']-$aggregatedData[$item['Blok']]['countVoldaan'];
-                        echo "\n<tr><td style=\"color:#ff0000\">&#11096;</td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
+                        echo "\n<tr class=\"not-clickable\" id=\"blok-".$item['Blok']."\"><td style=\"color:#ff0000\">&#11096;</td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
                     }
                     $prevBlok= $item['Blok'];
                 }
                 
+                // if ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact' ) {
+                //     continue;
+                // }
+
                 if ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact' ) {
-                    continue;
+                    // only voldaan blok in compact tab can be clicked open: init-hide hides on load and line-blok-<block name> is used to identify line in order to show/hide
+                    echo "\n<tr class=\"init-hide line-blok-".$item['Blok']."\">";
+                } else {
+                    // not voldaan blok stays open all the time
+                    echo "\n<tr>";
                 }
 
-                echo "\n<tr>";
 
                 if ($style!='standard') {
                     echo "<td width=60px>&nbsp;</td>";
