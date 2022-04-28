@@ -30,17 +30,15 @@ use yii\helpers\Html;
                 $totPunten += $item['Punten'];
                 $totOpdrachten += $item['Opdrachten'];
 
-                $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400)-8;
+                $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
                 if ($dagen <= 7) {
                     $title = 'Afgelopen week actief geweest';
-                    $dateClass = 'recent7';
                 } elseif ($dagen <= 14) {
                     $title = 'Afgelopen twee weken actief geweest';
-                    $dateClass = 'recent14';
                 } else {
                     $title = 'Activiteit langer dan twee weken geleden';
-                    $dateClass = '';
                 }
+                $dagen=max(0,$dagen-2);
                 $daysAgoColor="rgb(253,255,".min(255,(199+$dagen*4)).")"; // color fades away from yellow as the age is older
 
                 // Module wrap-up line, print on all reports except in the standard report
