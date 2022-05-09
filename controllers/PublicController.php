@@ -41,7 +41,7 @@ class PublicController extends Controller
         // MyHelpers::CheckIP();
 
         // Create report for one student(status)
-        $sql = "SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,r.module Module, r.voldaan Voldaan,
+        $sql = "SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,d.naam Module, r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
                     round(r.punten*100/r.punten_max) 'Punten %',
                     r.laatste_activiteit 'Laatste Actief',
