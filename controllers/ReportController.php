@@ -603,11 +603,28 @@ class ReportController extends QueryBaseController
         order by d.pos
         ";
 
-        $data = parent::executeQuery($sql, "Laat alle cursuusen en modules in alle cursussen zien", $export);
+        $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
 
         return $this->render('output', [
             'data' => $data,
             'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
+        ]);
+    }
+
+    public function actionCursus($export=false){
+        $sql = "
+        select id, 
+        concat(naam,'|/course/update|id|',id) '!Cursus naam',
+        korte_naam, pos, update_prio
+        from course
+        order by pos
+        ";
+
+        $data = parent::executeQuery($sql, "Koppeling van Canvas cursus en Canvas Monitor blok", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => 'Overzicht voor beheer; overzicht en aanpassen cursus.',
         ]);
     }
 

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\ModuleDef */
 
-$this->title = 'Update Module Def: ' . $model->id;
+$this->title = 'Update Module Definitie ' . $model->naam;
 $this->params['breadcrumbs'][] = ['label' => 'Module Defs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

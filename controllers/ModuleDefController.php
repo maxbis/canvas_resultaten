@@ -72,9 +72,11 @@ class ModuleDefController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        return $this->redirect(array('report/modules'));
+
+        // return $this->render('view', [
+        //     'model' => $this->findModel($id),
+        // ]);
     }
 
     /**
@@ -126,7 +128,7 @@ class ModuleDefController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(array('report/modules'));
     }
 
     /**

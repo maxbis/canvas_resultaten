@@ -230,7 +230,6 @@ class QueryController extends QueryBaseController
         ]);
     }
 
-    // http://localhost:8080/query/activity?studentnr=2153757
     public function actionActivity($studentnr='99', $export=false){
         $sql = "
             select u.name Student, u.klas Klas, g.name Module, a.name Opdracht, s.submitted_at Ingeleverd, s.attempt Poging
