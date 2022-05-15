@@ -6,7 +6,6 @@ use Yii;
 use app\models\Resultaat;
 use app\models\ResultaatSearch;
 use app\models\ModuleDef;
-use app\models\Module;
 use app\models\Course;
 use app\models\Student;
 use yii\web\Controller;
@@ -17,9 +16,9 @@ use yii\helpers\ArrayHelper;
 
 use yii\filters\AccessControl;
 
+use yii\bootstrap4\Html;
 //use vxm\async\Task;
 use Spatie\Async\Pool;
-
 
 /**
  * ResultaatController implements the CRUD actions for Resultaat model.
@@ -27,19 +26,6 @@ use Spatie\Async\Pool;
 class ResultaatController extends Controller
 
 {
-
-    // update resultaten (V or -) - only for 'live' update -- keep in sync with Python import
-    // public $voldaan_criteria=[
-    //     '6345'=>'ingeleverd_eo=1',  // Introductie
-    //     '6342'=>'ingeleverd>10',    // basic IT
-    //     '6347'=>'punten>=90',       // Front End Level 1
-    //     '6348'=>'punten_eo>30',     // Opdrachten Challenge1
-    //     '6943'=>'punten >= 30',     // CMS - Level 1
-    //     '5034'=>'punten_eo> 2',     // Think Code - Level 1
-    //     '5035'=>'punten_eo> 30',    // Front End - Level 2
-    //     '6346'=>'punten_eo>=15',    // Opdrachten DevOps
-    //     '7736'=>'punten_eo>=40'     // Challenge B2
-    // ];
 
     /**
      * {@inheritdoc}
@@ -96,64 +82,13 @@ class ResultaatController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+    // public function actionView($id)
+    // {
+    //     return $this->render('view', [
+    //         'model' => $this->findModel($id),
+    //     ]);
+    // }
 
-    /**
-     * Creates a new Resultaat model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Resultaat();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Resultaat model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Resultaat model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
 
     /**
      * Finds the Resultaat model based on its primary key value.
@@ -162,14 +97,14 @@ class ResultaatController extends Controller
      * @return Resultaat the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = Resultaat::findOne($id)) !== null) {
-            return $model;
-        }
+    // protected function findModel($id)
+    // {
+    //     if (($model = Resultaat::findOne($id)) !== null) {
+    //         return $model;
+    //     }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
+    //     throw new NotFoundHttpException('The requested page does not exist.');
+    // }
 
     public function actionStart() {
   
@@ -185,7 +120,7 @@ class ResultaatController extends Controller
         $sql="select max(timestamp) timestamp from log where subject='Import'";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
-        if ($found == 1) {
+        if ($found == 1) { // one student found, redirects to the students page
             return $this->redirect([
                 'public/index','code'=>$resultaten[0]['code'],
             ]);
@@ -197,6 +132,34 @@ class ResultaatController extends Controller
             ]);
         }
 
+    }
+
+    public function actionAjaxNakijken() {
+        $sql="select m.pos, m.naam, m.id, sum(1) aantal, min(s.submitted_at) oudste
+            FROM assignment a
+            left outer join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            where u.grade=1 and s.submitted_at > s.graded_at
+         group by 1,2,3
+         order by 1";
+        $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
+
+        $html="";
+        foreach($nakijken as $item) {
+            $html .= "<tr><td>&nbsp;</td>";
+
+            $html .= "<td>";
+            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id'], 'regrading'=>'2']);
+            $html .= "</td>";
+            
+            $html .= "<td>".$item['aantal']."</td>";
+
+            $html .= "</tr>";
+        }
+        return $html;
     }
 
     protected function getVoldaanCriteria() {
