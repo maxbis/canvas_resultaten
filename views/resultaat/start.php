@@ -21,12 +21,13 @@ function isMobileDevice() {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        var apiURL= '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
         jQuery(window).on('load', function () {
             jQuery.ajax({
                 type: 'POST',
                 data: { '_csrf': csrfToken },
                 dataType: 'html',
-                url: '/resultaat/ajax-nakijken',
+                url: apiURL,
                 success: function(data){
                     document.getElementById('nakijken').innerHTML = data;
                 },
