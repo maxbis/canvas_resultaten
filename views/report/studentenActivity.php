@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
 
 $nr = 0;
@@ -146,7 +145,6 @@ $tot = [];
                             echo "<td>" . $item[$columnName] . "</td>";
                         }
                     }
-
                 }
 
                 if (count($tot)) {

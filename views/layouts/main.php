@@ -42,15 +42,6 @@ AppAsset::register($this);
     </div>
 </main>
 
-<!-- <footer class="footer" >
-    <div class="container">
-        <small>
-            <p class="pull-left"></p>
-            <p class="pull-right" style="color:#898989">v 2204.01 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
-        </small>
-    </div>
-</footer> -->
-
 <?php $this->endBody() ?>
 </body>
 </html>

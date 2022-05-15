@@ -234,27 +234,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
 
                 ],
-                // [
-                //     'attribute' => 'aantal_opdrachten',
-                //     'label' => 'Aantal',
-                //     'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
-
-                // ],
-                // [   
-                // 'attribute' => 'moduleDef.pos',
-                // 'label' => 'pos',
-                // 'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
-                // 'format' => 'raw',
-                // 'value' => function ($data) {
-                //     return $data->moduleDef['pos'];
-                // }
-                // ],
-                // [
-                //     'attribute' => 'module.position',
-                // ],
-
-                //['class' => 'yii\grid\ActionColumn'],
             ],
-        ]); ?></div>
+        ]); 
+        ?></div>
 
 </div>
