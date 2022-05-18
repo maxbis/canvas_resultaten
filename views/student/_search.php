@@ -25,6 +25,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'klas') ?>
 
+    <?php echo $form->field($model, 'comment') ?>
+
+    <?php echo $form->field($model, 'message') ?>
+
+    <?php echo $form->field($model, 'message2') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>

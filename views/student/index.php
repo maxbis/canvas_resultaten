@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label'=>'Message',
-                'attribute'=>'Message',
+                'attribute'=>'message',
                 'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
             ],
 
