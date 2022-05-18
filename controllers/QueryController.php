@@ -4,7 +4,6 @@
 
 
 namespace app\controllers;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use Yii;
@@ -303,7 +302,7 @@ class QueryController extends QueryBaseController
 
     public function actionStudentenLijst($export = false) // menu 6.2 - Studentencodes (export)
     { 
-        $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code FROM user";
+        $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code, comment Comment, message Message FROM user";
 
         $data = $this->executeQuery($sql, "Studentenlijst", $export);
 

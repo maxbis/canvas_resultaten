@@ -52,7 +52,8 @@ class PublicController extends Controller
                     r.punten Punten,
                     r.minpunten Minpunten,
                     u.code Code,
-                    d.voldaan_rule voldaanRule
+                    d.voldaan_rule voldaanRule,
+                    u.message Message
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id

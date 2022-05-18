@@ -22,9 +22,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'klas')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> true])->label('Code voor student om zijn pagina te bekijken') ?>
 
-    <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'comment')->textInput(['maxlength' => true])->label('Comment (alleen zichtbaar voor docenten)') ?>
+
+    <?= $form->field($model, 'message')->textInput(['maxlength' => true])->label('Boodschap (zichtbaar voor studenten)') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

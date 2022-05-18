@@ -97,7 +97,7 @@ class StudentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionXUpdate($id)
     {
         $model = $this->findModel($id);
 
@@ -106,6 +106,19 @@ class StudentController extends Controller
             $params = array(':klas' => $model->klas, ':naam' => $model->name, ':student_nummer' => $model->student_nr);
             $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
             return $this->redirect(['/student']);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+    
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [

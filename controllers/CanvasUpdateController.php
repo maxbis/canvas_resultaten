@@ -7,14 +7,10 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Resultaat;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\filters\AccessControl;
-
-use yii\helpers\ArrayHelper;
 
 //use vxm\async\Task;
 use Spatie\Async\Pool;
@@ -96,7 +92,7 @@ class CanvasUpdateController extends Controller {
         return $thisDate->format('Y-m-d H:i:s');
     }
 
-    public function actionUpdateGradingStatus($moduleId, $regrading) {
+    public function actionUpdateGradingStatus($moduleId, $regrading=1) {
 
         $sql = "
             SELECT a.course_id cours, a.id assignment, s.id submission, submitted_at submitted, graded_at graded, m.naam module
@@ -104,14 +100,7 @@ class CanvasUpdateController extends Controller {
             JOIN submission s on s.assignment_id= a.id
             JOIN assignment_group g on g.id = a.assignment_group_id
             JOIN module_def m on m.id = g.id
-            JOIN user u on u.id = s.user_id
-            WHERE s.submitted_at > s.graded_at";
-            if ( $regrading <= 1 ) {
-                $sql .= " and s.graded_at ";
-                $sql .= $regrading ? '<>' : '=';
-                $sql .= "'1970-01-01 00:00:00'";
-            }
-            $sql .= "
+            WHERE s.submitted_at > s.graded_at
             AND m.id=$moduleId
         ";
 
@@ -119,7 +108,7 @@ class CanvasUpdateController extends Controller {
         $countUpdates=0;
         $countThreads=0;
 
-        //dd($sqlResult);
+        // dd($sqlResult);
 
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
@@ -139,11 +128,8 @@ class CanvasUpdateController extends Controller {
                     // Update submission
                     if ( $apiResult['score'] ) {
                         $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
-                    } else {
-                        $sql = "update submission set graded_at='".$gradedAt."', submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                        $result = Yii::$app->db->createCommand($sql)->execute();
                     }
-                    $result = Yii::$app->db->createCommand($sql)->execute();
-                    //dd([$result,$sql]);
                 }
             })->catch(function (Throwable $exception) {
                 writeLog("Error async: ".$exception );
@@ -153,6 +139,7 @@ class CanvasUpdateController extends Controller {
 
         await($pool); 
         writeLog("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
+        // dd("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         
         Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
         return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);

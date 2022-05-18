@@ -3,7 +3,6 @@
 // report controller, child of QueryBase. Standard reports.
 
 namespace app\controllers;
-use yii\web\Controller;
 use Yii;
 
 class ReportController extends QueryBaseController

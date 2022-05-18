@@ -135,7 +135,7 @@ class ResultaatController extends Controller
     }
 
     public function actionAjaxNakijken() {
-        $sql="select m.pos, m.naam, m.id, sum(1) aantal, min(s.submitted_at) oudste
+        $sql="select m.pos, m.naam, m.id, sum(1) aantal, DATE_FORMAT(min(s.submitted_at), '%d %b') oudste
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -152,7 +152,7 @@ class ResultaatController extends Controller
             $html .= "<tr><td>&nbsp;</td>";
 
             $html .= "<td>";
-            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id'], 'regrading'=>'2']);
+            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id'], 'regrading'=>'2'], ['title'=> $item['oudste'] ] );
             $html .= "</td>";
             
             $html .= "<td>".$item['aantal']."</td>";

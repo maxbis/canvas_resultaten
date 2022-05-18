@@ -36,7 +36,7 @@ function isMobileDevice() {
                     console.log(data);
                 }
             });
-    });
+        });
     </script>
 <?php endif; ?>
 

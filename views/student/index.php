@@ -65,6 +65,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'comment',
                 'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
             ],
+            [
+                'label'=>'Message',
+                'attribute'=>'Message',
+                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',

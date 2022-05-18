@@ -4,8 +4,9 @@
 // This controller ens in a view that enables updates via CanvasUpdateController, this controller redirects back to this controller
 
 namespace app\controllers;
-use yii\web\Controller;
+// use yii\web\Controller;
 use Yii;
+use yii\bootstrap4\Html;
 
 /**
  * BeoordelingController implements the CRUD actions for Beoordeling model.
@@ -179,12 +180,13 @@ class GradeController extends QueryBaseController
         }
         $lastLine.= "</script><hr>\n";
 
+        // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
+
         foreach (array_reverse($buttons) as $elem) {
             $start=$elem+1;
             $stop=min($elem+10,count($data['row']));
             $lastLine.=  "<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
         }
-
 
         return $this->render('output', [
             'data' => $data,
