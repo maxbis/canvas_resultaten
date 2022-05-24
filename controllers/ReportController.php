@@ -489,13 +489,17 @@ class ReportController extends QueryBaseController
     { 
 
         $sql = "
-        select student_naam Student, comment Comment, message Message, count(*) 'Dev Modules Voldaan'
+        select concat('&#9998;','|/student/update|id|',u.id) '!Actie',
+               concat(u.name,'|/public/index|code|',u.code) '!Student',
+               comment Comment,
+               u.message 'Message',
+               count(*) 'Dev Modules Voldaan'
         from resultaat r
         JOIN user u on u.student_nr= r.student_nummer
         where voldaan='V'
         and module_pos <= 70
-        group by 1,2,3
-        order by 4 desc, 1;
+        group by 1,2,3,4
+        order by 5 desc, 1;
         ";
         $data = parent::executeQuery($sql, "Aantal dev modules voldaan en studie advies", $export);
 
