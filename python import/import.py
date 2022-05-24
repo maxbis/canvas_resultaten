@@ -297,6 +297,7 @@ else:
     # Read course_id's that need to be updated from database table course
     if (int(args['course']) != 0):
         courses=getCourses( args['course'] )
+        log("About to update "+str(len(courses))+" courses (blokken)", 1)
         for blok in courses:
             if (blok != 0 ):
                 log("Create "+str(blok),1)

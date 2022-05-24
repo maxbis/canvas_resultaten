@@ -268,13 +268,14 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-                Module,
+                Blok, Module,
                 concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') '!Afgerond',
                 concat(naf,'|/report/modules-open|moduleId|',module_id) '!Niet Afgerond'
                 from
-                    (select course_id, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
+                    (select course_id, c.korte_naam Blok, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
                     FROM resultaat o
                     JOIN module_def d on d.id=o.module_id
+                    JOIN course c on c.id = course_id
                     JOIN user u on u.student_nr=o.student_nummer
                     where u.grade = 1
                     $select
@@ -303,7 +304,8 @@ class ReportController extends QueryBaseController
             u.comment 'Comment',
             u.klas 'Klas',
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
-            r.ingeleverd ingeleverd, round(r.punten*100/r.punten_max) 'Punten %'
+            r.ingeleverd ingeleverd,
+            round(r.punten*100/r.punten_max) 'Punten %'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
             INNER JOIN module_def d on d.id=r.module_id
@@ -453,7 +455,6 @@ class ReportController extends QueryBaseController
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
             $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-
         }
 
         $sql = "
@@ -481,6 +482,25 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
+        ]);
+    }
+
+    public function actionVoortgangDev($export = false) // menu 3.8 - Aantal beoordeligen per docent
+    { 
+
+        $sql = "
+        select student_naam Student, comment Comment, message Message, count(*) 'Dev Modules Voldaan'
+        from resultaat r
+        JOIN user u on u.student_nr= r.student_nummer
+        where voldaan='V'
+        and module_pos <= 70
+        group by 1,2,3
+        order by 4 desc, 1;
+        ";
+        $data = parent::executeQuery($sql, "Aantal dev modules voldaan en studie advies", $export);
+
+        return $this->render('output', [
+            'data' => $data,
         ]);
     }
 
