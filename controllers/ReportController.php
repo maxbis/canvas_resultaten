@@ -464,6 +464,7 @@ class ReportController extends QueryBaseController
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             u.comment Comment,
+            u.message '-Message',
             sum( case when r.voldaan='V' then 1 else 0 end) 'Tot'
             $query
             FROM resultaat r
