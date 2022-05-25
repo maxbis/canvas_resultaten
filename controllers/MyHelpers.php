@@ -8,8 +8,8 @@ namespace app\controllers;
 class MyHelpers
 {
     public function checkIP() {
-        if ( $_SERVER['REMOTE_ADDR'] == '::1' ){
-            $remoteIP='178.84.73.55';
+        if ( $_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ){
+            $remoteIP='178.84.73.55'; // this address should exists in ipAllowed.txt, add it to ipAllowed.txt
         } else {
             $remoteIP=$_SERVER['REMOTE_ADDR'];
         }
@@ -48,16 +48,12 @@ class MyHelpers
             }
         }
         if ( $weAreOK == false ) {
-            if ( self::countDown() ) {
-                return;
-            } else {
-                $string = "Permission denied for ". $remoteIP;
-                writeLog($string);
-                sleep(2);
-                echo $string;
-                sleep(3);
-                exit;
-            }
+            $string = "Permission denied for ". $remoteIP;
+            writeLog($string);
+            sleep(2); // prevent brute force ip spoofing
+            echo $string;
+            sleep(3);
+            exit;
         }
     }
 
@@ -70,26 +66,4 @@ class MyHelpers
         return $range;
     }
 
-    private function countDown() {
-        $file = "../config/allowCount.txt";
-        if ( file_exists($file) ) {
-            $accesCount = intval(file_get_contents($file, true));
-            if ( empty($accesCount) ) {
-                $accesCount=0;
-            }
-            $accesCount=$accesCount-1;
-            file_put_contents($file, $accesCount);
-
-            if ( $accesCount > 0 ) {
-                return true;
-            }  else {
-                echo "#$accesCount - ";
-                return false;
-            }
-        } else {
-            echo "#NC - ";
-            return false;
-        }
-
-    }
 }
