@@ -505,6 +505,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
         ]);
     }
 
