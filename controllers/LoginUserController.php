@@ -153,29 +153,32 @@ class LoginUserController extends Controller
     }
 
     public function actionChangepassword($id) {		
-        $model = new LoginUser;
-
-        $model = LoginUser::findOne(array('id'=>$id));
+        
+        $model = $this->findModel($id);
         $model->setScenario('changePwd');
 
+        if ($model->load(Yii::$app->request->post()))  {
 
-        if(isset($_POST['User'])){
+            // dd($model);
+
+            if ($model->validate() ) {
                 
-            $model->attributes = $_POST['User'];
-            $valid = $model->validate();
-                    
-            if($valid){
-                    
-            $model->password = md5($model->new_password);
-                    
-            if($model->save())
-                $this->redirect(array('changepassword','msg'=>'successfully changed password'));
-            else
-                $this->redirect(array('changepassword','msg'=>'password not changed'));
+                $model->password = sha1($model->new_password);
+                if($model->save()) {
+                    Yii::$app->session->setFlash('success', "Password succesfully channged");
+                } else {
+                    Yii::$app->session->setFlash('error', "Password can not be saved");
                 }
+            } else {
+                $message = "Password not changed ";
+                $message .= ($model->getErrors('old_password')) ? $model->getErrors('old_password')[0] : '';
+                Yii::$app->session->setFlash('error', $message);
             }
+        
+        }
 
-        $this->render('changepassword',array('model'=>$model));	
+        return $this->render('changepassword',['model'=>$model]);	
     }
 
 }
+

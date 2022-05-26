@@ -33,12 +33,13 @@ totalPercentage=0
 for item in data:
     thisPercentage=item[1]*100/total
     totalPercentage+=thisPercentage
-    if (totalPercentage<80):
+    if (totalPercentage<80 and item[1]>9):
         prio=1
-    elif(thisPercentage >10):
+    elif(thisPercentage >10 and item[1]>9) :
         prio=2
     else:
         prio=3
     sql="update course set update_prio="+str(prio)+" where id="+str(item[0])
-    print("Query: %s" % sql)
+    print("Aantal: %3d prio: %d" % ( item[1],prio ))
+    print(" Query: %s" % sql)
     cursor.execute(sql)

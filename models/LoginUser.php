@@ -1,18 +1,9 @@
 <?php
 
 namespace app\models;
-
 use Yii;
 
-/**
- * This is the model class for table "login_user".
- *
- * @property int $id
- * @property string $username
- * @property string $password
- * @property string|null $authKey
- * @property string|null $role
- */
+
 class LoginUser extends \yii\db\ActiveRecord
 {
 
@@ -25,9 +16,6 @@ class LoginUser extends \yii\db\ActiveRecord
         return 'login_user';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -37,15 +25,14 @@ class LoginUser extends \yii\db\ActiveRecord
             [['authKey'], 'string', 'max' => 200],
             [['role'], 'string', 'max' => 20],
             [['username'], 'unique'],
-            ['old_password, new_password, repeat_password', 'required', 'on' => 'changePwd'],
+            [['new_password', 'old_password', 'repeat_password'], 'required', 'on' => 'changePwd'],
+            ['new_password', 'string', 'length'=>[12,32], 'on' => 'changePwd'],
 		    ['old_password', 'findPasswords', 'on' => 'changePwd'],
 		    ['repeat_password', 'compare', 'compareAttribute'=>'new_password', 'on'=>'changePwd'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function attributeLabels()
     {
         return [
@@ -61,9 +48,10 @@ class LoginUser extends \yii\db\ActiveRecord
 	//matching the old password with your existing password.
 	public function findPasswords($attribute, $params)
 	{
-		$user = User::model()->findByPk(Yii::app()->user->id);
-		if ($user->password != md5($this->old_password))
-			$this->addError($attribute, 'Old password is incorrect.');
+		$user = LoginUser::find( Yii::$app->user->identity->id )->one();
+		if ($user->password != sha1($this->old_password)) {
+            $this->addError($attribute, 'old password is incorrect.');
+        }
 	}
 
 }
