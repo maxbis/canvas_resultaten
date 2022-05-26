@@ -39,7 +39,7 @@ class LoginUserController extends Controller
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action)
                         {
-                          return (Yii::$app->user->identity->role == 'admin+');
+                          return (Yii::$app->user->identity->role == 'admin');
                         }
                     ],
                 ],
@@ -151,4 +151,31 @@ class LoginUserController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionChangepassword($id) {		
+        $model = new LoginUser;
+
+        $model = LoginUser::findOne(array('id'=>$id));
+        $model->setScenario('changePwd');
+
+
+        if(isset($_POST['User'])){
+                
+            $model->attributes = $_POST['User'];
+            $valid = $model->validate();
+                    
+            if($valid){
+                    
+            $model->password = md5($model->new_password);
+                    
+            if($model->save())
+                $this->redirect(array('changepassword','msg'=>'successfully changed password'));
+            else
+                $this->redirect(array('changepassword','msg'=>'password not changed'));
+                }
+            }
+
+        $this->render('changepassword',array('model'=>$model));	
+    }
+
 }

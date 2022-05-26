@@ -15,9 +15,11 @@ use Yii;
  */
 class LoginUser extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
+
+    public $old_password;
+	public $new_password;
+	public $repeat_password;
+
     public static function tableName()
     {
         return 'login_user';
@@ -35,6 +37,9 @@ class LoginUser extends \yii\db\ActiveRecord
             [['authKey'], 'string', 'max' => 200],
             [['role'], 'string', 'max' => 20],
             [['username'], 'unique'],
+            ['old_password, new_password, repeat_password', 'required', 'on' => 'changePwd'],
+		    ['old_password', 'findPasswords', 'on' => 'changePwd'],
+		    ['repeat_password', 'compare', 'compareAttribute'=>'new_password', 'on'=>'changePwd'],
         ];
     }
 
@@ -52,4 +57,13 @@ class LoginUser extends \yii\db\ActiveRecord
             'last_login' => 'Last Login',
         ];
     }
+    
+	//matching the old password with your existing password.
+	public function findPasswords($attribute, $params)
+	{
+		$user = User::model()->findByPk(Yii::app()->user->id);
+		if ($user->password != md5($this->old_password))
+			$this->addError($attribute, 'Old password is incorrect.');
+	}
+
 }
