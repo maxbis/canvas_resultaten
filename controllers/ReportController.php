@@ -279,7 +279,7 @@ class ReportController extends QueryBaseController
                     JOIN user u on u.student_nr=o.student_nummer
                     where u.grade = 1
                     $select
-                    group by 1,2,3
+                    group by 1,2,3,4
                     order by d.pos) alias
         ";
         // ToDo: order by werkt niet op server (order by moet in group by zitten)
