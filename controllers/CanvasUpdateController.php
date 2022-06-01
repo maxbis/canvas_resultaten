@@ -117,13 +117,13 @@ class CanvasUpdateController extends Controller {
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);
-                // dd($apiResult);
+                dd($apiResult);
                 return $apiResult;
             })->then(function ($apiResult) use ($timerStart, &$countUpdates, $elem) {
                 $gradedAt = $this->convertCanvasApiDate($apiResult['gradedAt']);
                 $submittedAt = $this->convertCanvasApiDate($apiResult['submittedAt']);
 
-                if ( $elem['graded']<> $gradedAt ) {
+                if ( $elem['graded']<> $gradedAt &&  $apiResult['score'] != ""  ) {
                     $countUpdates++;
                     $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
                     $result = Yii::$app->db->createCommand($sql)->execute();
