@@ -186,7 +186,7 @@ def createBlok(course_id):
     importTable(course_id, "modules", "module", [
                 'id', 'name', 'position', 'items_count',  'published', 'course_id'])
     returnList = importTable(course_id, "assignments", "assignment", [
-                             'id', 'points_possible', 'assignment_group_id', 'name', 'course_id','position'])
+                             'id', 'points_possible', 'assignment_group_id', 'name', 'course_id','position','published'])
     deleteAll = True
     # itterate through all assignments and retrieve all submissions for each assignement (due to limitation set by Canvas admin this cannot be done in one go)
     for item in returnList:
@@ -227,7 +227,8 @@ def createResultaat():
         join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
         join assignment_group g on g.id = a.assignment_group_id 
         left outer join module_def d on d.id=g.id
-        WHERE u.klas is not null 
+        WHERE u.klas is not null
+        and published=1
         group by 1, 2, 3, 4, 5, 6, 7
     """
     log("Create aggregate into resultaat", 1)
