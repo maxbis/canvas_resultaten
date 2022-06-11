@@ -128,6 +128,7 @@ class PublicController extends Controller
             left outer join module_def m on m.id = g.id
             where g.id=$moduleId
             and u.code='$code'
+            and published=1
             order by  a.position
         ";
 
