@@ -110,6 +110,6 @@
     <details>
         <summary>Disclaimer/footer</summary>
         <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
-        <p>v 2022 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 3.09 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>
