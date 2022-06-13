@@ -109,7 +109,7 @@
 <small style="color:#b0b0b0;font-style: italic;">
     <details>
         <summary>Disclaimer/footer</summary>
-        <p>Aan dit overzicht kunnen geen rechten worden ontleend. De gegevens in Canvas zijn leidend.</p>
-        <p>v 2204.27 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
+        <p>v 2022 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>
