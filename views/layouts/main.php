@@ -1,5 +1,17 @@
 <?php
 
+/* maintenance mode? */
+
+$signal_file="/tmp/down";
+$down_file= "down.php";
+
+clearstatcache();
+if ( file_exists($signal_file) ) {
+    readfile($down_file);
+    exit;
+}
+
+
 /* @var $this \yii\web\View */
 /* @var $content string */
 
