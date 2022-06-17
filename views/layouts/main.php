@@ -12,7 +12,7 @@ if ( file_exists($signal_file) ) {
     exit;
 }
 
-echo $signal_file;
+echo "Signal: |".$signal_file."|";
 exit;
 
 /* @var $this \yii\web\View */
