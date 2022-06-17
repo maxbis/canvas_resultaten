@@ -2,11 +2,12 @@
 
 /* maintenance mode? */
 
-$signal_file="/tmp/down";
-$down_file= "../../down.php";
+$signal_file="../../down";
+$down_file= "down.php";
 
 clearstatcache();
 if ( is_file($signal_file) ) {
+
     readfile($down_file);
     exit;
 }
