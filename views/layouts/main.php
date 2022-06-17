@@ -2,16 +2,18 @@
 
 /* maintenance mode? */
 
-$signal_file="../../down";
+$signal_file = \Yii::getAlias('@webroot') .'/../down';
 $down_file= "down.php";
 
 clearstatcache();
-if ( is_file($signal_file) ) {
+if ( file_exists($signal_file) ) {
 
     readfile($down_file);
     exit;
 }
 
+echo $signal_file;
+exit;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
