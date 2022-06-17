@@ -1,13 +1,5 @@
 <?php
 
-    // $signal_file="/tmp/down";
-    // $down_file= "down.php";
-
-    // if ( file_exists($signal_file) ) {
-    //     readfile($down_file);
-    //     exit;
-    // }
-
     function isMobileDevice() {
         return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|
                             tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]) || isset($_GET['mobile']);
@@ -89,8 +81,6 @@
         $(".init-hide").hide();
     });
 </script>
-
-php y
 
 <div class="m-4">
     

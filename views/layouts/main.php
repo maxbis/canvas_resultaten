@@ -7,7 +7,6 @@ $down_file= "down.php";
 
 clearstatcache();
 if ( file_exists($signal_file) ) {
-
     readfile($down_file);
     exit;
 }
