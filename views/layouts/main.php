@@ -12,9 +12,6 @@ if ( file_exists($signal_file) ) {
     exit;
 }
 
-echo "Signal: |".$signal_file."|";
-exit;
-
 /* @var $this \yii\web\View */
 /* @var $content string */
 
