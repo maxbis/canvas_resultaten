@@ -6,7 +6,7 @@ $signal_file="/tmp/down";
 $down_file= "down.php";
 
 clearstatcache();
-if ( file_exists($signal_file) ) {
+if ( is_file($signal_file) ) {
     readfile($down_file);
     exit;
 }
