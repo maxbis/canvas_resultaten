@@ -1,5 +1,13 @@
 <?php
 
+    // $signal_file="/tmp/down";
+    // $down_file= "down.php";
+
+    // if ( file_exists($signal_file) ) {
+    //     readfile($down_file);
+    //     exit;
+    // }
+
     function isMobileDevice() {
         return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|
                             tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]) || isset($_GET['mobile']);
@@ -32,6 +40,7 @@
     $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact']);
     $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'full']);
     $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard']);
+    $achievements= "";
 
 ?>
 
@@ -81,7 +90,7 @@
     });
 </script>
 
-
+php y
 
 <div class="m-4">
     
@@ -89,6 +98,7 @@
         <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
         <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>
         <li class="nav-item"><a href="#full" class="nav-link" data-toggle="tab">Full</a></li>
+        <!-- <li class="nav-item"><a href="#achievements" class="nav-link" data-toggle="tab">Achievements</a></li> -->
     </ul>
     
     <div class="card shadow table-responsive">
@@ -98,6 +108,7 @@
                 <div class="tab-pane show active" id="standard"><?= $bodyStandard; ?></div>
                 <div class="tab-pane" id="compact"><?= $bodyCompact; ?></div>
                 <div class="tab-pane" id="full"><?= $bodyFull; ?></div>
+                <div class="tab-pane" id="achievements"><?= $achievements; ?></div>
             </div>
         </div>
     </div>

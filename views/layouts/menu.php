@@ -1,5 +1,13 @@
 <?php
 
+$signal_file="/tmp/down";
+$down_file= "down.php";
+
+if ( file_exists($signal_file) ) {
+    readfile($down_file);
+    exit;
+}
+
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Html;
