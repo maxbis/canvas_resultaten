@@ -2,7 +2,7 @@
 
 /* maintenance mode? */
 
-$signal_file = \Yii::getAlias('@webroot') .'/../down';
+$signal_file = \Yii::getAlias('@webroot') .'/../down-'.Yii::$app->params['subDomain'];
 $down_file= "down.php";
 
 clearstatcache();

@@ -2,10 +2,10 @@
 
 $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
 
-if ( $subDomain == 'canvas1') {
-    $DB='canvas1';
-} elseif ( $subDomain == 'canvas2') {
-    $DB='canvas2';
+if ( $subDomain == 'c21') {
+    $DB='canvas-c21';
+} elseif ( $subDomain == 'c22') {
+    $DB='canvas-c22';
 } else {
     $DB='canvas';
 }
