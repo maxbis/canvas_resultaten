@@ -1,8 +1,8 @@
 <?php
 
 /* maintenance mode? */
-
-$signal_file = \Yii::getAlias('@webroot') .'/../down-'.Yii::$app->params['subDomain'];
+$subDomain = Yii::$app->params['subDomain'];
+$signal_file = \Yii::getAlias('@webroot') .'/../down-'.$subDomain;
 $down_file= "down.php";
 
 clearstatcache();
@@ -33,7 +33,7 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
     <style type="text/css">
-        html { font-size: 1rem;  }
+    html { font-size: 1rem;  }
     </style>
 </head>
 <body class="d-flex flex-column h-100">

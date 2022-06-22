@@ -1,6 +1,11 @@
 <?php
 
-$subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
+$subDomain = "www";
+
+if ( isset($_SERVER['SERVER_NAME'])) {
+    $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
+}
+
 if ($subDomain == 'www' || $subDomain == 'localhost' ) {
     $subDomain = 'c21';
 }

@@ -1,6 +1,15 @@
 <?php
 
-$subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
+$subDomain = "www";
+
+if ( isset($_SERVER['SERVER_NAME'])) {
+    $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
+}
+
+if ($subDomain == 'www' ) {
+    $subDomain = 'c21';
+}
+
 
 if ( $subDomain == 'c21') {
     $DB='canvas-c21';
