@@ -5,8 +5,19 @@ use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
+$route=Yii::$app->controller->action->controller->module->requestedRoute;
+
+if ($route == 'resultaat/start' || $route == 'public/index' ) {
+    $title="C<span style=\"color: #03a4ed;\">anvas</span> MON<span style=\"color: #03a4ed;\">itor</span>";
+} else {
+    $title="CMON";
+}
+
+// dd(Yii::$app->controller->action->controller->module->requestedRoute);
+// $title = $route;
+
 NavBar::begin([
-    'brandLabel' => Yii::$app->name,
+    'brandLabel' => $title,
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -17,10 +28,10 @@ echo Nav::widget([
     'options' => ['class' => 'navbar-nav'],
     'items' => [
 
-        [
-            'label' => 'Zoek', 'url' => ['/resultaat/start'],
-            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
-        ],
+        // [
+        //     'label' => 'Zoek', 'url' => ['/resultaat/start'],
+        //     'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
+        // ],
 
         [
             'label' => 'Resultaten', 'url' => ['/resultaat/index'],
@@ -35,7 +46,6 @@ echo Nav::widget([
                 ['label' => '12 wekenoverzicht',                 'url' => ['/report/aantal-activiteiten']],
                 ['label' => 'Voortgang',                         'url' => ['/report/voortgang']],
                 ['label' => 'Dev Voortgang',                     'url' => ['/report/voortgang-dev']],
-                // ['label' => 'Voortgang punten',                  'url' => ['/report/voortgang-punten']],
                 ['label' => 'Studenten werken aan...',           'url' => ['/report/working-on']],
                 ['label' => 'Ranking studenten',                 'url' => ['/report/ranking']],
                 ['label' => 'Voortgang per Module',              'url' => ['/report/modules-finished']],

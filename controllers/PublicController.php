@@ -143,7 +143,7 @@ class PublicController extends Controller
     public function actionGenerate($code = 0)
     {
         // if you want new code, change the $salt, everyone will get a new code
-        if ($code == "doehetmaar") {
+        if ($code == "EXE") {
             echo "<pre>";
             MyHelpers::CheckIP();
             $sql = "select student_nr studentNummer, name from user where student_nr > 100";
