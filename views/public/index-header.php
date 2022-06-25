@@ -15,8 +15,8 @@ use yii\helpers\Html;
                 <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
             <?php endif; ?>
             <br>
-            Voortgangsoverzicht
-            <h3><?= $data[0]['Student'] ?></h3>
+            Voortgangsoverzicht <span style="color:white"><?= $data[0]['student_nummer'] ?></span>
+            <h3><?= $data[0]['Student'] ?></h3>  
             <i><?= $data[0]['Message'];?></i><br/>
             <small style="color:#999;">Bijgewerkt tot: <?= $timeStamp ?></small>
         </div>

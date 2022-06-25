@@ -5,6 +5,8 @@
 namespace app\controllers;
 use Yii;
 
+use DateTime;
+
 class ReportController extends QueryBaseController
 {
 
@@ -372,7 +374,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionNakijken($export = false) // menu 3.8 - Aantal beoordeligen per docent
+    public function actionNakijkenWeek($export = false) // menu 3.8 - Aantal beoordeligen per docent
     { 
 
         $sql = "
@@ -387,6 +389,39 @@ class ReportController extends QueryBaseController
             order by 2 DESC
         ";
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Aantal beoordelingen per beoordeelaar.',
+        ]);
+    }
+
+    public function actionNakijkenDag($export = false) { 
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
+        $sql = "
+            SELECT u.name naam
+            $select
+            FROM submission s
+            inner join assignment a on s.assignment_id=a.id
+            inner join user u on u.id=s.grader_id
+            where datediff(curdate(),s.graded_at)<=7
+            group by 1
+            order by 1
+        ";
+
+        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
 
         return $this->render('output', [
             'data' => $data,

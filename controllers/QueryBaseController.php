@@ -61,14 +61,10 @@ class QueryBaseController extends Controller
             $sql=$this->exportQueryFilter($sql);
         }
 
-        $result = Yii::$app->db->createCommand($sql)->queryAll();
-
-        if (! isset($result[0]) ) { // column names are derived from query results
-            return null;
+        if ($result = Yii::$app->db->createCommand($sql)->queryAll()) {
+            $data['col'] = array_keys($result[0]);
+            $data['row'] = $result;
         }
-
-        $data['col'] = array_keys($result[0]);
-        $data['row'] = $result;
 
         if ($export) {
             $this->exportExcel($data);
