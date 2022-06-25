@@ -389,11 +389,13 @@ class ReportController extends QueryBaseController
             order by 2 DESC
         ";
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+        $lastLine = "<br><a href=\"/report/nakijken-dag\" class=\"btn btn-light\" style=\"float: right;\">dagoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
+            'lastLine' => $lastLine,
         ]);
     }
 
@@ -422,11 +424,13 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
+        $lastLine = "<br><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
+            'lastLine' => $lastLine,
         ]);
     }
 

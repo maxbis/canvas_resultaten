@@ -55,8 +55,7 @@ echo Nav::widget([
                 ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url'  => ['/report/beoordeeld']],
                 ['label' => 'Beoordelingen per module over tijd', 'url' => ['/report/aantal-beoordelingen']],
-                ['label' => 'Aantal beoordelingen per docent per week',    'url' => ['/report/nakijken-week']],
-                ['label' => 'Aantal beoordelingen per docent per dag',    'url' => ['/report/nakijken-dag']],
+                ['label' => 'Aantal beoordelingen per docent',    'url' => ['/report/nakijken-week']],
             ],
         ],
 
