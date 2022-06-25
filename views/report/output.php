@@ -5,6 +5,7 @@ use yii\helpers\Html;
 $nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 $tot = [];
+
 ?>
 
 <style>
