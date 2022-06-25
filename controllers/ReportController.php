@@ -376,12 +376,15 @@ class ReportController extends QueryBaseController
 
     public function actionNakijkenWeek($export = false) // menu 3.8 - Aantal beoordeligen per docent
     { 
+        $schooljaarStart = date("Y")-1;
+        $schooljaarStart.='-08-01';
 
         $sql = "
             SELECT u.name naam, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
-            sum(1) '+Schooljaar'
+            sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar',
+            sum(1) '+Alles'
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
