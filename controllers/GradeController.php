@@ -100,7 +100,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        $lastLine =  "<hr><div style=\"float: right;\"><a href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
+        $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
 
         return $this->render('output', [
             'data' => $data,

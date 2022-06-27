@@ -427,7 +427,7 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<br><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
+        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,

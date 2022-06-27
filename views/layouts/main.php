@@ -31,7 +31,7 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
   
-    <title><?= Html::encode($this->title).$subDomain ?></title>
+    <title><?= "CMON ".$subDomain ?></title>
     <?php $this->head() ?>
     <style type="text/css">
     html { font-size: 1rem;  }
@@ -41,7 +41,7 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <header>
-    <?php echo Yii::$app->view->renderFile('@app/views/layouts/menu.php'); ?>
+    <?php echo Yii::$app->view->renderFile('@app/views/layouts/menu.php', ['subDomain'=>$subDomain] ); ?>
 </header>
 
 <main role="main" class="flex-shrink-0">

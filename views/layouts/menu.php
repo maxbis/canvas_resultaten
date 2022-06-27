@@ -10,7 +10,7 @@ $route=Yii::$app->controller->action->controller->module->requestedRoute;
 if ($route == 'resultaat/start' || $route == 'public/index' ) {
     $title="C<span style=\"color: #03a4ed;\">anvas</span> MON<span style=\"color: #03a4ed;\">itor</span>";
 } else {
-    $title="CMON";
+    $title="CMON ".$subDomain;
 }
 
 // dd(Yii::$app->controller->action->controller->module->requestedRoute);
@@ -33,10 +33,10 @@ echo Nav::widget([
         //     'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
         // ],
 
-        [
-            'label' => 'Resultaten', 'url' => ['/resultaat/index'],
-            'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
-        ],
+        // [
+        //     'label' => 'Resultaten', 'url' => ['/resultaat/index'],
+        //     'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
+        // ],
 
         [
             'label' => 'Rapporten',
@@ -52,6 +52,7 @@ echo Nav::widget([
                 ['label' => 'Student keek in monitor',           'url' => ['/report/last-report-by-student']],
                 ['label' => 'Herkansingen',                      'url' => ['/report/herkansen']],
                 ['label' => 'Cluster Submissions',               'url' => ['/report/cluster-submissions']],
+                ['label' => 'Alle resultaten (in Grid)',         'url' => ['/resultaat/index']],
                 ['label' => '----------------',],
                 ['label' => 'Laatste beoordeelding per module',  'url'  => ['/report/beoordeeld']],
                 ['label' => 'Beoordelingen per module over tijd', 'url' => ['/report/aantal-beoordelingen']],
