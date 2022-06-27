@@ -10,7 +10,7 @@ $route=Yii::$app->controller->action->controller->module->requestedRoute;
 if ($route == 'resultaat/start' || $route == 'public/index' ) {
     $title="C<span style=\"color: #03a4ed;\">anvas</span> MON<span style=\"color: #03a4ed;\">itor</span>";
 } else {
-    $title="CMON ".$subDomain;
+    $title=$subDomain;
 }
 
 // dd(Yii::$app->controller->action->controller->module->requestedRoute);
@@ -19,6 +19,7 @@ if ($route == 'resultaat/start' || $route == 'public/index' ) {
 NavBar::begin([
     'brandLabel' => $title,
     'brandUrl' => Yii::$app->homeUrl,
+    'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp&nbsp&nbsp'.$title,
     'options' => [
         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
     ],
