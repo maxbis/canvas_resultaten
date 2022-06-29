@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 from pymysql.constants import CLIENT
 import pymysql
 import os
