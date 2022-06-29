@@ -152,7 +152,7 @@ class ResultaatController extends Controller
             $html .= "<tr><td>&nbsp;</td>";
 
             $html .= "<td>";
-            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id'], 'regrading'=>'2'], ['title'=> $item['oudste'] ] );
+            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id']], ['title'=> $item['oudste'] ] );
             $html .= "</td>";
             
             $html .= "<td>".$item['aantal']."</td>";

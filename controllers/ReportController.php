@@ -392,7 +392,7 @@ class ReportController extends QueryBaseController
             order by 2 DESC
         ";
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
-        $lastLine = "<br><a href=\"/report/nakijken-dag\" class=\"btn btn-light\" style=\"float: right;\">dagoverzicht</a>";
+        $lastLine = "<hr><a href=\"/report/nakijken-dag\" class=\"btn btn-light\" style=\"float: right;\">Dagoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,

@@ -25,80 +25,32 @@ use yii\bootstrap4\Html;
 
 class GradeController extends QueryBaseController
 {
-
-    public function actionMenu41($export=false, $update=false){ // menu 4.1 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, false, isset($update)&&$update);
-    }
-
-    public function actionMenu42($export=false, $update=false){ // menu 4.2 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, true, isset($update)&&$update);
-    }
-
-    public function actionMenu43($export=false, $update=false){ // menu 4.3 wrapper voor menu highlight - each menu needs to have a unique function
-        return $this->actionNotGraded(isset($export)&&$export, 2, isset($update)&&$update);
-    }
-
-    public function actionNotGraded($export=false, $regrading=false, $update=false) // Menu 4.1 - 4.2 - Wachten op beoordeling <TODO> drie overzichten in één tabbed overzicht.
+    public function actionNotGraded($export=false, $update=false) 
     {
-
-        if (!$update){
-            $sql = "
-            SELECT  m.pos '-pos',
-            concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
-            sum( case when (not m.generiek) then 1 else 0 end ) '+Dev',
-            sum( case when (m.generiek) then 1 else 0 end ) '+Gen',
-            sum(1) '+Totaal'
-            FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=1 and s.submitted_at > s.graded_at";
-            if ( $regrading <= 1 ) {
-                $sql .= " and s.graded_at ";
-                $sql .= $regrading ? '<>' : '=';
-                $sql .= "'1970-01-01 00:00:00'";
-            }
-            $sql .= "
-            group by 1, 2
-            order by m.pos
-            ";
-
+        if ($update) {
+            $hide="";$nHide="-";
         } else {
-            $sql = "
-            SELECT
+            $hide="-";$nHide="";
+        }
+       
+        $sql = "SELECT
             m.pos '-pos',
-            concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|$regrading') '!Module',
+            concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
+            sum( case when (not m.generiek) then 1 else 0 end ) '$nHide+Dev',
+            sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',
             sum(1) '+Totaal',
-            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|$regrading|show_processing') '!Canvas update'
-            FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=1 and s.submitted_at > s.graded_at";
-            if ( $regrading <= 1 ) {
-                $sql .= " and s.graded_at ";
-                $sql .= $regrading ? '<>' : '=';
-                $sql .= "'1970-01-01 00:00:00'";
-            }
-            $sql .= "
-            group by 1, 2, 4
-            order by m.pos
-            ";
-        }
+            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|show_processing|1|') '$hide!Canvas update'
+        FROM assignment a
+        left outer join submission s on s.assignment_id= a.id
+        join user u on u.id=s.user_id
+        join assignment_group g on g.id = a.assignment_group_id
+        join module_def m on m.id = g.id
+        join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+        where u.grade=1 and s.submitted_at > s.graded_at
+        group by 1, 2, 6
+        order by m.pos";
 
-        if ($regrading == 0 ) {
-            $reportTitle = "Wachten op eerste beoordeling";
-        } elseif ( $regrading == 1) {
-            $reportTitle = "Wachten op herbeoordeling";
-        } else {
-            $reportTitle = "Wachten op beoordeling";
-        }
-
-        $data = parent::executeQuery($sql, $reportTitle, $export);
+        $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
 
         $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
 
@@ -109,7 +61,44 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionNotGradedModule($moduleId = '', $export = false, $regrading = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    public function actionAllModules($export=false, $update=false) // Menu 4.1 - 4.2 - Wachten op beoordeling <TODO> drie overzichten in één tabbed overzicht.
+    {
+        if ($update) {
+            $hide="";
+        } else {
+            $hide="-";
+        }
+
+        $sql = "SELECT  m.pos '-pos',
+                        concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
+                        sum(case when (s.submitted_at > s.graded_at) THEN 1 ELSE 0 END) '+Beoordelen',
+                        concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|2|show_processing') '$hide!Canvas update'
+                FROM module_def m
+                join assignment_group g on g.id = m.id
+                join assignment a on a.assignment_group_id = g.id
+                join submission s on s.assignment_id = a.id
+                join user u on u.id = s.user_id
+                join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+                where u.grade=1 
+                group by 1, 2, 4
+                order by m.pos
+             ";
+
+
+        $reportTitle = "Open beoordelingen van alle modules";
+ 
+        $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
+
+        $data = parent::executeQuery($sql, $reportTitle, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'lastLine' => $lastLine,
+        ]);
+    }
+
+    public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
         //$this->actionUpdateModuleGrading($moduleId, $regrading);
 
@@ -129,18 +118,12 @@ class GradeController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=1 and s.submitted_at > s.graded_at";
-            if ( $regrading <= 1 ) {
-                $sql .= " and s.graded_at ";
-                $sql .= $regrading ? '<>' : '=';
-                $sql .= "'1970-01-01 00:00:00'";
-            }
-            $sql .="
+            where u.grade=1 and s.submitted_at > s.graded_at
             and m.id=$moduleId
             order by 2
         ";
 
-        $data = parent::executeQuery($sql, "Wachten op eerste beoordeling per module", $export);
+        $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
         
         if (! $data) {
             return $this->render('output', [
@@ -148,12 +131,7 @@ class GradeController extends QueryBaseController
             ]);
         }
 
-        if ($regrading) {
-            $data['title']="Wachten op herbeoordeling voor <i>".$data['row'][0]['Module']."</i>";
-        } else {
-            $data['title']="Wachten op eerste beoordeling voor <i>".$data['row'][0]['Module']."</i>";
-        }
-        
+        $data['title'].=" voor <i>".$data['row'][0]['Module']."</i>";
         $data['show_from']=1;
 
 
@@ -194,7 +172,7 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionNotGradedPerDate($export=false, $regrading=false, $grade=1) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
+    public function actionNotGradedPerDate($export=false) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
     {
         $sql = "
             SELECT  m.pos '-pos',
@@ -211,16 +189,12 @@ class GradeController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=$grade and s.graded_at ";
-        $sql .= $regrading ? '<>' : '=';
-        $sql.=" '1970-01-01 00:00:00' and s.submitted_at > s.graded_at
-            order by 5 ASC
+            where u.grade=1 and s.submitted_at > s.graded_at
+            order by 6 ASC
             limit 250
         ";
 
-        $reportTitle = $regrading ? "Wachten op herbeoordeling op datum" : "Wachten op eerste beoordeling op datum";
-
-        $data = parent::executeQuery($sql, $reportTitle, $export);
+        $data = parent::executeQuery($sql, "Beoordelingen op datum", $export);
 
         return $this->render('output', [
             'data' => $data,
@@ -231,10 +205,10 @@ class GradeController extends QueryBaseController
     public function actionNotGradedPerStudent($export=false) // Menu 4.3 - 4.4 - Wachten op beoordeling per datum
     {
         $sql = "
-            SELECT  m.pos '-pos',
+            SELECT  concat(u.name,'|/public/index|code|',u.code) '!Student',
+                    m.pos '-pos',
                     m.naam Module,
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
-                    concat(u.name,'|/public/index|code|',u.code) '!Student',
                     substring(u.comment,1,3) 'Code',
                     concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                     s.attempt Poging,
@@ -284,6 +258,4 @@ class GradeController extends QueryBaseController
         ]);
 
     }
-
-
 }
