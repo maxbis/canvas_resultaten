@@ -38,12 +38,6 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-4">
-            <?= $form->field($model, 'id')->textInput()->label('Module ID uit Canvas (niet aanpassen)') ?>
-        </div>
-    </div>
-
     <?= $form->field($model, 'generiek')->checkbox() ?>
 
     <div class="form-group">

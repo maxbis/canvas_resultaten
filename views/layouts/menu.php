@@ -7,7 +7,7 @@ use yii\helpers\Url;
 
 $route=Yii::$app->controller->action->controller->module->requestedRoute;
 
-if ($route == 'resultaat/start' || $route == 'public/index' ) {
+if ( $route == 'public/index' ) {
     $title="C<span style=\"color: #03a4ed;\">anvas</span> MON<span style=\"color: #03a4ed;\">itor</span>";
 } else {
     $title=$subDomain;
