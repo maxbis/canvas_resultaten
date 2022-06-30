@@ -125,7 +125,7 @@ class CanvasUpdateController extends Controller {
 
                 if ( $elem['graded']<> $gradedAt ) {
                     $countUpdates++;
-                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=". $apiResult['score'] ? $apiResult['score'] : 0 .", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
                     $result = Yii::$app->db->createCommand($sql)->execute();
                 }
             })->catch(function (Throwable $exception) {
@@ -139,7 +139,8 @@ class CanvasUpdateController extends Controller {
         // dd("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         
         Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
-        return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
+        return $this->redirect(Yii::$app->request->referrer);
+        //return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
     }
 
 }
