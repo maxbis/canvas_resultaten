@@ -125,7 +125,7 @@ class CanvasUpdateController extends Controller {
 
                 if ( $elem['graded']<> $gradedAt ) {
                     $countUpdates++;
-                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=". $apiResult['score'] ? $apiResult['score'] : 0 .", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
                     $result = Yii::$app->db->createCommand($sql)->execute();
                 }
             })->catch(function (Throwable $exception) {
