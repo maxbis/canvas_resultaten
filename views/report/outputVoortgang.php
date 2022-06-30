@@ -14,7 +14,7 @@ $tot = [];
     }
 </style>
 
-<div class="card" id="main">
+<div id="main">
 
     <div class="container">
         <div class="row  align-items-center">
