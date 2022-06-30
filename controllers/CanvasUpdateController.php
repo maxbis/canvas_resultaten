@@ -125,8 +125,9 @@ class CanvasUpdateController extends Controller {
 
                 if ( $elem['graded']<> $gradedAt ) {
                     $countUpdates++;
-                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=".$apiResult['score'].", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
-                    $result = Yii::$app->db->createCommand($sql)->execute();
+                    $sql = "update submission set graded_at='".$gradedAt."', entered_score=".($apiResult['score'] ? $apiResult['score'] : '0').", submitted_at='".$submittedAt."', workflow_state='".$apiResult['state']."' where id=".$elem['submission'];
+                    // d($sql);
+                    // $result = Yii::$app->db->createCommand($sql)->execute();
                 }
             })->catch(function (Throwable $exception) {
                 writeLog("Error async: ".$exception );
@@ -137,7 +138,8 @@ class CanvasUpdateController extends Controller {
         await($pool); 
         writeLog("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         // dd("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
-        
+        // exit;
+
         Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
         return $this->redirect(Yii::$app->request->referrer);
         //return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
