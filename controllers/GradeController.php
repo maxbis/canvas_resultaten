@@ -87,7 +87,7 @@ class GradeController extends QueryBaseController
 
         $reportTitle = "Open beoordelingen van alle modules";
  
-        $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
+        $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div>"; 
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
@@ -124,9 +124,9 @@ class GradeController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
-        
-        if (! $data) {
-            return $this->render('output', [
+
+        if (! isset($data['row']) ) {
+            return $this->render('/report/output', [
                 'data' => $data,
             ]);
         }
@@ -163,10 +163,11 @@ class GradeController extends QueryBaseController
         foreach (array_reverse($buttons) as $elem) {
             $start=$elem+1;
             $stop=min($elem+10,count($data['row']));
-            $lastLine.=  "<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+            $lastLine.= "&nbsp;&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
         }
+        $lastLine.= "&nbsp;&nbsp;&nbsp;<div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div>";
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'lastLine' => $lastLine,
         ]);
