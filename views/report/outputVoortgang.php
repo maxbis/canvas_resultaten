@@ -10,7 +10,7 @@ $tot = [];
 
 <style>
    .hoverTable tr:hover td {
-        background-color: #f6f6ff;
+        background-color: #f0f0f9;
     }
 </style>
 
@@ -120,11 +120,11 @@ $tot = [];
                                 $prevBlok=$blok;
                             }
                             if ( $item[$columnName] == 100 ) {
-                                echo "<td title=\"$title\" style=\"background-color:#ccfac3;font-size: 8px;vertical-align: middle;\">100</td>";
+                                echo "<td title=\"100% - $title\" style=\"color:#808080;background-color:#ccfac3;font-size: 9px;vertical-align: middle;\">100</td>";
                             } elseif  ( $item[$columnName] == 0 ) {
-                                echo "<td title=\"$title\" style=\"background-color:#fac3c3;font-size: 8px;vertical-align: middle;\">0</td>";
+                                echo "<td title=\"0% - $title\" style=\"color:808080;background-color:#fac3c3;font-size: 9px;vertical-align: middle;\">0</td>";
                             } else {
-                                echo "<td title=\"$title\" style=\"background-color:#f4fac3;font-size: 8px;vertical-align: middle;\">" . $item[$columnName] . "</td>";
+                                echo "<td title=\"".$item[$columnName]."% - ".$title."\" style=\"background-color:#f4fac3;font-size: 9px;vertical-align: middle;\">" . $item[$columnName] . "</td>";
                             }
                            
                         } elseif (substr($columnName, 0, 1) <> '-') {
