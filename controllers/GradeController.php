@@ -54,7 +54,7 @@ class GradeController extends QueryBaseController
 
         $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div"; 
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
@@ -91,7 +91,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
@@ -197,7 +197,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, "Beoordelingen op datum", $export);
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
         ]);
@@ -229,7 +229,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'descr' => 'Rapport (en export) laat maximaal 250 regels zien. Updates zijn pas zichtbaar na update uit Canvas',
         ]);
@@ -252,7 +252,7 @@ class GradeController extends QueryBaseController
 
         $data = parent::executeQuery($sql, 'Geblokkeerde modules', $export);
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Modules met opdrachten met een negatieve score worden niet in de beoordelingsoverzichten gegeven.',
