@@ -30,7 +30,7 @@
     // render page elements
     $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank,'chart' => $chart,]);
     $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact']);
-    $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'full']);
+    $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini']);
     $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard']);
     $achievements= "";
 
@@ -87,7 +87,7 @@
     <ul class="nav nav-tabs" id="myTab">
         <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
         <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>
-        <li class="nav-item"><a href="#full" class="nav-link" data-toggle="tab">Full</a></li>
+        <li class="nav-item"><a href="#mini" class="nav-link" data-toggle="tab">Mini</a></li>
         <!-- <li class="nav-item"><a href="#achievements" class="nav-link" data-toggle="tab">Achievements</a></li> -->
     </ul>
     
@@ -97,7 +97,7 @@
                 <?= $header; ?>
                 <div class="tab-pane show active" id="standard"><?= $bodyStandard; ?></div>
                 <div class="tab-pane" id="compact"><?= $bodyCompact; ?></div>
-                <div class="tab-pane" id="full"><?= $bodyFull; ?></div>
+                <div class="tab-pane" id="mini"><?= $bodyFull; ?></div>
                 <div class="tab-pane" id="achievements"><?= $achievements; ?></div>
             </div>
         </div>

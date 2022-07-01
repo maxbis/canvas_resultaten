@@ -43,17 +43,17 @@ use yii\helpers\Html;
 
                 // Module wrap-up line, print on all reports except in the standard report
                 if ( $item['Blok'] != $prevBlok && $style!='standard') {
-                    if ($aggregatedData[$item['Blok']]['voldaan']) {
+                    if ($aggregatedData[$item['Blok']]['voldaan'] ) {
                         $done=$aggregatedData[$item['Blok']]['countVoldaan'];
                         echo "\n<tr class=\"clickable\" id=\"blok-".$item['Blok']."\"><td>&#10004;</td><td class=\"voldaan\">".$item['Blok']."</td><td class=\"voldaan\">Alle $done modules voldaan <i class=\"bi bi-emoji-smile\"></i></td><td></td><td></td><td></td><td></td><td></td></tr>";
-                    } else {
+                    } else { // niet voldaan
                         $nog = $aggregatedData[$item['Blok']]['count']-$aggregatedData[$item['Blok']]['countVoldaan'];
-                        echo "\n<tr class=\"not-clickable\" id=\"blok-".$item['Blok']."\"><td style=\"color:#ff0000\">&#11096;</td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
+                        echo "\n<tr class=\"clickable\" id=\"blok-".$item['Blok']."\"><td style=\"color:#ff0000\">&#11096;</td><td class=\"niet-voldaan\">".$item['Blok']."</td><td class=\"niet-voldaan\">Nog $nog modules afronden</td><td></td><td></td><td></td><td></td><td></td></tr>";
                     }
                     $prevBlok= $item['Blok'];
                 }
                 
-                if ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact' ) {
+                if ( ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact') || $style=='mini') {
                     // only voldaan blok in compact tab can be clicked open: init-hide hides on load and line-blok-<block name> is used to identify line in order to show/hide
                     echo "\n<tr class=\"init-hide line-blok-".$item['Blok']."\">";
                 } else {

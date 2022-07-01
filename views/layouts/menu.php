@@ -77,7 +77,7 @@ echo Nav::widget([
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Alle beoordelingen',            'url' => ['/grade/not-graded']],
-                ['label' => 'Alle modules',                  'url' => ['/grade/all-modules']],
+                // ['label' => 'Alle modules',                  'url' => ['/grade/all-modules']],
                 ['label' => '----------------',],
                 ['label' => 'Alle beoordelingen op datum',   'url' => ['/grade/not-graded-per-date']],
                 ['label' => 'All beoordelingen per student', 'url' => ['/grade/not-graded-per-student']],

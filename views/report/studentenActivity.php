@@ -6,6 +6,20 @@ $nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
 $tot = [];
 
+if ($data['row']) {
+    for ($i = $from; $i < count($data['col']); $i++) {
+        $columnName = $data['col'][$i];
+        if (substr($columnName, 0, 1) == '+') {
+            $tot[$columnName] = 0;
+            $columnName = substr($columnName, 1);
+        }
+        if (substr($columnName, 0, 1) == '!') {
+            $columnName = substr($columnName, 1);
+        }
+
+    }
+}
+
 ?>
 
 <style>
@@ -68,26 +82,16 @@ $tot = [];
      
                 </tr>
                 <tr>
-                    <?php
-                    if (!isset($nocount)) echo "<th>#</th>";
-                    if ($data['row']) {
-                        for ($i = $from; $i < count($data['col']); $i++) {
-                            $columnName = $data['col'][$i];
-                            if (substr($columnName, 0, 1) == '+') {
-                                $tot[$columnName] = 0;
-                                $columnName = substr($columnName, 1);
-                            }
-                            if (substr($columnName, 0, 1) == '!') {
-                                $columnName = substr($columnName, 1);
-                            }
-                            if  (substr($columnName, 0, 1) != '-')  {
-                                echo "<th>" . $columnName . "</th>";
-                            }
-                        }
-                    } else {
-                        echo "<td>Empty result set</td>";
-                    }
-                    ?>
+                    <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Student</th>
+                    <th colspan=2></th>
+                    <th colspan=1>Graph</th>
+                    <th colspan=12>Aantal ingeleverde opdrachten</th>
+                    <th colspan=1>Tot</th>
+                </tr>
+
                 </tr>
 
             </thead>
@@ -154,7 +158,7 @@ $tot = [];
                     }
                     $count=0;
                     foreach ($data['col'] as $columnName) {
-                        if (++$count<=$from) continue;
+                        if (++$count<=$from+1) continue;
                         if (substr($columnName, 0, 1) == '+') {
                             echo "<td>";
                             echo $tot[$columnName];
