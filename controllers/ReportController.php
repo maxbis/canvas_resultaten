@@ -241,7 +241,7 @@ class ReportController extends QueryBaseController
                 r.klas Klas,
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 min(r.module_pos) 'Positie',
-                r.module,
+                r.module 'Module',
                 ranking_score 'Score'
                 FROM resultaat r
                 JOIN user u on u.student_nr=r.student_nummer
@@ -253,11 +253,12 @@ class ReportController extends QueryBaseController
                 group by 1,2,4,5
                 order by 3 desc, 5 desc";
 
-        $data = parent::executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
+        $data = parent::executeQuery($sql, "Ranking Dev" . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'descr'=> "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
         ]);
     }
 
