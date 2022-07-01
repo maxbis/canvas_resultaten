@@ -226,6 +226,39 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionRanking3($export = false, $klas = '') // menu 3.4 - Ranking studenten
+    { 
+
+        if ($klas) {
+            $select = "and r.klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        # if a teacher is also student he has no code (code is null), so only get students with a code
+        $sql = "
+            select
+                r.klas Klas,
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                min(r.module_pos) 'Positie',
+                r.module,
+                ranking_score 'Score'
+                FROM resultaat r
+                join user u on u.student_nr=r.student_nummer
+                WHERE r.voldaan != 'V'
+                AND r.module_pos < 100
+                $select
+                group by 1,2,4,5
+                order by 3 desc, 5 desc";
+
+        $data = parent::executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+        ]);
+    }
+
     public function actionRanking2($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 

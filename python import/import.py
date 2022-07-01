@@ -29,6 +29,9 @@ args = vars(parser.parse_args())
 logLevel = args['log']
 prio     = args['course']
 
+print("Database: "+dbName)
+print("Loglevel: "+str(logLevel))
+
 if ( args['delete'] and int(args['course'])<100 ):
     log('Can only delete if course id is specified',0)
 
@@ -260,7 +263,7 @@ def calcRanking():
     sql="""
         update user u set ranking_score=
         (
-            select (SUM(case when voldaan='V' then 1 else 0 end))*200+sum(punten) 'Ranking Score'
+            select (SUM(case when voldaan='V' then 1 else 0 end))*100+round(100*sum(punten)/max(punten_max)) 'Ranking Score'
             FROM resultaat r
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer
