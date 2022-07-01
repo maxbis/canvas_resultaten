@@ -284,6 +284,7 @@ def createCsv():
 #### MAIN ####
 
 
+
 # connect to MySQL
 con = pymysql.connect(host='localhost', user=dbUser, passwd=dbPassword, db=dbName, client_flag=CLIENT.MULTI_STATEMENTS)
 cursor = con.cursor()
