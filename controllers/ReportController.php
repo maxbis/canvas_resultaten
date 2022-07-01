@@ -192,7 +192,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionRanking($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
+    public function actionRanking2($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
         if ($klas) {
@@ -226,7 +226,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionRanking2($export = false, $klas = '') // menu 3.4 - Ranking studenten
+    public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
         if ($klas) {
@@ -239,7 +239,7 @@ class ReportController extends QueryBaseController
         $sql = "
             select
                 r.klas Klas,
-                r.student_naam,
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
                 min(concat(r.module_pos,' ',r.module)) 'Module',
                 max(ranking_score) 'Score'
             FROM resultaat r
