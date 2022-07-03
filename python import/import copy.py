@@ -12,8 +12,6 @@ import configparser
 
 from pprint import pprint
 import sys
-from threading import Thread
-
 
 config = configparser.ConfigParser()
 config.read("canvas.ini")
@@ -29,40 +27,25 @@ parser = argparse.ArgumentParser(description='Update resultaten in Canvas Monito
 parser.add_argument('-c', '--course', type=int, help='(offline) Update course id or update all courses with a specified prio smaller than specified.', required=False)
 parser.add_argument('-a', '--assignment', type=int, help='(online) Update assignment group id ', required=False)
 parser.add_argument('--delete', action='store_true', help='Delete only - clear all data for this course', required=False)
-parser.add_argument('-l', '--log', help='Loglevel 0: no logging, 1:progress log, 2:advanced log 3:even more', default=2, required=False)
+parser.add_argument('-l', '--log', help='Loglevel 0: no logging, 1:progress log, 2:advanced log', default=2, required=False)
 args = vars(parser.parse_args())
 
 logLevel = args['log']
 prio     = args['course']
 assignmentGroup = args['assignment']
 
-if (not prio and not assignmentGroup):
-    print()
-    print(sys.argv[0]+' -c <curus_id> or -a <assignment_group> is required')
-    print()
-    print('  -c 0 does only a recalc of passed/notpassed criterea')
-    print('  -c <low_numer> updates all courses with prio <low_number> 1 ..9 where 1 is updating the least')
-    print()
-    print('  -a <unknown assignment group> show all groups and courses available (from Canvas Database)')
-    print('  -a -1 update all assignment groups that are resently changed')
-    print()
-    print('  -h help')
-    sys.exit()
-
 if ( prio == "" and assignmentGroup == "" ):
-    print('-c course (offline) or -a assignemnt (online) need to be specified!')
+    print('-c course (oofline) or -a assignemnt (online) need to be specified!')
     sys.exit()
 
 if ( args['delete'] and int(args['course'])<100 ):
     print('Can only delete if course id is specified',0)
     sys.exit()
 
-#### FUNCTIONS ####
+print("Database: "+dbName)
+print("Loglevel: "+str(logLevel))
 
-# Debug-dump and die
-def dd(arg):
-    pprint(arg)
-    sys.exit()
+#### FUNCTIONS ####
 
 def getCourses(prio=3):
     courses = []
@@ -108,7 +91,8 @@ def getJsonData(url, courseId):
         # if urllib.error.HTTPError == 404:  <- werk niet nog uitzoeken
         print('Error: API does not return anything (key error, no access rights?)')
         print('URL: '+thisUrl)
-        return ''
+        exit(1)
+        # return(json_obj)
 
     json_data = json.loads(page)
 
@@ -310,64 +294,29 @@ def createCsv():
 
 
 
-#### Fast multi processing INSERT/UPDATE ####
+#### UPDATE ####
 
 
-# Helper function to show assignemntgroup info
-# Input:  assignment group id
-# Output: cursus_id, assignment_group_id, assignment group name (when no id is given show all)
+
 def showAGroups(id=''):
-    sql="SELECT g.course_id, g.id, g.name, m.naam FROM assignment_group g join module_def m on m.id=g.id order by m.pos"
+    sql="SELECT course_id, id, name FROM assignment_group"
     if (id):
         sql+=' where id='+str(id)
     cursor.execute(sql)
     assignments = cursor.fetchall()
-    log("\n%32s %32s %10s %10s" % ( 'Canvas Name', 'Canvas Monitor Name', 'A.Group', 'Course', ) ,1 )
-    prev=''
+    print()
+    print("%6s %6s %s" % ( 'Course', 'aGroup', 'Name') )
     for item in assignments:
-        if (prev != item[0]) :
-            log('',1)
-            prev=item[0]
-        log("%32s %32s %10s %10s" % (item[2], item[3], item[1], item[0]) , 1 )
-    log('',1)
+        print("%6s %6s %s" % (item[0], item[1], item[2]) )
+    print()
 
 
-# Function to check if teh Canvas Database assignemnt-group data is in sync with the actual Canvas status
-# We do this by comparing all assignment-id's of the assignment_group
-# Input:  assignmnentGroup id, list of lists (output from sql-query). Element[1] contians assignemnt id
-# Output: a list of differnt id's. Empty (flase) list means no differences
-def checkAssignmentGroups(assignementGroup, assignments):
-    dbList=[]
-    for dbAssignment in assignments:
-        dbList.append(dbAssignment[1])
 
-    canvasAssignments=getJsonData('assignment_groups/'+str(assignementGroup)+'/assignments', str(assignments[0][0])) # returns list of dicts 
-    canvasList=[]
-    for canvasAssignment in canvasAssignments:
-        canvasList.append(canvasAssignment['id'])
-
-    return list(set(dbList)-set(canvasList))
-
-# wrapper for updateAssignmentGroup, this fucntion updates all (recent-hot) assignment groups.
-# recent-hot is defeined in the SQL query
-def updateAssignmentGroups():
-    sql="select distinct assignment_group_id from submission s join assignment a on a.id=s.assignment_id where datediff(curdate(),submitted_at) < 7 or datediff(curdate(),graded_at) < 7"
-    cursor.execute(sql)
-    assignementGroups = cursor.fetchall()
-    for assignementGroup in assignementGroups:
-        updateAssignmentGroup(assignementGroup[0])
-
-
-# Main entry point for fast updating all assignments belonging to the assignmnet group
-# Input:  assignmnent_group_id
-# Ouptut: none
 def updateAssignmentGroup(assignementGroup):
     # fieldList, these fields are selected from the api and will be inserted/updated to the table submission with the same column names
     fieldList=[ 'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'attempt', 'graded_at', 'excused', 'entered_score', 'workflow_state']
 
-    # TODO, error, this could be wrong the database can contain old data, assignments in assignmentgrousp can be changed
     sql="select course_id, id, name from assignment where assignment_group_id="+str(assignementGroup)
-
     cursor.execute(sql)
     assignments = cursor.fetchall()
 
@@ -377,14 +326,9 @@ def updateAssignmentGroup(assignementGroup):
         sys.exit()
     else:
         showAGroups(assignementGroup)
-    
-    # Check if assignment_group->assignments are same in Canvas and in Canvas DB
-    if ( checkAssignmentGroups(assignementGroup, assignments) ):
-        print('Assignment(group) in Canvas DB is not in sync with Canvas.')
-        print('Run full update on course with: '+sys.argv[0]+' -c '+str(assignments[0][0]))
-        return
 
-    # Canvas-Monitor submissions, dbSubmissions is dict[submission_id] of lists[fieldList]
+
+    # Canvas Monitor submissions, dbSubmissions is dict[submission_id] of lists[fieldList]
     dbSubmissions={}
     sql="select s."+ ",s.".join(fieldList) +" from submission s join assignment a on a.id=s.assignment_id where a.assignment_group_id="+str(assignementGroup)
     cursor.execute(sql)
@@ -395,44 +339,53 @@ def updateAssignmentGroup(assignementGroup):
             thisList.append ( validate_string(fieldList[i],str(item[i])) )
         dbSubmissions[str(item[0])] = thisList
 
+    totInserts=0
+    totUpdates=0
     sql=''
-    threadNumber=0
-    threads = []
-    results = [{} for x in assignments]
-
+    
     for courseId, assignmentID, asName in assignments:
 
-        # this part needs to be multi threaded
-        #   (non-threaded): sql+=executeThread(fieldList, courseId, assignmentID, asName, dbSubmissions)
-        process = Thread(target=executeThread, args=[fieldList, courseId, assignmentID, asName, dbSubmissions, results, threadNumber])
-        threadNumber+=1
-        process.start()
-        threads.append(process)
+        log('Checking assignment '+str(assignmentID)+" "+asName, 2)
 
-    for process in threads:
-        process.join()
+        # Canvas (json/api) submissions, canvasSubmissions is dict[submission_id] of lists[fieldList]
+        canvasSubmissions=getCanvasSubmissions(fieldList, courseId, assignmentID)
+        sql+=getUpdates(fieldList, canvasSubmissions, dbSubmissions)
 
-    sql = ''.join(map(str, results))
+        # # itterate through canvas submissions
+        # sqlCommands=""
+        # inserts=0
+        # updates=0
+        # for key in canvasSubmissions:
+        #     if key in dbSubmissions: 
+        #         if ( canvasSubmissions[key][5] == dbSubmissions[key][5] and canvasSubmissions[key][7] == dbSubmissions[key][7] ):
+        #             continue # key found but submitted_at and graded_at are not changed. No update needed
+        #         #start UPDATE
+        #         fields=""
+        #         for i in range(1, len(fieldList)):
+        #             fields = fields +fieldList[i]+"=\'"+canvasSubmissions[key][i]+"\',"
+        #         sqlCommands+="update submission set "+fields[:-1]+" where id="+key+";\n"
+        #         updates+=1
+        #     else:
+        #         # submission does not exists at all, start INSERT
+        #         fields=""
+        #         values=""
+        #         for i in range(0, len(fieldList)):
+        #             fields = fields + fieldList[i] + ","
+        #             values = values +"\'"+ canvasSubmissions[key][i] + "\',"
+        #         sqlCommands+="insert into submission ( "+fields[:-1]+" ) values ("+values[:-1]+");\n"
+        #         inserts+=1
+
+        # log('  Number of inserts %3d, updates %3d'%(inserts, updates), 2)
+        # totInserts+=inserts
+        # totUpdates+=updates
 
     log(sql, 3)
-    log(' *** Total Number of inserts %3d, updates %3d *** '%(sql.count('insert'), sql.count('update')), 1)
-    log('',1)
-    if (sql):
-        cursor.execute(sql)
-        con.commit()
+    log('Total Number of inserts %3d, updates %3d'%(totInserts, totUpdates), 1)
+    # cursor.execute(sqlCommands)
+    con.commit()
 
 #### TEST ####
 
-
-# wrapper for threads
-# Input:
-# Output: sql statements written in results[threadNumber]
-def executeThread(fieldList, courseId, assignmentID, asName, dbSubmissions, results, threadNumber):
-    log('Started thread '+str(threadNumber)+' for assignment '+str(assignmentID)+" "+asName, 2)
-    canvasSubmissions=getCanvasSubmissions(fieldList, courseId, assignmentID)
-    results[threadNumber]=getUpdates(fieldList, canvasSubmissions, dbSubmissions, asName, threadNumber)
-
-# This returns a dict[submission_id] of lists from the Canvas API
 def getCanvasSubmissions(fieldList, courseId, assignmentID):
     canvasSubmissions={}
     submissions=getJsonData('assignments/'+str(assignmentID)+'/submissions', str(courseId)) # returns list of dicts
@@ -443,10 +396,7 @@ def getCanvasSubmissions(fieldList, courseId, assignmentID):
         canvasSubmissions[str(item['id'])] = thisList
     return canvasSubmissions
 
-# Check we have canvasSubmisions and dbSubmissions. Copare these and create sql for the inserts and updates 
-# Input:
-# Output: sql containing updates and inserts
-def getUpdates(fieldList, canvasSubmissions, dbSubmissions, asName, threadNumber):
+def getUpdates(fieldList, canvasSubmissions, dbSubmissions):
     sql=''
     inserts=0
     updates=0
@@ -470,17 +420,13 @@ def getUpdates(fieldList, canvasSubmissions, dbSubmissions, asName, threadNumber
             sql+="insert into submission ( "+fields[:-1]+" ) values ("+values[:-1]+");\n"
             inserts+=1
 
-    log('Thread %2d: number of inserts %3d, updates %3d for %s'%(threadNumber, inserts, updates, asName), 2)
+    log('  Number of inserts %3d, updates %3d'%(inserts, updates), 2)
     return sql
-
-
-
 
 
 #### MAIN ####
 
-log("Database: "+dbName, 1)
-log("Loglevel: "+str(logLevel), 1)
+
 
 # connect to MySQL
 con = pymysql.connect(host='localhost', user=dbUser, passwd=dbPassword, db=dbName, client_flag=CLIENT.MULTI_STATEMENTS)
@@ -491,11 +437,7 @@ voldaan_criteria=getVoldaanCriteria()
 
 
 if (assignmentGroup):
-    if (assignmentGroup==-1):
-        log('Doing all assignment groups, updated in last 7 days ....', 1)
-        updateAssignmentGroups()
-    else:
-        updateAssignmentGroup(assignmentGroup)
+    updateAssignmentGroup(assignmentGroup)
     sys.exit()
 
 #if prio > 100 assume it is a course ID and only update that course (for debugging)
