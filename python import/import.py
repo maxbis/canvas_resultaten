@@ -10,6 +10,9 @@ import argparse
 
 import configparser
 
+from pprint import pprint
+import sys
+
 config = configparser.ConfigParser()
 config.read("canvas.ini")
 
@@ -21,19 +24,26 @@ dbUser = config.get('database', 'user')
 dbPassword = config.get('database', 'password')
 
 parser = argparse.ArgumentParser(description='Update resultaten in Canvas Monitor')
-parser.add_argument('-c', '--course', type=int, help='Update course id or update all courses with a specified prio smaller than specified.', required=True)
+parser.add_argument('-c', '--course', type=int, help='(offline) Update course id or update all courses with a specified prio smaller than specified.', required=False)
+parser.add_argument('-a', '--assignment', type=int, help='(online) Update assignment group id ', required=False)
 parser.add_argument('--delete', action='store_true', help='Delete only - clear all data for this course', required=False)
 parser.add_argument('-l', '--log', help='Loglevel 0: no logging, 1:progress log, 2:advanced log', default=2, required=False)
 args = vars(parser.parse_args())
 
 logLevel = args['log']
 prio     = args['course']
+assignmentGroup = args['assignment']
+
+if ( prio == "" and assignmentGroup == "" ):
+    print('-c course (oofline) or -a assignemnt (online) need to be specified!')
+    sys.exit()
+
+if ( args['delete'] and int(args['course'])<100 ):
+    print('Can only delete if course id is specified',0)
+    sys.exit()
 
 print("Database: "+dbName)
 print("Loglevel: "+str(logLevel))
-
-if ( args['delete'] and int(args['course'])<100 ):
-    log('Can only delete if course id is specified',0)
 
 #### FUNCTIONS ####
 
@@ -79,7 +89,7 @@ def getJsonData(url, courseId):
         page = urllib.request.urlopen(request).read()
     except:
         # if urllib.error.HTTPError == 404:  <- werk niet nog uitzoeken
-        print('Error: API does not return anything (key error, geen rechten?)')
+        print('Error: API does not return anything (key error, no access rights?)')
         print('URL: '+thisUrl)
         exit(1)
         # return(json_obj)
@@ -115,7 +125,8 @@ def validate_string(fieldName, val):
                 return('0')
         # string is like 2020-12-23T09:43:12Z ? remove trailing Z
         elif(len(val) == 20 and val[10] == 'T' and val[19] == 'Z'):
-            return val[:-1]
+            # val[10]=' ' # Does this work with the old import method (full overwrite)
+            return val[:-1].replace('T', ' ')
         else:
             # remove ' from strings and return string, ToDo make a proper fully escaped string
             return val.replace('\'', '')
@@ -167,7 +178,7 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
         cursor.execute(sql)
         con.commit()
 
-    return(returnList)
+    return(returnList) # return list of id's f.e. ['8131', '8127', '8128', '8324']
 
 # Clear course
 # delete from assignment_group where course_id = xxx;
@@ -184,6 +195,98 @@ def deleteBlok(course_id):
 
     cursor.execute(sql)
     con.commit()
+
+def showAGroups(id=''):
+    sql="SELECT course_id, id, name FROM assignment_group"
+    if (id):
+        sql+=' where id='+str(id)
+    cursor.execute(sql)
+    assignments = cursor.fetchall()
+    print()
+    print("%6s %6s %s" % ( 'Course', 'aGroup', 'Name') )
+    for item in assignments:
+        print("%6s %6s %s" % (item[0], item[1], item[2]) )
+    print()
+        
+
+def updateAssignmentGroup(assignementGroup):
+    # fieldList, these fields are selected from the api and will be inserted/updated to the table submission with the same column names
+    fieldList=[ 'id', 'assignment_id', 'user_id', 'grader_id', 'preview_url', 'submitted_at', 'attempt', 'graded_at', 'excused', 'entered_score', 'workflow_state']
+
+    sql="select course_id, id, name from assignment where assignment_group_id="+str(assignementGroup)
+    cursor.execute(sql)
+    assignments = cursor.fetchall()
+
+    if ( not assignments ):
+        print('Invalid assignemntGroup '+str(assignementGroup) )
+        showAGroups()
+        sys.exit()
+    else:
+        showAGroups(assignementGroup)
+
+
+    totUpdates=0
+    totInserts=0
+
+    for courseId, assignmentID, asName in assignments:
+
+        log('Checking assignment '+str(assignmentID)+" "+asName, 2)
+
+        # Canvas Monitor submissions, dbSubmissions is dict[submission_id] of lists[fieldList]
+        dbSubmissions={}
+        sql="select "+ ",".join(fieldList) +" from submission where assignment_id="+str(assignmentID)
+        cursor.execute(sql)
+        submissions = cursor.fetchall()
+        for item in submissions:
+            thisList=[]
+            for i in range(0, len(fieldList)):
+                thisList.append ( validate_string(fieldList[i],str(item[i])) )
+            dbSubmissions[str(item[0])] = thisList
+
+
+        # Canvas (json/api) submissions, canvasSubmissions is dict[submission_id] of lists[fieldList]
+        canvasSubmissions={}
+        submissions=getJsonData('assignments/'+str(assignmentID)+'/submissions', str(courseId)) # returns list of dicts
+        for item in submissions:
+            thisList=[]
+            for key in fieldList:
+                thisList.append ( validate_string(key,item[key]) )
+            canvasSubmissions[str(item['id'])] = thisList
+
+
+        # itterate through canvas submissions
+        sqlCommands=""
+        inserts=0
+        updates=0
+        for key in canvasSubmissions:
+            if key in dbSubmissions: 
+                if ( canvasSubmissions[key][5] == dbSubmissions[key][5] and canvasSubmissions[key][7] == dbSubmissions[key][7] ):
+                    continue # key found but submitted_at and graded_at are not changed. No update needed
+                #start UPDATE
+                fields=""
+                for i in range(1, len(fieldList)):
+                    fields = fields +fieldList[i]+"=\'"+canvasSubmissions[key][i]+"\',"
+                sqlCommands+="update submission set "+fields[:-1]+" where id="+key+";\n"
+                updates+=1
+            else:
+                # submission does not exists at all, start INSERT
+                fields=""
+                values=""
+                for i in range(0, len(fieldList)):
+                    fields = fields + fieldList[i] + ","
+                    values = values +"\'"+ canvasSubmissions[key][i] + "\',"
+                sqlCommands+="insert into submission ( "+fields[:-1]+" ) values ("+values[:-1]+");\n"
+                inserts+=1
+
+        log('  Number of inserts %3d, updates %3d'%(inserts, updates), 2)
+        totInserts+=inserts
+        totUpdates+=updates
+
+    log(sqlCommands, 3)
+    log('Total Number of inserts %3d, updates %3d'%(totInserts, totUpdates), 1)
+    # cursor.execute(sqlCommands)
+    con.commit()
+
 
 def createBlok(course_id):
     importTable(course_id, "assignment_groups",
@@ -292,6 +395,10 @@ cursor = con.cursor()
 # Read voldaan_criteria['module_id']='punten > 12' read from table module_def
 voldaan_criteria=getVoldaanCriteria()
 
+
+if (assignmentGroup):
+    updateAssignmentGroup(assignmentGroup)
+    sys.exit()
 
 #if prio > 100 assume it is a course ID and only update that course (for debugging)
 if (int(args['course'])>100):
