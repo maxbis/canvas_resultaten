@@ -117,7 +117,8 @@ class ResultaatController extends Controller
             $found=-1;
         }
 
-        $sql="select max(timestamp) timestamp from log where subject='Import'";
+        $sql="SELECT min(greatest(m.last_updated, g.last_updated)) 'timestamp' FROM module_def m join assignment_group g on g.id=m.id where m.pos is not null";
+        #$sql="select max(timestamp) timestamp from log where subject='Import'";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         if ($found == 1) { // one student found, redirects to the students page

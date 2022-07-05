@@ -1,11 +1,13 @@
+#! /usr/bin/python3
+# 
 from threading import Thread
 from pprint import pprint
 import time
 import random
 
 def dummy(a,b,c, results, ii):
-    results[ii]=a*b+c
     time.sleep(random.randint(1,3))
+    results[ii]=ii
     return True
 
 threads = []

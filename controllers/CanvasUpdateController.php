@@ -144,4 +144,14 @@ class CanvasUpdateController extends Controller {
         //return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
     }
 
+    public function actionUpdate($assignmentGroup) {
+        $cmd = "python3 ../import/import.py -l 0 -a $assignmentGroup";
+        $cmd = escapeshellcmd($cmd);
+        $shellOutput = shell_exec($cmd);
+
+        Yii::$app->session->setFlash('success', "<pre>$shellOutput</pre>");
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+
 }

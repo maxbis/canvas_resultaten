@@ -40,7 +40,7 @@ function isMobileDevice() {
     </script>
 <?php endif; ?>
 
-<small style="color:#999;">Bijgewerkt tot: <?= $timestamp ?></small><br/>
+<small style="color:#999;">Laatste update: <?= $timestamp ?></small><br/>
 
 <table class="table table-borderless"><tr>
 

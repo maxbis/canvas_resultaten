@@ -71,21 +71,16 @@ class GradeController extends QueryBaseController
 
         $sql = "SELECT  m.pos '-pos',
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
-                        sum(case when (s.submitted_at > s.graded_at) THEN 1 ELSE 0 END) '+Beoordelen',
-                        concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|regrading|2|show_processing') '$hide!Canvas update'
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update',
+                        timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update'
                 FROM module_def m
-                join assignment_group g on g.id = m.id
-                join assignment a on a.assignment_group_id = g.id
-                join submission s on s.assignment_id = a.id
-                join user u on u.id = s.user_id
-                join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-                where u.grade=1 
-                group by 1, 2, 4
+                join assignment_group g on g.id=m.id
+                where m.pos is not null
                 order by m.pos
              ";
 
 
-        $reportTitle = "Open beoordelingen van alle modules";
+        $reportTitle = "Update gehele module";
  
         $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div>"; 
 
