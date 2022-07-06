@@ -145,7 +145,8 @@ class CanvasUpdateController extends Controller {
     }
 
     public function actionUpdate($assignmentGroup) {
-        $cmd = "python3 ../import/import.py -l 0 -a $assignmentGroup";
+        $database='canvas-'.Yii::$app->params['subDomain'];
+        $cmd = "python3 ../import/import.py --database $database -l 0 -a $assignmentGroup";
         $cmd = escapeshellcmd($cmd);
         $shellOutput = shell_exec($cmd);
 
