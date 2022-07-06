@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-from pymysql.constants import CLIENT
 import pymysql
 import os
 import json
@@ -9,33 +8,53 @@ import urllib.request
 import argparse
 
 import configparser
+import sys
 
 from pprint import pprint
-import sys
+from pymysql.constants import CLIENT
 from threading import Thread
 
-config = configparser.ConfigParser()
-config.read("../import/canvas.ini") or config.read("canvas.ini")
+# Debug-dump and die
+def dd(arg):
+    try:
+        print(arg)
+    except:
+        pprint(arg)
+    sys.exit()
 
-baseUrl = config.get('main', 'baseUrl')
-paramUrl = config.get('main', 'paramUrl')
-api_key = config.get('main', 'api_key')
-dbName = config.get('database', 'db')
-dbUser = config.get('database', 'user')
-dbPassword = config.get('database', 'password')
+config = configparser.ConfigParser()
+if ( not (config.read("../import/canvas.ini") or config.read("canvas.ini"))):
+    print()
+    dd('Error: canvas.ini not found')
+
+try:
+    baseUrl  = config.get('main', 'baseUrl')
+    paramUrl = config.get('main', 'paramUrl')
+    api_key  = config.get('main', 'api_key')
+except:
+    dd('Error reading canvas.ini main parameters')
 
 parser = argparse.ArgumentParser(description='Update resultaten in Canvas Monitor')
-parser.add_argument('-c', '--course', type=int, help='(offline) Update course id or update all courses with a specified prio smaller than specified.', required=False)
-parser.add_argument('-a', '--assignment', type=int, help='(online) Update assignment group id', required=False)
-parser.add_argument('-d', '--dry-run', action='store_true', help='Dry run for -a option', required=False)
+parser.add_argument('-c', '--course', type=int, help='Update course id or update all courses with a specified prio smaller than specified.', required=False)
+parser.add_argument('-a', '--assignment', type=int, help='Update assignment group id', required=False)
+parser.add_argument('-d', '--dry-run', action='store_true', help='Dry run for -a option (does all but execute updates/inserts in Canvas db', required=False)
+parser.add_argument('--database', type=str, help='Database name, if ommited, the name from the ini file will be used', default='database', required=False)
 parser.add_argument('--delete', action='store_true', help='Delete only - clear all data for this course', required=False)
 parser.add_argument('-l', '--log', help='Loglevel 0: no logging, 1:progress log, 2:advanced log 3:even more', default=2, required=False)
 args = vars(parser.parse_args())
 
-logLevel = args['log']
-prio     = args['course']
+try:
+    databaseSectionName=args['database']
+    dbName = config.get(databaseSectionName, 'db')
+    dbUser = config.get(databaseSectionName, 'user')
+    dbPassword = config.get(databaseSectionName, 'password')
+except:
+    dd('Error reading canvas.ini database parameters')
+
+logLevel        = args['log']
+prio            = args['course']
 assignmentGroup = args['assignment']
-dryRun   = args['dry_run']
+dryRun          = args['dry_run']
 
 if (prio is None and assignmentGroup is None):
     print()
@@ -59,11 +78,6 @@ if ( args['delete'] and int(args['course'])<100 ):
     sys.exit()
 
 #### FUNCTIONS ####
-
-# Debug-dump and die
-def dd(arg):
-    pprint(arg)
-    sys.exit()
 
 def getCourses(prio=3):
     courses = []
@@ -500,8 +514,11 @@ log("Database: "+dbName, 1)
 log("Loglevel: "+str(logLevel), 1)
 
 # connect to MySQL
-con = pymysql.connect(host='localhost', user=dbUser, passwd=dbPassword, db=dbName, client_flag=CLIENT.MULTI_STATEMENTS)
-cursor = con.cursor()
+try:
+    con = pymysql.connect(host='localhost', user=dbUser, passwd=dbPassword, db=dbName, client_flag=CLIENT.MULTI_STATEMENTS)
+    cursor = con.cursor()
+except:
+    dd('Error: cannot connect to database '+dbName)
 
 # Read voldaan_criteria['module_id']='punten > 12' read from table module_def
 voldaan_criteria=getVoldaanCriteria()
