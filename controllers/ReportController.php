@@ -273,7 +273,7 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-                Blok, Module,
+                Blok '#Blok' , Module,
                 concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') '!Afgerond',
                 concat(naf,'|/report/modules-open|moduleId|',module_id) '!Niet Afgerond'
                 from
@@ -294,6 +294,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
+            'nocount' => true,
         ]);
     }
 

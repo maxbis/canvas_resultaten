@@ -64,7 +64,7 @@ $tot = [];
                                 $tot[$columnName] = 0;
                                 $columnName = substr($columnName, 1);
                             }
-                            if (substr($columnName, 0, 1) == '!') {
+                            if (substr($columnName, 0, 1) == '!' || substr($columnName, 0, 1) == '#') {
                                 $columnName = substr($columnName, 1);
                             }
                             if (substr($columnName, 0, 1) <>'-') {
@@ -79,6 +79,7 @@ $tot = [];
 
             <?php
             if (isset($data['row'])) {
+                $prevItem='';
                 foreach ($data['row'] as $item) {
                     echo "<tr>";
                     if (!isset($nocount)) {
@@ -117,10 +118,19 @@ $tot = [];
                                 echo "<pre><hr>";
                                 dd( ["Err: Inlvalid link data", $item, $part] );
                             }
+                        } elseif (substr($columnName, 0, 1) == '#') {
+                            if ( $prevItem=='' || $item[$columnName] != $prevItem[$columnName] ) {
+                                echo "<td>" . $item[$columnName] . "</td>";
+                            } else { 
+                                echo "<td></td>";
+                            }
+                            
                         } elseif (substr($columnName, 0, 1) <> '-') {
                             echo "<td>" . $item[$columnName] . "</td>";
                         }
+                        
                     }
+                    $prevItem=$item;
                     echo "</tr>";
                 }
 

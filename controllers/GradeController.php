@@ -70,11 +70,13 @@ class GradeController extends QueryBaseController
         }
 
         $sql = "SELECT  m.pos '-pos',
+                        c.korte_naam '#Blok',
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
-                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update',
-                        timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update'
+                        timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update'
                 FROM module_def m
                 join assignment_group g on g.id=m.id
+                join course c on c.id = g.course_id
                 where m.pos is not null
                 order by m.pos
              ";
@@ -90,6 +92,7 @@ class GradeController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
+            'nocount' => true,
         ]);
     }
 
@@ -172,7 +175,7 @@ class GradeController extends QueryBaseController
     {
         $sql = "
             SELECT  m.pos '-pos',
-                    m.naam Module,
+                    m.naam '#Module',
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     concat(u.name,'|/public/index|code|',u.code) '!Student',
                     substring(u.comment,1,3) 'Code',
@@ -203,7 +206,7 @@ class GradeController extends QueryBaseController
         $sql = "
             SELECT  concat(u.name,'|/public/index|code|',u.code) '!Student',
                     m.pos '-pos',
-                    m.naam Module,
+                    m.naam '#Module',
                     concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                     substring(u.comment,1,3) 'Code',
                     concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
