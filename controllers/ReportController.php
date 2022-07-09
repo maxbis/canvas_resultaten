@@ -675,7 +675,7 @@ class ReportController extends QueryBaseController
 
     public function actionModules($export=false){
         $sql = "
-        select  distinct c.id 'Cursus ID', c.korte_naam 'Korte Naam', c.naam 'Naam',
+        select  distinct c.id 'Cursus ID', c.korte_naam '#Korte Naam', c.naam 'Naam',
                 r.module_id 'Module ID',
                 case when d.naam is null then concat(r.module,'|/module-def/create|id|',r.module_id,'|name|',r.module) else concat(r.module,'|/module-def/update|id|',r.module_id) end '!Module Canvas-naam',
                 d.naam 'Module Monitor Naam',
@@ -683,7 +683,7 @@ class ReportController extends QueryBaseController
         from resultaat r
         left outer join module_def d on r.module_id=d.id
         join course c on c.id=r.course_id
-        order by d.pos
+        order by c.korte_naam, c.id, r.module_id, d.pos
         ";
 
         $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);

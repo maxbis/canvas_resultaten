@@ -70,7 +70,9 @@ class GradeController extends QueryBaseController
         }
 
         $sql = "SELECT  m.pos '-pos',
+                        
                         c.korte_naam '#Blok',
+                        concat(m.id, '|/module-def/update|id|',m.id) '!ID',
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
                         timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
                         concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update'
