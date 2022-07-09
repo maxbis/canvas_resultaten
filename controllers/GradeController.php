@@ -69,17 +69,27 @@ class GradeController extends QueryBaseController
             $hide="-";
         }
 
+        if (Yii::$app->user->identity->username=='beheer') {
+            $line2="concat(c.korte_naam, '|/course/update|id|',c.id) '!#Blok',";
+            $line3="concat(m.id, '|/module-def/update|id|',m.id) '!ID',";
+        }else{
+            $line2=" c.korte_naam '#Blok',";
+            $line3="m.id 'id',";;
+        }
+
         $sql = "SELECT  m.pos '-pos',
-                        
-                        c.korte_naam '#Blok',
-                        concat(m.id, '|/module-def/update|id|',m.id) '!ID',
+                        $line2
+                        $line3
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
                         timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
-                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update'
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update',
+                        date(max(r.laatste_beoordeling)) 'Laatste beoordeling'
                 FROM module_def m
                 join assignment_group g on g.id=m.id
                 join course c on c.id = g.course_id
+                left outer join resultaat r on r.module_id = m.id
                 where m.pos is not null
+                group by 1,2,3,4,5,6
                 order by m.pos
              ";
 

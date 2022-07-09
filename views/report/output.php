@@ -60,13 +60,7 @@ $tot = [];
                         if (!isset($nocount)) echo "<th>#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
-                            if (substr($columnName, 0, 1) == '+') {
-                                $tot[$columnName] = 0;
-                                $columnName = substr($columnName, 1);
-                            }
-                            if (substr($columnName, 0, 1) == '!' || substr($columnName, 0, 1) == '#') {
-                                $columnName = substr($columnName, 1);
-                            }
+                            $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) <>'-') {
                                 echo "<th>" . $columnName . "</th>";
                             }
@@ -101,6 +95,12 @@ $tot = [];
                                 $help='';
                                 $link=$part[0];
                             }
+                            if ( substr($columnName, 1, 1) == '#' ) {
+                                if ( $prevItem!='' && $item[$columnName] == $prevItem[$columnName] ) {
+                                    echo "<td></td>";
+                                    continue;
+                                }
+                            }
                             if (count($part) == 2){
                                 if (substr($part[0],0,5)=='Grade') { # Only for Grade Link
                                     echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
@@ -118,7 +118,7 @@ $tot = [];
                                 echo "<pre><hr>";
                                 dd( ["Err: Inlvalid link data", $item, $part] );
                             }
-                        } elseif (substr($columnName, 0, 1) == '#') {
+                        } elseif (substr($columnName, 0, 1) == '#' ) {
                             if ( $prevItem=='' || $item[$columnName] != $prevItem[$columnName] ) {
                                 echo "<td>" . $item[$columnName] . "</td>";
                             } else { 
