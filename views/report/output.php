@@ -60,6 +60,10 @@ $tot = [];
                         if (!isset($nocount)) echo "<th>#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
+                            if (substr($columnName, 0, 1) == '+') {
+                                $tot[$columnName] = 0;
+                                $columnName = substr($columnName, 1);
+                            }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) <>'-') {
                                 echo "<th>" . $columnName . "</th>";
@@ -85,7 +89,7 @@ $tot = [];
                         if (++$count<=$from) continue;
                         if (substr($columnName, 0, 1) == '+') {
                             $tot[$columnName] += $item[$columnName];
-                        }
+                        } 
                         if (substr($columnName, 0, 1) == '!') { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
                             if (strlen($part[0])>20) { # if name for link is larger than 20, concat it and put complete link in help (title)
