@@ -82,11 +82,9 @@
     });
 </script>
 
-<?php
-global $CODE;
-$CODE=$_GET["code"];
-include "check-in-button.php";
-?>
+<div style="float:right">
+<?php use app\controllers\CheckInController; echo CheckInController::button($_GET["code"]); ?>
+</div>
 
 <div class="m-4">
 

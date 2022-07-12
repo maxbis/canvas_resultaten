@@ -13,6 +13,20 @@ if ( $route == 'public/index' ) {
     $title=$subDomain;
 }
 
+#determine klassen menu (config in config/params.php)
+$klassen = Yii::$app->params['klassen'];
+$myKlassenMenu=[];
+foreach ($klassen as $klas) {
+    $item['label'] =  $klas;
+    $item['url'] = [ Yii::$app->controller->action->id.'?klas='.$klas];
+    array_push($myKlassenMenu, $item);
+}
+$item['label'] =  'Allen';
+$item['url'] = [ Yii::$app->controller->action->id];
+array_push($myKlassenMenu, $item);
+
+//dd($myKlassenMenu);
+
 // dd(Yii::$app->controller->action->controller->module->requestedRoute);
 // $title = $route;
 
@@ -64,13 +78,7 @@ echo Nav::widget([
         [
             'label' => 'Klas',
             'visible' => (Yii::$app->controller->id == 'report' && array_key_exists('klas', Yii::$app->view->context->actionParams)),
-            'items' => [
-                ['label' => '1A', 'url' => [Yii::$app->controller->action->id . '?klas=1A']],
-                ['label' => '1B', 'url' => [Yii::$app->controller->action->id . '?klas=1B']],
-                ['label' => '1C', 'url' => [Yii::$app->controller->action->id . '?klas=1C']],
-                ['label' => '1D', 'url' => [Yii::$app->controller->action->id . '?klas=1D']],
-                ['label' => 'Allen', 'url' => [Yii::$app->controller->action->id]],
-            ],
+            'items' => $myKlassenMenu,
         ],
 
         [

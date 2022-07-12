@@ -8,6 +8,7 @@ use app\models\CheckInSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
 
 /**
  * CheckInController implements the CRUD actions for CheckIn model.
@@ -133,6 +134,34 @@ class CheckInController extends Controller
         }
 
         return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    public function button($code, $test=false) {
+
+        $today = date("Ymd"); //e.g. 20200728, this is an extra security to avoid fake posts
+        $date_hash=md5($today);
+
+        if ($test || ! isset($_COOKIE['check-in']) && Yii::$app->user->isGuest ) {
+            if (MyHelpers::CheckIP(true)) {
+                return Html::a(' Check-in ',  ['/check-in/check-in'], ['class'=>"btn btn-success", 'style'=>'background-color:#a7e68e;color:#164a01;', 'data-method' => 'POST','data-params' =>
+                        [ 'code' => $code, 'check' => $date_hash, 'action' => 'i' ], ]);
+            }
+        }
+
+    }
+
+
+    public function actionTest() {
+        $sql="
+            select klas, name, code from user
+            WHERE CHAR_LENGTH(code)>2
+            order by 1,2";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+
+        return $this->render('test', [
+            'result' => $result,
+        ]);
+
     }
 
     /**

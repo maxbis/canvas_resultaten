@@ -767,14 +767,14 @@ class ReportController extends QueryBaseController
         group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
-        $data = parent::executeQuery($sql, "Laatste check in (afgelopen 8 uur)", $export);
+        $data = parent::executeQuery($sql, "Laatste check-in", $export);
 
         $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => '',
+            'descr' => 'afgelopen 8 uur',
             'lastLine' => $lastLine,
         ]);
 
