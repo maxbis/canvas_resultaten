@@ -6,10 +6,10 @@
 namespace app\controllers;
 
 class MyHelpers
-{
-    public function checkIP() {
+{   // by default function will exit, otherwise true/false is return
+    public function checkIP($noExit=false) {
         if ( $_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ){
-            $remoteIP='178.84.73.55'; // this address should exists in ipAllowed.txt, add it to ipAllowed.txt
+            $remoteIP='178.84.73.155'; // this address should exists in ipAllowed.txt, add it to ipAllowed.txt
         } else {
             $remoteIP=$_SERVER['REMOTE_ADDR'];
         }
@@ -27,7 +27,7 @@ class MyHelpers
     
          $ipAllowed=[]; // all lines vlaidated will be put in this array
          for($i=0; $i<count($lines); $i++) {
-            $ip = explode(' ',trim($lines[$i]))[0]; // we want teh first word
+            $ip = explode(' ',trim($lines[$i]))[0]; // we want the first word
             if(filter_var(explode('/',$ip)[0], FILTER_VALIDATE_IP)) { // and we want anything beofre the / (note ip = xxx.xxx.xxx.xxx/xx)
                 $ipAllowed[] = $ip; // ipnumber validate (note that subnet mask is not validated)
             }
@@ -47,6 +47,8 @@ class MyHelpers
                 $weAreOK=true;
             }
         }
+        if ( $noExit) { if ($weAreOK) { return(true); } else{ return(false); } };
+
         if ( $weAreOK == false ) {
             $string = "Permission denied for ". $remoteIP;
             writeLog($string);

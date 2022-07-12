@@ -82,8 +82,14 @@
     });
 </script>
 
+<?php
+global $CODE;
+$CODE=$_GET["code"];
+include "check-in-button.php";
+?>
+
 <div class="m-4">
-    
+
     <ul class="nav nav-tabs" id="myTab">
         <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
         <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>

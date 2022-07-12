@@ -750,5 +750,35 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionTodayCheckIns($export=false,$klas='') {
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql="
+        SELECT u.klas '#Klas', u.name 'Student', max(c.timestamp) 'Check-in', min(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
+        $select
+        group by 1,2
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Laatste check in (afgelopen 8 uur)", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => '',
+            'lastLine' => $lastLine,
+        ]);
+
+    }
+
 }
 
