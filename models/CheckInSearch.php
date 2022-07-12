@@ -22,7 +22,7 @@ class CheckInSearch extends CheckIn
     {
         return [
             [['id', 'studentId'], 'integer'],
-            [['action', 'timestamp', 'name', 'klas'], 'safe'],
+            [['action', 'timestamp', 'name', 'klas','browser_hash'], 'safe'],
         ];
     }
 
@@ -50,6 +50,7 @@ class CheckInSearch extends CheckIn
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['time_stamp' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -70,6 +71,7 @@ class CheckInSearch extends CheckIn
         $query->andFilterWhere(['like', 'action', $this->action]);
         $query->andFilterWhere(['like', 'user.name', $this->name]);
         $query->andFilterWhere(['like', 'timestamp', $this->timestamp]);
+        $query->andFilterWhere(['like', 'browser_hash', $this->browser_hash]);
 
         $dataProvider->sort->attributes['name'] = [
             'asc' => ['user.name' => SORT_ASC],

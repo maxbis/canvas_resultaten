@@ -114,6 +114,8 @@ class CheckInController extends Controller
         $code = Yii::$app->request->post('code', null);
         $check = Yii::$app->request->post('check', null);
         $action = Yii::$app->request->post('action', null);
+        $browserHash = substr(md5($_SERVER['HTTP_USER_AGENT'].$_SERVER['HTTP_ACCEPT'].$_SERVER['HTTP_ACCEPT_LANGUAGE']),-16);
+
 
         if ( $check != md5(date("Ymd")) || MyHelpers::CheckIP(true) == false ) {
             return;
@@ -127,7 +129,7 @@ class CheckInController extends Controller
             $hourDiff=(int)(explode(':',$timeDiff)[0]);
 
             if ( (! $timeDiff) || $hourDiff>0 || true) {
-                $sql="insert into check_in (studentId,action) values ($studentId, 'i')";
+                $sql="insert into check_in (studentId,action,browser_hash) values ($studentId, 'i', '$browserHash')";
                 $result = Yii::$app->db->createCommand($sql)->execute();
                 setcookie('check-in', 'i', time()+3600, '/');
             }

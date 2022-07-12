@@ -30,7 +30,7 @@ class CheckIn extends \yii\db\ActiveRecord
         return [
             [['studentId', 'action'], 'required'],
             [['studentId'], 'integer'],
-            [['timestamp'], 'safe'],
+            [['timestamp','browser_hash'], 'safe'],
             [['action'], 'string', 'max' => 1],
         ];
     }

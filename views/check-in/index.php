@@ -41,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'student.klas',
             ],
             'timestamp',
+            'browser_hash',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
