@@ -151,11 +151,10 @@ class CheckInController extends Controller
     }
 
 
-    public function actionTest() {
-        $sql="
-            select klas, name, code from user
-            WHERE CHAR_LENGTH(code)>2
-            order by 1,2";
+    public function actionTest() {  
+        $sql="  select klas, name, code from user
+                WHERE CHAR_LENGTH(code)>2
+                order by 1,2";
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         return $this->render('test', [
