@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /**
  * CheckInController implements the CRUD actions for CheckIn model.
  */
+
 class CheckInController extends Controller
 {
     /**
