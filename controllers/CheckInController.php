@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
 
+use yii\filters\AccessControl;
+
 /**
  * CheckInController implements the CRUD actions for CheckIn model.
  */
