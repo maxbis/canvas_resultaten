@@ -36,14 +36,24 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'klas',
                 'label' => 'Klas',
-                'contentOptions' => ['style' => 'width:220px;'],
+                'contentOptions' => ['style' => 'width:40px;'],
                 'format' => 'raw',
                 'value' => 'student.klas',
             ],
-            'timestamp',
-            'browser_hash',
+            [
+                'attribute' => 'timestamp',
+                'label' => 'Check-In',
+                'contentOptions' => ['style' => 'width:220px;'],
+            ],
+            [
+                'attribute' => 'browser_hash',
+                'label' => 'BrowserID',
+                'contentOptions' => ['style' => 'width:120px;'],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ],
+
+
+            ['class' => 'yii\grid\ActionColumn', 'contentOptions' => ['style' => 'width:120px;'],],
         ],
     ]); ?>
 

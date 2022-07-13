@@ -50,7 +50,7 @@ class CheckInSearch extends CheckIn
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['time_stamp' => SORT_DESC]],
+            'sort'=> ['defaultOrder' => ['timestamp' => SORT_DESC]],
         ]);
 
         $this->load($params);

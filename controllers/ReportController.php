@@ -750,7 +750,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionTodayCheckIns($export=false,$klas='') {
+    public function actionTodayCheckIn($export=false,$klas='') {
         if ($klas) {
             $select = "and klas='$klas'";
         } else {
@@ -758,7 +758,8 @@ class ReportController extends QueryBaseController
         }
 
         $sql="
-        SELECT u.klas '#Klas', u.name 'Student', max(c.timestamp) 'Check-in', min(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
+        SELECT  u.klas '#Klas',
+                u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', min(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
@@ -775,6 +776,133 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'afgelopen 8 uur',
+            'lastLine' => $lastLine,
+        ]);
+
+    }
+
+    public function actionTodayMinMaxCheckIn($export=false,$klas='') {
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql="
+        SELECT u.klas '#Klas', u.name '#Student',
+        min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Begin',
+        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eind'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
+        $select
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'afgelopen 8 uur',
+            'lastLine' => $lastLine,
+        ]);
+
+    }
+
+    public function actionWeekAllCheckIn($export=false,$klas='') {
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql="
+        SELECT  u.klas '#Klas', 
+                concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
+                left(dayname(c.timestamp),2) 'Dag',
+                DATE_FORMAT(c.timestamp,'%d-%c') 'Datum',
+                min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Begin',
+                max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eind'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        and DATEDIFF(c.timestamp, now()) < 8
+        $select
+        group by 1,2,3,4
+        order by 1,2,4 DESC";
+
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'afgelopen week',
+            'lastLine' => $lastLine,
+            'nocount' => true,
+        ]);
+
+    }
+
+    public function actionCheckInStudent($export=false,$klas='',$id) {
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql="
+        SELECT u.name '#Student',
+            DATE_FORMAT(c.timestamp,'%v') '#week',
+            left(dayname(c.timestamp),2) 'Dag',
+            DATE_FORMAT(c.timestamp,'%c-%m') 'Datum',
+            DATE_FORMAT(c.timestamp,'%H:%i') 'Tijd'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        and DATEDIFF(c.timestamp, now()) < 90
+        and u.id=$id
+        $select
+        order by 4 DESC";
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => '90 dagen',
+        ]);
+
+    }
+
+    public function actionTodayNoCheckIn($export=false,$klas='') {
+        if ($klas) {
+            $select = "and klas='$klas'";
+        } else {
+            $select = '';
+        }
+
+        $sql="
+        SELECT u.klas '#Klas', u.name 'Student'
+        FROM user u
+        where u.id not in ( select cc.studentId from check_in cc where TIMESTAMPDIFF(HOUR, cc.timestamp, now()) < 8 )
+        $select
+        and CHAR_LENGTH(u.code)>8
+        order by 1,2";
+
+        $data = parent::executeQuery($sql, "Niet aanwezig", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a><br>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Niet ingecheckt afgelopen 8 uur',
             'lastLine' => $lastLine,
         ]);
 
