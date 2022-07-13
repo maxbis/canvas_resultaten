@@ -33,6 +33,11 @@ class CheckInController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['check-in'],
+                        'roles' => ['?'],
+                    ],
                     // when logged in, any user
                     [
                         'actions' => [],
@@ -129,7 +134,7 @@ class CheckInController extends Controller
         $code = Yii::$app->request->post('code', null);
         $check = Yii::$app->request->post('check', null);
         $action = Yii::$app->request->post('action', null);
-        $browserHash = substr(md5($_SERVER['HTTP_USER_AGENT'].$_SERVER['HTTP_ACCEPT'].$_SERVER['HTTP_ACCEPT_LANGUAGE']),-16);
+        $browserHash = substr(md5($_SERVER['HTTP_USER_AGENT'].$_SERVER['HTTP_ACCEPT'].$_SERVER['HTTP_ACCEPT_LANGUAGE']),-10);
 
 
         if ( $check != md5(date("Ymd")) || MyHelpers::CheckIP(true) == false ) {
@@ -142,11 +147,15 @@ class CheckInController extends Controller
             $sql = "select timediff(now(),max(timestamp)) timediff from check_in where studentId=".$studentId;
             $timeDiff = Yii::$app->db->createCommand($sql)->queryOne()['timediff'];
             $hourDiff=(int)(explode(':',$timeDiff)[0]);
+            $count=0;
+
+            if (isset($_COOKIE['cic'])) $count=(int)$_COOKIE['cic']+1;
 
             if ( (! $timeDiff) || $hourDiff>0 || true) {
-                $sql="insert into check_in (studentId,action,browser_hash) values ($studentId, 'i', '$browserHash')";
+                $sql="insert into check_in (studentId,action,browser_hash) values ($studentId, 'i', '$browserHash-$count')";
                 $result = Yii::$app->db->createCommand($sql)->execute();
-                setcookie('check-in', 'i', time()+3600, '/');
+                setcookie('chin', $browserHash, time()+3600, '/');
+                setcookie('cic', $count , 0, '/');
             }
         }
 
@@ -158,7 +167,7 @@ class CheckInController extends Controller
         $today = date("Ymd"); //e.g. 20200728, this is an extra security to avoid fake posts
         $date_hash=md5($today);
 
-        if ($test || ! isset($_COOKIE['check-in']) && Yii::$app->user->isGuest ) {
+        if ($test || ! isset($_COOKIE['chin']) && Yii::$app->user->isGuest ) {
             if (MyHelpers::CheckIP(true)) {
                 return Html::a(' Check-in ',  ['/check-in/check-in'], ['class'=>"btn btn-success", 'style'=>'background-color:#a7e68e;color:#164a01;', 'data-method' => 'POST','data-params' =>
                         [ 'code' => $code, 'check' => $date_hash, 'action' => 'i' ], ]);
@@ -178,6 +187,10 @@ class CheckInController extends Controller
             'result' => $result,
         ]);
 
+    }
+
+    public function actionTest2() {  
+        dd($_COOKIE);
     }
 
     /**

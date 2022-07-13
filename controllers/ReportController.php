@@ -827,7 +827,7 @@ class ReportController extends QueryBaseController
         and DATEDIFF(c.timestamp, now()) < 8
         $select
         group by 1,2,3,4
-        order by 1,2,4 DESC";
+        order by 1,2,4";
 
 
         $data = parent::executeQuery($sql, "Alle check-ins", $export);
