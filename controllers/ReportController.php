@@ -770,13 +770,10 @@ class ReportController extends QueryBaseController
 
         $data = parent::executeQuery($sql, "Laatste check-in", $export);
 
-        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
-
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'afgelopen 8 uur',
-            'lastLine' => $lastLine,
         ]);
 
     }
@@ -797,17 +794,15 @@ class ReportController extends QueryBaseController
         where c.action='i'
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
         $select
+        group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
         $data = parent::executeQuery($sql, "Alle check-ins", $export);
-
-        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'afgelopen 8 uur',
-            'lastLine' => $lastLine,
         ]);
 
     }
