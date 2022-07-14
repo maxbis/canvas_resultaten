@@ -773,7 +773,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'afgelopen 8 uur',
+            'descr' => 'Meest recente check in van de afgelopen 8 uur',
         ]);
 
     }
@@ -787,8 +787,8 @@ class ReportController extends QueryBaseController
 
         $sql="
         SELECT u.klas '#Klas', u.name '#Student',
-        min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Begin',
-        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eind'
+        min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
+        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste'
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
@@ -802,7 +802,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'afgelopen 8 uur',
+            'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
         ]);
 
     }
@@ -819,8 +819,8 @@ class ReportController extends QueryBaseController
                 concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
                 left(dayname(c.timestamp),2) 'Dag',
                 DATE_FORMAT(c.timestamp,'%d-%c') 'Datum',
-                min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Begin',
-                max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eind'
+                min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
+                max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste'
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
@@ -837,7 +837,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'afgelopen week',
+            'descr' => 'Eerste en laatste check-in per dag van de afgelopen week',
             'lastLine' => $lastLine,
             'nocount' => true,
         ]);
@@ -870,7 +870,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => '90 dagen',
+            'descr' => 'over de afgelopen 90 dagen',
         ]);
 
     }
