@@ -22,7 +22,7 @@ foreach ($klassen as $klas) {
     array_push($myKlassenMenu, $item);
 }
 $item['label'] =  'Allen';
-$item['url'] = [ Yii::$app->controller->action->id];
+$item['url'] = [ Yii::$app->controller->action->id.'?klas=all'];
 array_push($myKlassenMenu, $item);
 
 //dd($myKlassenMenu);

@@ -10,14 +10,26 @@ use DateTime;
 class ReportController extends QueryBaseController
 {
 
-    public function actionActief($export = false, $klas = '') { // menu 3.1 - Student laatst actief op....
-
-        // $sql="select student_naam Student, klas Klas, max(laatste_activiteit) 'Laatst actief' from resultaat group by 1,2 order by 3 $sort";
+    private function getKlas($klas) {
         if ($klas) {
-            $select = "and o.klas='$klas'";
+            if ($klas=='all') {
+                $select = "";
+                setcookie('klas', null, -1, '/'); 
+            } else {
+                $select = "and u.klas='$klas'";
+                setcookie('klas', $klas, 0, '/');
+            }
         } else {
-            $select = '';
+            if ( isset($_COOKIE['klas']) ){
+                $select = "and u.klas='". $_COOKIE['klas']."'";
+            } else {
+                $select = '';
+            }
         }
+        return $select;
+    }
+
+    public function actionActief($export = false, $klas = '') { // menu 3.1 - Student laatst actief op....
 
         $sql = "
             SELECT
@@ -29,7 +41,7 @@ class ReportController extends QueryBaseController
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
             and year(laatste_activiteit) > 2020
             and o.klas is not NULL
-            $select
+            ".$this->getKlas($klas)."
             order by 4 desc
         ";
 
@@ -43,9 +55,6 @@ class ReportController extends QueryBaseController
 
     public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
     { 
-
-        if ($klas) $select = "and u.klas='$klas'";
-        else $select = '';
 
         $sum_column="";
         for($i=12; $i>=2; $i--){
@@ -84,7 +93,7 @@ class ReportController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where klas is not null
-            $select
+            ".$this->getKlas($klas)."
             group by 2,3
             order by 1 DESC
         ";
@@ -106,7 +115,7 @@ class ReportController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where klas is not null
-            $select
+            ".$this->getKlas($klas)."
             group by 2,3,4
             order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
             limit 200
@@ -160,12 +169,6 @@ class ReportController extends QueryBaseController
     public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
     { 
 
-        if ($klas) {
-            $select = "where klas='$klas'";
-        } else {
-            $select = '';
-        }
-
         $sql = "
             select m.pos, m.naam Module,
             sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
@@ -176,7 +179,7 @@ class ReportController extends QueryBaseController
             join assignment a on a.assignment_group_id=g.id
             left outer join submission s on s.assignment_id=a.id
             join user u on u.id = s.user_id
-            $select
+            ".$this->getKlas($klas)."
             group by 1,2
             order by m.pos $sort
         ";
@@ -195,12 +198,6 @@ class ReportController extends QueryBaseController
     public function actionRanking2($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
-        if ($klas) {
-            $select = "and r.klas='$klas'";
-        } else {
-            $select = '';
-        }
-
         # if a teacher is also student he has no code (code is null), so only get students with a code
         $sql = "
             select
@@ -214,7 +211,7 @@ class ReportController extends QueryBaseController
                 INNER JOIN module_def d ON d.id=r.module_id
                 INNER JOIN user u ON u.student_nr = r.student_nummer
                 where u.code is not null
-            $select
+                ".$this->getKlas($klas)."
             group by 1,2,3,4
             order by 3 $sort";
 
@@ -229,12 +226,6 @@ class ReportController extends QueryBaseController
     public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
-        if ($klas) {
-            $select = "and r.klas='$klas'";
-        } else {
-            $select = '';
-        }
-
         # if a teacher is also student he has no code (code is null), so only get students with a code
         $sql = "
             select
@@ -248,7 +239,7 @@ class ReportController extends QueryBaseController
             WHERE r.voldaan != 'V'
             AND r.module_pos < 100
             AND u.code is not null
-            $select
+            ".$this->getKlas($klas)."
             group by 1,2
             order by 3 Desc, 4 desc
         ";
@@ -265,12 +256,6 @@ class ReportController extends QueryBaseController
     public function actionModulesFinished($export = false, $klas = '') // menu 3.5 - Module is c keer voldaan
     { 
 
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
-
         $sql = "
             select
                 Blok '#Blok' , Module,
@@ -283,7 +268,7 @@ class ReportController extends QueryBaseController
                     JOIN course c on c.id = course_id
                     JOIN user u on u.student_nr=o.student_nummer
                     where u.grade = 1
-                    $select
+                    ".$this->getKlas($klas)."
                     group by 1,2,3,4
                     order by d.pos) alias
         ";
@@ -351,11 +336,6 @@ class ReportController extends QueryBaseController
 
     public function actionAantalBeoordelingen($export = false, $klas = '') // menu 3.7 - Beoordelingen per module over tijd
     { 
-        if ($klas) {
-            $select = "where klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql = "
             select module Module,
@@ -365,7 +345,8 @@ class ReportController extends QueryBaseController
             sum(case when (datediff(curdate(),laatste_beoordeling)<=28 && datediff(curdate(),laatste_beoordeling)>21 ) then 1 else 0 end) '+28',
             sum(1) 'Aantal'
             from resultaat
-            $select
+            where 1
+            ".$this->getKlas($klas)."
             group by 1
             order by 2 desc
         ";
@@ -466,17 +447,12 @@ class ReportController extends QueryBaseController
     }
 
     public function actionLastReportByStudent($export=false, $klas = '') {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
                 FROM user u
                 LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
                 WHERE u.klas in ('1A','1B','1C','1D')";
-        $sql.=  $select;
+        $sql.=  $this->getKlas($klas);
         $sql.= " group by 1,2
                 order by 3 ASC, 1";
 
@@ -490,11 +466,6 @@ class ReportController extends QueryBaseController
     }
 
     public function actionVoortgang($export=false, $klas = '') {
-        if ($klas) {
-            $select = "and u.klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
                 from module_def m
@@ -528,7 +499,7 @@ class ReportController extends QueryBaseController
             INNER JOIN module_def d on d.id=r.module_id
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
-            $select
+            ".$this->getKlas($klas)."
             GROUP BY 1,2,3,4,5,6
             ORDER BY 1 DESC
         ";
@@ -715,12 +686,7 @@ class ReportController extends QueryBaseController
 
     public function actionHerkansen($export = false, $klas='') 
     { 
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
-        
+
         $sql = "
             select
             u.name Student,
@@ -736,7 +702,7 @@ class ReportController extends QueryBaseController
             join user u on u.id = s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where s.submitted_at <> '1970-01-01 00:00:00'
-            $select
+            ".$this->getKlas($klas)."
             group by 1,2 
             order by 5 desc
         ";
@@ -751,11 +717,6 @@ class ReportController extends QueryBaseController
     }
 
     public function actionTodayCheckIn($export=false,$klas='') {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql="
         SELECT  u.klas '#Klas',
@@ -764,7 +725,7 @@ class ReportController extends QueryBaseController
         join user u  on u.id=c.studentId
         where c.action='i'
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
-        $select
+        ".$this->getKlas($klas)."
         group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
@@ -779,11 +740,6 @@ class ReportController extends QueryBaseController
     }
 
     public function actionTodayMinMaxCheckIn($export=false,$klas='') {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql="
         SELECT u.klas '#Klas', u.name '#Student',
@@ -793,7 +749,7 @@ class ReportController extends QueryBaseController
         join user u  on u.id=c.studentId
         where c.action='i'
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
-        $select
+        ".$this->getKlas($klas)."
         group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
@@ -808,11 +764,6 @@ class ReportController extends QueryBaseController
     }
 
     public function actionWeekAllCheckIn($export=false,$klas='') {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql="
         SELECT  u.klas '#Klas', 
@@ -825,7 +776,7 @@ class ReportController extends QueryBaseController
         join user u  on u.id=c.studentId
         where c.action='i'
         and DATEDIFF(c.timestamp, now()) < 8
-        $select
+        ".$this->getKlas($klas)."
         group by 1,2,3,4
         order by 1,2,4";
 
@@ -845,11 +796,6 @@ class ReportController extends QueryBaseController
     }
 
     public function actionCheckInStudent($export=false,$klas='',$id) {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql="
         SELECT u.name '#Student',
@@ -862,7 +808,7 @@ class ReportController extends QueryBaseController
         where c.action='i'
         and DATEDIFF(c.timestamp, now()) < 90
         and u.id=$id
-        $select
+        ".$this->getKlas($klas)."
         order by 4 DESC";
 
         $data = parent::executeQuery($sql, "Alle check-ins", $export);
@@ -876,17 +822,12 @@ class ReportController extends QueryBaseController
     }
 
     public function actionTodayNoCheckIn($export=false,$klas='') {
-        if ($klas) {
-            $select = "and klas='$klas'";
-        } else {
-            $select = '';
-        }
 
         $sql="
         SELECT u.klas '#Klas', u.name 'Student'
         FROM user u
         where u.id not in ( select cc.studentId from check_in cc where TIMESTAMPDIFF(HOUR, cc.timestamp, now()) < 8 )
-        $select
+        ".$this->getKlas($klas)."
         and CHAR_LENGTH(u.code)>8
         order by 1,2";
 
