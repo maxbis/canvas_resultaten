@@ -759,7 +759,7 @@ class ReportController extends QueryBaseController
 
         $sql="
         SELECT  u.klas '#Klas',
-                u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', min(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
+                u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
