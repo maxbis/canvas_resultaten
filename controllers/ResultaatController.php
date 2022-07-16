@@ -75,37 +75,6 @@ class ResultaatController extends Controller
         ]);
     }
 
-
-    /**
-     * Displays a single Resultaat model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    // public function actionView($id)
-    // {
-    //     return $this->render('view', [
-    //         'model' => $this->findModel($id),
-    //     ]);
-    // }
-
-
-    /**
-     * Finds the Resultaat model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Resultaat the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    // protected function findModel($id)
-    // {
-    //     if (($model = Resultaat::findOne($id)) !== null) {
-    //         return $model;
-    //     }
-
-    //     throw new NotFoundHttpException('The requested page does not exist.');
-    // }
-
     public function actionStart() {
   
         if (Yii::$app->request->post() ) {

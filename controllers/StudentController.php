@@ -163,4 +163,29 @@ class StudentController extends Controller
         Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
         return $this->redirect(Yii::$app->request->referrer);
     }
+
+    // generate  hash codes used to access overview for a student. Run this to (re) set all hash codes.
+    public function actionGenerate($code = 0)
+    {
+        // if you want new code, change the $salt, everyone will get a new code
+        if ($code == "EXE") {
+            echo "<pre>";
+            MyHelpers::CheckIP();
+            $sql = "select student_nr studentNummer, name from user where student_nr > 100";
+            $data = Yii::$app->db->createCommand($sql)->queryAll();
+
+            echo "Lines to be updated: " . count($data);
+            $count = 0;
+            $sql = "";
+            foreach ($data as $item) {
+                $count += 1;
+                $salt = "MaxBiss22";
+                $code = md5($salt . $item['studentNummer']);
+                # echo "<br>Line " . $count . " new code: ". $code . " for " . $item['name'];
+                $sql .= "update user set code='" . $code . "' where student_nr=" . $item['studentNummer'] . ";\n";
+            }
+            Yii::$app->db->createCommand($sql)->execute();
+            echo "<br><b>Done</b><br>";
+        }
+    }
 }
