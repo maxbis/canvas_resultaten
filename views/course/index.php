@@ -26,7 +26,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            [
+                'attribute'=>'id',
+                'contentOptions' => ['style' => 'width:40px;'],
+                'format' => 'raw',
+                    'value' => function ($data) {
+                        return "<a href=\"https://talnet.instructure.com/courses/".$data->id."/modules\" target=\"_blank\">". $data->id."➞</a>";
+                     }
+              ],
             'naam',
             'korte_naam',
             'pos',

@@ -109,7 +109,8 @@ $tot = [];
                                 if (substr($part[0],0,5)=='Grade') { # Only for Grade Link
                                     echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
                                 } else { # Generic
-                                    echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
+                                    //echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
+                                    echo "<td><a href=\"".$part[1]."\">$part[0]</a></td>";
                                 }
                             } elseif (count($part) == 4) { # Generic
                                 echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help]) . "</td>";

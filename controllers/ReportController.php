@@ -647,7 +647,7 @@ class ReportController extends QueryBaseController
     public function actionModules($export=false){
         $sql = "
         select  distinct  c.korte_naam '#Korte Naam', c.naam 'Naam',
-                c.id 'Cursus ID', 
+                concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
                 r.module_id 'Module ID',
                 case when d.naam is null then concat(r.module,'|/module-def/create|id|',r.module_id,'|name|',r.module) else concat(r.module,'|/module-def/update|id|',r.module_id) end '!Module Canvas-naam',
                 d.naam 'Module Monitor Naam',
