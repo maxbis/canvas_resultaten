@@ -359,13 +359,14 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionNakijkenWeek($export = false) // menu 3.8 - Aantal beoordeligen per docent
+    public function actionNakijkenWeek($export = false) // Aantal beoordeligen per docent
     { 
         $schooljaarStart = date("Y")-1;
         $schooljaarStart.='-08-01';
 
         $sql = "
-            SELECT u.name naam, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            SELECT concat(u.name,'|/report/nakijken-wie|user_id|',u.id) '!Naam', 
+            sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
             sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar',
@@ -422,11 +423,16 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionNakijkenWie($export = false) // menu 3.8 - Aantal beoordeligen per docent
+    public function actionNakijkenWie($export = false, $user_id=false) // Wie beoordeeld wat
     { 
 
+        if ($user_id) {
+            $select="where u.id=$user_id";
+        } else {
+            $select = "";
+        }
         $sql = "
-            SELECT u.name naam, g.name, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            SELECT u.name '#naam', m.pos '-pos', m.naam Module, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
             sum(1) '+Schooljaar'
@@ -434,15 +440,16 @@ class ReportController extends QueryBaseController
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
             inner join assignment_group g on g.id = a.assignment_group_id
-            group by 1,2
-            order by 1,2 DESC
+            inner join module_def m on m.id = g.id
+            $select
+            group by 1,2,3
+            order by 1,2
         ";
-        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+        $data = parent::executeQuery($sql, "Modules nagekeken door", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal beoordelingen per beoordeelaar.',
         ]);
     }
 
