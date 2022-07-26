@@ -782,7 +782,7 @@ class ReportController extends QueryBaseController
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
-        and DATEDIFF(c.timestamp, now()) < 8
+        and DATEDIFF(now(), c.timestamp) < 8
         ".$this->getKlas($klas)."
         group by 1,2,3,4
         order by 1,2,4";
