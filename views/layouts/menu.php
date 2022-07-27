@@ -78,10 +78,11 @@ echo Nav::widget([
             'label' => 'Presentie',
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
-                ['label' => 'Vandaag (laaste)',         'url' => ['/report/today-check-in']],
-                ['label' => 'Vandaag (eerste/laatste) ','url' => ['/report/today-min-max-check-in']],
-                ['label' => 'Vandaag niet aanwezig',    'url' => ['/report/today-no-check-in']],
-                ['label' => 'Deze week alle',           'url' => ['/report/week-all-check-in']],
+                ['label' => 'Overzicht vandaag',        'url' => ['/report/today-overzicht']],
+                ['label' => 'Aanwezig vandaag',         'url' => ['/report/today-check-in']],
+                ['label' => 'Absent vandaag',           'url' => ['/report/today-no-check-in']],
+                ['label' => '----------------',],
+                ['label' => 'Weekoverzicht',            'url' => ['/report/week-all-check-in']],
             ],
 
         ],

@@ -723,13 +723,37 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionTodayCheckIn2($export=false,$klas='') {
+
+        $sql="
+        SELECT  u.klas '#Klas',
+                u.name 'Student',
+                CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN DATE_FORMAT(c.timestamp,'%H:%i') ELSE '-' END 'Check-in',
+                CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) ELSE '-' END 'Uren geleden'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        ".$this->getKlas($klas)."
+        group by 1,2
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Laatste check-in", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Meest recente check in van de afgelopen 8 uur',
+        ]);
+
+    }
+
     public function actionTodayCheckIn($export=false,$klas='') {
 
         $sql="
         SELECT  u.klas '#Klas',
                 u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
         FROM check_in c
-        join user u  on u.id=c.studentId
+        join user u on u.id=c.studentId
         where c.action='i'
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
         ".$this->getKlas($klas)."
@@ -758,6 +782,32 @@ class ReportController extends QueryBaseController
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
         ".$this->getKlas($klas)."
         group by 1,2
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
+        ]);
+
+    }
+
+    public function actionTodayOverzicht($export=false,$klas='') {
+
+        $sql="
+        SELECT  u.klas '#Klas',
+        concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
+		min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
+        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste',
+        max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden',
+        CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN 1 ELSE NULL END '+Telling'
+        FROM user u
+        left join check_in c  on c.studentId=u.id and c.action='i' and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
+        where LENGTH(u.code) > 10
+        ".$this->getKlas($klas)."
+		group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
         $data = parent::executeQuery($sql, "Alle check-ins", $export);
