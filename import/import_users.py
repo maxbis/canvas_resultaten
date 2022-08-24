@@ -99,6 +99,7 @@ def updateUsers(courseId):
 
     sql = ""
     cnt = 0
+    err_cnt = 0
     for i, item in enumerate(json_data):
         fieldStrings = ''
         fieldValues = ''
@@ -120,12 +121,13 @@ def updateUsers(courseId):
                 con.commit()
             except:
                 print("SQL error, probably user is already in database (based on primary key contraint)")
-                cnt -= 1
+                err_cnt += 1
             cnt += 1
     
 
     print()
     print("Total users in this course: "+str(cnt))
+    print("Total insert erroros: "+str(err_cnt))
     return()
 
 #### MAIN ####

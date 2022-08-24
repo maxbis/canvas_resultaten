@@ -286,7 +286,7 @@ class QueryController extends QueryBaseController
         $data = $this->executeQuery($sql, "", $export);
     }
 
-    public function actionLog($export = false) // show access log (not part of any menu)
+    public function actionLog($export=false) // show access log (not part of any menu)
     {
         $sql = "select *
                 from log
@@ -300,15 +300,15 @@ class QueryController extends QueryBaseController
         ]);
     }
 
-    public function actionStudentenLijst($export = false) // menu 6.2 - Studentencodes (export)
+    public function actionStudentenLijst($export=false) // menu 6.2 - Studentencodes (export)
     { 
         $sql = "SELECT id 'Canvas Id', name Naam, login_id email, student_nr 'Student nr', klas Klas, code Code, comment Comment, message Message FROM user";
 
-        $data = $this->executeQuery($sql, "Studentenlijst", $export);
+        $data = parent::executeQuery($sql, "Studentenlijst", $export);
 
-        return $this->render('output', [
+        return $this->render('/report/output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id,
+            'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Studentenlijst (voor Export naar Excel)',
         ]);
     }
