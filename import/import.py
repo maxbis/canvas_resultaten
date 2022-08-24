@@ -97,8 +97,7 @@ def getVoldaanCriteria():
         voldaan_criteria[row[0]] = row[1]
 
     if(len(voldaan_criteria) < 1):
-        print("Error: No voldaan criteria read from database")
-        exit(1)
+        print("Warning: No voldaan criteria read from database (table: module_def empty?")
     return(voldaan_criteria)
 
 def log(message, level=3):
