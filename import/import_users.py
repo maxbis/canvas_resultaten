@@ -106,17 +106,24 @@ def updateUsers(courseId):
             fieldStrings += thisField+','
             fieldValues += '\'' + \
                 str(item.get(thisField, courseId))+'\','
-            if ( thisField == 'id' ):
-                sql += "DELETE FROM " + tableName + " WHERE id = " + str(item.get(thisField, courseId)) + ";\n"
+            # if ( thisField == 'id' ):
+            #    sql += "DELETE FROM " + tableName + " WHERE id = " + str(item.get(thisField, courseId)) + ";\n"
         fieldStrings = fieldStrings[:-1]
         fieldValues = fieldValues[:-1]
         student_nr = str(item.get(thisField, 'login_id')).split("@")[0]
         if (student_nr.isnumeric()):
-            sql += "INSERT INTO " + tableName + \
+            sql = "INSERT INTO " + tableName + \
                 " (" + fieldStrings + ",student_nr) VALUES (" + fieldValues + ", '" + student_nr + "');\n"
+            print(sql)
+            try:
+                cursor.execute(sql)
+                con.commit()
+            except:
+                print("SQL error, probably user is already in database (based on primary key contraint)")
+                cnt -= 1
             cnt += 1
     
-    print(sql)
+
     print()
     print("Total users in this course: "+str(cnt))
     return()

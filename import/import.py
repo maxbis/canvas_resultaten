@@ -309,7 +309,7 @@ def calcRanking():
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer
         )"""
-    cursor.execute(sql);
+    cursor.execute(sql)
     con.commit()
 
 def createCsv():
