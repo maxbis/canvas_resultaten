@@ -155,7 +155,7 @@ class ReportController extends QueryBaseController
 
         $data = $this->executeQuery($sql, "place_holder", $export);
 
-        if ( $data ) {
+        if ( $data &&isset($data['row'][0]['student']) ) {
             $data['title'] = "Activity report for ".$data['row'][0]['student']." / ".$data['row'][0]['klas'];
         } 
 
