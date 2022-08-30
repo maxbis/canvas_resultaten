@@ -70,7 +70,7 @@ $wday=['zo','ma','di','wo','do','vr','za'];
             $prev_week=0;
             $firstLine=1;
 
-            if ($data['row']) {
+            if (isset($data['row'])) {
                 foreach ($data['row'] as $item) {
                     $date_ingeleverd = new DateTime($item['ingeleverd']);
                     $date_ingeleverd_week = $date_ingeleverd->format("W");
@@ -127,6 +127,8 @@ $wday=['zo','ma','di','wo','do','vr','za'];
                     echo "</tr>";
                 }
 
+            } else {
+                echo "<td><i>Empty result set</i></td>";
             }
 
             ?>
