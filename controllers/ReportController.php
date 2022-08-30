@@ -155,13 +155,22 @@ class ReportController extends QueryBaseController
 
         $data = $this->executeQuery($sql, "place_holder", $export);
 
+
+
         if ( $data &&isset($data['row'][0]['student']) ) {
-            $data['title'] = "Activity report for ".$data['row'][0]['student']." / ".$data['row'][0]['klas'];
-        } 
+            $studentNr=$data['row'][0]['student_nr'];
+            $klas=$data['row'][0]['klas'];
+        } else {
+            $studentNr=0;
+            $klas="";
+        }
+
+        $data['title'] = "Activity report for ".$studentNr." / ".$klas;
+        
 
         return $this->render('studentActivity', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?studentnr=".$data['row'][0]['student_nr']."&",
+            'action' => Yii::$app->controller->action->id."?studentnr=".$studentNr."&",
             'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
         ]);
     }
