@@ -48,7 +48,7 @@ try:
 except:
     dd('Error reading canvas.ini database parameters')
 
-prio = args['course']
+course = args['course']
 
 
 #### FUNCTIONS ####
@@ -143,5 +143,5 @@ except:
 
 
 # update users
-updateUsers(7720)
+updateUsers(course)
 exit(0)
