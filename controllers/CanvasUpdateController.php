@@ -113,7 +113,10 @@ class CanvasUpdateController extends Controller {
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
+        $i=0;
         foreach ($sqlResult as $elem) {
+            if ($i++==20) break;
+
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
                 $apiResult = $this->getSubmissionFromApi($elem['submission']);

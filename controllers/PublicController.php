@@ -67,7 +67,7 @@ class PublicController extends Controller
         // Create log if invalid code is received
         $data = Yii::$app->db->createCommand($sql)->queryAll();
         if (!count($data)) {
-            $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
+            $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['R  EMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
             sleep(3);
             return $this->render('login-form');
