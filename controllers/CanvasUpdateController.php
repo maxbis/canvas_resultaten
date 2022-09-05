@@ -95,14 +95,14 @@ class CanvasUpdateController extends Controller {
     public function actionUpdateGradingStatus($moduleId, $regrading=1) {
 
         $sql = "
-            SELECT a.course_id cours, a.id assignment, s.id submission, submitted_at submitted, graded_at graded, m.naam module
+            SELECT a.course_id cours, a.id assignment, s.id submission, s.submitted_at submitted, graded_at graded, m.naam module
             FROM assignment a
             JOIN submission s on s.assignment_id= a.id
             JOIN assignment_group g on g.id = a.assignment_group_id
             JOIN module_def m on m.id = g.id
             WHERE s.submitted_at > s.graded_at
             AND m.id=$moduleId
-            ORDER BY a.id
+            ORDER BY a.id s.id limit 20
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
