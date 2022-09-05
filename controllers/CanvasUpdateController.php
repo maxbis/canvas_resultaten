@@ -114,11 +114,9 @@ class CanvasUpdateController extends Controller {
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
-        $i=0;
-        $timLimitReached = 0;
+        $limit = 25;
         foreach ($sqlResult as $elem) {
-            if ($i++>25) {
-                $timLimitReached=1;
+            if ( $i-- == 0 ) {
                 break;
             }
 
@@ -147,8 +145,8 @@ class CanvasUpdateController extends Controller {
         // dd("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         // exit;
 
-        if ( $timLimitReached ) {
-            Yii::$app->session->setFlash('error', "Time limit reached, update may not be completed");
+        if ( $limit == 0 ) {
+            Yii::$app->session->setFlash('error', "Update may not be completed");
         }
         Yii::$app->session->setFlash('success', "Updated, updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
     
