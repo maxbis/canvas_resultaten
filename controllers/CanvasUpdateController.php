@@ -108,7 +108,7 @@ class CanvasUpdateController extends Controller {
         $countUpdates=0;
         $countThreads=0;
 
-        // dd($sqlResult);
+        dd($sqlResult);
 
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
