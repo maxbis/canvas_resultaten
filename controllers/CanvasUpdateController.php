@@ -116,7 +116,7 @@ class CanvasUpdateController extends Controller {
 
         $limit = 25;
         foreach ($sqlResult as $elem) {
-            if ( $i-- == 0 ) {
+            if ( $$limit-- == 0 ) {
                 break;
             }
 
