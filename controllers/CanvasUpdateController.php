@@ -102,13 +102,14 @@ class CanvasUpdateController extends Controller {
             JOIN module_def m on m.id = g.id
             WHERE s.submitted_at > s.graded_at
             AND m.id=$moduleId
+            ORDER BY a.pos
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
         $countUpdates=0;
         $countThreads=0;
 
-        dd($sqlResult);
+        # dd($sqlResult);
 
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
