@@ -113,9 +113,12 @@ class CanvasUpdateController extends Controller {
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
-        $i=0;
+        $start = microtime(true);
+        $limit = 10;  // Seconds
         foreach ($sqlResult as $elem) {
-            if ($i++==20) break;
+            if (microtime(true) - $start >= $limit) {
+                break;
+            }
 
             $result=$pool->add(function () use ($elem, &$countThreads) {
                 $countThreads++;
