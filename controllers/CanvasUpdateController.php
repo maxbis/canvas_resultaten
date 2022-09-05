@@ -102,7 +102,7 @@ class CanvasUpdateController extends Controller {
             JOIN module_def m on m.id = g.id
             WHERE s.submitted_at > s.graded_at
             AND m.id=$moduleId
-            ORDER BY a.id, s.id limit 10
+            ORDER BY a.position, s.id limit 21
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
@@ -114,7 +114,7 @@ class CanvasUpdateController extends Controller {
         $pool = Pool::create();
         $timerStart=round(microtime(true) * 1000);
 
-        $limit = 25;
+        $limit = 20;
         foreach ($sqlResult as $elem) {
             if ( --$limit == 0 ) {
                 break;
