@@ -115,7 +115,7 @@ class CanvasUpdateController extends Controller {
         $timerStart=round(microtime(true) * 1000);
 
         $start = microtime(true);
-        $limit = 2;  // Seconds
+        $limit = 4;  // Seconds
         $timLimitReached = 0;
         foreach ($sqlResult as $elem) {
             if (microtime(true) - $start >= $limit) {
