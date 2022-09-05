@@ -115,7 +115,7 @@ class CanvasUpdateController extends Controller {
         $timerStart=round(microtime(true) * 1000);
 
         $start = microtime(true);
-        $limit = 3;  // Seconds
+        $limit = 2;  // Seconds
         $timLimitReached = 0;
         foreach ($sqlResult as $elem) {
             if (microtime(true) - $start >= $limit) {
@@ -149,7 +149,7 @@ class CanvasUpdateController extends Controller {
         // exit;
 
         if ( $timLimitReached ) {
-            Yii::$app->session->setFlash('error', "Time limit reached, update not completed");
+            Yii::$app->session->setFlash('error', "Time limit reached, update may not be completed");
         }
         Yii::$app->session->setFlash('success', "Updated, updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
     
