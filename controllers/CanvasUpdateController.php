@@ -102,7 +102,7 @@ class CanvasUpdateController extends Controller {
             JOIN module_def m on m.id = g.id
             WHERE s.submitted_at > s.graded_at
             AND m.id=$moduleId
-            ORDER BY a.pos
+            ORDER BY a.position
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
