@@ -115,8 +115,10 @@ class CanvasUpdateController extends Controller {
 
         $start = microtime(true);
         $limit = 10;  // Seconds
+        $timLimitReached = 0;
         foreach ($sqlResult as $elem) {
             if (microtime(true) - $start >= $limit) {
+                $timLimitReached=1;
                 break;
             }
 
@@ -145,7 +147,11 @@ class CanvasUpdateController extends Controller {
         // dd("Async Pool(".$countThreads." threads, ".$countUpdates." updates) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
         // exit;
 
-        Yii::$app->session->setFlash('success', "Updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
+        if ( $timLimitReached ) {
+            Yii::$app->session->setFlash('error', "Time limit reached, update not completed");
+        }
+        Yii::$app->session->setFlash('success', "Updated, updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
+    
         return $this->redirect(Yii::$app->request->referrer);
         //return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
     }
