@@ -146,7 +146,7 @@ class CanvasUpdateController extends Controller {
         // exit;
 
         if ( $limit == 0 ) {
-            Yii::$app->session->setFlash('error', "Update may not be completed");
+            Yii::$app->session->setFlash('error', "Update may not be completed (only processed first 10)");
         }
         Yii::$app->session->setFlash('success', "Updated, updated $countUpdates assignments in <i>".(isset($elem['module']) ? $elem['module'] : $moduleId)."</i>");
     
