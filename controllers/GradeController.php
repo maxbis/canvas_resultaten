@@ -131,7 +131,7 @@ class GradeController extends QueryBaseController
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
             and m.id=$moduleId
-            order by 2
+            order by 2, s.submitted_at
         ";
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
