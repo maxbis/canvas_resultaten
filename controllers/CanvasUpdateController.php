@@ -98,9 +98,11 @@ class CanvasUpdateController extends Controller {
             SELECT a.course_id cours, a.id assignment, s.id submission, s.submitted_at submitted, graded_at graded, m.naam module
             FROM assignment a
             JOIN submission s on s.assignment_id= a.id
+            JOIN user u on u.id=s.user_id
             JOIN assignment_group g on g.id = a.assignment_group_id
             JOIN module_def m on m.id = g.id
-            WHERE s.submitted_at > s.graded_at
+            WHERE u.grade=1
+            AND s.submitted_at > s.graded_at
             AND m.id=$moduleId
             ORDER BY a.position, s.id limit 10
         ";
