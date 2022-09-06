@@ -100,6 +100,7 @@ class PublicController extends Controller
         } else {
             $subject="Student /public/index";
         }
+        $subject=$timestamp['timestamp'];
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
