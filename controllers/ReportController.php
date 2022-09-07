@@ -241,7 +241,7 @@ class ReportController extends QueryBaseController
                 r.klas Klas,
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 min(concat(r.module_pos,' ',r.module)) 'Module',
-                max(ranking_score) 'Score'
+                max(ranking_score) '+Score'
             FROM resultaat r
             JOIN user u on u.student_nr=r.student_nummer
             JOIN module_def d ON d.id=r.module_id
