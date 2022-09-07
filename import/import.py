@@ -308,6 +308,7 @@ def calcRanking():
             FROM resultaat r
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer
+            and d.generiek=0
         )"""
     cursor.execute(sql)
     con.commit()
