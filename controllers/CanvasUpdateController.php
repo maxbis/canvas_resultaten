@@ -104,7 +104,7 @@ class CanvasUpdateController extends Controller {
             WHERE u.grade=1
             AND s.submitted_at > s.graded_at
             AND m.id=$moduleId
-            ORDER BY a.position, s.attempt, s.submitted_at limit 10
+            order by s.attempt, a.position, s.submitted_at limit 10
         ";
 
         $sqlResult = Yii::$app->db->createCommand($sql)->queryAll();
