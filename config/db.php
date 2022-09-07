@@ -7,7 +7,7 @@ if ( isset($_SERVER['SERVER_NAME'])) {
 }
 
 if ($subDomain == 'www' ) {
-    $subDomain = 'c21';
+    $subDomain = 'canvas';
 }
 
 
