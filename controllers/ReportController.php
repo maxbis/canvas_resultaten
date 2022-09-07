@@ -470,7 +470,7 @@ class ReportController extends QueryBaseController
         $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
                 FROM user u
                 LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
-                WHERE LENGTH(u.klas) = 2";
+                WHERE LENGTH(u.klas) = 2 ";
         $sql.=  $this->getKlas($klas);
         $sql.= " group by 1,2
                 order by 3 ASC, 1";
