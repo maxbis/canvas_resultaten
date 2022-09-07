@@ -171,9 +171,7 @@ class GradeController extends QueryBaseController
 
         // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
 
-        $i=0;
         foreach (array_reverse($buttons) as $elem) {
-            if (++$i>6) break;
             $start=$elem+1;
             $stop=min($elem+10,count($data['row']));
             $lastLine.= "&nbsp;&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
