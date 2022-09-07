@@ -250,7 +250,7 @@ class ReportController extends QueryBaseController
             AND u.code is not null
             ".$this->getKlas($klas)."
             group by 1,2
-            order by 3 Desc, 4 desc
+            order by 4 Desc, 3 desc
         ";
 
         $data = parent::executeQuery($sql, "Ranking Dev" . $klas, $export);
