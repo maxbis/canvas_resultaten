@@ -170,13 +170,15 @@ class GradeController extends QueryBaseController
         $lastLine.= "</script><hr>\n";
 
         // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
-
+        $count=count($buttons);
         foreach (array_reverse($buttons) as $elem) {
-            $start=$elem+1;
-            $stop=min($elem+10,count($data['row']));
-            $lastLine.= "&nbsp;&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+            if($count-- < 7) { // max number of buttons at bottom of page
+                $start=$elem+1;
+                $stop=min($elem+10,count($data['row']));
+                $lastLine.="&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+            }
         }
-        $lastLine.= "&nbsp;&nbsp;&nbsp;<div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div>";
+        $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
 
         return $this->render('/report/output', [
             'data' => $data,
