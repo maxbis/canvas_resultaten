@@ -131,7 +131,7 @@ class PublicController extends Controller
             where g.id=$moduleId
             and u.code='$code'
             and published=1
-            order by  a.position
+            order by a.position
         ";
 
         $data = Yii::$app->db->createCommand($sql)->queryAll();

@@ -90,7 +90,7 @@ $tot = [];
                         if (substr($columnName, 0, 1) == '+') {
                             $tot[$columnName] += $item[$columnName];
                         } 
-                        if (substr($columnName, 0, 1) == '!') { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
+                        if (substr($columnName, 0, 1) == '!' && $item[$columnName]) { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
                             if (strlen($part[0])>22) { # if name for link is larger than 20, concat it and put complete link in help (title)
                                 $help=$part[0];

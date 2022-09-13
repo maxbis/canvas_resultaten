@@ -267,9 +267,10 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-                Blok '#Blok' , Module,
-                concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') '!Afgerond',
-                concat(naf,'|/report/modules-open|moduleId|',module_id) '!Niet Afgerond'
+                Blok '#Blok',
+                Module,
+                CASE WHEN af > 1 THEN concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') ELSE '0' END '!Afgerond',
+                CASE WHEN naf > 1 THEN concat(naf,'|/report/modules-open|moduleId|',module_id) ELSE '0' END '!Niet Afgerond'
                 from
                     (select course_id, c.korte_naam Blok, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
                     FROM resultaat o
