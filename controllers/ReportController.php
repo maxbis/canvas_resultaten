@@ -417,6 +417,7 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT u.klas klas, u.name naam
             $select
+            , sum(1) Week
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.user_id
