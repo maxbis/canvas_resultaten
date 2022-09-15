@@ -433,7 +433,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal opdrachten per student over de laatste week.',
+            'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
             'lastLine' => $lastLine,
         ]);
     }
