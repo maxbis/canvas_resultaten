@@ -531,7 +531,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'modules' => $modules,
-            'nocount' => 0,
+            # 'nocount' => 1,
         ]);
     }
 
