@@ -415,7 +415,7 @@ class ReportController extends QueryBaseController
         }
 
         $sql = "
-            SELECT u.klas klas, u.name naam
+            SELECT u.klas klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
             $select
             , sum(1) Week
             FROM submission s
