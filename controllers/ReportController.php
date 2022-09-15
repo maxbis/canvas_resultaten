@@ -424,7 +424,7 @@ class ReportController extends QueryBaseController
             where datediff(curdate(),s.submitted_at)<=7
             ".$this->getKlas($klas)."
             group by 1,2
-            order by 2
+            order by 10 DESC
         ";
 
         $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
