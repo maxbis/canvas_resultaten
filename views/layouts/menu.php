@@ -58,6 +58,7 @@ echo Nav::widget([
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Student laatste actief op...',      'url' => ['/report/actief']],
+                ['label' => 'Week overzicht',                    'url' => ['/report/aantal-activiteiten-week']],
                 ['label' => '12 wekenoverzicht',                 'url' => ['/report/aantal-activiteiten']],
                 ['label' => 'Voortgang',                         'url' => ['/report/voortgang']],
                 //['label' => 'Studenten werken aan...',           'url' => ['/report/working-on']],

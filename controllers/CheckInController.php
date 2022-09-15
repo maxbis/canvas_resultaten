@@ -169,7 +169,7 @@ class CheckInController extends Controller
 
         if ($test || ! isset($_COOKIE['chin']) && Yii::$app->user->isGuest ) {
             if (MyHelpers::CheckIP(true)) {
-                return Html::a(' Check-in ',  ['/check-in/check-in'], ['class'=>"btn btn-success", 'style'=>'background-color:#a7e68e;color:#164a01;', 'data-method' => 'POST','data-params' =>
+                return Html::a(' Present ',  ['/check-in/check-in'], ['class'=>"btn btn-success", 'style'=>'background-color:#a7e68e;color:#164a01;', 'data-method' => 'POST','data-params' =>
                         [ 'code' => $code, 'check' => $date_hash, 'action' => 'i' ], ]);
             }
         }

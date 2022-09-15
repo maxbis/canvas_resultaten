@@ -401,6 +401,42 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionAantalActiviteitenWeek($export = false, $klas= '') { 
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.submitted_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
+        $sql = "
+            SELECT u.klas klas, u.name naam
+            $select
+            FROM submission s
+            inner join assignment a on s.assignment_id=a.id
+            inner join user u on u.id=s.user_id
+            where datediff(curdate(),s.submitted_at)<=7
+            ".$this->getKlas($klas)."
+            group by 1,2
+            order by 2
+        ";
+
+        $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
+        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Aantal opdrachten per student over de laatste week.',
+            'lastLine' => $lastLine,
+        ]);
+    }
+
     public function actionNakijkenDag($export = false) { 
 
         $weekday=['ma','di','wo','do','vr','za','zo'];
