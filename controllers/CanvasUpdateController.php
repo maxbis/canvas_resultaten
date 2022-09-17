@@ -166,5 +166,15 @@ class CanvasUpdateController extends Controller {
         return $this->redirect(Yii::$app->request->referrer);
     }
 
+    public function actionUpdateScores() {
+        $database='canvas-'.Yii::$app->params['subDomain'];
+        $cmd = "python3 ../import/import.py --database $database -c 0";
+        $cmd = escapeshellcmd($cmd);
+        $shellOutput = shell_exec($cmd);
+
+        Yii::$app->session->setFlash('success', "<pre>$shellOutput</pre>");
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
 
 }
