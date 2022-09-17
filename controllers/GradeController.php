@@ -106,7 +106,7 @@ class GradeController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
             'nocount' => true,
-            'descr' => 'Dit is een beta feature. Update loopt via een snelle multi-threading PHP-Python koppeling en is afhankelijk van server instellingen.',
+            'descr' => 'Dit is een beta feature. Update loopt via een snelle multi-threading PHP-Python koppeling en is afhankelijk van server instellingen.<br>Update is <b>volledig</b> (inclusief nakijk-overzicht en studenten-overzicht).',
         ]);
     }
 
