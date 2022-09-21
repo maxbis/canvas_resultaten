@@ -97,7 +97,8 @@ class GradeController extends QueryBaseController
 
         $reportTitle = "Update gehele module";
  
-        $lastLine =  "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div>"; 
+        $lastLine = "<hr><div style=\"float: right;\"><a class=\"btn btn-light\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a></div>"; 
+        # $lastLine .= "<br><br><a class=\"btn btn-light\" href=\"/canvas-update/update-scores\">Update scores</a>";
 
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
