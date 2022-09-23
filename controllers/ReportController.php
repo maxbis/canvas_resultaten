@@ -163,7 +163,7 @@ class ReportController extends QueryBaseController
             FROM submission s
             inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.user_id
-            where datediff(curdate(),s.submitted_at)<=7
+            where datediff(curdate(),s.submitted_at)<=6
             ".$this->getKlas($klas)."
             group by 1,2
             order by 10 DESC,3 DESC,4 DESC,5 DESC

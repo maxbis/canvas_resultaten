@@ -16,7 +16,12 @@ use yii\helpers\Html;
             <?php endif; ?>
             <br>
             Voortgangsoverzicht <span style="color:white"><?= $data[0]['student_nummer'] ?></span>
-            <h3><?= $data[0]['Student'] ?></h3>  
+            <h3><?= $data[0]['Student']; ?>
+                <span style="font-size:12px;color:#999;">
+                    <?= $data[0]['Klas']; ?>
+                </span>
+            </h3>
+            
             <i><?= $data[0]['Message'];?></i><br/>
             <small style="color:#999;">Bijgewerkt tot: <?= $timeStamp ?></small>
         </div>

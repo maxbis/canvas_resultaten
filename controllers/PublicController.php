@@ -54,6 +54,7 @@ class PublicController extends Controller
                     u.code Code,
                     d.voldaan_rule voldaanRule,
                     u.message Message,
+                    u.klas Klas,
                     d.Generiek
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
