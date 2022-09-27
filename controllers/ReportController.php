@@ -713,9 +713,9 @@ class ReportController extends QueryBaseController
                 case when d.naam is null then concat(r.module,'|/module-def/create|id|',r.module_id,'|name|',r.module) else concat(r.module,'|/module-def/update|id|',r.module_id) end '!Module Canvas-naam',
                 d.naam 'Module Monitor Naam',
                 d.pos 'Positie'
-        from resultaat r
+        from course c
+        left outer join resultaat r on c.id=r.course_id
         left outer join module_def d on r.module_id=d.id
-        join course c on c.id=r.course_id
         order by d.pos
         ";
 
