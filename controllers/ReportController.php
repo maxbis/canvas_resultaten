@@ -145,7 +145,7 @@ class ReportController extends QueryBaseController
 
         $select='';
         for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.submitted_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
             $dayNr--;
             if ($dayNr < 0) $dayNr=6; 
         }
