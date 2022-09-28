@@ -77,6 +77,7 @@ class QueryBaseController extends Controller
 
     private function exportQueryFilter($query) // filter + - en ! column names and concats from sql statement for export - deze speciale tekens zijn indicatoren voor de view
     {
+        # return($query);
         $components = preg_split("/[\s]/", $query);
         $components = (array_filter($components, function($value) { return !is_null($value) && $value !== ''; }));
 
@@ -92,7 +93,8 @@ class QueryBaseController extends Controller
                 }
                 $item=$sub[1];
             }
-            if ( substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' ) {
+            // if first char = +,-, or ! and 2nd char is alpha then remove first char (note that in time conversions the $item can be +01:00 this item is not allwed to be filtered
+            if ( ctype_alpha(substr($item,2,1)) && (substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-') ) {
                 $item = str_replace(['!','+','-'], "", $item);
             }
             if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, since limit is the last statement return query as is at this moment

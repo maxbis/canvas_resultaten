@@ -57,7 +57,7 @@ $tot = [];
                 <tr>
                     <?php
                     if (isset($data['row'])) {
-                        if (!isset($nocount)) echo "<th>#</th>";
+                        if (!isset($nocount)) echo "<th style=\"width:60px;color:#A0A0A0;\">#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
                             if (substr($columnName, 0, 1) == '+') {
@@ -66,7 +66,11 @@ $tot = [];
                             }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) <>'-') {
-                                echo "<th>" . $columnName . "</th>";
+                                if ( isset($width[$i]) && $width[$i]!=0 ){
+                                    echo "<th style=\"width:".$width[$i]."px;\">" . $columnName . "</th>";
+                                }else {
+                                    echo "<th>" . $columnName . "</th>";
+                                }
                             }
                         }
                     } else {
@@ -82,7 +86,7 @@ $tot = [];
                     echo "<tr>";
                     if (!isset($nocount)) {
                         $nr++;
-                        echo "<td background: linear-gradient(to bottom, green 50%, white 0%);>" . $nr . "</td>";
+                        echo "<td style=\"color:#A0A0A0;\">" . $nr . "</td>";
                     }
                     $count=0;
                     foreach ($data['col'] as $columnName) {

@@ -39,10 +39,16 @@ class ReportController extends QueryBaseController
             inner join resultaat o on u.student_nr=o.student_nummer
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
-            and year(laatste_activiteit) > 2020
+            and year(laatste_activiteit) >= 2020
             and o.klas is not NULL
             ".$this->getKlas($klas)."
-            order by 4 desc
+        UNION
+            SELECT
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            u.klas, '-', '-' , '∞'
+            FROM user u where u.student_nr not in (select distinct student_nummer from resultaat where year(laatste_activiteit) > 2000 )
+            AND u.student_nr > 0
+        order by 4 desc
         ";
 
         $data = parent::executeQuery($sql, "Laatste activiteit per student " . $klas, $export);
@@ -176,6 +182,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
             'lastLine' => $lastLine,
+            'width' => [60,280,40,40,40,40,40,40,90],
         ]);
     }
 
