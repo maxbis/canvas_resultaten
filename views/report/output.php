@@ -57,7 +57,7 @@ $tot = [];
                 <tr>
                     <?php
                     if (isset($data['row'])) {
-                        if (!isset($nocount)) echo "<th style=\"width:60px;color:#A0A0A0;\">#</th>";
+                        if (!isset($nocount)) echo "<th style=\"width:30px;color:#A0A0A0;\">#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
                             if (substr($columnName, 0, 1) == '+') {

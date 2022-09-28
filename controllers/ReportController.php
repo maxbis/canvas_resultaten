@@ -163,7 +163,7 @@ class ReportController extends QueryBaseController
         // }
 
         $sql = "
-            SELECT u.klas klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
+            SELECT u.klas Klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
             $select
             ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+wk'
             FROM user u
@@ -445,6 +445,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
+            'width' => [0,150,150,150,150,150 ],
         ]);
     }
 
@@ -480,6 +481,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
+            'width' => [0,80,80,80,80,80,80,80]
         ]);
     }
 
