@@ -159,14 +159,13 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT u.klas klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
             $select
-            , sum(1) Week
-            FROM submission s
-            inner join assignment a on s.assignment_id=a.id
-            inner join user u on u.id=s.user_id
-            where datediff(curdate(),s.submitted_at)<=6
+            ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+wk'
+            FROM user u
+            left outer join submission s on u.id=s.user_id
+            where student_nr > 0
             ".$this->getKlas($klas)."
             group by 1,2
-            order by 10 DESC,3 DESC,4 DESC,5 DESC
+            order by 10 DESC,3 DESC,4 DESC,5 DESC, 6 DESC
         ";
 
         $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
