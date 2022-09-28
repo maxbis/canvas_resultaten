@@ -35,8 +35,8 @@ class ReportController extends QueryBaseController
             SELECT
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             o.klas Klas, module Module, laatste_activiteit 'Wanneer', datediff(curdate(), laatste_activiteit) 'Dagen'
-            FROM resultaat o
-            inner join user u on u.student_nr=o.student_nummer
+            FROM user u
+            inner join resultaat r on u.student_nr=o.student_nummer
             where laatste_activiteit =
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
             and year(laatste_activiteit) > 2020
