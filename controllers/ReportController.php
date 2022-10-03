@@ -785,7 +785,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
                         <br>Recent is van de laatste 6 weken.',
-            'width' => [80,400,100,100,100,100,100],
+            'width' => [80,300,100,100,120,100,100],
         ]);
     }
 
