@@ -95,6 +95,25 @@ class PublicController extends Controller
         ";
         $ranking = Yii::$app->db->createCommand($sql)->queryOne();
 
+        $sql = "
+            select
+            round(sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) 'pogingen',
+            sum(1) 'aantal'
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where s.submitted_at <> '1970-01-01 00:00:00'
+            and u.code='$code'
+            having aantal>50
+        ";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        if ($result) {
+            $pogingPercentage = $result['pogingen'];  
+        } else {
+            $pogingPercentage = "";
+        }
+
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
         if ( isset(Yii::$app->user->identity->username) ) {
             $subject="Docent";
@@ -107,9 +126,9 @@ class PublicController extends Controller
 
         return $this->render( $test ? $test : 'index', [
             'data' => $data,
-            // 'course' => $course,
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],
+            'pogingen' => $pogingPercentage,
             'chart' => $chart,
         ]);
     }

@@ -28,10 +28,11 @@
     $aggregatedData[$prevBlok]['voldaan']= ($aantalModulesInBlok==$aantalVoldaanInBlok) ? 1 : 0;
 
     // render page elements
-    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank,'chart' => $chart,]);
+    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank, 'pogingen' => $pogingen, 'chart' => $chart,]);
     $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact']);
     $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini']);
     $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard']);
+    $bodyPrefs   = "";
     $achievements= "";
 
 ?>
@@ -42,6 +43,10 @@
         background:#a3586d;color:#ffffff;text-align:center;
         font:12 Arial,sans-serif;
     }
+    .star {
+        color:#ebb134;
+        font-size: 120%;
+    }
 
     .bleft  { border-left:dashed 1px #c0c0c0; }
     .bright { border-right:dashed 1px #c0c0c0; }
@@ -51,6 +56,11 @@
     .hoverTable tr:hover > td { background-color: #f6f6ff !important; }
     .voldaan  { background-color:#f8fff8; }
     .niet-voldaan { background-color:#fff4f4; }
+    .top{
+        display:flex;
+        flex-direction:row;
+        align-items:top;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -92,7 +102,7 @@
         <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
         <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>
         <li class="nav-item"><a href="#mini" class="nav-link" data-toggle="tab">Mini</a></li>
-        <!-- <li class="nav-item"><a href="#achievements" class="nav-link" data-toggle="tab">Achievements</a></li> -->
+        <!-- <li class="nav-item"><a href="#prefs" class="nav-link" data-toggle="tab">Settings</a></li> -->
     </ul>
     
     <div class="card shadow table-responsive">
@@ -102,7 +112,7 @@
                 <div class="tab-pane show active" id="standard"><?= $bodyStandard; ?></div>
                 <div class="tab-pane" id="compact"><?= $bodyCompact; ?></div>
                 <div class="tab-pane" id="mini"><?= $bodyFull; ?></div>
-                <div class="tab-pane" id="achievements"><?= $achievements; ?></div>
+                <!-- <div class="tab-pane" id="prefs"><?= $bodyPrefs; ?></div> -->
             </div>
         </div>
     </div>

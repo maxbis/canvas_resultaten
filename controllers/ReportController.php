@@ -445,7 +445,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0,150,150,150,150,150 ],
+            'width' => [0,150,150,150,150,150 ], 
         ]);
     }
 
@@ -481,7 +481,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80]
+            'width' => [0,80,80,80,80,80,80,80],
         ]);
     }
 
@@ -753,35 +753,37 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionHerkansen($export = false, $klas='') 
+    public function actionPogingen($export = false, $klas='') 
     { 
+        $sql="select cast( (select sum(1)from submission) / (select sum(1) from user where grade=1) as unsigned integer) average";
+        $result =  Yii::$app->db->createCommand($sql)->queryAll();
+        $average = $result[0]['average']; // average of number of submitted assignements
 
         $sql = "
             select
-            u.name Student,
             u.klas Klas,
-            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) '+Poging1 R',
-            sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) '+Herkansingen R',
-            sum(case when s.attempt=1 then 1 else 0 end) '+Poging1 T',
-            sum(case when s.attempt>1 then 1 else 0 end) '+Herkansingen T',
-            round(sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) '% R',
-            round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% T'    
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            sum(1) 'Gemaakt',
+            round(sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) 'Herkansingen % Recent',
+            round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% Totaal',
+            ''
             from submission s
             join assignment a on a.id=s.assignment_id
             join user u on u.id = s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where s.submitted_at <> '1970-01-01 00:00:00'
             ".$this->getKlas($klas)."
-            group by 1,2 
-            order by 5 desc
+            group by 1,2
+            order by 3 desc
         ";
-        $data = parent::executeQuery($sql, "Aantal opdrachten ingeleverd", $export);
+        $data = parent::executeQuery($sql, "Meerdere pogingen", $export);
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. R staat voor recent en T voor totaal.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
-                        <br>Alles van de laatste 21 dagen wordt als recent beschouwd.',
+            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
+                        <br>Recent is van de laatste 3 weken.',
+            'width' => [80,400,120,100,100],
         ]);
     }
 
@@ -962,6 +964,7 @@ class ReportController extends QueryBaseController
         ]);
 
     }
+
 
 }
 

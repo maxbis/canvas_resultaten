@@ -162,7 +162,7 @@ class CheckInController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function button($code, $test=false) {
+    public static function button($code, $test=false) {
 
         $today = date("Ymd"); //e.g. 20200728, this is an extra security to avoid fake posts
         $date_hash=md5($today);
@@ -175,7 +175,6 @@ class CheckInController extends Controller
         }
 
     }
-
 
     public function actionTest() {  
         $sql="  select klas, name, code from user

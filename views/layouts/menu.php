@@ -65,7 +65,7 @@ echo Nav::widget([
                 ['label' => 'Ranking Dev',                       'url' => ['/report/ranking']],
                 ['label' => 'Voortgang per Module',              'url' => ['/report/modules-finished']],
                 ['label' => 'Student keek in monitor',           'url' => ['/report/last-report-by-student']],
-                // ['label' => 'Herkansingen',                      'url' => ['/report/herkansen']],
+                ['label' => 'Aantal pogingen',                      'url' => ['/report/pogingen']],
                 // ['label' => 'Cluster Submissions',               'url' => ['/report/cluster-submissions']],
                 ['label' => 'Alle resultaten (in Grid)',         'url' => ['/resultaat/index']],
                 ['label' => '----------------',],

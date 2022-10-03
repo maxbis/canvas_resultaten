@@ -107,13 +107,20 @@ function getStatus($status)
                 echo "<td>" . getStatus($item['Status']) . "</td>";
 
                 if ($item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] != "") {
-                    echo "<td style=\"background:#f5ffed;\">" . strtok($item['Ingeleverd'], " ") . "</td>";
+                    echo "<td style=\"background:#f6fce6;\">" . strtok($item['Ingeleverd'], " ") . "</td>";
                 } else {
                     echo "<td>" . strtok($item['Ingeleverd'], " ") . "</td>";
                 }
 
 
-                echo "<td class=\"left\">" . $item['Score'] . "</td>";
+                if ($item['MaxScore']!=0) { $perc=$item['Score']*100/$item['MaxScore']; } else { $perc=100; } // score in percentage
+                if($item['Beoordeeld'] == "" || $item['Ingeleverd'] > $item['Beoordeeld'] || $perc >90) { // if not yet graded or re-submitted or score is 90% then
+                    echo "<td class=\"left\">" . $item['Score'] . "</td>"; // use normal grade color (black)
+                } elseif($perc >50) { // else if grade if 50% or more
+                    echo "<td class=\"left\" style=\"background-color:#f6fce6;\">" . $item['Score'] . "</td>"; // use green-isch background
+                } else {
+                    echo "<td class=\"left\" style=\"background-color:#f2ffd1;\">" . $item['Score'] . "</td>"; // else use a bit brighter green-isch
+                } 
 
                 echo "<td class=\"right\">" . $item['MaxScore'] . "</td>";
 
@@ -125,7 +132,7 @@ function getStatus($status)
 
                 echo "<td>";
                 // if ($item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] != "") {
-                if ($item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                if ($item['Beoordeeld'] && $item['Ingeleverd'] > $item['Beoordeeld'] ) {
                     $style = "#a6ff66";
                 } else {
                     $style = "none";

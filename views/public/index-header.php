@@ -2,6 +2,15 @@
 
 use yii\helpers\Html;
 
+
+$quality='';
+
+if ($pogingen) {
+    if ($pogingen < 100) $quality.='&#9733;';
+    if ($pogingen < 50)  $quality.='&#9733;';
+    if ($pogingen < 20)  $quality.='&#9733;';
+}
+
 ?>
 
 <div class="container">
@@ -9,11 +18,15 @@ use yii\helpers\Html;
     <div class="row align-items-end justify-content-between">
 
         <div class="col">
-
-            <?php if ($rank <= 16) : ?>
-                <br>
-                <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
-            <?php endif; ?>
+  
+            <br>
+            <div class="top">
+                <?php if ($rank <= 16) : ?>
+                    <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
+                <?php endif; ?>
+                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste drie weken <?=$pogingen?>% herkansingen." class="star">&nbsp;<?= $quality ?></div>
+            </div>
+            
             <br>
             Voortgangsoverzicht <span style="color:white"><?= $data[0]['student_nummer'] ?></span>
             <h3><?= $data[0]['Student']; ?>
