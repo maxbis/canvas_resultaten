@@ -97,7 +97,8 @@ class PublicController extends Controller
 
         $sql = "
             select
-            round(sum(case when (s.attempt>1) then 1 else 0 end) * 100 / sum(case when (s.attempt=1) then 1 else 0 end) ,0) 'pogingen'
+            round(sum(case when (s.attempt>1) then 1 else 0 end) * 100 / sum(case when (s.attempt=1) then 1 else 0 end) ,0) 'pogingen',
+            sum(1) aantal
             from submission s
             join assignment a on a.id=s.assignment_id
             join user u on u.id = s.user_id
@@ -105,6 +106,7 @@ class PublicController extends Controller
             where s.submitted_at <> '1970-01-01 00:00:00'
             and u.code='$code'
             and datediff(curdate(),submitted_at) <= 42
+            having aantal > 16
         ";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
         if ($result) {
