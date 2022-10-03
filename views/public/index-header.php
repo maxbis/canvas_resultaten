@@ -24,7 +24,7 @@ if ($pogingen) {
                 <?php if ($rank <= 16) : ?>
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
-                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste drie weken <?=$pogingen?>% herkansingen." class="star">&nbsp;<?= $quality ?></div>
+                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star">&nbsp;<?= $quality ?></div>
             </div>
             
             <br>

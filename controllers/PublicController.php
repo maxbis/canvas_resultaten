@@ -97,7 +97,7 @@ class PublicController extends Controller
 
         $sql = "
             select
-            round(sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) 'pogingen',
+            round(sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=21 && s.attempt=1) then 1 else 0 end) ,0) 'pogingen',
             sum(1) 'aantal'
             from submission s
             join assignment a on a.id=s.assignment_id
