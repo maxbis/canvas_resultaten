@@ -763,9 +763,11 @@ class ReportController extends QueryBaseController
             select
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
-            sum(1) 'Gemaakt',
             round(sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt=1) then 1 else 0 end) ,0) 'Herkansingen % Recent',
             round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% Totaal',
+            '',
+            sum(case when (datediff(curdate(),submitted_at)<=42) then 1 else 0 end) 'Gemaakt Recent',
+            sum(1) 'Totaal',
             ''
             from submission s
             join assignment a on a.id=s.assignment_id
@@ -783,7 +785,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
                         <br>Recent is van de laatste 6 weken.',
-            'width' => [80,400,120,100,100],
+            'width' => [80,400,100,100,100,100,100],
         ]);
     }
 
