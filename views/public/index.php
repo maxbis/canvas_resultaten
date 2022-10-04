@@ -28,7 +28,7 @@
     $aggregatedData[$prevBlok]['voldaan']= ($aantalModulesInBlok==$aantalVoldaanInBlok) ? 1 : 0;
 
     // render page elements
-    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank, 'pogingen' => $pogingen, 'chart' => $chart,]);
+    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank, 'pogingen' => $pogingen, 'minSubmitted'=> $minSubmitted, 'chart' => $chart,]);
     $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact']);
     $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini']);
     $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard']);
@@ -43,8 +43,12 @@
         background:#a3586d;color:#ffffff;text-align:center;
         font:12 Arial,sans-serif;
     }
-    .star {
+    .star-yellow {
         color:#ebb134;
+        font-size: 120%;
+    }
+    .star-red {
+        color:#a3586d;
         font-size: 120%;
     }
 
@@ -56,6 +60,7 @@
     .hoverTable tr:hover > td { background-color: #f6f6ff !important; }
     .voldaan  { background-color:#f8fff8; }
     .niet-voldaan { background-color:#fff4f4; }
+
     .top{
         display:flex;
         flex-direction:row;

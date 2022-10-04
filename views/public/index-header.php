@@ -4,11 +4,17 @@ use yii\helpers\Html;
 
 
 $quality='';
+$size='';
 
 if ($pogingen) {
     if ($pogingen < 100) $quality.='&#9733;';
     if ($pogingen < 50)  $quality.='&#9733;';
     if ($pogingen < 20)  $quality.='&#9733;';
+}
+if ($minSubmitted) {
+    if ($pogingen > 4) $size.='&#9733';
+    if ($pogingen > 9) $size.='&#9733';
+    if ($pogingen > 17) $size.='&#9733';
 }
 
 ?>
@@ -24,7 +30,9 @@ if ($pogingen) {
                 <?php if ($rank <= 16) : ?>
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
-                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star">&nbsp;<?= $quality ?></div>
+                <!-- <div title="" class="star-red">&nbsp;<?=$size?>&nbsp;</div> -->
+                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star-yellow">&nbsp;&nbsp;<?= $quality ?></div>
+                
             </div>
             
             <br>

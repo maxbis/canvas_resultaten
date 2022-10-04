@@ -87,6 +87,8 @@ class PublicController extends Controller
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         $chart = $this->chart($result);
 
+        $minOverLastThreeWeeks = min( array_column(array_slice($result, -4, 3), 'Aantal') );
+
         $sql = "
         select (count(id)+1) 'rank'
             from user u1
@@ -106,6 +108,7 @@ class PublicController extends Controller
             where s.submitted_at <> '1970-01-01 00:00:00'
             and u.code='$code'
             and datediff(curdate(),submitted_at) <= 42
+            and a.points_possible = s.entered_score
             having aantal > 16
         ";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
@@ -130,6 +133,7 @@ class PublicController extends Controller
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],
             'pogingen' => $pogingPercentage,
+            'minSubmitted' => $minOverLastThreeWeeks,
             'chart' => $chart,
         ]);
     }
