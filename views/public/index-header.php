@@ -31,7 +31,7 @@ if ($minSubmitted) {
                     <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
                 <?php endif; ?>
                 <!-- <div title="" class="star-red">&nbsp;<?=$size?>&nbsp;</div> -->
-                <div title="1-3 sterren geeft kwalitiet van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star-yellow">&nbsp;&nbsp;<?= $quality ?></div>
+                <div title="1-3 sterren geeft kwaliteit van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star-yellow">&nbsp;&nbsp;<?= $quality ?></div>
                 
             </div>
             

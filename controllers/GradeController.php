@@ -121,6 +121,7 @@ class GradeController extends QueryBaseController
                 a.position '-pos',
                 concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
+                u.klas Klas,
                 substring(u.comment,1,3) 'Code',
                 concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                 s.attempt poging,
