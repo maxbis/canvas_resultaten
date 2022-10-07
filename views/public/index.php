@@ -43,6 +43,7 @@
         background:#a3586d;color:#ffffff;text-align:center;
         font:12 Arial,sans-serif;
     }
+
     .star-yellow {
         color:#ebb134;
         font-size: 120%;
@@ -65,7 +66,15 @@
         display:flex;
         flex-direction:row;
         align-items:top;
+        height:35px;
+        width:120px;
+        margin-top:25px;
     }
+
+    .ranking {
+        display:none;
+    }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -94,6 +103,34 @@
 
         // hide all classes init-hide
         $(".init-hide").hide();
+    });
+</script>
+
+<script>
+    $(function() {
+        var ranking = localStorage.getItem('Ranking');
+
+        if ( ranking == 1 ) {
+            $('.ranking').show();
+            $('.top').css({backgroundColor:'#FFFFFF'});
+            localStorage.setItem('Ranking', 1);
+        } else {
+            $('.top').css({backgroundColor:'#FAFAFA'});
+        }
+    });
+
+    $(document).ready(function(){
+        $('#ranking').click(function() {
+            if ( $(".ranking").is(':visible') ) {
+                $('.ranking').hide();
+                $('.top').css({backgroundColor:'#FAFAFA'});
+                localStorage.setItem('Ranking', 0);
+            } else {
+                $('.ranking').show(500);
+                $('.top').css({backgroundColor:'#FFFFFF'});
+                localStorage.setItem('Ranking', 1);
+            }
+        });
     });
 </script>
 

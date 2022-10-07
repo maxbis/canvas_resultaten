@@ -25,14 +25,11 @@ if ($minSubmitted) {
 
         <div class="col">
   
-            <br>
-            <div class="top">
+            <div id="ranking" class="top">
                 <?php if ($rank <= 16) : ?>
-                    <div title="Stand in klassement" class="numberCircle"><?= $rank ?></div>
+                    <div id="ranking-p1" title="Stand in klassement" class="numberCircle ranking"><?= $rank ?></div>
                 <?php endif; ?>
-                <!-- <div title="" class="star-red">&nbsp;<?=$size?>&nbsp;</div> -->
-                <div title="1-3 sterren geeft kwaliteit van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star-yellow">&nbsp;&nbsp;<?= $quality ?></div>
-                
+                <div id="ranking-p2" title="1-3 sterren geeft kwaliteit van werk weer. Over laatste zes weken <?=$pogingen?>% herkansingen." class="star-yellow ranking">&nbsp;&nbsp;<?= $quality ?></div>
             </div>
             
             <br>

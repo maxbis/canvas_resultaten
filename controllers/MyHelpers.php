@@ -7,7 +7,7 @@ namespace app\controllers;
 
 class MyHelpers
 {   // by default function will exit, otherwise true/false is return
-    public function checkIP($noExit=false) {
+    public static function checkIP($noExit=false) {
         if ( $_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ){
             $remoteIP='178.84.73.155'; // this address should exists in ipAllowed.txt, add it to ipAllowed.txt
         } else {
@@ -59,7 +59,7 @@ class MyHelpers
         }
     }
 
-    private function ipRange($cidr)
+    private static function ipRange($cidr)
     {
         $range = array();
         $cidr = explode('/', $cidr);

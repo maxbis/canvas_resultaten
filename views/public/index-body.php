@@ -69,7 +69,7 @@ use yii\helpers\Html;
                 if ($item['Minpunten'] < 0) {
                     echo "<td title=\"Module kan niet worden afgetekend, vraag docent\" width=60px class=\"\" style=\"font-weight:bolder;color:#821600;\">???</td>";
                 } elseif ($item['Voldaan'] == 'V') {
-                    echo "<td title=\"Voldaan (" . $item['voldaanRule'] . ")\" style=\"width:60px;color:green'\" class=\"\">&#10004;</td>";
+                    echo "<td title=\"Voldaan (" . $item['voldaanRule'] . ")\" style=\"width:60px;color:green\" class=\"\">&#10004;</td>";
                 } else {
                     echo "<td title=\"Niet voldaan (" . $item['voldaanRule'] . ")\" width=60px class=\"\">&#11096;</td>";
                 }
