@@ -87,7 +87,7 @@ class PublicController extends Controller
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         $chart = $this->chart($result);
 
-        $minOverLastThreeWeeks = min( array_column(array_slice($result, -4, 3), 'Aantal') );
+        $minOverLastThreeWeeks = min( array_column(array_slice($result, -4, 3), 'Aantal'),0 );
 
         $sql = "
         select (count(id)+1) 'rank'
