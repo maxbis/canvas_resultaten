@@ -14,7 +14,7 @@
 </head>
 <body>
 <div id="article">
-<h1>We zijn op het moment bezig om de resutlaten uit Canvas te importeren...</h1>
+<h1>We zijn op het moment bezig om de resultaten uit Canvas te importeren...</h1>
 <div>
 <p>Oops, just at this very moment we are busy perfoming an import. We'll be back up soon!</p>
 <p>Try again in a few minutes!</p>

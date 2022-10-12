@@ -7,7 +7,7 @@ if ( isset($_SERVER['SERVER_NAME'])) {
 }
 
 if ($subDomain == 'www' || $subDomain == 'localhost' ) {
-    $subDomain = 'c21';
+    $subDomain = 'dev';
 }
 
 $klassen=[];
