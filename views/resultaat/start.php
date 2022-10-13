@@ -47,7 +47,7 @@ function isMobileDevice() {
     <td>
         <div class="card" style="width: 22rem;">
             <div class="card-header align-items-start">
-            <h5>Zoek student</h5>
+                	<h5>Zoek student</h5>
             </div>
 
             <div class="list-group-item">
@@ -56,7 +56,6 @@ function isMobileDevice() {
                     <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
                     <div style="color:#999;">Type een deel van de voor- of achternaam</div>
             </div>
-
 
             <?php
                 if ($resultaten && $found>0) {
@@ -78,7 +77,7 @@ function isMobileDevice() {
         <td>
             <div class="card" style="width: 22rem;">
                 <div class="card-header">
-                    <h5>Nakijken</h5>
+                    <h5><?= Html::a( 'Nakijken', '/grade/not-graded'); ?></h5>
                 </div>
                 <table id="nakijken" class="table table-sm hoverTable"></table>
             </div>
