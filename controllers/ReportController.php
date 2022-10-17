@@ -428,11 +428,9 @@ class ReportController extends QueryBaseController
             sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
             sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
             sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
-            sum(case when ( datediff(curdate(),s.graded_at)<=350) then 1 else 0 end ) '+Schooljaar',
             sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar',
             sum(1) '+Alles'
             FROM submission s
-            inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
             group by 1
             order by 2 DESC
@@ -466,7 +464,6 @@ class ReportController extends QueryBaseController
             SELECT u.name naam
             $select
             FROM submission s
-            inner join assignment a on s.assignment_id=a.id
             inner join user u on u.id=s.grader_id
             where datediff(curdate(),s.graded_at)<=7
             group by 1
@@ -480,6 +477,41 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
+            'lastLine' => $lastLine,
+            'width' => [0,80,80,80,80,80,80,80],
+        ]);
+    }
+
+    public function actionNakijkenDag2($export = false) { 
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
+        $sql = "
+            SELECT u.name naam
+            $select
+            FROM all_submissions s
+            inner join user u on u.id=s.grader_id
+            where datediff(curdate(),s.graded_at)<=7
+            group by 1
+            order by 1
+        ";
+
+        $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);     
+        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Aantal beoordelingen over c20, c21, c22.',
             'lastLine' => $lastLine,
             'width' => [0,80,80,80,80,80,80,80],
         ]);
@@ -724,7 +756,7 @@ class ReportController extends QueryBaseController
         from course c
         left outer join resultaat r on c.id=r.course_id
         left outer join module_def d on r.module_id=d.id
-        where substr(c.naam,1,1) != '!' 
+        where substr(d.naam,1,1) != '!' 
         order by d.pos
         ";
 
