@@ -496,10 +496,9 @@ class ReportController extends QueryBaseController
         }
 
         $sql = "
-            SELECT u.name naam
+            SELECT grader_name naam
             $select
             FROM all_submissions s
-            inner join user u on u.id=s.grader_id
             where datediff(curdate(),s.graded_at)<=7
             group by 1
             order by 1

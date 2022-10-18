@@ -33,6 +33,25 @@ class GradeController extends QueryBaseController
             $hide="-";$nHide="";
         }
        
+        // $sql = "SELECT
+        //     m.pos '-pos',
+        //     concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
+        //     sum( case when (not m.generiek) then 1 else 0 end ) '$nHide+Dev',
+        //     sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',
+        //     sum(1) '+Totaal',
+        //     concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|show_processing|1|') '$hide!Canvas update'
+        // FROM assignment a
+        // left outer join submission s on s.assignment_id= a.id
+        // join user u on u.id=s.user_id
+        // join assignment_group g on g.id = a.assignment_group_id
+        // join module_def m on m.id = g.id
+        // join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+        // where u.grade=1 and s.submitted_at > s.graded_at
+        // group by 1, 2, 6
+        // order by m.pos";
+
+        // Slightly optimized into:
+
         $sql = "SELECT
             m.pos '-pos',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
@@ -41,12 +60,10 @@ class GradeController extends QueryBaseController
             sum(1) '+Totaal',
             concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|show_processing|1|') '$hide!Canvas update'
         FROM assignment a
-        left outer join submission s on s.assignment_id= a.id
-        join user u on u.id=s.user_id
-        join assignment_group g on g.id = a.assignment_group_id
-        join module_def m on m.id = g.id
+        left outer join submission s on s.assignment_id= a.id and s.submitted_at > s.graded_at
+        join user u on u.id=s.user_id and u.grade=1
+        join module_def m on m.id = a.assignment_group_id
         join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-        where u.grade=1 and s.submitted_at > s.graded_at
         group by 1, 2, 6
         order by m.pos";
 
@@ -58,6 +75,36 @@ class GradeController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
+        ]);
+    }
+
+    public function actionNotGraded2($export=false, $update=false) 
+    {
+        if ($update) {
+            $hide="";$nHide="-";
+        } else {
+            $hide="-";$nHide="";
+        }
+
+        $sql = "SELECT
+            module_pos '-pos',
+            cohort '#Cohort',
+            module_name 'Module',
+            sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
+            sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
+            sum(1) '+Totaal'
+        FROM all_submissions
+        WHERE graded_at < submitted_at
+        AND grading_enabled=1
+        group by 1 DESC, 2, 3
+        order by cohort, module_pos";
+
+        $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+
         ]);
     }
 
