@@ -500,6 +500,7 @@ class ReportController extends QueryBaseController
             $select
             FROM all_submissions s
             where datediff(curdate(),s.graded_at)<=7
+            and grader_name is not null
             group by 1
             order by 1
         ";
