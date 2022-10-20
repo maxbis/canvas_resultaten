@@ -26,7 +26,7 @@ $tot = [];
         float: right;
         margin-left: 20px;
     }
-    .bottom-button:hover {background-color: #e7e7e7}
+    .bottom-button:hover {background-color: #e7e7e7;text-decoration:none;color:#3333ff}
 
     .bottom-button:active {
         background-color: #d0d0d0;
