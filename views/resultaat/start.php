@@ -77,7 +77,7 @@ function isMobileDevice() {
         <td>
             <div class="card" style="width: 22rem;">
                 <div class="card-header">
-                    <h5><?= Html::a( 'Nakijken', '/grade/not-graded'); ?></h5>
+                    <h5><?= Html::a( 'Nakijken', '/grade/not-graded'); ?>&nbsp;&nbsp;&nbsp;<a href="/grade/not-graded-all" style="color:#909090;font-size:0.5em;">(alle cohorten)</a></h5>
                 </div>
                 <table id="nakijken" class="table table-sm hoverTable"></table>
             </div>

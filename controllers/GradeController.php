@@ -78,7 +78,7 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionNotGraded2($export=false, $update=false) 
+    public function actionNotGradedAll($export=false, $update=false) 
     {
         if ($update) {
             $hide="";$nHide="-";
@@ -88,11 +88,13 @@ class GradeController extends QueryBaseController
 
         $sql = "SELECT
             module_pos '-pos',
-            cohort '#Cohort',
+            concat(cohort,'|https://',cohort,'.cmon.ovh') '!#Cohort',
             module_name 'Module',
             sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
             sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
-            sum(1) '+Totaal'
+            sum(1) '+Totaal',
+            concat(max(datediff(now(), submitted_at)), ' dagen') 'Oudste',
+            ''
         FROM all_submissions
         WHERE graded_at < submitted_at
         AND grading_enabled=1
@@ -104,7 +106,8 @@ class GradeController extends QueryBaseController
         return $this->render('/report/output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-
+            'descr' => 'Alle cohorten',
+            'width' => [20,60,400,60,60,100,100],
         ]);
     }
 

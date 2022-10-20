@@ -12,6 +12,25 @@ $tot = [];
    .hoverTable tr:hover td {
         background-color: #f6f6ff;
     }
+    .bottom-button {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8em;
+        text-align: center;
+        cursor: pointer;
+        color: #404040;
+        font-weight: 400px;
+        background-color: #f8f9fa;
+        border: solid 1px;
+        border-color: #d0d0d0;
+        border-radius: 0.25rem;
+        float: right;
+        margin-left: 20px;
+    }
+    .bottom-button:hover {background-color: #e7e7e7}
+
+    .bottom-button:active {
+        background-color: #d0d0d0;
+    }
 </style>
 
 <script>

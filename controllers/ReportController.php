@@ -175,13 +175,11 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
-        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
-            'lastLine' => $lastLine,
             'width' => [60,280,40,40,40,40,40,40,90],
         ]);
     }
@@ -436,7 +434,7 @@ class ReportController extends QueryBaseController
             order by 2 DESC
         ";
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
-        $lastLine = "<hr><a href=\"/report/nakijken-dag\" class=\"btn btn-light\" style=\"float: right;\">Dagoverzicht</a>";
+        $lastLine = "<hr><a href=\"/report/nakijken-dag\" class=\"btn bottom-button\">Dagoverzicht</a>";
 
         return $this->render('output', [
             'data' => $data,
@@ -471,7 +469,8 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
+        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn bottom-button\">Weekoverzicht</a>";
+        $lastLine.= "<a href=\"/report/nakijken-dag-all\" class=\"btn bottom-button\" >Weekoverzicht alle cohorten</a>";
 
         return $this->render('output', [
             'data' => $data,
@@ -482,7 +481,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionNakijkenDag2($export = false) { 
+    public function actionNakijkenDagAll($export = false) { 
 
         $weekday=['ma','di','wo','do','vr','za','zo'];
         $date = new DateTime();
@@ -506,7 +505,7 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<hr><a href=\"/report/nakijken-week\" class=\"btn btn-light\" style=\"float: right;\">Weekoverzicht</a>";
+        $lastLine = "<hr><a href=\"".Yii::$app->request->referrer."\" class=\"btn bottom-button\"><< terug</a>";
 
         return $this->render('output', [
             'data' => $data,
