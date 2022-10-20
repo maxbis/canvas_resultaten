@@ -32,8 +32,6 @@ class GradeController extends QueryBaseController
         } else {
             $hide="-";$nHide="";
         }
-
-        $subDomain=Yii::$app->params['subDomain'];
        
         // $sql = "SELECT
         //     m.pos '-pos',
