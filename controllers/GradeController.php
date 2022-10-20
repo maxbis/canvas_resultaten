@@ -124,8 +124,8 @@ class GradeController extends QueryBaseController
         FROM all_submissions
         WHERE graded_at < submitted_at
         AND grading_enabled=1
-        group by 1 DESC, 2, 3
-        order by cohort, module_pos";
+        group by 1, 2, 3
+        order by cohort DESC, module_pos";
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
 
