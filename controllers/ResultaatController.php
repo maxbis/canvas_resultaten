@@ -106,12 +106,15 @@ class ResultaatController extends Controller
     }
 
     public function actionAjaxNakijken() {
-        $sql="select m.pos, m.naam, m.id, sum(1) aantal, DATE_FORMAT(min(s.submitted_at), '%d %b') oudste
+        $sql="select
+                m.pos,
+                m.naam,
+                m.id,
+                sum(1) aantal
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
+            join module_def m on m.id = a.assignment_group_id
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
          group by 1,2,3
@@ -123,7 +126,7 @@ class ResultaatController extends Controller
             $html .= "<tr><td>&nbsp;</td>";
 
             $html .= "<td>";
-            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id']], ['title'=> $item['oudste'] ] );
+            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id']] );
             $html .= "</td>";
             
             $html .= "<td>".$item['aantal']."</td>";
