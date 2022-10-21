@@ -755,7 +755,7 @@ class ReportController extends QueryBaseController
         from course c
         left outer join resultaat r on c.id=r.course_id
         left outer join module_def d on r.module_id=d.id
-        where substr(d.naam,1,1) != '!' 
+        where substr(r.module,1,1) != '!' 
         order by d.pos
         ";
 
