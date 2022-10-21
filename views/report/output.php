@@ -31,6 +31,9 @@ $tot = [];
     .bottom-button:active {
         background-color: #d0d0d0;
     }
+    .left {
+        float: left;
+    }
 </style>
 
 <script>
@@ -84,12 +87,14 @@ $tot = [];
                                 $columnName = substr($columnName, 1);
                             }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
-                            if (substr($columnName, 0, 1) <>'-') {
+                            if (substr($columnName, 0, 1) != '-') {
                                 if ( isset($width[$i]) && $width[$i]!=0 ){
-                                    echo "<th style=\"width:".$width[$i]."px;\">" . $columnName . "</th>";
+                                    echo "<th style=\"width:".$width[$i]."px;\">";
                                 }else {
-                                    echo "<th>" . $columnName . "</th>";
+                                    echo "<th>";
                                 }
+                                echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
+                                echo "</th>";
                             }
                         }
                     } else {

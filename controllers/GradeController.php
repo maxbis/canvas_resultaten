@@ -54,6 +54,7 @@ class GradeController extends QueryBaseController
 
         $sql = "SELECT
             m.pos '-pos',
+            c.korte_naam '#_Blok',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
             sum( case when (not m.generiek) then 1 else 0 end ) '$nHide+Dev',
             sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',
@@ -64,9 +65,10 @@ class GradeController extends QueryBaseController
         FROM assignment a
         left outer join submission s on s.assignment_id= a.id and s.submitted_at > s.graded_at
         join user u on u.id=s.user_id and u.grade=1
+        join course c on c.id=a.course_id
         join module_def m on m.id = a.assignment_group_id
-        join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-        group by 1, 2, 7
+        join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr
+        group by 1, 2, 3, 8
         order by m.pos";
 
         // $sql = "SELECT
@@ -89,18 +91,18 @@ class GradeController extends QueryBaseController
         
         $lastLine =  "<hr>";
         if ($update) {
-            $lastLine .= "<a class=\"bottom-button\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\"><< Terug</a>"; 
+            $lastLine .= "<a class=\"bottom-button left\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\"><< Terug</a>"; 
         } else {
             $lastLine .= "<a class=\"bottom-button\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\">Update</a>"; 
         }
-
+        
 
         return $this->render('/report/output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
             'descr' => 'Cohort '.Yii::$app->params['subDomain'],
-            'width' => [20,400,60,60,100,100],
+            'width' => [20,60,350,60,60,100,100],
         ]);
     }
 
@@ -114,7 +116,7 @@ class GradeController extends QueryBaseController
 
         $sql = "SELECT
             module_pos '-pos',
-            concat(cohort,'|https://',cohort,'.cmon.ovh') '!#Cohort',
+            concat(cohort,'|https://',cohort,'.cmon.ovh/grade/not-graded') '!#Cohort',
             module_name 'Module',
             sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
             sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
