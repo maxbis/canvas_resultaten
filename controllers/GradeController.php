@@ -213,7 +213,7 @@ class GradeController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
-            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr
             where u.grade=1 and s.submitted_at > s.graded_at
             and m.id=$moduleId
             order by s.attempt, a.position, s.submitted_at
