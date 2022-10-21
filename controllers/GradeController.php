@@ -125,8 +125,10 @@ class GradeController extends QueryBaseController
             concat(max(datediff(now(), submitted_at)), ' dagen') 'Oudste',
             ''
         FROM all_submissions
+        
         WHERE graded_at < submitted_at
         AND grading_enabled=1
+        AND minpunten >= 0
         group by 1, 2, 3
         order by cohort DESC, module_pos";
 
