@@ -138,7 +138,7 @@ class GradeController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Alle cohorten',
-            'width' => [20,60,400,60,60,200],
+            'width' => [20,60,320,60,60,200],
         ]);
     }
 
