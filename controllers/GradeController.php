@@ -123,6 +123,7 @@ class GradeController extends QueryBaseController
             sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
             sum(1) '+Totaal',
             concat(max(datediff(now(), submitted_at)), ' dagen') 'Oudste',
+            sum(case when (datediff(curdate(),graded_at)<=1) then 1 else 0 end) '+Vandaag<br>Beoordeeld',
             ''
         FROM all_submissions
         
@@ -138,7 +139,7 @@ class GradeController extends QueryBaseController
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Alle cohorten',
-            'width' => [20,60,400,60,60,100,100],
+            'width' => [20,60,400,60,60,100,200],
         ]);
     }
 

@@ -756,7 +756,7 @@ class ReportController extends QueryBaseController
         left outer join resultaat r on c.id=r.course_id
         left outer join module_def d on r.module_id=d.id
         where substr(r.module,1,1) != '!' 
-        order by d.pos
+        order by c.pos, d.pos
         ";
 
         $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
