@@ -112,7 +112,7 @@ use yii\helpers\Html;
             } else {
                 echo "<td colpsan=5></td>";
             }
-            echo "</tr>";
+            echo "</tr>";   
         ?>
     </table>
 </div>
