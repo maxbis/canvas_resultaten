@@ -106,7 +106,7 @@ use yii\helpers\Html;
                 echo "<td class=\"tright grey\" title=\"Toaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
                 echo "<td></td>";
                 echo "<td class=\"tright grey\" title=\"Deze score (=puntentotaal+100 per vinkje) bepaald jouw positie in het klassement\" class=\"tright\">";
-                echo "(score: ".($totVoldaan*100+$totPunten).")";
+                echo "(score: ".$item['Ranking'].")";
 
                 echo "</td>";
             } else {

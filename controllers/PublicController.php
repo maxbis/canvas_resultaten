@@ -55,7 +55,8 @@ class PublicController extends Controller
                     d.voldaan_rule voldaanRule,
                     u.message Message,
                     u.klas Klas,
-                    d.Generiek
+                    d.Generiek,
+                    u.ranking_score Ranking
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
