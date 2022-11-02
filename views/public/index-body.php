@@ -98,15 +98,15 @@ use yii\helpers\Html;
             echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             
             echo ($style!='standard') ?  "<td></td>" : "";
-            echo "<td colspan=2><b>" .$totVoldaan . "</b></td>";
+            echo "<td colspan=2  title=\"Toaal aantal afgeronde modules\">" .$totVoldaan . "</td>";
             echo ($style=='standard') ?  "<td></td>" : "";
             if( ! isMobileDevice() ){
-                echo "<td class=\"tright\">". $totOpdrachten ."</td>";
+                echo "<td class=\"tright grey\" title=\"Toaal aantal gemaakte opdrachten\">". $totOpdrachten ."</td>";
                 echo "<td></td>";
-                echo "<td class=\"tright\">". $totPunten ."</td>";
+                echo "<td class=\"tright grey\" title=\"Toaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
                 echo "<td></td>";
-                echo "<td title=\"Deze score bepaald jouw positie in het klassement\" class=\"tright\">";
-                echo "(score: ".($totVoldaan*200+$totPunten).")";
+                echo "<td class=\"tright grey\" title=\"Deze score (=puntentotaal+100 per vinkje) bepaald jouw positie in het klassement\" class=\"tright\">";
+                echo "(score: ".($totVoldaan*100+$totPunten).")";
 
                 echo "</td>";
             } else {

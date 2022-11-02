@@ -146,14 +146,14 @@ class PublicController extends Controller
             s.entered_score Score,
             a.points_possible MaxScore,
             s.attempt Poging,
-            CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link
+            CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link,
+            m.voldaan_rule VoldaanRule
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             left outer join user r on r.id=s.grader_id
-            join assignment_group g on g.id = a.assignment_group_id
-            left outer join module_def m on m.id = g.id
-            where g.id=$moduleId
+            left outer join module_def m on m.id = a.assignment_group_id
+            where a.assignment_group_id=$moduleId
             and u.code='$code'
             and published=1
             order by a.position

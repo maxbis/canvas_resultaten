@@ -90,11 +90,11 @@ $subDomain=Yii::$app->params['subDomain'];
         <div>
             <div class="card" style="width: 22rem;">
                 <div class="my-header align-items-start">
-                        <div class="top"><h5>Zoek student</h5></div>
+                    <div class="top"><h5>Zoek student</h5></div>
                 </div>
 
                 <div class="list-group-item">
-                    <form method="post" action=<?php Url::toRoute(['product/start']); ?> >
+                    <form method="post" action=<?php Url::toRoute(['resultaat/start']); ?> >
                         <table>
                             <tr>
                                 <td><input type="text" minlength="2" name="search"></td>

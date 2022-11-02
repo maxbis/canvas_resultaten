@@ -79,7 +79,7 @@ class ResultaatController extends Controller
   
         if (Yii::$app->request->post() ) {
             $search=Yii::$app->request->post()['search'];
-            $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->orderBy(['name' => 'SORT_ASC'])->all();
+            $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->orderBy(['name' => 'SORT_ASC'])->all();
             $found=count($resultaten);
         } else {
             $resultaten=[];
@@ -122,6 +122,7 @@ class ResultaatController extends Controller
         $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
 
         $html="";
+        $prev="";
         foreach($nakijken as $item) {
             $html .= "<tr><td>&nbsp;</td>";
 

@@ -61,6 +61,7 @@
     .hoverTable tr:hover > td { background-color: #f6f6ff !important; }
     .voldaan  { background-color:#f8fff8; }
     .niet-voldaan { background-color:#fff4f4; }
+    .grey { color:#808080;}
 
     .top{
         display:flex;
@@ -167,6 +168,6 @@
     <details>
         <summary>Disclaimer/footer</summary>
         <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
-        <p>v 3.09 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>

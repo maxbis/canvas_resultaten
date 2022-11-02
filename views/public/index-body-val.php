@@ -1,3 +1,4 @@
+Kan weg
 <?php
 
 //first sort the data to make sure you can show it in the right order and with the right colors

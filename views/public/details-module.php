@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 $nr = 0;
 $from = isset($data['show_from']) ? $data['show_from'] : 0;
-//dd($data);
+// dd($data);
 $totScore = 0;
 
 function getInitials($name)
@@ -50,6 +50,8 @@ function getStatus($status)
     .hoverTable tr:hover td {
             background-color: #f6f6ff;
     }
+
+
 </style>
 
 <div class="card shadow">
@@ -116,13 +118,16 @@ function getStatus($status)
                 if ($item['MaxScore']!=0) { $perc=$item['Score']*100/$item['MaxScore']; } else { $perc=100; } // score in percentage
                 if($item['Beoordeeld'] == "" || $item['Ingeleverd'] > $item['Beoordeeld'] || $perc >90) { // if not yet graded or re-submitted or score is 90% then
                     echo "<td class=\"left\">" . $item['Score'] . "</td>"; // use normal grade color (black)
+                    $maxScoreStyle="style=\"color:#d0d0d0;\"";
                 } elseif($perc >50) { // else if grade if 50% or more
-                    echo "<td class=\"left\" style=\"background-color:#f6fce6;\">" . $item['Score'] . "</td>"; // use green-isch background
+                    echo "<td class=\"left\" title=\"Verbeter opdracht\" style=\"background-color:#f6fce6;\">" . $item['Score'] . "</td>"; // use green-isch background
+                    $maxScoreStyle="style=\"color:#000000;\"";
                 } else {
-                    echo "<td class=\"left\" style=\"background-color:#f2ffd1;\">" . $item['Score'] . "</td>"; // else use a bit brighter green-isch
+                    echo "<td class=\"left\" title=\"Verbeter opdracht!\" style=\"background-color:#f2ffd1;\">" . $item['Score'] . "</td>"; // else use a bit brighter green-isch
+                    $maxScoreStyle="style=\"color:#000000;\"";
                 } 
 
-                echo "<td class=\"right\">" . $item['MaxScore'] . "</td>";
+                echo "<td class=\"right\" $maxScoreStyle>" . $item['MaxScore'] . "</td>";
 
                 echo "<td class=\"right\">" . $item['Poging'] . "</td>";
 
@@ -148,12 +153,12 @@ function getStatus($status)
             }
             echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             echo "<td></td>";
-            echo "<td>" . $totSubmitted . "</td>";
+            echo "<td style=\"text-align:left;color:#808080;\" title=\"Totaal aantal opdrachten\">" . $totSubmitted . "</td>";
             echo "<td></td>";
-            echo "<td style=\"text-align: right;\"><b>" . $totScore . "</b></td>";
-            echo "<td style=\"text-align: right;\"><b>" . $totMaxScore . "</b></td>";
-            echo "<td style=\"text-align: right;\">" . $totPoging . "</td>";
-            echo "<td></td>";
+            echo "<td style=\"text-align:right;\" title=\"Voldaan indien ".$item['VoldaanRule']."\"><b>" . $totScore . "</b></td>";
+            echo "<td style=\"text-align:right;\" title=\"Maximaal aantal te behalen punten\"><b>" . $totMaxScore . "</b></td>";
+            echo "<td style=\"text-align:right;color:#808080;\" title=\"Totaal aantal keer ingeleverd\">" . $totPoging . "</td>";
+            echo "<td style=\"text-align:left;color:#808080;\" title=\"Gemiddeld aantal ingeleverd (lager is beter)\"> (gem. ".round($totPoging*1/$totSubmitted,1). ")</td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "</tr>";
@@ -163,5 +168,10 @@ function getStatus($status)
     </div>
 </div>
 <br>
-<small>Aan dit overzicht kunnen geen rechten worden ontleend.
-    De gegevens in Canvas zijn leidend.</small>
+<small style="color:#b0b0b0;font-style: italic;">
+    <details>
+        <summary>Disclaimer/footer</summary>
+        Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
+        <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+    </details>
+</small>
