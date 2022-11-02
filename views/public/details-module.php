@@ -158,7 +158,7 @@ function getStatus($status)
             echo "<td style=\"text-align:right;\" title=\"Voldaan indien ".$item['VoldaanRule']."\"><b>" . $totScore . "</b></td>";
             echo "<td style=\"text-align:right;\" title=\"Maximaal aantal te behalen punten\"><b>" . $totMaxScore . "</b></td>";
             echo "<td style=\"text-align:right;color:#808080;\" title=\"Totaal aantal keer ingeleverd\">" . $totPoging . "</td>";
-            echo "<td style=\"text-align:left;color:#808080;\" title=\"Gemiddeld aantal ingeleverd (lager is beter)\"> (gem. ".round($totPoging*1/$totSubmitted,1). ")</td>";
+            echo "<td style=\"text-align:left;color:#808080;\" title=\"Gemiddeld aantal ingeleverd (lager is beter)\"> (gem. ".round($totPoging*1/max(1,$totSubmitted),1). ")</td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "</tr>";
