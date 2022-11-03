@@ -458,17 +458,18 @@ class ReportController extends QueryBaseController
             if ($dayNr < 0) $dayNr=6; 
         }
 
+        // inner join on assignment and module_def is added to filter out assignements that are not part (any more) of the Canvas Monitor
         $sql = "
             SELECT u.name naam
             $select
             FROM submission s
             inner join user u on u.id=s.grader_id
+            inner join assignment a on a.id=s.assignment_id
+            inner join module_def d on d.id=a.assignment_group_id
             where datediff(curdate(),s.graded_at)<=7
             group by 1
             order by 1
         ";
-        // inner join assignment a on a.id=s.assignment_id
-        // inner join module_def d on d.id=a.assignment_group_id
 
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
         $lastLine = "<a href=\"/report/nakijken-week\" class=\"btn bottom-button left\"><< terug</a>";

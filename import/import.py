@@ -272,12 +272,11 @@ def createResultaat():
         FROM assignment a
         join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
         join assignment_group g on g.id = a.assignment_group_id 
-        join module_def d on d.id=g.id
+        left outer join module_def d on d.id=g.id
         WHERE u.klas is not null
         and published=1
         group by 1, 2, 3, 4, 5, 6, 7
     """
-    # left outer join module_def d on d.id=g.id
     log("Create aggregate into resultaat", 1)
     cursor.execute(sql)
     con.commit()
