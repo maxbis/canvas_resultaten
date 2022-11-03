@@ -467,6 +467,8 @@ class ReportController extends QueryBaseController
             group by 1
             order by 1
         ";
+        // inner join assignment a on a.id=s.assignment_id
+        // inner join module_def d on d.id=a.assignment_group_id
 
         $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
         $lastLine = "<a href=\"/report/nakijken-week\" class=\"btn bottom-button left\"><< terug</a>";
