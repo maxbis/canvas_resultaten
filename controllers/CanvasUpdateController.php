@@ -176,5 +176,19 @@ class CanvasUpdateController extends Controller {
         return $this->redirect(Yii::$app->request->referrer);
     }
 
+    // Work in progress
+    public function actionAddUser($courseId, $userId) {
+        $database='canvas-'.Yii::$app->params['subDomain'];
+        $cmd = "python3 ../import/adduser.py -c $courseId -u $userId";
+        $cmd = escapeshellcmd($cmd);
+        $shellOutput = shell_exec($cmd);
+
+        echo "<pre>$shellOutput</pre>";
+        exit;
+        Yii::$app->session->setFlash('success', "<pre>$shellOutput</pre>");
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+
 
 }
