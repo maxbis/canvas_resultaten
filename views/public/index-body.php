@@ -107,12 +107,11 @@ use yii\helpers\Html;
                 echo "<td></td>";
                 echo "<td class=\"tright grey\" title=\"Deze score (=puntentotaal+100 per vinkje) bepaald jouw positie in het klassement\" class=\"tright\">";
                 echo "(score: ".$item['Ranking'].")";
-
                 echo "</td>";
             } else {
                 echo "<td colpsan=5></td>";
             }
-            echo "</tr>";   
+            echo "</tr>"; 
         ?>
     </table>
 </div>

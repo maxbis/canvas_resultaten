@@ -9,16 +9,12 @@ dbName = config.get('database', 'db')
 dbUser = config.get('database', 'user')
 dbPassword = config.get('database', 'password')
 
+print("Database: %s" % dbName)
+
 con = pymysql.connect(host='localhost', user=dbUser, passwd=dbPassword, db=dbName, client_flag=CLIENT.MULTI_STATEMENTS)
 cursor = con.cursor()
 
-cursor.execute("""\
-    select course_id, count(*)
-    from submission s
-    where datediff(curdate(),s.submitted_at) < 8
-    group by 1
-    order by 2 desc
-""")
+cursor.execute("select course_id, count(*) from submission s where datediff(curdate(),s.submitted_at) < 8 group by 1 order by 2 desc")
 
 # Fetch rows
 data = cursor.fetchall()
@@ -42,4 +38,4 @@ for item in data:
     sql="update course set update_prio="+str(prio)+" where id="+str(item[0])
     print("Aantal: %3d prio: %d" % ( item[1],prio ))
     print(" Query: %s" % sql)
-    cursor.execute(sql)
+    # cursor.execute(sql)

@@ -34,7 +34,7 @@ class PublicController extends Controller
      * Lists all Course models.
      * @return mixed
      */
-    public function actionIndex($code = 'none', $test=0)
+    public function actionIndex($code = 'none', $score=0)
     {
         if( strlen($code)<16 ) exit; // invalid code in any case
         // ipcheck for testing off
@@ -78,7 +78,8 @@ class PublicController extends Controller
         $sql = "
             SELECT DATE_FORMAT(s.submitted_at,'%y') Jaar,
             lpad(week(s.submitted_at,1),2,0) Week,
-            sum(1) 'Aantal'
+            sum(1) 'Aantal taken',
+            sum(entered_score)/10 'Score (x10)'
             FROM `submission`  s
             inner join user u on u.id = s.user_id
             and u.code='$code'
@@ -86,7 +87,11 @@ class PublicController extends Controller
             group by 1,2
         ";
         $result = Yii::$app->db->createCommand($sql)->queryAll();
-        $chart = $this->chart($result);
+        if (! $score) {
+            $chart = $this->chart($result, 'Aantal taken');
+        } else {
+            $chart = $this->chart($result, 'Score (x10)');
+        }
 
         $minOverLastThreeWeeks = min( array_column(array_slice($result, -4, 3), 'Aantal'),0 );
 
@@ -129,13 +134,14 @@ class PublicController extends Controller
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
-        return $this->render( $test ? $test : 'index', [
+        return $this->render( 'index', [
             'data' => $data,
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],
             'pogingen' => $pogingPercentage,
             'minSubmitted' => $minOverLastThreeWeeks,
             'chart' => $chart,
+            'score' => $score,
         ]);
     }
 
@@ -174,12 +180,12 @@ class PublicController extends Controller
         return ($date->format("W") === "53" ? 53 : 52);
     }
 
-    private function chart($data )
+    private function chart($data, $columnName )
     {
         $workLoadperWeek = [];
 
         foreach ($data as $item) { // read all weeks from query into ass. array.
-            $workLoadperWeek[intval($item['Week'])] = intval($item['Aantal']);
+            $workLoadperWeek[intval($item['Week'])] = intval($item[$columnName]);
         }
 
         $aantalWeken = 10;                                  // Number of weeks in graph
@@ -214,6 +220,8 @@ class PublicController extends Controller
             }
         }
 
+        // dd($chartArray);
+
         $chart = [
             'visualization' => 'ColumnChart',
             'data' => $chartArray,
@@ -222,7 +230,7 @@ class PublicController extends Controller
                 'height' => '160',
                 'width' => '600',
                 'hAxis' => array('title' => 'Weeknummer'),
-                'vAxis' => array('title' => 'Aantal Taken', 'ticks' => [0, 5, 10, 15]),
+                'vAxis' => array('title' => $columnName, 'ticks' => [0, 5, 10, 15]),
                 'legend' => array('position' => 'top'),
                 'colors' => ['#82b0ff'],
             ]

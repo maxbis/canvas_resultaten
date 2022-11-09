@@ -1,4 +1,5 @@
 <?php
+    use yii\helpers\Html;
 
     function isMobileDevice() {
         return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|
@@ -28,10 +29,10 @@
     $aggregatedData[$prevBlok]['voldaan']= ($aantalModulesInBlok==$aantalVoldaanInBlok) ? 1 : 0;
 
     // render page elements
-    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank, 'pogingen' => $pogingen, 'minSubmitted'=> $minSubmitted, 'chart' => $chart,]);
-    $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact']);
-    $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini']);
-    $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard']);
+    $header      = $this->render( 'index-header', ['data' => $data,'timeStamp' => $timeStamp, 'rank' => $rank, 'pogingen' => $pogingen, 'minSubmitted'=> $minSubmitted, 'chart' => $chart]);
+    $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact' ]);
+    $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini' ]);
+    $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard' ]);
     $bodyPrefs   = "";
     $achievements= "";
 
@@ -164,10 +165,16 @@
 
 <br>
 
+<?php
+    $link = Html::a("score/aantal", [preg_replace('/\&score=.?/','',Yii::$app->request->url)."&score=".abs($score-1) ], ['title'=> 'Toggle graph (aantal ingeleved - score)',]);
+?>
+
 <small style="color:#b0b0b0;font-style: italic;">
     <details>
         <summary>Disclaimer/footer</summary>
         <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
         <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <hr>
+        <p>beta: <?=$link?></p>
     </details>
 </small>
