@@ -34,4 +34,19 @@ use yii\widgets\ActiveForm;
 
     <?php ActiveForm::end(); ?>
 
+    <br><hr>
+    <h4>Courses still closed (not assigned yet)</h4>
+    <h5>Experimental - work in progress</h5>
+    <?php
+
+    foreach($openCourses as $course) {
+        echo $course['id']." ".$course['naam'];
+        echo " adduser -b ".$course['id']." -s ".$model['student_nr'];
+        echo "<br>";
+        echo "/canvas-update/add-user?courseId=".$course['id']."&userId=".$model['student_nr'];
+        echo "<br>";
+    }
+ 
+    ?>
+
 </div>

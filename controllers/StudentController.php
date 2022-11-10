@@ -121,8 +121,12 @@ class StudentController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $sql="select id, naam from course where id not in ( select distinct r.course_id from resultaat r join course c on c.id=r.course_id where r.student_nummer=".$model['student_nr']." ) order by pos";
+        $openCourses = Yii::$app->db->createCommand($sql)->queryAll();
+
         return $this->render('update', [
             'model' => $model,
+            'openCourses' => $openCourses,
         ]);
     }
 
