@@ -45,6 +45,8 @@ use yii\widgets\ActiveForm;
         echo "<br>";
         echo "/canvas-update/add-user?courseId=".$course['id']."&userId=".$model['id'];
         echo "<br>";
+        echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
+        echo "<br><br>";
     }
  
     ?>
