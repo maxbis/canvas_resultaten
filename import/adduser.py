@@ -16,14 +16,16 @@ def dd(arg):
     sys.exit()
 
 
-
 config = configparser.ConfigParser()
-config.read("canvas.ini")
+if ( not (config.read("../import/canvas.ini") or config.read("canvas.ini"))):
+    print()
+    dd('Error: canvas.ini not found')
 
 parser = argparse.ArgumentParser(description='Add user to course')
 parser.add_argument('-b', '--blok', type=str, help='Blok (cursus) Name or Id', required=True)
 parser.add_argument('-s', '--student', type=str, help='Student Name or Id', required=True)
 parser.add_argument('-x', '--execute', action='store_true', help='Execute', required=False)
+parser.add_argument('--database', type=str, help='Database name, if ommited, the name from the ini file will be used', default='database', required=False)
 args = vars(parser.parse_args())
 
 
@@ -33,9 +35,10 @@ API_URL = config.get('main', 'host')
 API_KEY = config.get('main', 'api_key')
 
 try:
-    dbName = config.get('database', 'db')
-    dbUser = config.get('database', 'user')
-    dbPassword = config.get('database', 'password')
+    databaseSectionName=args['database']
+    dbName = config.get(databaseSectionName, 'db')
+    dbUser = config.get(databaseSectionName, 'user')
+    dbPassword = config.get(databaseSectionName, 'password')
 except:
     dd('Error reading canvas.ini database parameters')
 
