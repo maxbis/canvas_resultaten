@@ -29,8 +29,6 @@ parser.add_argument('-x', '--execute', action='store_true', help='Execute', requ
 parser.add_argument('--database', type=str, help='Database name, if ommited, the name from the ini file will be used', default='database', required=False)
 args = vars(parser.parse_args())
 
-print("Check!")
-sys.exit()
 
 # Canvas API URL
 API_URL = config.get('main', 'host')
