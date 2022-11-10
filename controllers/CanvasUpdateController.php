@@ -183,9 +183,9 @@ class CanvasUpdateController extends Controller {
         $cmd = escapeshellcmd($cmd);
         $shellOutput = shell_exec($cmd);
 
-        echo "<pre>$cmd</pre>";
-        echo "<pre>$shellOutput</pre>";
-        exit;
+        // echo "<pre>$cmd</pre>";
+        // echo "<pre>$shellOutput</pre>";
+        // exit;
         Yii::$app->session->setFlash('success', "<pre>$shellOutput</pre>");
         return $this->redirect(Yii::$app->request->referrer);
     }
