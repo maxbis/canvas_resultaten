@@ -179,7 +179,7 @@ class CanvasUpdateController extends Controller {
     // Work in progress
     public function actionAddUser($courseId, $userId) {
         $database='canvas-'.Yii::$app->params['subDomain'];
-        $cmd = "python3 ../import/adduser.py -b $courseId -s $userId --database $database";
+        $cmd = "python3 ../import/adduser.py -b $courseId -s $userId --database $database -x";
         $cmd = escapeshellcmd($cmd);
         $shellOutput = shell_exec($cmd);
 
