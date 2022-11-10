@@ -43,7 +43,7 @@ use yii\widgets\ActiveForm;
         echo $course['id']." ".$course['naam'];
         echo " adduser -b ".$course['id']." -s ".$model['student_nr'];
         echo "<br>";
-        echo "/canvas-update/add-user?courseId=".$course['id']."&userId=".$model['student_nr'];
+        echo "/canvas-update/add-user?courseId=".$course['id']."&userId=".$model['id'];
         echo "<br>";
     }
  
