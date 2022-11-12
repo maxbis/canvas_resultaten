@@ -67,9 +67,15 @@ class StudentController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+
+        $data = $this->findModel($id);
+        if ( isset($data['code']) && strlen($data['code'])>10 ) {
+            return $this->redirect('/public/index?code='.$data['code']);
+        } else {
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
     }
 
     /**
@@ -118,7 +124,7 @@ class StudentController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['/public/index', 'code' => $model->code]);
         }
 
         $sql="select id, naam from course where id not in ( select distinct r.course_id from resultaat r join course c on c.id=r.course_id where r.student_nummer=".$model['student_nr']." ) order by pos";

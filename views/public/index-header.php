@@ -4,14 +4,13 @@ use yii\helpers\Html;
 
 
 $quality='';
-$size='';
-
-if ($pogingen) {
+if ($pogingen) { // detemine the number of (quality) stars
     if ($pogingen < 100) $quality.='&#9733;';
     if ($pogingen < 50)  $quality.='&#9733;';
     if ($pogingen < 20)  $quality.='&#9733;';
 }
-if ($minSubmitted) {
+$size='';
+if ($minSubmitted) { // min. number of submissions over last threee weeks (not shown yet)
     if ($pogingen > 4) $size.='&#9733';
     if ($pogingen > 9) $size.='&#9733';
     if ($pogingen > 17) $size.='&#9733';
@@ -35,9 +34,15 @@ if ($minSubmitted) {
             <br>
             Voortgangsoverzicht <span style="color:white"><?= $data[0]['student_nummer'] ?></span>
             <h3><?= $data[0]['Student']; ?>
-                <span style="font-size:12px;color:#999;">
-                    <?= $data[0]['Klas']; ?>
-                </span>
+                
+                <?php // small grey klass - when 'beheer' this is a link to edit student (for opening courses)
+                    if (isset(Yii::$app->user->identity->username) && Yii::$app->user->identity->username == 'beheer') { 
+                        echo Html::a($data[0]['Klas'], [ '/student/update','id' => $data[0]['student_id'] ], ['title'=> 'Edit student', 'class' => 'klas']);
+                    } else {
+                        echo "<span class=\"klas\">".$data[0]['Klas']."</span>";
+                    }
+                ?>
+
             </h3>
             
             <i><?= $data[0]['Message'];?></i><br/>

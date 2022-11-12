@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\StudentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Studenten';
+$this->title = 'Studenten / Docenten';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="student-index">
@@ -41,34 +41,49 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Canvas Id',
                 'attribute'=>'id',
-                'contentOptions' => ['style' => 'width:120px; white-space: normal;'],
+                'contentOptions' => ['style' => 'width:80px; white-space: normal;'],
             ],
             [
                 'label' => 'Student',
                 'attribute'=>'name',
-                'contentOptions' => ['style' => 'width:240px; white-space: normal;', 'title'=>'Secret public access link'],
+                'contentOptions' => ['style' => 'width:200px; white-space: normal;', 'title'=>'Secret public access link'],
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return  Html::a($data->name,['/public', 'code'=>$data['code']]);
+                    if ( $data->code ) {
+                        return  Html::a($data->name,['/public', 'code'=>$data['code']]);
+                    } else {
+                        return $data->name;
+                    }
                     return "<a href='https://www.student.ovh/canvas/public?code=".$data['code']."'>$data->name</a>";
                 }
             ],
-            'login_id',
-            'student_nr',
+            [
+                'attribute' => 'student_nr',
+                'label' => 'Student Nr',
+                'contentOptions' => ['style' => 'width:100px; white-space: normal;', 'title'=>'Klas'],
+            ],
             [
                 'attribute' => 'klas',
                 'label' => 'Klas',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Klas'],
+                'contentOptions' => ['style' => 'width:100px; white-space: normal;', 'title'=>'Klas'],
             ],
             [
                 'label'=>'Comment',
                 'attribute'=>'comment',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
+                'contentOptions' => ['style' => 'width:180px; white-space: normal;', 'title'=>'Comment'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return substr($data->comment,0,10);
+                }
             ],
             [
                 'label'=>'Message',
                 'attribute'=>'message',
-                'contentOptions' => ['style' => 'width:50px; white-space: normal;', 'title'=>'Comment'],
+                'contentOptions' => ['style' => 'white-space: normal;', 'title'=>'Comment'],
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return substr($data->message,0,30);
+                }
             ],
 
             [

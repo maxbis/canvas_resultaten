@@ -77,6 +77,8 @@
         display:none;
     }
 
+    .klas { font-size:12px;color:#999;}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -174,7 +176,20 @@
         <summary>Disclaimer/footer</summary>
         <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
         <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
-        <hr>
-        <p>beta: <?=$link?></p>
+
+        <p>flip <?=$link?></p>
     </details>
 </small>
+
+
+</div>
+
+
+<?php
+    if (isset(Yii::$app->user->identity->username) && Yii::$app->user->identity->username == 'beheer') { 
+        $klas = Html::a($data[0]['Klas'], [ '/student/update','id' => $data[0]['student_id'] ], ['title'=> 'Edit student', 'class' => 'small-button']);
+    } else {
+        $klas=$data[0]['Klas'];
+    }
+    echo $klas;
+?>

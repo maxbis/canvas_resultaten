@@ -41,7 +41,7 @@ class PublicController extends Controller
         // MyHelpers::CheckIP();
 
         // Create report for one student(status)
-        $sql = "SELECT r.module_id, r.student_naam Student, c.korte_naam Blok ,d.naam Module, r.voldaan Voldaan,
+        $sql = "SELECT r.module_id, r.student_naam Student, u.id student_id, c.korte_naam Blok ,d.naam Module, r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
                     round(r.punten*100/r.punten_max) 'Punten %',
                     r.laatste_activiteit 'Laatste Actief',
@@ -242,10 +242,12 @@ class PublicController extends Controller
 
     // Dummy Function
     public function actionLogin(){
+        sleep(3);
         $request = Yii::$app->request;
         $logLine =  date('Y-m-d H:i:s', time())." ".$_SERVER['REMOTE_ADDR'] ." ".$request->post('name')." ".$request->post('password');
         file_put_contents('mylog.log',"\r\n".$logLine,FILE_APPEND);
         return $this->render('login-form');
     }
+
 }
 
