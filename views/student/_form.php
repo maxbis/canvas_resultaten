@@ -38,7 +38,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                 <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
                 
                 <?php
-                    if (count($openCourses)) {
+                    if (isset($openCourses) && count($openCourses)) {
                         echo "<table>";
                         foreach($openCourses as $course) {
                             echo "<tr><td class=\"card-text\">";

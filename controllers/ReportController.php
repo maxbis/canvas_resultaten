@@ -642,6 +642,30 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionVoortgangDev2($export = false, $klas='') // menu 3.8 - Aantal beoordeligen per docent
+    { 
+
+        $sql = " select concat('&#9998;','|/student/update|id|',u.id) '!Actie',
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            comment Comment,
+            u.message 'Message',
+            count(*) 'Dev Modules Voldaan'
+            from resultaat r
+            JOIN user u on u.student_nr= r.student_nummer
+            where voldaan='V'";
+        $sql.=  $this->getKlas($klas);
+        $sql.=" and module_pos <= 70
+            group by 1,2,3,4
+            order by 5 desc, 1;";
+
+        $data = parent::executeQuery($sql, "Aantal dev modules voldaan en studie advies", $export);
+
+        return $this->render('outputMessage', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+        ]);
+    }
+
     public function actionVoortgangPunten($export=false) {
 
         $sql = "SELECT id, naam, substring(naam,1,4) 'mod' from module_def where generiek = 0 order by pos";

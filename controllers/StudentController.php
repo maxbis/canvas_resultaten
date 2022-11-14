@@ -18,6 +18,10 @@ use yii\filters\AccessControl;
  */
 class StudentController extends Controller
 {
+    public function beforeAction($action) {
+        return parent::beforeAction($action);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -172,6 +176,14 @@ class StudentController extends Controller
         $params = array(':id'=> $id);
         Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
         return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    public function actionSetMessage($id, $message) {
+        // function set message
+        $sql="update user set message=:message where id = :id;";
+        $params = [':id'=>$id, ':message'=>$message,];
+        Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
+        return;
     }
 
     // generate  hash codes used to access overview for a student. Run this to (re) set all hash codes.
