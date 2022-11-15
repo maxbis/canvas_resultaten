@@ -1,5 +1,6 @@
 <?php
     use yii\helpers\Html;
+    use yii\helpers\Url;
 
     function isMobileDevice() {
         return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|
@@ -124,6 +125,7 @@
     });
 
     $(document).ready(function(){
+        var oldValue="";
         $('#ranking').click(function() {
             if ( $(".ranking").is(':visible') ) {
                 $('.ranking').hide();
@@ -135,8 +137,34 @@
                 localStorage.setItem('Ranking', 1);
             }
         });
+        $('.editable').focus(function(){
+            //console.log("Focus");
+            oldValue=$(this).html();
+            $(".editable").attr("style", "font-style: normal;font-size:18px;")
+        });
+        $('.editable').blur(function(){
+            var csrfToken = $('meta[name="csrf-token"]').attr("content");
+            var url= '<?= Url::toRoute(['/student/set-message']); ?>';
+            var myId=$(this).attr('id');;
+            var myMessage=$(this).html();
+            myMessage = myMessage.replace(/<[^>]*>?/gm, ''); // filter html code
+            
+            if (oldValue!=myMessage) {
+                changedValue=0;
+               // console.log("Update id:"+myId+" with message:"+myMessage.trim() );
+            
+                $.ajax({
+                    type: 'post',
+                    url:  url,
+                    data: '_csrf=' +csrfToken+"&id="+myId+"&message="+myMessage
+                });
+                // console.log("DB Updated");
+            }
+            $(".editable").attr("style", "font-style: italic;font-size:16px;")
+        });
     });
 </script>
+
 
 <div style="float:right">
 <?php use app\controllers\CheckInController; echo CheckInController::button($_GET["code"]); ?>
@@ -181,15 +209,4 @@
     </details>
 </small>
 
-
 </div>
-
-
-<?php
-    if (isset(Yii::$app->user->identity->username) && Yii::$app->user->identity->username == 'beheer') { 
-        $klas = Html::a($data[0]['Klas'], [ '/student/update','id' => $data[0]['student_id'] ], ['title'=> 'Edit student', 'class' => 'small-button']);
-    } else {
-        $klas=$data[0]['Klas'];
-    }
-    echo $klas;
-?>

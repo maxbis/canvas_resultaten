@@ -178,7 +178,10 @@ class StudentController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionSetMessage($id, $message) {
+    public function actionSetMessage() {
+        $data = Yii::$app->request->post();
+        $id=$data['id'];
+        $message=$data['message'];
         // function set message
         $sql="update user set message=:message where id = :id;";
         $params = [':id'=>$id, ':message'=>$message,];

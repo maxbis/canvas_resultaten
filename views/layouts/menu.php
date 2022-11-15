@@ -63,6 +63,8 @@ echo Nav::widget([
                 ['label' => 'Voortgang',                         'url' => ['/report/voortgang']],
                 //['label' => 'Studenten werken aan...',           'url' => ['/report/working-on']],
                 ['label' => 'Ranking Dev',                       'url' => ['/report/ranking']],
+                ['label' => '----------------',],
+                ['label' => 'Module-overzicht',                  'url' => ['/report/aantal-opdrachten']],
                 ['label' => 'Voortgang per Module',              'url' => ['/report/modules-finished']],
                 ['label' => 'Student keek in monitor',           'url' => ['/report/last-report-by-student']],
                 ['label' => 'Aantal pogingen',                      'url' => ['/report/pogingen']],
@@ -115,7 +117,7 @@ echo Nav::widget([
             'items' => [
                 ['label' => 'Studenten',                 'url' => ['/student']],
                 ['label' => 'Studenten (export)',        'url' => ['/query/studenten-lijst']],
-                ['label' => 'Dev Voortgang (BSA-edit)',  'url' => ['/report/voortgang-dev']],
+                ['label' => 'Dev Voortgang (adviezen)',  'url' => ['/report/advies']],
                 ['label' => '----------------',],
                 ['label' => 'Cursus (Blok)',  'url' => ['/course']],
                 ['label' => 'Modules',        'url' => ['/report/modules']],

@@ -249,7 +249,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionRanking2($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
+    public function actionRanking2Weg($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
         # if a teacher is also student he has no code (code is null), so only get students with a code
@@ -618,7 +618,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionVoortgangDev($export = false, $klas='') // menu 3.8 - Aantal beoordeligen per docent
+    public function actionVoortgangDev($export = false, $klas='') // not used anymore -> actionAdvies
     { 
 
         $sql = " select concat('&#9998;','|/student/update|id|',u.id) '!Actie',
@@ -630,7 +630,7 @@ class ReportController extends QueryBaseController
             JOIN user u on u.student_nr= r.student_nummer
             where voldaan='V'";
         $sql.=  $this->getKlas($klas);
-        $sql.=" and module_pos <= 70
+        $sql.=" and module_pos <= 100
             group by 1,2,3,4
             order by 5 desc, 1;";
 
@@ -642,27 +642,23 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionVoortgangDev2($export = false, $klas='') // menu 3.8 - Aantal beoordeligen per docent
+    public function actionAdvies($export = false, $klas='')
     { 
 
-        $sql = " select concat('&#9998;','|/student/update|id|',u.id) '!Actie',
-            concat(u.name,'|/public/index|code|',u.code) '!Student',
-            comment Comment,
-            u.message 'Message',
-            count(*) 'Dev Modules Voldaan'
+        $sql = " select 
+            u.id id, u.name name, u.message message, u.code code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
             from resultaat r
             JOIN user u on u.student_nr= r.student_nummer
-            where voldaan='V'";
+            where module_pos <= 100 ";
         $sql.=  $this->getKlas($klas);
-        $sql.=" and module_pos <= 70
-            group by 1,2,3,4
-            order by 5 desc, 1;";
+        $sql.=" group by 1,2,3,4 order by 5 desc, 6 desc;";
 
-        $data = parent::executeQuery($sql, "Aantal dev modules voldaan en studie advies", $export);
+        $data = parent::executeQuery($sql, "Advies", $export);
 
-        return $this->render('outputMessage', [
+        return $this->render('advies', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
+            'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap"
         ]);
     }
 
@@ -848,7 +844,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionTodayCheckIn2($export=false,$klas='') {
+    public function actionTodayCheckIn2Weg($export=false,$klas='') {
 
         $sql="
         SELECT  u.klas '#Klas',
@@ -1024,6 +1020,54 @@ class ReportController extends QueryBaseController
             'lastLine' => $lastLine,
         ]);
 
+    }
+
+    public function actionAantalOpdrachten($export=false){
+        $sql = "
+            select c.korte_naam '#Blok', m.pos 'Pos', c.naam 'Naam',
+            concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
+            sum(1) '+aantal'
+            from module_def m
+            left join assignment a on a.assignment_group_id = m.id
+            left join course c on c.id = a.course_id
+            group by 1,2,3
+            order by m.pos
+        ";
+
+        $data = parent::executeQuery($sql, "Module-overzicht", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Blok, modulenaam en aantal opdrachten per module',
+            'width' => [80,80,160,300],
+        ]);
+    }
+
+    public function actionOpdrachtenModule($id, $export=false){
+        $sql = "
+            select c.naam 'cursus_naam',
+                korte_naam '#Blok',
+                concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
+                a.points_possible '+Punten', ''
+            from assignment a
+            left join course c on c.id=a.course_id
+            where assignment_group_id=$id
+            order by a.position
+        ";
+
+        $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
+        $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
+        $data['show_from']=1;
+        if (isset($data['row'][0]['cursus_naam']) )  $data['title']=$data['row'][0]['cursus_naam'];
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'lastLine' => $lastLine,
+            'descr' => 'Opdrachten en punten voor dit blok',
+            'width' => [80,80,600,80],
+        ]);
     }
 
 

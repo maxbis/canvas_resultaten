@@ -66,7 +66,13 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
         <td>
             <div class="row">
                 <div class="col-sm-3">
-                    <?= $form->field($model, 'id')->textInput()->label('Canvas ID') ?>
+                    <?php
+                        if ( isset($model['id']) && $model['id'] > 10 ) {
+                            echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> true])->label('Canvas ID');
+                        } else {
+                            echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> false])->label('Canvas ID');
+                        }
+                    ?>
                 </div>
                 <div class="col-sm-7">
                     <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> true])->label('Code voor student om zijn pagina te bekijken') ?>
