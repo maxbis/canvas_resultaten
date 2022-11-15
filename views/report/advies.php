@@ -33,9 +33,10 @@ use yii\helpers\Url;
         });
         $('.editable').focus(function(){
             //console.log("Focus");
+            document.execCommand('selectAll', false, null);
             var myId=$(this).attr('id');
             oldValue=$(this).html();
-            $("#"+myId).attr("style", "font-style: normal;font-size:18px;border:2px solid #0077ff;")
+            //$("#"+myId).attr("style", "font-style: normal;border:2px solid #0077ff;")
         });
         $('.editable').blur(function(){
             var csrfToken = $('meta[name="csrf-token"]').attr("content");
@@ -46,16 +47,17 @@ use yii\helpers\Url;
             
             if (oldValue!=myMessage) {
                 changedValue=0;
-               // console.log("Update id:"+myId+" with message:"+myMessage.trim() );
+                //console.log("Update id:"+myId+" with message:"+myMessage.trim() );
             
                 $.ajax({
                     type: 'post',
                     url:  url,
                     data: '_csrf=' +csrfToken+"&id="+myId+"&message="+myMessage
                 });
-                // console.log("DB Updated");
+                //console.log("DB Updated");
             }
-            $("#"+myId).attr("style", "font-style: italic;font-size:16px;border:none;")
+            //console.log("Reset Style "+myId+"--");
+            //$("#"+myId).attr("style", "font-style: italic;border:none;")
         });
     });
 </script>
@@ -135,7 +137,7 @@ use yii\helpers\Url;
                         <td><?= $item['voldaan']; ?></td>
                         <td><?= $item['ingeleverd']; ?></td>
                         <td><a href="/public/index?code=<?=$item['code']?>"><?= $item['name']; ?></a></td>
-                        <td><span style="font-style: italic;" class="editable" contentEditable="true" id="<?=$item['id']?>"><?= $message; ?></span></td>
+                        <td><span style="" class="editable" contentEditable="true" id="<?=$item['id']?>"><?= $message; ?></span></td>
                     </tr>
 
                 <?php } ?>
