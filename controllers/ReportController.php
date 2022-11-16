@@ -1053,6 +1053,7 @@ class ReportController extends QueryBaseController
             from assignment a
             left join course c on c.id=a.course_id
             where assignment_group_id=$id
+            and a.published=1
             order by a.position
         ";
 
