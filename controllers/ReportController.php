@@ -418,7 +418,6 @@ class ReportController extends QueryBaseController
     { 
         $schooljaarStart = date("Y")-1;
         if(date('n') >= 8) $schooljaarStart++;
-
         $schooljaarStart.='-08-01';
 
         $sql = "
@@ -486,6 +485,10 @@ class ReportController extends QueryBaseController
 
     public function actionNakijkenDagAll($export = false) { 
 
+        // $schooljaarStart = date("Y")-1;
+        // if(date('n') >= 8) $schooljaarStart++;
+        // $schooljaarStart.='-08-01';
+
         $weekday=['ma','di','wo','do','vr','za','zo'];
         $date = new DateTime();
         $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
@@ -496,13 +499,15 @@ class ReportController extends QueryBaseController
             $dayNr--;
             if ($dayNr < 0) $dayNr=6; 
         }
+        // $select .= "\n,sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar'";
+        $select .= "\n,sum(1) '+Week'";
 
         $sql = "
             SELECT grader_name naam
             $select
             FROM all_submissions s
-            where datediff(curdate(),s.graded_at)<=7
-            and grader_name is not null
+            where grader_name is not null
+            and datediff(curdate(),s.graded_at)<=7
             group by 1
             order by 1
         ";
@@ -515,7 +520,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Aantal beoordelingen over c20, c21, c22.',
             'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80],
+            'width' => [0,80,80,80,80,80,80,80,80],
         ]);
     }
 
