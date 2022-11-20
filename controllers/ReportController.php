@@ -651,7 +651,7 @@ class ReportController extends QueryBaseController
     { 
 
         $sql = " select 
-            u.id id, u.name name, u.message message, u.code code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
+            u.id id, u.name name, u.message message, u.code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
             from resultaat r
             JOIN user u on u.student_nr= r.student_nummer
             where module_pos <= 100 ";
@@ -665,6 +665,7 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
             'width' => [80,80,80],
+            'action' => Yii::$app->controller->action->id."?",
         ]);
     }
 
