@@ -663,7 +663,8 @@ class ReportController extends QueryBaseController
         return $this->render('advies', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
-            'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap"
+            'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
+            'width' => [80,80,80],
         ]);
     }
 

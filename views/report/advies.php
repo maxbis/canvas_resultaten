@@ -119,10 +119,10 @@ use yii\helpers\Url;
             <thead>
                 <tr>
                    <th style="color:#A0A0A0;">#</th>
-                   <th>Voldaan</th>
-                   <th>Opdrachten</th>
-                   <th>Student</th>
-                   <th style="width:600px;">Advies</th>
+                   <th title="Aantal modules voldaan">V</th>
+                   <th title="Aantal opdrachten ingeleverd">O</th>
+                   <th title="Studentnaam">Student</th>
+                   <th title="Tekst zichtbaar voor studenten op overzicht" style="width:600px;">Advies</th>
                 </tr>
                 <?php
                     if (isset($data['row'])) {
