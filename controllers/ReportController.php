@@ -61,60 +61,35 @@ class ReportController extends QueryBaseController
 
     public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
     { 
+        $weekNumber = date("W"); 
+
+        $weekNumbersArray=[];
+        for($i=11; $i>=0; $i--) {
+            $thisWeekNumber = $weekNumber - $i;
+            if ($thisWeekNumber<=0) {
+                $thisWeekNumber = $thisWeekNumber + 52; // if year has 53 weeks, week 53 will be added to week 52
+            }
+            array_push($weekNumbersArray, $thisWeekNumber);
+        }
+        //dd($weekNumbersArray);
 
         $sum_column="";
-        for($i=12; $i>=2; $i--){
-            $sum_column .= "sum(case when (datediff(curdate(),submitted_at)<=";
-            $sum_column .= $i*7;
-            $sum_column .= " && datediff(curdate(),submitted_at)>";
-            $sum_column .= ($i-1)*7;
-            $sum_column .= ") then 1 else 0 end) '+-$i',";
-            $sum_column .= "\n";
+        $i=11;
+        foreach($weekNumbersArray as $thisWeek) {
+            $sum_column.="
+                sum(case when week(submitted_at,1)=$thisWeek then 1 else 0 end  ) '+$thisWeek',";
+            $i--;
         }
-       
+        // dd($sum_column);
 
         $sql = "
             select
             sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
-            sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
-            sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
-            0 'Graph',
-            sum(case when (datediff(curdate(),submitted_at)<=84 && datediff(curdate(),submitted_at)>77 ) then 1 else 0 end) '+-12',
-            sum(case when (datediff(curdate(),submitted_at)<=77 && datediff(curdate(),submitted_at)>70 ) then 1 else 0 end) '+-11',
-            sum(case when (datediff(curdate(),submitted_at)<=70 && datediff(curdate(),submitted_at)>63 ) then 1 else 0 end) '+-10',
-            sum(case when (datediff(curdate(),submitted_at)<=63 && datediff(curdate(),submitted_at)>56 ) then 1 else 0 end) '+-9',
-            sum(case when (datediff(curdate(),submitted_at)<=56 && datediff(curdate(),submitted_at)>49 ) then 1 else 0 end) '+-8',
-            sum(case when (datediff(curdate(),submitted_at)<=49 && datediff(curdate(),submitted_at)>42 ) then 1 else 0 end) '+-7',
-            sum(case when (datediff(curdate(),submitted_at)<=42 && datediff(curdate(),submitted_at)>35 ) then 1 else 0 end) '+-6',
-            sum(case when (datediff(curdate(),submitted_at)<=35 && datediff(curdate(),submitted_at)>28 ) then 1 else 0 end) '+-5',
-            sum(case when (datediff(curdate(),submitted_at)<=28 && datediff(curdate(),submitted_at)>21 ) then 1 else 0 end) '+-4',
-            sum(case when (datediff(curdate(),submitted_at)<=21 && datediff(curdate(),submitted_at)>14 ) then 1 else 0 end) '+-3',
-            sum(case when (datediff(curdate(),submitted_at)<=14 && datediff(curdate(),submitted_at)>7 ) then 1 else 0 end) '+-2',
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
-            sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            where klas is not null
-            ".$this->getKlas($klas)."
-            group by 2,3
-            order by 1 DESC
-        ";
-
-        $sql2 = "
-            select
-            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
-            u.klas Klas,
-            concat(u.name,'|/public/index|code|',u.code) '!Student',
             u.student_nr '-student_nr',
-            sum(case when (datediff(curdate(),submitted_at)=1) then 1 else 0 end) '+-2d',
-            sum(case when (datediff(curdate(),submitted_at)=0) then 1 else 0 end) '+-1d',
             0 'Graph',
             $sum_column
-            sum(case when (datediff(curdate(),submitted_at)<=7) then 1 else 0 end) '+-1',
             sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
             FROM assignment a
             join submission s on s.assignment_id= a.id
@@ -129,17 +104,15 @@ class ReportController extends QueryBaseController
 
         // echo "<pre>";
         // echo $sql;
-        // echo "<br>";
-        // echo $sql2;
         // exit;
 
-        $data = parent::executeQuery($sql2, "Activiteiten over de laatste 12 weken" . $klas, $export);
+        $data = parent::executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
         $data['show_from']=1;
 
         return $this->render('studentenActivity', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'Weken zijn \'rollende\' weken (dus geen kalenderweken). Gesorteerd op activiteiten over laatse drie weken.',
+            'descr' => '',
         ]);
     }
 

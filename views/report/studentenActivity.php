@@ -70,27 +70,27 @@ if ($data['row']) {
         <table class="table table-sm hoverTable">
             <thead>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td colspan=2>Laatste 2 dagen</td>
-                    <td colspan=1>Laatste 12 weken</td>
-                    <td colspan=4><-- oud</td>
-                    <td colspan=4 style="text-align: center;">weken</td>
-                    <td colspan=4 style="text-align: right;">recent --></td>
-                    <td></td>
-     
+                    <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th colspan=1></th>
+                    <th colspan=12>Weeknummers</th>
+                    <th colspan=1></th>
                 </tr>
                 <tr>
-                    <tr>
-                    <th>#</th>
-                    <th></th>
-                    <th>Student</th>
-                    <th colspan=2></th>
-                    <th colspan=1>Graph</th>
-                    <th colspan=12>Aantal ingeleverde opdrachten</th>
-                    <th colspan=1>Tot</th>
-                </tr>
+                <th>#</th>
+                <?php
+                    for ($i = $from; $i < count($data['col']); $i++) {
+                        $columnName = $data['col'][$i];
+                        $columnName = str_replace(array("#", "!","+"), '', $columnName);
+                        if (substr($columnName, 0, 1) != '-') {
+                            echo "<th>";
+                            echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
+                            echo "</th>";
+                        }
+                    }
+                ?>
 
                 </tr>
 
@@ -103,7 +103,7 @@ if ($data['row']) {
                     echo "<tr>";
                     if (!isset($nocount)) {
                         $nr++;
-                        echo "<td background: linear-gradient(to bottom, green 50%, white 0%);>" . $nr . "</td>";
+                        echo "<td style=\"color:#A0A0A0;\">" . $nr . "</td>";
                     }
 
                     $count=0;
