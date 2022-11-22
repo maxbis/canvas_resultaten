@@ -118,7 +118,7 @@ if ($data['row']) {
                                 echo "<div class=\"graph\">";
                                     echo "<div style=\"position:absolute; left: 1px; top: 1px; right: 1px; bottom: 1px\">";
                                         for($i=0; $i<12; $i++) {
-                                            $value=$item[$data['col'][$i+6]];
+                                            $value=$item[$data['col'][$i+5]];
                                             //echo "----".$value;
                                             $barColor = '#ffb3b9';
                                             if ($value == 0 ) {
