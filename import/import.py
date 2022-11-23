@@ -257,7 +257,7 @@ def createResultaat():
             g.id module_id,
             case when d.naam is null then g.name else d.naam end module,
             case when d.pos is null then 999 else d.pos end module_pos,
-            SUBSTRING_INDEX(u.login_id,'@',1) student_nummer,
+            u.student_nr student_nummer,
             u.klas klas,
             u.name student_naam,
             SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
