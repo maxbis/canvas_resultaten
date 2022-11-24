@@ -580,6 +580,7 @@ class ReportController extends QueryBaseController
             INNER JOIN module_def d on d.id=r.module_id
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
+            and u.student_nr > 10
             ".$this->getKlas($klas)."
             GROUP BY 1,2,3,4,5,6
             ORDER BY 1 DESC
