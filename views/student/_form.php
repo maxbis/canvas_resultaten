@@ -31,33 +31,30 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
         </td>
 
         <td rowspan=3 style="vertical-align: top;">
-        
-            <div class="card" style="width: 24rem;">
-                <div class="card-body">
-                <h5 class="card-title">Courses open for this student</h5>
-                <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
-                
-                <?php
-                    if (isset($openCourses) && count($openCourses)) {
-                        echo "<table>";
-                        foreach($openCourses as $course) {
-                            echo "<tr><td class=\"card-text\">";
-                            echo "&bull;".$course['naam']." (id: ".$course['naam']. ") ";
-                            // echo " adduser -b ".$course['id']." -s ".$model['student_nr'];
-                            // echo "<br>";
-                            // echo "/canvas-update/add-user?courseId=".$course['id']."&userId=".$model['id'];
-                            // echo "<br>";
-                            echo "</td><td><small>";
-                            echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
-                            echo "</small></td></tr>";
+            <?php if ( $model->student_nr>0) { ?>
+                <div class="card" style="width: 24rem;">
+                    <div class="card-body">
+                    <h5 class="card-title">Courses open for this student</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
+                    
+                    <?php
+                        if (isset($openCourses) && count($openCourses) ) {
+                            echo "<table>";
+                            foreach($openCourses as $course) {
+                                echo "<tr><td class=\"card-text\">";
+                                echo "&bull;".$course['naam']." (id: ".$course['naam']. ") ";
+                                echo "</td><td><small>";
+                                echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
+                                echo "</small></td></tr>";
+                            }
+                            echo "</table>";
+                        } else {
+                            echo "None";
                         }
-                        echo "</table>";
-                    } else {
-                        echo "None";
-                    }
-                ?>
+                    ?>
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
 
         </td>
 
@@ -85,7 +82,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
         <td>
             <div class="row">
                 <div class="col-sm-3">
-                    <?= $form->field($model, 'student_nr')->textInput() ?>
+                    <?= $form->field($model, 'student_nr')->textInput()->label('Studentennummer (0 indien docent)') ?>
                 </div>
                 <div class="col-sm-7">
                     <?= $form->field($model, 'login_id')->textInput(['maxlength' => true]) ?>
