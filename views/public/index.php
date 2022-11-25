@@ -203,9 +203,15 @@
     <details>
         <summary>Disclaimer/footer</summary>
         <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
-        <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 2.11.25 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
 
-        <p>flip <?=$link?></p>
+        <p>flip <?=$link?> </p>
+        <?php if (! Yii::$app->user->isGuest ) { ?>
+            <ul>
+                <li><a href="https://talnet.educus.nl/app/deelnemer/Deelnemerkaart/<?=$data[0]['student_nummer']?>">Eduarte (indien toegang)</a></li>
+                <li><a href="https://talnet.educus.nl/app/deelnemer/Maandoverzicht/<?=$data[0]['student_nummer']?>">Absentie maandoverzicht (indien toegang)</a></li>
+            </ul>
+        <?php } ?>
     </details>
 </small>
 

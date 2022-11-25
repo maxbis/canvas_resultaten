@@ -79,6 +79,7 @@ echo Nav::widget([
 
         [
             'label' => 'Presentie',
+            // && $this->context->route == 'resultaat/start' 
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
                 ['label' => 'Overzicht vandaag',        'url' => ['/report/today-overzicht']],

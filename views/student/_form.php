@@ -17,116 +17,127 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
     <?php $form = ActiveForm::begin(); ?>
 
     <table border=0 style="width:1200px;">
-    <tr>
+        <tr>
 
-        <td>
-            <div class="row">
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'klas')->textInput(['maxlength' => true]) ?>
-                </div>
-                <div class="col-sm-7">
-                    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Naam') ?>
-                </div>
-            </div>
-        </td>
-
-        <td rowspan=3 style="vertical-align: top;">
-            <?php if ( $model->student_nr>0) { ?>
-                <div class="card" style="width: 24rem;">
-                    <div class="card-body">
-                    <h5 class="card-title">Courses open for this student</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
-                    
-                    <?php
-                        if (isset($openCourses) && count($openCourses) ) {
-                            echo "<table>";
-                            foreach($openCourses as $course) {
-                                echo "<tr><td class=\"card-text\">";
-                                echo "&bull;".$course['naam']." (id: ".$course['naam']. ") ";
-                                echo "</td><td><small>";
-                                echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
-                                echo "</small></td></tr>";
-                            }
-                            echo "</table>";
-                        } else {
-                            echo "None";
-                        }
-                    ?>
+            <td>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?= $form->field($model, 'klas')->textInput(['maxlength' => true]) ?>
+                    </div>
+                    <div class="col-sm-7">
+                        <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Naam') ?>
                     </div>
                 </div>
-            <?php } ?>
+            </td>
 
-        </td>
+            <td rowspan=3 style="vertical-align: top;">
+                <?php if ( $model->student_nr>0) { ?>
+                    <div class="card" style="width: 24rem;">
+                        <div class="card-body">
+                        <h5 class="card-title">Courses open for this student</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
+                        
+                        <?php
+                            if (isset($openCourses) && count($openCourses) ) {
+                                echo "<table>";
+                                foreach($openCourses as $course) {
+                                    echo "<tr><td class=\"card-text\">";
+                                    echo "&bull;".$course['naam']." (id: ".$course['naam']. ") ";
+                                    echo "</td><td><small>";
+                                    echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
+                                    echo "</small></td></tr>";
+                                }
+                                echo "</table>";
+                            } else {
+                                echo "None";
+                            }
+                        ?>
+                        </div>
+                    </div>
+                <?php } ?>
 
-    </tr></tr>
-    
-        <td>
-            <div class="row">
-                <div class="col-sm-3">
-                    <?php
-                        if ( isset($model['id']) && $model['id'] > 10 ) {
-                            echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> true])->label('Canvas ID');
-                        } else {
-                            echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> false])->label('Canvas ID');
-                        }
-                    ?>
+            </td>
+
+        </tr>
+
+        <tr>
+        
+            <td>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?php
+                            if ( isset($model['id']) && $model['id'] > 10 ) {
+                                echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> true])->label('Canvas ID');
+                            } else {
+                                echo $form->field($model, 'id')->textInput(['maxlength' => true,'readonly'=> false])->label('Canvas ID');
+                            }
+                        ?>
+                    </div>
+                    <div class="col-sm-7">
+                        <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> true])->label('Code voor student om zijn pagina te bekijken') ?>
+                    </div>
                 </div>
-                <div class="col-sm-7">
-                    <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> true])->label('Code voor student om zijn pagina te bekijken') ?>
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?= $form->field($model, 'student_nr')->textInput()->label('Studentennummer (0 indien docent)') ?>
+                    </div>
+                    <div class="col-sm-7">
+                        <?= $form->field($model, 'login_id')->textInput(['maxlength' => true]) ?>
+                    </div>
                 </div>
-            </div>
-        </td>
+            </td>
 
-    </tr></tr>
+        </tr>
 
-        <td>
-            <div class="row">
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'student_nr')->textInput()->label('Studentennummer (0 indien docent)') ?>
+        <tr>
+
+            <td>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?= $form->field($model,'grade')->dropDownList( array('0' => 'inactief','1' => 'actief'),array('grade' => array('1' => array('selected' => true)))) ->label('Nakijken') ?> 
+                    </div>
                 </div>
-                <div class="col-sm-7">
-                    <?= $form->field($model, 'login_id')->textInput(['maxlength' => true]) ?>
+
+            </td>
+
+            <td></td>
+
+        </tr>
+
+        <tr>
+
+            <td colspan=2>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <?= $form->field($model, 'comment')->textInput(['maxlength' => true])->label('Aantekening (alleen zichtbaar voor docenten)') ?>
+                        <?= $form->field($model, 'message')->textInput(['maxlength' => true])->label('Boodschap (zichtbaar voor studenten)') ?>
+                    </div>
                 </div>
-            </div>
-        </td>
+            </td>
 
-    </tr><tr>
+        </tr>
 
-        <td>
+        <tr>
 
-            <div class="row">
-                <div class="col-sm-3">
-                    <?= $form->field($model,'grade')->dropDownList( array('0' => 'inactief','1' => 'actief'),array('grade' => array('1' => array('selected' => true)))) ->label('Nakijken') ?> 
+            <td colspan=2 style="text-align: left;" >
+                <div class="form-group">
+                    <br>
+                    <?= Html::a( 'Cancel', Yii::$app->request->referrer , ['class'=>'btn btn-primary']); ?>
+                    &nbsp;&nbsp;&nbsp;
+                    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
                 </div>
-            </div>
+            </td>
 
-        </td>
+        </tr>
 
-        <td></td>
-
-    </tr></tr>
-
-        <td colspan=2>
-            <div class="row">
-                <div class="col-sm-10">
-                    <?= $form->field($model, 'comment')->textInput(['maxlength' => true])->label('Aantekening (alleen zichtbaar voor docenten)') ?>
-                    <?= $form->field($model, 'message')->textInput(['maxlength' => true])->label('Boodschap (zichtbaar voor studenten)') ?>
-                </div>
-            </div>
-        </td>
-
-    </tr></tr>
-
-        <td colspan=2 style="text-align: left;" >
-            <div class="form-group">
-                <br>
-                <?= Html::a( 'Cancel', Yii::$app->request->referrer , ['class'=>'btn btn-primary']); ?>
-                &nbsp;&nbsp;&nbsp;
-                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-            </div>
-        </td>
-
-    </tr>
     </table>
 
     <?php ActiveForm::end(); ?>
