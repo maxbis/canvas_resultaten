@@ -46,7 +46,7 @@ if ($minSubmitted) { // min. number of submissions over last threee weeks (not s
 
             </h3>
             
-            <!-- make message editable if user is logged in, jQuery in index.php will perform Ajax call -->
+            <!-- make message editable if user is logged in, jQuery in index.php will perform Ajax call (switched of by '|| true') -->
             <?php if ( Yii::$app->user->isGuest || true ) $addEditable="false"; else $addEditable="true"; ?>
             <span style="font-style: italic;" class="editable" contentEditable="<?=$addEditable?>" id="<?=$data[0]['student_id']?>"><?= $data[0]['Message'];?></span><br/>
 
