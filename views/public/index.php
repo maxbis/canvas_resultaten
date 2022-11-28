@@ -208,8 +208,8 @@
         <p>flip <?=$link?> </p>
         <?php if (! Yii::$app->user->isGuest ) { ?>
             <ul>
-                <li><a href="https://talnet.educus.nl/app/deelnemer/Deelnemerkaart/<?=$data[0]['student_nummer']?>">Eduarte (indien toegang)</a></li>
-                <li><a href="https://talnet.educus.nl/app/deelnemer/Maandoverzicht/<?=$data[0]['student_nummer']?>">Absentie maandoverzicht (indien toegang)</a></li>
+                <li><a href="https://talnet.educus.nl/app/deelnemer/Deelnemerkaart/<?=$data[0]['student_nummer']?>" target="_blank">Eduarte (indien toegang)</a></li>
+                <li><a href="https://talnet.educus.nl/app/deelnemer/Maandoverzicht/<?=$data[0]['student_nummer']?>" target="_blank">Absentie maandoverzicht (indien toegang)</a></li>
             </ul>
         <?php } ?>
     </details>

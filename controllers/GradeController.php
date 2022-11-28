@@ -60,7 +60,9 @@ class GradeController extends QueryBaseController
             sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',
             sum(1) '+Totaal',
             concat(max(datediff(now(), submitted_at)), ' dagen') '${nHide}Oudste',
-            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|show_processing|1|') '$hide!Canvas update',
+            -- timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
+            concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',m.id,'|show_processing|1|') '$hide!Update',
+            -- concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Update',
             ''
         FROM assignment a
         left outer join submission s on s.assignment_id= a.id and s.submitted_at > s.graded_at
@@ -68,6 +70,7 @@ class GradeController extends QueryBaseController
         join course c on c.id=a.course_id
         join module_def m on m.id = a.assignment_group_id
         join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+        join assignment_group g on g.id=m.id
             
         group by 1, 2, 3, 8
         order by m.pos";
@@ -103,7 +106,7 @@ class GradeController extends QueryBaseController
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
             'descr' => 'Cohort '.Yii::$app->params['subDomain'],
-            'width' => [20,60,350,60,60,100,100],
+            'width' => [20,60,350,60,60,150,100,100],
         ]);
     }
 
