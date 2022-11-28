@@ -266,6 +266,7 @@ class ReportController extends QueryBaseController
             WHERE r.voldaan != 'V'
             AND r.module_pos < 100
             AND u.code is not null
+            and u.klas <> 0
             ".$this->getKlas($klas)."
             group by 1,2
             order by 4 Desc, 3 desc
@@ -810,6 +811,7 @@ class ReportController extends QueryBaseController
             join user u on u.id = s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where s.submitted_at <> '1970-01-01 00:00:00'
+            and s.workflow_state='graded'
             ".$this->getKlas($klas)."
             group by 1,2
             order by 3 desc

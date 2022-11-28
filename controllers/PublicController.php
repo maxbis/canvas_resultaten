@@ -112,6 +112,7 @@ class PublicController extends Controller
             join user u on u.id = s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where s.submitted_at <> '1970-01-01 00:00:00'
+            and s.workflow_state='graded'
             and u.code='$code'
             and datediff(curdate(),submitted_at) <= 42
             and a.points_possible = s.entered_score
