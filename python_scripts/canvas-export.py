@@ -13,6 +13,7 @@ import argparse
 import os
 import time
 
+
 class CanvasClient(object):
     # dleay 1 second between polling the API
     POLL_DELAY = 1
