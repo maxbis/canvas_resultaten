@@ -95,7 +95,7 @@ class ReportController extends QueryBaseController
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
-            where u.klas <> 0
+            where u.klas <> '0'
             ".$this->getKlas($klas)."
             group by 2,3,4
             order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
@@ -266,7 +266,7 @@ class ReportController extends QueryBaseController
             WHERE r.voldaan != 'V'
             AND r.module_pos < 100
             AND u.code is not null
-            AND u.klas <> 0
+            AND u.klas <> '0'
             ".$this->getKlas($klas)."
             group by 1,2
             order by 4 Desc, 3 desc
