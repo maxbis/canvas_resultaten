@@ -64,6 +64,12 @@ class QueryBaseController extends Controller
         if ($result = Yii::$app->db->createCommand($sql)->queryAll()) {
             $data['col'] = array_keys($result[0]);
             $data['row'] = $result;
+        } else {
+            echo "<h2>oops, the query returned an empty result>/h2>";
+            echo "<br><hr>";
+            echo "<pre>$sql/pre>";
+            echo "<hr>";
+            exit;
         }
 
         if ($export) {

@@ -20,7 +20,7 @@ $subDomain=Yii::$app->params['subDomain'];
         text-align: center;
         cursor: pointer;
         color: #404040;
-        font-weight: 400px;
+        font-weight: 400;
         background-color: #f8f9fa;
         border: solid 1px;
         border-color: #d0d0d0;
@@ -56,6 +56,11 @@ $subDomain=Yii::$app->params['subDomain'];
     }
     h5 {
         color:#606060;
+    }
+    th, .sub {
+        font-weight: 400;
+        font-size: 0.8em;
+        color:#999;
     }
 </style>
 
@@ -103,7 +108,7 @@ $subDomain=Yii::$app->params['subDomain'];
                             </tr>
                         </table>
                         <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
-                        <div style="color:#999;font-size:0.8em;">Type een deel van de voor- of achternaam</div>
+                        <div class="sub">Type een deel van de voor- of achternaam</div>
                 </div>
 
                 <?php

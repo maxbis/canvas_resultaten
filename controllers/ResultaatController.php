@@ -110,7 +110,8 @@ class ResultaatController extends Controller
                 m.pos,
                 m.naam,
                 m.id,
-                sum(1) aantal
+                sum(1) aantal,
+                max(datediff(now(), submitted_at)) oudste
             FROM assignment a
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -121,16 +122,19 @@ class ResultaatController extends Controller
          order by 1";
         $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
 
-        $html="";
+        $html="<tr><th></th><th>module</th><th>aantal</th><th>oudste</th></tr>";
         $prev="";
         foreach($nakijken as $item) {
-            $html .= "<tr><td>&nbsp;</td>";
+            $html .= "<tr>";
+            $html .= "<td>&nbsp;</td>";
 
             $html .= "<td>";
             $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id']] );
             $html .= "</td>";
             
             $html .= "<td>".$item['aantal']."</td>";
+
+            $html .= "<td>(".$item['oudste'].")</td>";
 
             $html .= "</tr>";
         }

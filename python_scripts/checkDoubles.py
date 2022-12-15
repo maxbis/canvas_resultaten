@@ -80,12 +80,11 @@ def checkAssignment(assignment):
                 extentions.append( thisExtention )
                 
                 thisHash=0
-                if ( thisExtention in ['.php','.html','.txt', '.sql','.pdf','.png','.jpg','.jpeg'] and att.size > 250):
+                if ( thisExtention in ['.php','.html','.txt', '.sql','.pdf','.png','.jpg','.jpeg','.js'] and att.size > 500):
                     thisHash = att.size
-
-                # if ( att.thisExtention in ['php','html','txt', 'sql'] and att.size>200):
-                #     page = requests.get(att.url)
-                #     thisHash = (hash(page.text))
+                if ( thisExtention in ['.php','.html','.txt', '.sql','.png'] and att.size > 200):
+                    page = requests.get(att.url)
+                    thisHash = (hash(page.text))
 
                 if (thisHash != 0):
                     checked+=1
@@ -94,22 +93,22 @@ def checkAssignment(assignment):
                         attachment1 = att.display_name
                         user2 = canvas.get_user( allHashes[thisHash].split()[0] ).name
                         attachment2 = allHashes[thisHash].split()[1]
-                        double = (" *** double  *** %s %s and %s %s" % (user1, attachment1, user2, attachment2))
+                        double = (" *** double  *** %s %s and %s %s (size: %s bytes)" % (user1, attachment1, user2, attachment2, att.size))
                     else:
                         allHashes[thisHash] = str(submission.user_id) + " "+att.display_name
                         if ( double == ""):
                             double="OK"
 
         print("%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days ,submission.workflow_state, double))
-
+    print()
 
 # check blok id
-# course = canvas.get_course(6586)
+course = canvas.get_course(6586)
 # course = canvas.get_course(6580) # blok 2 c22
 # course = canvas.get_course(4999) # blok 6 c21
 # course = canvas.get_course(6586) # blok 9/10 c21
 
-course = canvas.get_course(6580) # blok 3 c22
+# course = canvas.get_course(6580) # blok 3 c22
 
 
 print(course.name)
@@ -120,7 +119,8 @@ print(course.name)
 assignments = course.get_assignments()
 
 for assignment in assignments:
-    # print(assignment.id)
+    print(assignment.id, assignment.name)
+    # if ( assignment.name.lower().find('functies') >= 0 ):
     checkAssignment(assignment)
 
 

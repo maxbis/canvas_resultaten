@@ -272,7 +272,7 @@ class ReportController extends QueryBaseController
             order by 4 Desc, 3 desc
         ";
 
-        $data = parent::executeQuery($sql, "Ranking Dev" . $klas, $export);
+        $data = parent::executeQuery($sql, "Ranking Dev " . $klas, $export);
 
         return $this->render('output', [
             'data' => $data,
