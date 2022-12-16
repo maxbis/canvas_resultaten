@@ -68,7 +68,9 @@ class QueryBaseController extends Controller
             echo "<h2>oops, the query returned an empty result</h2>";
             echo "<br><hr>";
             echo "<pre>$sql";
+            echo "<hr>";
             echo "controller: ".Yii::$app->controller->id;
+            echo "<br>";
             echo "action: ".Yii::$app->controller->action->id;
             echo "</pre>";
             echo "<hr>";
