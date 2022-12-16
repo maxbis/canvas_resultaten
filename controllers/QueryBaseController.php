@@ -65,9 +65,9 @@ class QueryBaseController extends Controller
             $data['col'] = array_keys($result[0]);
             $data['row'] = $result;
         } else {
-            echo "<h2>oops, the query returned an empty result>/h2>";
+            echo "<h2>oops, the query returned an empty result</h2>";
             echo "<br><hr>";
-            echo "<pre>$sql/pre>";
+            echo "<pre>$sql</pre>";
             echo "<hr>";
             exit;
         }
