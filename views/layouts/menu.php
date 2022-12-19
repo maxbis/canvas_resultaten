@@ -32,7 +32,7 @@ array_push($myKlassenMenu, $item);
 
 NavBar::begin([
     'brandLabel' => $title,
-    'brandUrl' => Yii::$app->homeUrl,
+    'brandUrl' =>   '/resultaat/rotate',
     'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp&nbsp&nbsp'.$title,
     'options' => [
         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',

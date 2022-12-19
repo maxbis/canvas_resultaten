@@ -28,7 +28,7 @@ def setAttempts(course):
     assignments = course.get_assignments()
     for assignment in assignments:
         print("\nAssignemnt: %s (%s) %s" % (assignment.name, assignment.id, assignment.allowed_attempts) )
-        assignment.update( assignment = { 'allowed_attempts' : 6 } )
+        assignment.edit( assignment = { 'allowed_attempts' : 6 } )
 
 
         

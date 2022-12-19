@@ -105,6 +105,22 @@ class ResultaatController extends Controller
 
     }
 
+    public function actionRotate() {
+        $actualLink = strtolower('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+
+        if (str_contains($actualLink, 'c22')) { 
+            $newUrl=str_replace("c22","c21",$actualLink);
+        }
+        if (str_contains($actualLink, 'c21')) { 
+            $newUrl=str_replace("c21","c20",$actualLink);
+        }
+        if (str_contains($actualLink, 'c20')) { 
+            $newUrl=str_replace("c20","c22",$actualLink);
+        }
+
+        $this->redirect($newUrl);
+    }
+
     public function actionAjaxNakijken() {
         $sql="select
                 m.pos,
