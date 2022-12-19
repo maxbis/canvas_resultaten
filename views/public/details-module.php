@@ -50,6 +50,15 @@ function getStatus($status)
     .hoverTable tr:hover td {
             background-color: #f6f6ff;
     }
+    a:hover {
+        background: yellow;
+    }
+
+    .button {
+        box-shadow: 0 0 6px #ff3d61;
+    }
+
+    
 
 
 </style>
@@ -60,6 +69,10 @@ function getStatus($status)
         <div class="row  align-items-center">
             <div class="col">
                 <h2>Module <i><?= $data[0]['module'] ?></i> van <?= $data[0]['naam'] ?></h2>
+            </div>
+
+            <div class="col-md-auto">
+                <a target=_blank class="button btn btn-outline-danger btn-sm" title="Naar Module" href="https://talnet.instructure.com/courses/<?=$data[0]['course_id'];?>">Naar module &#129062;</a>
             </div>
 
             <div class="col-md-auto">
@@ -101,7 +114,7 @@ function getStatus($status)
                 echo "<tr>";
 
                 echo "<td>";
-                echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"";
+                echo "<a target=_blank title=\"Naar opdracht\" href=\"";
                 echo $link1;
                 echo "\">" . $item['Opdrachtnaam'] . "</a>";
                 echo "</td>";
