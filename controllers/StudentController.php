@@ -182,6 +182,7 @@ class StudentController extends Controller
         $data = Yii::$app->request->post();
         $id=$data['id'];
         $message=$data['message'];
+        $message = trim(preg_replace('/\s\s+/', ' ', $message)); // filter multi spaces and tabs and the like
         // function set message
         $sql="update user set message=:message where id = :id;";
         $params = [':id'=>$id, ':message'=>$message,];

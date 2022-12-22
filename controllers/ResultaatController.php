@@ -106,6 +106,14 @@ class ResultaatController extends Controller
     }
 
     public function actionRotate() {
+        # $controller = Yii::$app->controller->id; 
+        # $action = Yii::$app->controller->action->id;
+
+        if ( str_contains($_SERVER['HTTP_REFERER'], 'resultaat/start') == false ) {
+            $this->redirect(Yii::$app->homeUrl);
+            return;
+        }
+
         $actualLink = strtolower('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 
         if (str_contains($actualLink, 'c22')) { 
@@ -119,6 +127,7 @@ class ResultaatController extends Controller
         }
 
         $this->redirect($newUrl);
+        return;
     }
 
     public function actionAjaxNakijken() {

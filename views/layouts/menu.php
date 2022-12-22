@@ -36,6 +36,7 @@ NavBar::begin([
     'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp&nbsp&nbsp'.$title,
     'options' => [
         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+        'title' => 'vorig Cohort'
     ],
 ]);
 
