@@ -80,6 +80,13 @@ function getStatus($status)
             </div>
 
         </div>
+
+        <div class="row  align-items-left">
+            <div class="col-md-auto">
+                <i style="color: #ab5e5e">Om de volledige module met <b>alle uitleg</b> te raadplegen, druk op de rode knop rechtsboven 'Naar module'.</i>
+            </div>
+        </div>
+
     </div>
 
     <div class="card-body">
