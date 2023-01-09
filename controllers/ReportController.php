@@ -1029,7 +1029,7 @@ class ReportController extends QueryBaseController
 
     public function actionOpdrachtenModule($id, $export=false){
         $sql = "
-            select c.naam 'cursus_naam',
+            select c.id 'course_id', c.naam 'cursus_naam',
                 korte_naam '#Blok',
                 concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
                 a.points_possible '+Punten', ''
@@ -1041,16 +1041,20 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
+        $data['show_from']=2;
         $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
-        $data['show_from']=1;
-        if (isset($data['row'][0]['cursus_naam']) )  $data['title']=$data['row'][0]['cursus_naam'];
+       
+        if (isset($data['row'][0]['cursus_naam']) )  {
+            $data['title']=$data['row'][0]['cursus_naam'];
+            $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/".$data['row'][0]['course_id']."\">Naar module &#129062;</a>";
+        }
 
         return $this->render('output', [
             'data' => $data,
             'action' => Yii::$app->controller->action->id."?",
             'lastLine' => $lastLine,
             'descr' => 'Opdrachten en punten voor dit blok',
-            'width' => [80,80,600,80],
+            'width' => [0,0,80,600,80],
         ]);
     }
 

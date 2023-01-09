@@ -84,6 +84,7 @@ class PublicController extends Controller
             inner join user u on u.id = s.user_id
             and u.code='$code'
             and s.submitted_at > '1970-01-01 00:00:00'
+            and datediff(curdate(),submitted_at) <= 100
             group by 1,2
         ";
         $result = Yii::$app->db->createCommand($sql)->queryAll();

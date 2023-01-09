@@ -29,18 +29,15 @@ def setAttempts(course):
     for assignment in assignments:
         print("\nAssignemnt: %s (%s) %s" % (assignment.name, assignment.id, assignment.allowed_attempts) )
         assignment.edit( assignment = { 'allowed_attempts' : 6 } )
+        print(" - allowed attempts changed in %s" % (assignment.allowed_attempts) )
 
+# c22 blok 1 t/m 8
+# 7757 6579 6580 6581 6582 6585 7760 7761
 
-        
-# check blok id
-course = canvas.get_course(7757)
-# course = canvas.get_course(6580) # blok 2 c22
-# course = canvas.get_course(4999) # blok 6 c21
-# course = canvas.get_course(6586) # blok 9/10 c21
+# c21 blok 2 t/m 10 (nog niet gedaan)
+# 2110 3237 3238 3239 4999 5429 6450 6586
 
-# course = canvas.get_course(6580) # blok 3 c22
-
-course = canvas.get_course(7757)
+course = canvas.get_course(7761)
 setAttempts(course)
 
 

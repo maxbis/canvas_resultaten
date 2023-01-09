@@ -68,6 +68,7 @@ $tot = [];
                     }
                 ?>
             </div>
+
         </div>
     </div>
 
@@ -192,6 +193,7 @@ $tot = [];
         </table>
 
     <?php if ( isset($lastLine) ) echo $lastLine; ?>
+
 
     </div>
 </div>
