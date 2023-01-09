@@ -1007,7 +1007,10 @@ class ReportController extends QueryBaseController
 
     public function actionAantalOpdrachten($export=false){
         $sql = "
-            select c.korte_naam '#Blok', m.pos 'Pos', c.naam 'Naam',
+            select
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.korte_naam,' &#129062;</a>') '#Blok',
+            m.pos 'Pos',
+            c.naam 'Naam',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
             sum(1) '+aantal'
             from module_def m
