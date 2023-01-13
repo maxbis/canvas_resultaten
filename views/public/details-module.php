@@ -118,15 +118,26 @@ function getStatus($status)
                 }
                 $link1 = substr($item['Link'], 0, strpos($item['Link'], "submissions")); // changed "?" into "submissions", get valid link for students (?)
                 $link2 = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['a_id'] . "&student_id=" . $item['u_id'];
-                echo "<tr>";
+               
+                if ( $item['a_id'] == "" ) {
+                    echo "<tr>";
+                    echo "<td>";
+                    echo "<a target=_blank title=\"Naar uitleg\" href=\"";
+                    echo $item['html_url'];
+                    echo "\">" . $item['title'] . "</a>";
+                    echo "</td>";
+                    echo "<td></td>";
+                } else {
+                    echo "<tr>";
+                    echo "<td>";
+                    echo "<a target=_blank title=\"Naar opdracht\" href=\"";
+                    echo $link1;
+                    echo "\">" . $item['Opdrachtnaam'] . "</a>";
+                    echo "</td>";
+                    echo "<td>" . getStatus($item['Status']) . "</td>";
+                }
 
-                echo "<td>";
-                echo "<a target=_blank title=\"Naar opdracht\" href=\"";
-                echo $link1;
-                echo "\">" . $item['Opdrachtnaam'] . "</a>";
-                echo "</td>";
-
-                echo "<td>" . getStatus($item['Status']) . "</td>";
+                
 
                 if ($item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] != "") {
                     echo "<td style=\"background:#f6fce6;\">" . strtok($item['Ingeleverd'], " ") . "</td>";
@@ -162,7 +173,7 @@ function getStatus($status)
                 } else {
                     $style = "none";
                 }
-                if ((isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin')) {
+                if ((isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin') && $item['a_id'] != "") {
                     echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='" . $style . "'\" style=\"background:" . $style . ";\" title=\"Speedgrader\" href=\"";
                     echo $link2;
                     echo "\">Grade&#10142;</a>";

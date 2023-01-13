@@ -79,7 +79,7 @@ use yii\helpers\Html;
                 }
 
                 if( ! isMobileDevice() ){
-                    echo "<td>".Html::a($item['Module'], ['/public/details-module', 'moduleId' => $item['module_id'], 'code' => $item['Code']])."</td>";
+                    echo "<td>".Html::a($item['Module'], ['/public/details-module', 'assGroupId' => $item['module_id'], 'code' => $item['Code']])."</td>";
                     echo "<td class=\"tright bleft\">" . $item['Opdrachten'] . "</td>";
                     echo "<td class=\"tright bright\">" . $item['Opdrachten %'] . "%</td>";
                     echo "<td class=\"tright bleft\">" . $item['Punten'] . "</td>";

@@ -760,7 +760,6 @@ class ReportController extends QueryBaseController
         from course c
         left outer join resultaat r on c.id=r.course_id
         left outer join module_def d on r.module_id=d.id
-        where substr(r.module,1,1) != '!' 
         order by c.pos, d.pos
         ";
 
@@ -1061,6 +1060,37 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionTest() {
+        $assGroupId="8131";
+        $code="879906e1182be0feb8066e270443988b";
+
+        $sql="
+        SELECT mi.title, mi.html_url,
+		u.id u_id, a.id a_id, a.course_id, u.name naam, md.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
+        CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
+        s.entered_score Score,
+        a.points_possible MaxScore,
+        s.attempt Poging,
+        CASE s.graded_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.graded_at END Beoordeeld, r.name 'Door', s.preview_url Link,
+        md.voldaan_rule VoldaanRule
+        FROM module m
+        join module_items mi on mi.module_id=m.id
+        left outer join assignment a on a.id=mi.content_id
+        left outer join submission s on s.assignment_id= a.id
+        left join user u on u.id=s.user_id
+        left outer join user r on r.id=s.grader_id
+        left outer join module_def md on md.id = a.assignment_group_id
+        where mi.published=1
+        and ( a.assignment_group_id is null or (a.assignment_group_id=$assGroupId and  u.code='$code'))
+        order by m.position, mi.position
+        ";
+
+        $data = parent::executeQuery($sql, "Test", false);
+
+        return $this->render('output', [
+            'data' => $data,
+        ]);
+    }
 
 }
 
