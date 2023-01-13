@@ -749,17 +749,28 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    
     public function actionModules($export=false){
         $sql = "
-        select  distinct  c.korte_naam '#Korte Naam', c.naam 'Naam',
+        select  c.korte_naam '#Blok',
+                c.naam 'Naam',
+                count(r.id) 'Res',
                 concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
-                r.module_id 'Module ID',
-                case when d.naam is null then concat(r.module,'|/module-def/create|id|',r.module_id,'|name|',r.module) else concat(r.module,'|/module-def/update|id|',r.module_id) end '!Module Canvas-naam',
-                d.naam 'Module Monitor Naam',
+                a.id 'Module ID',
+                case when d.id is null then '&#10060;' else '&#10003;' end 'In CM',
+                case when d.naam is null then
+                    concat(a.name,'|/module-def/create|id|',a.id,'|name|',a.name)
+                else
+                    concat(d.naam,'|/module-def/update|id|',d.id)
+                end '!Module Canvas-naam',
+                -- d.naam 'Module Monitor Naam',
                 d.pos 'Positie'
         from course c
-        left outer join resultaat r on c.id=r.course_id
-        left outer join module_def d on r.module_id=d.id
+        join assignment_group a on c.id=a.course_id
+        left outer join module_def d on a.id=d.id
+        left outer join resultaat r on r.module_id=a.id
+        where substring(a.name,1,1) != '!'
+        group by 1,2,4,5,6,7,8
         order by c.pos, d.pos
         ";
 
@@ -769,6 +780,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
             'nocount' => true,
+            'width' => [50,160,60,80,80,60,200],
         ]);
     }
 
