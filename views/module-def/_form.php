@@ -34,11 +34,15 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-sm-4">
-           <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel (zie voorbeelden andere modules)') ?>
+           <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel') ?>
         </div>
     </div>
 
+    <br/>
+
     <?= $form->field($model, 'generiek')->checkbox() ?>
+
+    <br/>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -55,5 +59,40 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <br/><hr>
+    <table  class="table-sm text-muted small">
+        <tr>
+            <th colspan=2>SQL voldaan regels</th>
+        </tr>
+        <tr>
+            <td>punten</td>
+            <td> totaal aantal behaalde punten voor alle opdrachten.</td>
+        </tr>
+        <tr>
+            <td>punten_eo</td>
+            <td> totaal aantal behaalde punten voor alle eindopdrachten (=opdracht met woord <i>eind</i> in de naam van de opdracht).</td>
+        </tr>
+        <tr>
+            <td>ingeleverd</td>
+            <td> totaal aantal ingeleverde opdrachten.</td>
+        </tr>
+        <tr>
+            <td>ingeleverd_eo</td>
+            <td> totaal aantal ingeleverde eindopdrachten (=opdracht met woord <i>eind</i> in de naam van de opdracht).</td>
+        </tr>
+        <tr>
+            <td>minpunten</td>
+            <td> laagste score voor een opdracht uit deze module.</td>
+        </tr>
+        <tr>
+            <td>voorbeeld</td>
+            <td><i>punten > 90 and punten_eo > 20 and ingeleverd>=10 and minpunten >=1</i></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Totaal aantal punten moet meer dan 90 zijn en totaal aantal punten voor eidnopdrachten moet meer dan 20 zijn. Daarbij moeten alle 10 opdrachten zijn ingeleverd en voor elke opdracht minimaal 1 punt worden gescoord.</td>
+        </tr>
+    </table>
 
 </div>
