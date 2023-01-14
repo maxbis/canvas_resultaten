@@ -122,7 +122,7 @@ def getJsonData(url, courseId):
         # if urllib.error.HTTPError == 404:  <- werk niet nog uitzoeken
         print('Error: API does not return anything (key error, no access rights?)')
         print('URL: '+thisUrl)
-        return ''
+        return 'error'
 
     json_data = json.loads(page)
 
@@ -169,6 +169,10 @@ def validate_string(fieldName, val):
 
 def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     json_data = getJsonData(apiPath, courseId)
+
+    if json_data=='error':
+        log('API error, stopping import',0)
+        sys.exit(1)
 
     # ToDo check if data is returned else exit(1)
 
