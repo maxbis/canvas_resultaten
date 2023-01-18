@@ -207,7 +207,7 @@ class GradeController extends QueryBaseController
             SELECT
                 m.naam Module,
                 a.position '-pos',
-                concat(a.name,'|/public/details-module|moduleId|',m.id,'|code|',u.code) '!Opdracht',
+                concat(a.name,'|/public/details-module|assGroupId|',m.id,'|code|',u.code) '!Opdracht',
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 u.klas Klas,
                 substring(u.comment,1,3) 'Code',

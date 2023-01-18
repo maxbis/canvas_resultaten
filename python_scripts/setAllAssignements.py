@@ -34,10 +34,10 @@ def setAttempts(course):
 # c22 blok 1 t/m 8
 # 7757 6579 6580 6581 6582 6585 7760 7761
 
-# c21 blok 2 t/m 10 (nog niet gedaan)
-# 2110 3237 3238 3239 4999 5429 6450 6586
+# c21 blok 2 t/m 10 (gedaan)
+# 2110 3237 3238 3239 4999 5429 6450 
 
-course = canvas.get_course(7761)
+course = canvas.get_course(2110)
 setAttempts(course)
 
 
