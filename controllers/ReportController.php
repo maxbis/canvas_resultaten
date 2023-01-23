@@ -266,7 +266,7 @@ class ReportController extends QueryBaseController
             WHERE r.voldaan != 'V'
             AND r.module_pos < 100
             AND u.code is not null
-            AND u.klas <> '0'
+            AND length(u.klas) > 1
             ".$this->getKlas($klas)."
             group by 1,2
             order by 4 Desc, 3 desc
