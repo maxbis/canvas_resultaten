@@ -1041,6 +1041,39 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionAantalOpdrachten2($export=false){
+        $sql = "
+            select
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.korte_naam,' &#129062;</a>') '#Blok',
+            m.pos 'Pos',
+            c.naam 'Naam',
+            concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
+            sum(CASE WHEN u.id is null OR s.id is null THEN 0 ELSE 1 END) '+Nakijken',
+            max(datediff(now(), submitted_at)) 'Oudste',
+            concat( '&#8594|/grade/not-graded-module|moduleId|',m.id) '!Link'
+
+
+            from module_def m
+            left join assignment a on a.assignment_group_id = m.id
+            left join course c on c.id = a.course_id
+            left outer join submission s on s.assignment_id= a.id and s.submitted_at > s.graded_at
+            left join user u on u.id=s.user_id and u.grade=1
+            left join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+
+            group by 1,2,3
+            order by m.pos
+        ";
+
+        $data = parent::executeQuery($sql, "Module-overzicht", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Blok, modulenaam en aantal opdrachten per module',
+            'width' => [80,80,160,300],
+        ]);
+    }
+
     public function actionOpdrachtenModule($id, $export=false){
         $sql = "
             select c.id 'course_id', c.naam 'cursus_naam',
@@ -1101,6 +1134,28 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
+        ]);
+    }
+
+    public function actionStudentenLijst($export=false, $klas='') // menu 6.2 - Studentencodes (export)
+    { 
+        $sql = "SELECT  klas Klas,
+                        id '-Canvas Id',
+                        student_nr 'Student nr',
+                        name Naam,
+                        login_id '-email',
+                        code '-Code',
+                        comment Comment,
+                        message Message
+                FROM user u
+                where length(u.klas)>1 ".$this->getKlas($klas);
+
+        $data = parent::executeQuery($sql, "Studentenlijst", $export);
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => 'Studentenlijst (voor Export naar Excel)',
         ]);
     }
 

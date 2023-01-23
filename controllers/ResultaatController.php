@@ -141,7 +141,7 @@ class ResultaatController extends Controller
             left outer join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join module_def m on m.id = a.assignment_group_id
-            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
          group by 1,2,3
          order by 1";

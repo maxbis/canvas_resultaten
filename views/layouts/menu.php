@@ -118,7 +118,7 @@ echo Nav::widget([
             'visible' => (isset(Yii::$app->user->identity->username) && Yii::$app->user->identity->username == 'beheer'),
             'items' => [
                 ['label' => 'Studenten',                 'url' => ['/student']],
-                ['label' => 'Studenten (export)',        'url' => ['/query/studenten-lijst']],
+                ['label' => 'Studenten (export)',        'url' => ['/report/studenten-lijst']],
                 ['label' => 'Dev Voortgang (adviezen)',  'url' => ['/report/advies']],
                 ['label' => '----------------',],
                 ['label' => 'Cursus (Blok)',  'url' => ['/course']],
