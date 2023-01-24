@@ -32,7 +32,7 @@ class ModuleDef extends \yii\db\ActiveRecord
             [['id', 'pos', 'generiek'], 'integer'],
             [['naam'], 'string', 'max' => 80],
             [['voldaan_rule'], 'string', 'max' => 200],
-            [['id'], 'unique'],
+            [['id', 'pos'], 'unique'],
         ];
     }
 
