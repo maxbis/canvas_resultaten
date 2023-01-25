@@ -84,20 +84,21 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-            sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+            -- sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             u.student_nr '-student_nr',
             0 'Graph',
             $sum_column
-            sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end) '+Totaal'
+            sum(1) '+Totaal'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where u.klas <> '0'
             ".$this->getKlas($klas)."
-            group by 2,3,4
+            and datediff(curdate(),submitted_at)<81
+            group by 1,2,3,4
             order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
             limit 200
         ";
