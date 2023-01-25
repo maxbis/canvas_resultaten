@@ -117,6 +117,64 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionAantalActiviteiten2($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
+    { 
+        $weekNumber = date("W"); 
+
+        $weekNumbersArray=[];
+        for($i=21; $i>=0; $i--) {
+            $thisWeekNumber = $weekNumber - $i;
+            if ($thisWeekNumber<=0) {
+                $thisWeekNumber = $thisWeekNumber + 52; // if year has 53 weeks, week 53 will be added to week 52
+            }
+            array_push($weekNumbersArray, $thisWeekNumber);
+        }
+        //dd($weekNumbersArray);
+
+        $sum_column="";
+        $i=11;
+        foreach($weekNumbersArray as $thisWeek) {
+            $sum_column.="
+                sum(case when week(submitted_at,1)=$thisWeek then 1 else 0 end  ) '+$thisWeek',";
+            $i--;
+        }
+        // dd($sum_column);
+
+        $sql = "
+            select
+            -- sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
+            u.klas Klas,
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            u.student_nr '-student_nr',
+            0 'Graph',
+            $sum_column
+            sum(1) '+Totaal'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where u.klas <> '0'
+            ".$this->getKlas($klas)."
+            and datediff(curdate(),submitted_at)<365
+            group by 1,2,3,4
+            order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
+            limit 200
+        ";
+
+        // echo "<pre>";
+        // echo $sql;
+        // exit;
+
+        $data = parent::executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
+        $data['show_from']=1;
+
+        return $this->render('studentenActivity', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'descr' => '',
+        ]);
+    }
+
     public function actionAantalActiviteitenWeek($export = false, $klas= '') { 
 
         $weekday=['ma','di','wo','do','vr','za','zo'];
