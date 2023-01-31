@@ -136,7 +136,8 @@ class QueryBaseController extends Controller
         echo "\n";
         foreach ($data['row'] as $line) {
             foreach ($line as $key => $value) {
-                echo preg_replace('/[\s+,;]/', ' ', $value) . $seperator;
+                // echo preg_replace('/[\s+,;]/', ' ', $value) . $seperator;
+                echo  "\"". $value ."\"". $seperator;
             }
             echo "\n";
         }
