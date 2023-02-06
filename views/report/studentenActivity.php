@@ -76,7 +76,6 @@ if ($data['row']) {
                     <th></th>
                     <th colspan=1></th>
                     <th colspan=12>Weeknummers</th>
-                    <th colspan=1></th>
                 </tr>
                 <tr>
                 <th>#</th>
@@ -84,7 +83,8 @@ if ($data['row']) {
                     for ($i = $from; $i < count($data['col']); $i++) {
                         $columnName = $data['col'][$i];
                         $columnName = str_replace(array("#", "!","+"), '', $columnName);
-                        if (substr($columnName, 0, 1) != '-') {
+                        if (intval($columnName) > 0) $columnName = sprintf('%02d', $columnName);
+                        if (substr($columnName, 0, 1) != '-') { // ToDO sprintf('%02d', $columnName)
                             echo "<th>";
                             echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                             echo "</th>";
