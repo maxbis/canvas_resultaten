@@ -16,7 +16,7 @@ if ($subDomain=='c20'){
     $klassen=['0A','0C','0D'];
 }
 if ($subDomain=='c21'){
-    $klassen=['1B','1C','1D'];
+    $klassen=['1A','1B','1C','1D'];
 }
 if ($subDomain=='c22'){
     $klassen=['2B','2C','2D'];

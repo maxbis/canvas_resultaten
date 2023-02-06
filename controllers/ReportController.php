@@ -1091,7 +1091,8 @@ class ReportController extends QueryBaseController
             order by m.pos
         ";
 
-        $data = parent::executeQuery($sql, "Module-overzicht", $export);
+        // ToDo export goed wrong, this has to do with the filtering of an SQL statement
+        // $data = parent::executeQuery($sql, "Module-overzicht", $export);
 
         return $this->render('output', [
             'data' => $data,
