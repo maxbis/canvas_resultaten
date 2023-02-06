@@ -253,6 +253,7 @@ def createResultaat():
     cursor.execute(sql)
     con.commit()
 
+    log("Create aggregate into resultaat", 1)
     # Note Grader id < 0 are automatically graded assignments; where s.grader_id > 0
     sql = """
         INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
@@ -273,15 +274,15 @@ def createResultaat():
             max(submitted_at),
             max(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
             sum(1) aantal_opdrachten
+
         FROM assignment a
         join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
         join assignment_group g on g.id = a.assignment_group_id 
         left outer join module_def d on d.id=g.id
         WHERE u.klas is not null
         and published=1
-        group by 1, 2, 3, 4, 5, 6, 7
+        group by 1, 2, 3, 4, 5, 6, 7;
     """
-    log("Create aggregate into resultaat", 1)
     cursor.execute(sql)
     con.commit()
 
@@ -314,6 +315,26 @@ def calcRanking():
             where u.student_nr=r.student_nummer
             and d.generiek=0
         )"""
+    cursor.execute(sql)
+    con.commit()
+    sql="""
+        UPDATE resultaat t1
+        INNER JOIN ( SELECT r.student_nummer, module_id, round(sum( round(d.norm_uren*(r.punten*10/r.punten_max))  )/10) sum_norm_uren
+            FROM resultaat r
+            INNER JOIN module_def d ON d.id=module_id AND d.generiek=0
+            WHERE r.voldaan!='V'
+            GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
+        SET norm_uren = sum_norm_uren;
+    """
+    sql+="""
+        UPDATE resultaat t1
+        INNER JOIN ( SELECT r.student_nummer, module_id, sum( d.norm_uren) sum_norm_uren
+            FROM resultaat r
+            INNER JOIN module_def d ON d.id=module_id AND d.generiek=0
+            WHERE r.voldaan='V'
+            GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
+        SET norm_uren = sum_norm_uren;
+    """
     cursor.execute(sql)
     con.commit()
 

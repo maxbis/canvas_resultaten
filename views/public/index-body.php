@@ -8,6 +8,7 @@ use yii\helpers\Html;
             $totVoldaan = 0;
             $totOpdrachten = 0;
             $totPunten = 0;
+            $totNormuren = 0;
 
             // header of table
             echo "<tr>";
@@ -29,6 +30,7 @@ use yii\helpers\Html;
                 }
                 $totPunten += $item['Punten'];
                 $totOpdrachten += $item['Opdrachten'];
+                $totNormuren += $item['norm_uren'];
 
                 $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
                 if ($dagen <= 7) {
@@ -82,7 +84,7 @@ use yii\helpers\Html;
                     echo "<td>".Html::a($item['Module'], ['/public/details-module', 'assGroupId' => $item['module_id'], 'code' => $item['Code']])."</td>";
                     echo "<td class=\"tright bleft\">" . $item['Opdrachten'] . "</td>";
                     echo "<td class=\"tright bright\">" . $item['Opdrachten %'] . "%</td>";
-                    echo "<td class=\"tright bleft\">" . $item['Punten'] . "</td>";
+                    echo "<td class=\"tright bleft\" title=\"Behaalde normuren: ".$item['norm_uren']."\">" . $item['Punten'] . "</td>";
                     echo "<td class=\"tright bright\">" . $item['Punten %'] . "%</td>";
                     if (substr($item['Laatste Actief'], 0, 4) == "1970") {
                         echo "<td class=\"tcenter\"> - </td>";
@@ -101,12 +103,12 @@ use yii\helpers\Html;
             echo "<td colspan=2  title=\"Toaal aantal afgeronde modules\">" .$totVoldaan . "</td>";
             echo ($style=='standard') ?  "<td></td>" : "";
             if( ! isMobileDevice() ){
-                echo "<td class=\"tright grey\" title=\"Toaal aantal gemaakte opdrachten\">". $totOpdrachten ."</td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal gemaakte opdrachten\">". $totOpdrachten ."</td>";
                 echo "<td></td>";
-                echo "<td class=\"tright grey\" title=\"Toaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
                 echo "<td></td>";
-                echo "<td class=\"tright grey\" title=\"Deze score (=puntentotaal+100 per vinkje) bepaald jouw positie in het klassement\" class=\"tright\">";
-                echo "(score: ".$item['Ranking'].")";
+                echo "<td colspan=1 class=\"tright grey\" title=\"Score/Normuren\" class=\"tright\">";
+                echo "(".$item['Ranking']."/".$totNormuren.")";
                 echo "</td>";
             } else {
                 echo "<td colpsan=5></td>";

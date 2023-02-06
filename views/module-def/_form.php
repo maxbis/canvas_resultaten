@@ -34,6 +34,12 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-sm-4">
+           <?= $form->field($model, 'norm_uren')->textInput(['maxlength' => true])->label('Norm Uren') ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
            <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel') ?>
         </div>
     </div>

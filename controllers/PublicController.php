@@ -56,13 +56,14 @@ class PublicController extends Controller
                     u.message Message,
                     u.klas Klas,
                     d.Generiek,
-                    u.ranking_score Ranking
+                    u.ranking_score Ranking,
+                    r.norm_uren
                 FROM resultaat r
                 LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
                 INNER JOIN user u on u.student_nr=r.student_nummer
                 WHERE code='$code'
-                ORDER BY c.pos, d.pos
+                ORDER BY c.pos, d.pos;
             ";
 
 
@@ -190,6 +191,12 @@ class PublicController extends Controller
         // ";
 
         $data = Yii::$app->db->createCommand($sql)->queryAll();
+
+        if(! $data ){
+            return $this->render('error', [
+                'message' => "Oops, found an error in the database.<br/>Probably the import did not finsish correctly?",
+            ]);
+        }
 
         return $this->render('details-module', [
             'data' => $data,

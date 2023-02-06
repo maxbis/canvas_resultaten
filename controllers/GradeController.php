@@ -212,7 +212,8 @@ class GradeController extends QueryBaseController
                 u.klas Klas,
                 substring(u.comment,1,3) 'Code',
                 concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
-                s.attempt poging,
+                case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
+                -- s.attempt poging,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id
@@ -273,6 +274,7 @@ class GradeController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
+            'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
             'lastLine' => $lastLine,
         ]);
     }

@@ -108,7 +108,7 @@ course = canvas.get_course(6586)
 # course = canvas.get_course(4999) # blok 6 c21
 # course = canvas.get_course(6586) # blok 9/10 c21
 
-# course = canvas.get_course(6580) # blok 3 c22
+course = canvas.get_course(6580) # blok 3 c22
 
 
 print(course.name)
@@ -120,7 +120,7 @@ assignments = course.get_assignments()
 
 for assignment in assignments:
     print(assignment.id, assignment.name)
-    # if ( assignment.name.lower().find('functies') >= 0 ):
-    checkAssignment(assignment)
+    if ( assignment.name.lower().find('SQL') >= 0 ):
+        checkAssignment(assignment)
 
 

@@ -29,7 +29,7 @@ class ModuleDef extends \yii\db\ActiveRecord
     {
         return [
             [['id', 'naam', 'pos', 'voldaan_rule'], 'required'],
-            [['id', 'pos', 'generiek'], 'integer'],
+            [['id', 'pos', 'generiek', 'norm_uren'], 'integer'],
             [['naam'], 'string', 'max' => 80],
             [['voldaan_rule'], 'string', 'max' => 200],
             [['id', 'pos'], 'unique'],
@@ -46,6 +46,7 @@ class ModuleDef extends \yii\db\ActiveRecord
             'naam' => 'Naam',
             'pos' => 'Pos',
             'voldaan_rule' => 'Voldaan Rule',
+            'norm_uren' => 'Norm Uren',
             'generiek' => 'Generiek',
         ];
     }
