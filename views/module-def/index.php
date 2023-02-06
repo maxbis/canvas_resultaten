@@ -37,6 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Pos',
                 'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
             ],
+            [  
+                'attribute' => 'norm_uren',
+                'label' => 'Normuren',
+                'contentOptions' => ['style' => 'width:40px; white-space: normal;'],
+            ],
             [   'attribute' => 'voldaan_rule',
                 'label' => 'Voldaan Rule',
                 'contentOptions' => ['style' => 'width:260px; white-space: normal;'],
