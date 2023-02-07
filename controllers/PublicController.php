@@ -63,7 +63,7 @@ class PublicController extends Controller
                 INNER JOIN module_def d on d.id=r.module_id
                 INNER JOIN user u on u.student_nr=r.student_nummer
                 WHERE code='$code'
-                AND c.korte_naam is not NULL
+                AND c.korte_naam is not NULL 
                 ORDER BY c.pos, d.pos;
             ";
 
