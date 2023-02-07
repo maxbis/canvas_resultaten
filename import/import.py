@@ -13,6 +13,9 @@ import sys
 from pprint import pprint
 from pymysql.constants import CLIENT
 from threading import Thread
+from datetime import datetime, timedelta
+
+DST_DATES={'2022':[27,30],'2023':[26,29],'2024':[31,27],'2025':[30,26],'2026':[29,25]}
 
 # Debug-dump and die
 def dd(arg):
@@ -142,8 +145,30 @@ def getJsonData(url, courseId):
 def slashJoin(*args):
     return "/".join(arg.strip("/") for arg in args)
 
-# do validation and checks before insert
+def convertDate(stringDate): # converts CET to CET and correct for DST
+    dstOffset=-1
+    datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ')
+    thisYear=datetimeObject.year
+    thisMonth=datetimeObject.month
+    thisDay=datetimeObject.day
+    dstOffset=-1
 
+    if ( str(thisYear) not in DST_DATES ):
+       log(' *** Year for DST not defined, take defautl offset (-1) ***', 1)
+    elif ( thisMonth>3 and thisMonth<10):
+        dstOffset=-2
+    elif (thisMonth==3 and thisDay>=DST_DATES[str(thisYear)][0]):
+        dstOffset=-2
+    elif (thisMonth==10 and thisDay<=DST_DATES[str(thisYear)][1]):
+        dstOffset=-2
+    else:
+        dstOffset=-1
+    
+    datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours=dstOffset)
+    return datetimeObject.strftime('%Y-%m-%d %H:%M:%S')
+
+
+# do validation and checks before insert
 def validate_string(fieldName, val):
     if val != None:
         if (type(val) is int or type(val) is float):
@@ -154,9 +179,9 @@ def validate_string(fieldName, val):
             else:
                 return('0')
         # string is like 2020-12-23T09:43:12Z ? remove trailing Z
-        elif(len(val) == 20 and val[10] == 'T' and val[19] == 'Z'):
-            # val[10]=' ' # Does this work with the old import method (full overwrite)
-            return val[:-1].replace('T', ' ')
+        elif(len(val) == 20 and val[10] == 'T' and val[19] == 'Z'): # e.g. 2023-01-09T08:18:54Z -> 2023-01-09 18:18:54
+            return convertDate(val)
+        
         else:
             # remove ' from strings and return string, ToDo make a proper fully escaped string
             return val.replace('\'', '')
@@ -530,8 +555,18 @@ def getUpdates(fieldList, courseId, canvasSubmissions, dbSubmissions, asName, th
     return sql
 
 
+### TEST ###
 
+# thisDate="2023-01-09T08:18:54Z";
+# print(thisDate, convertDate(thisDate))
 
+# thisDate="2023-03-26T08:18:54Z";
+# print(thisDate, convertDate(thisDate))
+
+# thisDate="2023-03-27T08:18:54Z";
+# print(thisDate, convertDate(thisDate))
+
+# sys.exit(0)
 
 #### MAIN ####
 
