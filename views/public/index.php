@@ -9,6 +9,7 @@
 
     $prevBlok="";
     $aggregatedData=[];
+
     foreach ($data as $item) {
         if ( $item['Blok']!=$prevBlok) {
             if ( $prevBlok!="" ) {
