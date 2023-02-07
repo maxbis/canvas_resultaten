@@ -59,11 +59,12 @@ class PublicController extends Controller
                     u.ranking_score Ranking,
                     r.norm_uren
                 FROM resultaat r
-                LEFT OUTER JOIN course c on c.id = r.course_id
+                -- LEFT OUTER JOIN course c on c.id = r.course_id
+                INNER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
                 INNER JOIN user u on u.student_nr=r.student_nummer
                 WHERE code='$code'
-                AND c.korte_naam is not NULL
+                -- AND c.korte_naam is not NULL
                 ORDER BY c.pos, d.pos;
             ";
 
