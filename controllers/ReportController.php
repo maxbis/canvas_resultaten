@@ -1091,12 +1091,11 @@ class ReportController extends QueryBaseController
             order by m.pos
         ";
 
-        // ToDo export goed wrong, this has to do with the filtering of an SQL statement
-        // $data = parent::executeQuery($sql, "Module-overzicht", $export);
+        $data = parent::executeQuery($sql, "Module-overzicht", $export);
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            // 'action' => Yii::$app->controller->action->id."?",
             'descr' => 'Blok, modulenaam en aantal opdrachten per module',
             'width' => [80,80,160,300],
         ]);
