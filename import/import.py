@@ -145,13 +145,12 @@ def getJsonData(url, courseId):
 def slashJoin(*args):
     return "/".join(arg.strip("/") for arg in args)
 
-def convertDate(stringDate): # converts CET to CET and correct for DST
+def convertDate(stringDate): # converts GMT to CET and correct for DST
     dstOffset=-1
     datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ')
     thisYear=datetimeObject.year
     thisMonth=datetimeObject.month
     thisDay=datetimeObject.day
-    dstOffset=-1
 
     if ( str(thisYear) not in DST_DATES ):
        log(' *** Year for DST not defined, take defautl offset (-1) ***', 1)
@@ -161,8 +160,6 @@ def convertDate(stringDate): # converts CET to CET and correct for DST
         dstOffset=-2
     elif (thisMonth==10 and thisDay<=DST_DATES[str(thisYear)][1]):
         dstOffset=-2
-    else:
-        dstOffset=-1
     
     datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours=dstOffset)
     return datetimeObject.strftime('%Y-%m-%d %H:%M:%S')
