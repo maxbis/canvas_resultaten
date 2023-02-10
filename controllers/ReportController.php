@@ -1083,7 +1083,8 @@ class ReportController extends QueryBaseController
             m.pos 'Pos',
             c.naam 'Naam',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
-            sum(1) '+aantal'
+            sum(1) '+Aantal',
+            norm_uren 'Normuren'
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
             left join course c on c.id = a.course_id
