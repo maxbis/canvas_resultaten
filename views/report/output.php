@@ -63,8 +63,14 @@ $tot = [];
             </div>
             <div class="col-md-auto">
                 <?php
-                    if ( isset($action)) {
-                        echo Html::a('Export', [$action . 'export=1'], ['class' => 'btn btn-primary', 'title' => 'Export to CSV',]);
+                    if ( isset($action[0]) ) {
+                        foreach($action as $thisAction) {
+                            echo "&nbsp;&nbsp;&nbsp;";
+                            echo Html::a($thisAction['name']??=strtok($thisAction['title']??='button name'," "), [$thisAction['link'] .'?'. $thisAction['param']??=''], ['class' => $thisAction['class']??='', 'title' => $thisAction['title']??='Title',]);
+                        }
+                    } elseif ( isset($action)) {
+                        // echo Html::a('Export', [$action . 'export=1'], ['class' => 'btn btn-primary', 'title' => 'Export to CSV',]);
+                        echo Html::a($action['name']??=strtok($action['title']??='button name'," "), [$action['link'] .'?'. $action['param']??=''], ['class' => $action['class']??='', 'title' => $action['title']??='Title',]);
                     }
                 ?>
             </div>

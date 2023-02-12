@@ -112,7 +112,7 @@ use yii\helpers\Url;
             <div class="col-md-auto">
                 <?php
                     if ( isset($action)) {
-                        echo Html::a('Export', [$action . 'export=1'], ['class' => 'btn btn-primary', 'title' => 'Export to CSV',]);
+                         echo Html::a('Export', [$action['link'] .'?'. $action['param']??=''], ['class' => $action['class']??='', 'title' => $action['title']??='Title',]);
                     }
                 ?>
             </div>

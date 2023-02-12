@@ -75,21 +75,6 @@ class GradeController extends QueryBaseController
         group by 1, 2, 3, 8
         order by m.pos";
 
-        // $sql = "SELECT
-        //     module_pos '-pos',
-        //     concat(module_name,'|/grade/not-graded-module|moduleId|',module_id) '!Module',
-        //     sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
-        //     sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
-        //     sum(1) '+Totaal',
-        //     concat('&#8634; Update','|/canvas-update/update-grading-status|moduleId|',module_id,'|show_processing|1|') '$hide!Canvas update',
-        //     ''
-        // FROM all_submissions
-        // WHERE graded_at < submitted_at
-        // AND grading_enabled=1
-        // AND cohort like '$subDomain'
-        // group by 1, 2, 6
-        // order by module_pos";
-
         $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
 
         
@@ -103,45 +88,10 @@ class GradeController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'lastLine' => $lastLine,
             'descr' => 'Cohort '.Yii::$app->params['subDomain'],
             'width' => [20,60,350,60,60,150,100,100],
-        ]);
-    }
-
-    public function actionNotGradedAll($export=false, $update=false) 
-    {
-        if ($update) {
-            $hide="";$nHide="-";
-        } else {
-            $hide="-";$nHide="";
-        }
-
-        $sql = "SELECT
-            module_pos '-pos',
-            concat(cohort,'|https://',cohort,'.cmon.ovh/grade/not-graded') '!#Cohort',
-            module_name 'Module',
-            sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
-            sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
-            sum(1) '+Totaal',
-            concat(max(datediff(now(), submitted_at)), ' dagen') 'Oudste',
-            ''
-        FROM all_submissions
-        
-        WHERE graded_at < submitted_at
-        AND grading_enabled=1
-        AND minpunten >= 0
-        group by 1, 2, 3
-        order by cohort DESC, module_pos";
-
-        $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
-
-        return $this->render('/report/output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Alle cohorten',
-            'width' => [20,60,320,60,60,200],
         ]);
     }
 
@@ -192,90 +142,10 @@ class GradeController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'lastLine' => $lastLine,
             'nocount' => true,
             'descr' => 'Dit is een beta feature. Update loopt via een snelle multi-threading PHP-Python koppeling en is afhankelijk van server instellingen.',
-        ]);
-    }
-
-    public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
-    {
-        //$this->actionUpdateModuleGrading($moduleId, $regrading);
-
-        $sql = "
-            SELECT
-                m.naam Module,
-                a.position '-pos',
-                concat(a.name,'|/public/details-module|assGroupId|',m.id,'|code|',u.code) '!Opdracht',
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                u.klas Klas,
-                substring(u.comment,1,3) 'Code',
-                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
-                case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
-                -- s.attempt poging,
-                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
-            FROM assignment a
-            join submission s on s.assignment_id= a.id
-            join user u on u.id=s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            join module_def m on m.id = g.id
-            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
-            where u.grade=1 and s.submitted_at > s.graded_at
-            and m.id=$moduleId
-            order by a.position, s.attempt, s.submitted_at
-        ";
-
-        $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
-
-        if (! isset($data['row']) ) {
-            return $this->render('/report/output', [
-                'data' => $data,
-            ]);
-        }
-
-        $data['title'].=" voor <i>".$data['row'][0]['Module']."</i>";
-        $data['show_from']=1;
-
-
-        // Create lastLineButton with buttons to open $pagesPerButton in one go
-        $lastLine= "<script>\n";
-        $count=0;
-        $pagesPerButton=10;
-        $buttons=[];
-
-        foreach ($data['row'] as $item) {
-            if ( $count%$pagesPerButton == 0) {
-                $lastLine.= "function openAllInNewTab".$count."() {\n";
-                array_push($buttons, $count);
-            }
-            // dd( explode('|',$item['!Link'])[1] );
-            $lastLine.= "window.open('". explode('|',$item['!Link'])[1] ."', '_blank');\n";
-            $count++;
-            if ( $count%$pagesPerButton == 0) {
-                $lastLine.= "}\n";
-            }
-        }
-        if ( $count%$pagesPerButton != 0) {
-            $lastLine.= "}\n";
-        }
-        $lastLine.= "</script><hr>\n";
-
-        // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
-        $count=count($buttons);
-        foreach (array_reverse($buttons) as $elem) {
-            if($count-- < 7) { // max number of buttons at bottom of page
-                $start=$elem+1;
-                $stop=min($elem+10,count($data['row']));
-                $lastLine.="&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
-            }
-        }
-        $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
-
-        return $this->render('/report/output', [
-            'data' => $data,
-            'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
-            'lastLine' => $lastLine,
         ]);
     }
 
@@ -360,9 +230,131 @@ class GradeController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Modules met opdrachten met een negatieve score worden niet in de beoordelingsoverzichten gegeven.',
         ]);
 
     }
+
+
+
+
+
+
+    public function actionNotGradedAll($export=false, $update=false) 
+    {
+        if ($update) {
+            $hide="";$nHide="-";
+        } else {
+            $hide="-";$nHide="";
+        }
+
+        $sql = "SELECT
+            module_pos '-pos',
+            concat(cohort,'|https://',cohort,'.cmon.ovh/grade/not-graded') '!#Cohort',
+            module_name 'Module',
+            sum( case when (not generiek) then 1 else 0 end ) '$nHide+Dev',
+            sum( case when (generiek) then 1 else 0 end ) '$nHide+Gen',
+            sum(1) '+Totaal',
+            concat(max(datediff(now(), submitted_at)), ' dagen') 'Oudste',
+            ''
+        FROM all_submissions
+        
+        WHERE graded_at < submitted_at
+        AND grading_enabled=1
+        AND minpunten >= 0
+        group by 1, 2, 3
+        order by cohort DESC, module_pos";
+
+        $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Alle cohorten',
+            'width' => [20,60,320,60,60,200],
+        ]);
+    }
+
+
+    public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    {
+        //$this->actionUpdateModuleGrading($moduleId, $regrading);
+
+        $sql = "
+            SELECT
+                m.naam Module,
+                a.position '-pos',
+                concat(a.name,'|/public/details-module|assGroupId|',m.id,'|code|',u.code) '!Opdracht',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                u.klas Klas,
+                substring(u.comment,1,3) 'Code',
+                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
+                -- s.attempt poging,
+                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            where u.grade=1 and s.submitted_at > s.graded_at
+            and m.id=$moduleId
+            order by a.position, s.attempt, s.submitted_at
+        ";
+
+        $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
+
+        if (! isset($data['row']) ) {
+            return $this->render('/report/output', [
+                'data' => $data,
+            ]);
+        }
+
+        $data['title'].=" voor <i>".$data['row'][0]['Module']."</i>";
+        $data['show_from']=1;
+
+
+        // Create lastLineButton with buttons to open $pagesPerButton in one go
+        $lastLine= "<script>\n";
+        $count=0;
+        $pagesPerButton=10;
+        $buttons=[];
+
+        foreach ($data['row'] as $item) {
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "function openAllInNewTab".$count."() {\n";
+                array_push($buttons, $count);
+            }
+            // dd( explode('|',$item['!Link'])[1] );
+            $lastLine.= "window.open('". explode('|',$item['!Link'])[1] ."', '_blank');\n";
+            $count++;
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "}\n";
+            }
+        }
+        if ( $count%$pagesPerButton != 0) {
+            $lastLine.= "}\n";
+        }
+        $lastLine.= "</script><hr>\n";
+
+        // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
+        $count=count($buttons);
+        foreach (array_reverse($buttons) as $elem) {
+            if($count-- < 7) { // max number of buttons at bottom of page
+                $start=$elem+1;
+                $stop=min($elem+10,count($data['row']));
+                $lastLine.="&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+            }
+        }
+        $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
+            'lastLine' => $lastLine,
+        ]);
+    }
+
 }

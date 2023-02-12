@@ -58,7 +58,7 @@ class QueryBaseController extends Controller
     {
 
         if ($export) {
-            $sql=$this->exportQueryFilter($sql);
+            $sql=$this->exportQueryFilter2($sql);
         }
 
         if ($result = Yii::$app->db->createCommand($sql)->queryAll()) {
@@ -94,12 +94,15 @@ class QueryBaseController extends Controller
         $components = (array_filter($components, function($value) { return !is_null($value) && $value !== ''; }));
 
         $newQuery = "";
+
         foreach($components as $item) { // itterate through the whole query *** !be aware, no spaces in concat! ***
-            if ( str_contains(substr($item,0,4), "|") ) { // if the first 4 chars of this item contains | then we probably have a space in the oncat string of the !item column
+            if ( str_contains(substr($item,0,4), "|") ) { // if the first 4 chars of this item contains | then we probably have a space in the concat string of the !item column
                 dd('Part of Query ('.$item.') has |, possible space in concat() of the !row in select?');
             }
+
             if (strtolower(substr($item, 0, 6))=='concat') {
                 $sub= $components = preg_split("/[,(]/", $item);
+                dd($sub);
                 if ( count($sub) < 2 ) {
                     dd('concat in SQL query can not be tranformed for export; unknown syntax in concat.');
                 }
@@ -113,11 +116,37 @@ class QueryBaseController extends Controller
                 break;
             }
             $newQuery .= " ".$item;
-
         }
 
         return($newQuery);
     }
+
+    private function exportQueryFilter2($query) // filter + - en ! column names and concats from sql statement for export - deze speciale tekens zijn indicatoren voor de view
+    {
+        # return($query);
+        $components = preg_split("/[\s]/", $query);
+        $components = (array_filter($components, function($value) { return !is_null($value) && $value !== ''; }));
+
+        $newQuery = "";
+        
+        foreach($components as $item) { // itterate through the whole query *** !be aware, no spaces in concat! ***
+            if ( str_contains(substr($item,0,4), "|") ) { // if the first 4 chars of this item contains | then we probably have a space in the concat string of the !item column
+                dd('Part of Query ('.$item.') has |, possible space in concat() of the !row in select?');
+            }
+
+            // if first char = +,-, or ! and 2nd char is alpha then remove first char (note that in time conversions the $item can be +01:00 this item is not allwed to be filtered
+            if ( ctype_alpha(substr($item,2,1)) && (substr($item, 1, 1)=='!' || substr($item, 1, 1)=='+' || substr($item, 1, 1)=='-' || substr($item, 1, 1)=='#') ) {
+                $item = str_replace(['!','+','-','#'], "", $item);
+            }
+            if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, since limit is the last statement return query as is at this moment
+                break;
+            }
+            $newQuery .= " ".$item;
+            
+        }
+        return(strip_tags($newQuery));
+    }
+
 
     public function exportExcel($data)
     {

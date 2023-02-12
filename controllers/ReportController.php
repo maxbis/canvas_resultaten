@@ -29,6 +29,10 @@ class ReportController extends QueryBaseController
         return $select;
     }
 
+
+
+    // Menu Rapporten
+
     public function actionActief($export = false, $klas = '') { // menu 3.1 - Student laatst actief op....
 
         $sql = "
@@ -55,11 +59,52 @@ class ReportController extends QueryBaseController
         
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
         ]);
     }
 
-    public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
+    public function actionAantalActiviteitenWeek($export = false, $klas= '') {  // menu 3.2 - Week overzicht 
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
+        // for($i=7; $i<9; $i++){  
+        //     $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.submitted_at as date) ) then 1 else 0 end) '+.".$weekday[$dayNr]."'";
+        //     $dayNr--;
+        //     if ($dayNr < 0) $dayNr=6; 
+        // }
+
+        $sql = "
+            SELECT u.klas Klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
+            $select
+            ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+wk'
+            FROM user u
+            left outer join submission s on u.id=s.user_id
+            where student_nr > 0
+            ".$this->getKlas($klas)."
+            group by 1,2
+            order by 10 DESC,3 DESC,4 DESC,5 DESC, 6 DESC
+        ";
+
+        $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
+            'width' => [60,280,40,40,40,40,40,40,90],
+        ]);
+    }
+
+    public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht -- export does not work!
     { 
         $weekNumber = date("W"); 
 
@@ -84,7 +129,6 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-            -- sum(case when (datediff(curdate(),submitted_at)<=21) then 1 else 0 end) '-21',
             u.klas Klas,
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             u.student_nr '-student_nr',
@@ -112,12 +156,12 @@ class ReportController extends QueryBaseController
 
         return $this->render('studentenActivity', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => '',
         ]);
     }
 
-    public function actionAantalActiviteiten2($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht
+    public function actionAantalActiviteiten2($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht -- meer weken )expirimenteel
     { 
         $weekNumber = date("W"); 
 
@@ -175,439 +219,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionAantalActiviteitenWeek($export = false, $klas= '') { 
-
-        $weekday=['ma','di','wo','do','vr','za','zo'];
-        $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
-
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
-            $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
-        }
-
-        // for($i=7; $i<9; $i++){  
-        //     $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.submitted_at as date) ) then 1 else 0 end) '+.".$weekday[$dayNr]."'";
-        //     $dayNr--;
-        //     if ($dayNr < 0) $dayNr=6; 
-        // }
-
-        $sql = "
-            SELECT u.klas Klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
-            $select
-            ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+wk'
-            FROM user u
-            left outer join submission s on u.id=s.user_id
-            where student_nr > 0
-            ".$this->getKlas($klas)."
-            group by 1,2
-            order by 10 DESC,3 DESC,4 DESC,5 DESC, 6 DESC
-        ";
-
-        $data = parent::executeQuery($sql, "Ingeleverd afgelopen week", $export);     
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
-            'width' => [60,280,40,40,40,40,40,40,90],
-        ]);
-    }
-
-    public function actionActivity($studentnr='99', $export=false){
-        $sql = "
-            select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, convert_tz(s.submitted_at,'+00:00','+02:00') ingeleverd, s.attempt poging,
-            s.course_id 'course_id', a.id 'assignment_id', u.id 'student_id',
-            case when s.submitted_at <= s.graded_at then 1 else 0 end 'graded',
-            a.points_possible 'max_points', s.entered_score 'points'
-            from submission s
-            join assignment a on a.id=s.assignment_id
-            join user u on u.id = s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            where u.student_nr = $studentnr
-            and s.submitted_at <> '1970-01-01 00:00:00'
-            order by submitted_at DESC
-            limit 400
-        ";
- 
-        $data = $this->executeQuery($sql, "place_holder", $export);
-
-        if ( $data &&isset($data['row'][0]['student']) ) {
-            $studentNr=$data['row'][0]['student_nr'];
-            $klas=$data['row'][0]['klas'];
-        } else {
-            $studentNr=0;
-            $klas="";
-        }
-
-        $data['title'] = "Activity report for ".$studentNr." / ".$klas;
-        
-
-        return $this->render('studentActivity', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?studentnr=".$studentNr."&",
-            'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
-        ]);
-    }
-
-    public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // menu 3.3 - Student werken aan...
-    { 
-
-        $sql = "
-            select m.pos, m.naam Module,
-            sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
-            sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Waarvan nagekeken'
-            -- round ( (sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end)*100)/ ( sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) ) ,0) '+Test'
-            from module_def m
-            join assignment_group g on g.id = m.id
-            join assignment a on a.assignment_group_id=g.id
-            left outer join submission s on s.assignment_id=a.id
-            join user u on u.id = s.user_id
-            ".$this->getKlas($klas)."
-            group by 1,2
-            order by m.pos $sort
-        ";
-
-        $data = parent::executeQuery($sql, "Studenten " . $klas . " werken aan", $export);
-
-        $data['show_from']=1;
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'Aantal opdrachten ingeleverd en nageken per module over de afgelopen 14 dagen <br><i>Nakijken</i> telt alleen de modules die ook over de laatste twee weken zijn ingeleverd.',
-        ]);
-    }
-
-    public function actionRanking2Weg($sort = 'desc', $export = false, $klas = '') // menu 3.4 - Ranking studenten
-    { 
-
-        # if a teacher is also student he has no code (code is null), so only get students with a code
-        $sql = "
-            select
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                r.klas Klas,
-                u.ranking_score '+Score', u.student_nr,
-                SUM(case when r.voldaan='V' and d.generiek=0 then 1 else 0 end) 'V-Dev',
-                SUM(case when r.voldaan='V' and d.generiek=1 then 1 else 0 end) 'V-Gen',
-                sum(r.punten) '+Punten totaal'
-                FROM resultaat r
-                INNER JOIN module_def d ON d.id=r.module_id
-                INNER JOIN user u ON u.student_nr = r.student_nummer
-                where u.code is not null
-                ".$this->getKlas($klas)."
-            group by 1,2,3,4
-            order by 3 $sort";
-
-        $data = parent::executeQuery($sql, "Voortgang/Ranking " . $klas, $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-        ]);
-    }
-
-    public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
-    { 
-
-        # if a teacher is also student he has no code (code is null), so only get students with a code
-        $sql = "
-            select
-                r.klas Klas,
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                min(concat(r.module_pos,' ',r.module)) 'Module',
-                max(ranking_score) '+Score',
-                max(r.norm_uren) 'Normuren'
-            FROM resultaat r
-            JOIN user u on u.student_nr=r.student_nummer
-            JOIN module_def d ON d.id=r.module_id
-            WHERE r.voldaan != 'V'
-            AND r.module_pos < 100
-            AND u.code is not null
-            AND length(u.klas) > 1
-            ".$this->getKlas($klas)."
-            group by 1,2
-            order by 4 Desc, 3 desc
-        ";
-
-        $data = parent::executeQuery($sql, "Ranking Dev " . $klas, $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr'=> "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
-        ]);
-    }
-
-    public function actionModulesFinished($export = false, $klas = '') // menu 3.5 - Module is c keer voldaan
-    { 
-
-        $sql = "
-            select
-                Blok '#Blok',
-                Module,
-                CASE WHEN af > 1 THEN concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') ELSE '0' END '!Afgerond',
-                CASE WHEN naf > 1 THEN concat(naf,'|/report/modules-open|moduleId|',module_id) ELSE '0' END '!Niet Afgerond'
-                from
-                    (select course_id, c.korte_naam Blok, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
-                    FROM resultaat o
-                    JOIN module_def d on d.id=o.module_id
-                    JOIN course c on c.id = course_id
-                    JOIN user u on u.student_nr=o.student_nummer
-                    where u.grade = 1
-                    ".$this->getKlas($klas)."
-                    group by 1,2,3,4
-                    order by d.pos) alias
-        ";
-        // ToDo: order by werkt niet op server (order by moet in group by zitten)
-        $data = parent::executeQuery($sql, "Voortgang per Module " . $klas, $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
-            'nocount' => true,
-        ]);
-    }
-
-    public function actionModulesOpen($moduleId, $voldaan=0, $export = false) // report accessible via ModuleFinished
-    { 
-        if ($voldaan) {
-            $voldaanQuery="voldaan = 'V'";
-        } else {
-            $voldaanQuery="voldaan != 'V'";
-        }
-        $sql = "
-            SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
-            u.comment 'Comment',
-            u.klas 'Klas',
-            concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
-            r.ingeleverd ingeleverd,
-            round(r.punten*100/r.punten_max) 'Punten %'
-            FROM resultaat r
-            LEFT OUTER JOIN course c on c.id = r.course_id
-            INNER JOIN module_def d on d.id=r.module_id
-            INNER JOIN user u on u.student_nr=r.student_nummer
-            WHERE $voldaanQuery
-            and r.module_id=$moduleId
-            and u.grade=1
-            order by r.ingeleverd, r.punten
-        ";
-        $data = parent::executeQuery($sql, "placeholder", $export);
-
-        $data['title'] = ( $voldaan ? 'Afgeronde' : 'Open' )." opdrachten voor ".$data['row'][0]['-Module'];
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?moduleId=".$moduleId."&",
-            'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
-        ]);
-    }
-
-    public function actionBeoordeeld($export = false) // menu 3.6 - Laatste beoordeling per module
-    { 
-        $sql = "
-            select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
-            from resultaat 
-            group by 1
-            order by 2 desc
-        ";
-        $data = parent::executeQuery($sql, "Laatste beoordeling per module", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Minimaal één opdracht van de module is beoordeeld ... dagen gelden.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
-        ]);
-    }
-
-    public function actionAantalBeoordelingen($export = false, $klas = '') // menu 3.7 - Beoordelingen per module over tijd
-    { 
-
-        $sql = "
-            select module Module,
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '+7',
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=14  && datediff(curdate(),laatste_beoordeling)>7 ) then 1 else 0 end) '+14',
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=21 && datediff(curdate(),laatste_beoordeling)>14 ) then 1 else 0 end) '+21',
-            sum(case when (datediff(curdate(),laatste_beoordeling)<=28 && datediff(curdate(),laatste_beoordeling)>21 ) then 1 else 0 end) '+28',
-            sum(1) 'Aantal'
-            from resultaat
-            where 1
-            ".$this->getKlas($klas)."
-            group by 1
-            order by 2 desc
-        ";
-        $data = parent::executeQuery($sql, "Beoordelingen over tijd " . $klas, $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?klas=".$klas."&",
-            'descr' => '(minimaal 1 opdracht van) module voor x studenten beoordeeld over 2, 7 en 14 dagen.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
-        ]);
-    }
-
-    public function actionNakijkenWeek($export = false) // Aantal beoordeligen per docent
-    { 
-        $schooljaarStart = date("Y")-1;
-        if(date('n') >= 8) $schooljaarStart++;
-        $schooljaarStart.='-08-01';
-
-        $sql = "
-            SELECT concat(u.name,'|/report/nakijken-wie|user_id|',u.id) '!Naam', 
-            sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
-            sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
-            sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
-            sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar',
-            sum(1) '+Alles'
-            FROM submission s
-            inner join user u on u.id=s.grader_id
-            group by 1
-            order by 2 DESC
-        ";
-        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
-        $lastLine = "<hr><a href=\"/report/nakijken-dag\" class=\"btn bottom-button\">Dagoverzicht</a>";
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal beoordelingen per beoordeelaar.',
-            'lastLine' => $lastLine,
-            'width' => [0,150,150,150,150,150 ], 
-        ]);
-    }
-
-    public function actionNakijkenDag($export = false) { 
-
-        $weekday=['ma','di','wo','do','vr','za','zo'];
-        $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
-
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
-            $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
-        }
-
-        // inner join on assignment and module_def is added to filter out assignements that are not part (any more) of the Canvas Monitor
-        $sql = "
-            SELECT u.name naam
-            $select
-            FROM submission s
-            inner join user u on u.id=s.grader_id
-            inner join assignment a on a.id=s.assignment_id
-            inner join module_def d on d.id=a.assignment_group_id
-            where datediff(curdate(),s.graded_at)<=7
-            group by 1
-            order by 1
-        ";
-
-        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<a href=\"/report/nakijken-week\" class=\"btn bottom-button left\"><< terug</a>";
-        $lastLine.= "<a href=\"/report/nakijken-dag-all\" class=\"btn bottom-button\" >Alle cohorten</a>";
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal beoordelingen per beoordeelaar.',
-            'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80],
-        ]);
-    }
-
-    public function actionNakijkenDagAll($export = false) { 
-
-        // $schooljaarStart = date("Y")-1;
-        // if(date('n') >= 8) $schooljaarStart++;
-        // $schooljaarStart.='-08-01';
-
-        $weekday=['ma','di','wo','do','vr','za','zo'];
-        $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
-
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
-            $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
-        }
-        // $select .= "\n,sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar'";
-        $select .= "\n,sum(1) '+Week'";
-
-        $sql = "
-            SELECT grader_name naam
-            $select
-            FROM all_submissions s
-            where grader_name is not null
-            and datediff(curdate(),s.graded_at)<=7
-            group by 1
-            order by 1
-        ";
-
-        $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<hr><a href=\"".Yii::$app->request->referrer."\" class=\"btn bottom-button left\"><< terug</a>";
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Aantal beoordelingen over c20, c21, c22.',
-            'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80,80],
-        ]);
-    }
-
-    public function actionNakijkenWie($export = false, $user_id=false) // Wie beoordeeld wat
-    { 
-
-        if ($user_id) {
-            $select="where u.id=$user_id";
-        } else {
-            $select = "";
-        }
-        $sql = "
-            SELECT u.name '#naam', m.pos '-pos', m.naam Module, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
-            sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
-            sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
-            sum(1) '+Schooljaar'
-            FROM submission s
-            inner join assignment a on s.assignment_id=a.id
-            inner join user u on u.id=s.grader_id
-            inner join assignment_group g on g.id = a.assignment_group_id
-            inner join module_def m on m.id = g.id
-            $select
-            group by 1,2,3
-            order by 1,2
-        ";
-        $data = parent::executeQuery($sql, "Modules nagekeken door", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-        ]);
-    }
-
-    public function actionLastReportByStudent($export=false, $klas = '') {
-
-        $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
-                FROM user u
-                LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
-                WHERE LENGTH(u.klas) = 2 ";
-        $sql.=  $this->getKlas($klas);
-        $sql.= " group by 1,2
-                order by 3 ASC, 1";
-
-        $data = parent::executeQuery($sql, "Studenten keken in Canvas Monitor", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Hoeveel dagen is het geleden dat het studentrapport is opgevraagd door iemand die <i>niet</i> is aangelogd in de Canvas Monitor?',
-        ]);
-    }
-
-    public function actionVoortgang($export=false, $klas = '') {
+    public function actionVoortgang($export=false, $klas = '') { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
         $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
                 from module_def m
@@ -651,10 +263,595 @@ class ReportController extends QueryBaseController
 
         return $this->render('outputVoortgang', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            // 'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'modules' => $modules,
             # 'nocount' => 1,
+        ]);
+    }
+
+    public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
+    { 
+
+        # if a teacher is also student he has no code (code is null), so only get students with a code
+        $sql = "
+            select
+                r.klas Klas,
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                min(concat(r.module_pos,' ',r.module)) 'Module',
+                max(ranking_score) '+Score',
+                max(r.norm_uren) 'Normuren'
+            FROM resultaat r
+            JOIN user u on u.student_nr=r.student_nummer
+            JOIN module_def d ON d.id=r.module_id
+            WHERE r.voldaan != 'V'
+            AND r.module_pos < 100
+            AND u.code is not null
+            AND length(u.klas) > 1
+            ".$this->getKlas($klas)."
+            group by 1,2
+            order by 4 Desc, 3 desc
+        ";
+
+        $data = parent::executeQuery($sql, "Ranking Dev " . $klas, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr'=> "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
+        ]);
+    }
+
+    // menu devider ----------------
+
+    public function actionAantalOpdrachten($export=false, $generiek=0){ // menu 3.5 - Module overzicht
+        if ($generiek==0) {
+            $where=" where m.generiek=0";
+        } else {
+            $where="";
+        }
+
+        $sql = "
+            select
+            c.korte_naam '#&nbsp',
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.naam,' &#129062;</a>') '#Blok',
+            concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
+            m.pos 'Positie<br>Overzicht',
+            sum(1) '+Aantal<br>Opgaven',
+            norm_uren '+Normuren'
+            from module_def m
+            left join assignment a on a.assignment_group_id = m.id
+            left join course c on c.id = a.course_id
+            $where
+            group by 1,2,3
+            order by m.pos
+        ";
+
+        $data = parent::executeQuery($sql, "Module-overzicht", $export);
+        if ( $generiek==0) {
+            $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=1\" class=\"btn bottom-button right\">Alles</a>";
+            $button1=['name' => 'Alles', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=1', 'class' => 'btn btn-secondary', 'title' => 'Toon Alle Blokken' ,];
+        }else{
+            $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=0\" class=\"btn bottom-button right\">Dev</a>";
+            $button1=['name' => 'Dev', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=0', 'class' => 'btn btn-secondary', 'title' => 'Toon Dev Blokken' ,];
+        }
+        
+    
+        return $this->render('output', [
+            'data' => $data,
+            // 'action' => Yii::$app->controller->action->id."?",
+            'action' => [   $button1,
+                            ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+                        ],
+            'lastLine' => $lastLine,
+            'descr' => 'Blok, modulenaam en aantal opdrachten per module',
+            'width' => [40,60,300,60,60,60],
+        ]);
+    }
+
+    public function actionModulesFinished($export = false, $klas = '') // menu 3.6 - Module is c keer voldaan
+    { 
+
+        $sql = "
+            select
+                Blok '#Blok',
+                Module,
+                CASE WHEN af > 1 THEN concat(af,'|/report/modules-open|moduleId|',module_id,'|voldaan|1') ELSE '0' END '!Afgerond',
+                CASE WHEN naf > 1 THEN concat(naf,'|/report/modules-open|moduleId|',module_id) ELSE '0' END '!Niet Afgerond'
+                from
+                    (select course_id, c.korte_naam Blok, module_id, module Module, sum(case when voldaan='V' then 1 else 0 end) af, sum(case when voldaan!='V' then 1 else 0 end) naf
+                    FROM resultaat o
+                    JOIN module_def d on d.id=o.module_id
+                    JOIN course c on c.id = course_id
+                    JOIN user u on u.student_nr=o.student_nummer
+                    where u.grade = 1
+                    ".$this->getKlas($klas)."
+                    group by 1,2,3,4
+                    order by d.pos) alias
+        ";
+        // ToDo: order by werkt niet op server (order by moet in group by zitten)
+        $data = parent::executeQuery($sql, "Voortgang per Module " . $klas, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
+            'nocount' => true,
+        ]);
+    }
+
+    public function actionLastReportByStudent($export=false, $klas = '') { // menu 3.7 - Student keek in monitor
+
+        $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
+                FROM user u
+                LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
+                WHERE LENGTH(u.klas) = 2 ";
+        $sql.=  $this->getKlas($klas);
+        $sql.= " group by 1,2
+                order by 3 ASC, 1";
+
+        $data = parent::executeQuery($sql, "Studenten keken in Canvas Monitor", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Hoeveel dagen is het geleden dat het studentrapport is opgevraagd door iemand die <i>niet</i> is aangelogd in de Canvas Monitor?',
+        ]);
+    }
+
+    public function actionPogingen($export = false, $klas='') // menu 3.8 - Pogingen
+    { 
+        $sql="select cast( (select sum(1)from submission) / (select sum(1) from user where grade=1) as unsigned integer) average";
+        $result =  Yii::$app->db->createCommand($sql)->queryAll();
+        $average = $result[0]['average']; // average of number of submitted assignements
+
+        $sql = "
+            select
+            u.klas Klas,
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            round(sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt=1) then 1 else 0 end) ,0) 'Herkansingen % Recent',
+            round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% Totaal',
+            '',
+            sum(case when (datediff(curdate(),submitted_at)<=42) then 1 else 0 end) 'Gemaakt Recent',
+            sum(1) 'Totaal',
+            ''
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where s.submitted_at <> '1970-01-01 00:00:00'
+            and s.workflow_state='graded'
+            ".$this->getKlas($klas)."
+            group by 1,2
+            order by 3 desc
+        ";
+        $data = parent::executeQuery($sql, "Meerdere pogingen", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
+                        <br>Recent is van de laatste 6 weken.',
+            'width' => [80,300,100,100,120,100,100],
+        ]);
+    }
+
+
+    // menu 3.9 -> resultaat index
+
+    // menu devider ----------------
+
+    public function actionNakijkenWeek($export = false) // Menu 3.10 - Aantal beoordeligen per docent
+    { 
+        $schooljaarStart = date("Y")-1;
+        if(date('n') >= 8) $schooljaarStart++;
+        $schooljaarStart.='-08-01';
+
+        $sql = "
+            SELECT concat(u.name,'|/report/nakijken-wie|user_id|',u.id) '!Naam', 
+            sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
+            sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar',
+            sum(1) '+Alles'
+            FROM submission s
+            inner join user u on u.id=s.grader_id
+            group by 1
+            order by 2 DESC
+        ";
+        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
+        $lastLine = "<hr><a href=\"/report/nakijken-dag\" class=\"btn bottom-button\">Dagoverzicht</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Aantal beoordelingen per beoordeelaar.',
+            'lastLine' => $lastLine,
+            'width' => [0,150,150,150,150,150 ], 
+        ]);
+    }
+
+
+    // Nakijken sub reports
+
+    public function actionNakijkenDag($export = false) { 
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+
+        // inner join on assignment and module_def is added to filter out assignements that are not part (any more) of the Canvas Monitor
+        $sql = "
+            SELECT u.name naam
+            $select
+            FROM submission s
+            inner join user u on u.id=s.grader_id
+            inner join assignment a on a.id=s.assignment_id
+            inner join module_def d on d.id=a.assignment_group_id
+            where datediff(curdate(),s.graded_at)<=7
+            group by 1
+            order by 1
+        ";
+
+        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
+        $lastLine = "<a href=\"/report/nakijken-week\" class=\"btn bottom-button left\"><< terug</a>";
+        $lastLine.= "<a href=\"/report/nakijken-dag-all\" class=\"btn bottom-button\" >Alle cohorten</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Aantal beoordelingen per beoordeelaar.',
+            'lastLine' => $lastLine,
+            'width' => [0,80,80,80,80,80,80,80],
+        ]);
+    }
+
+    public function actionNakijkenDagAll($export = false) { // menu 3.10 - Aantal beoordelingen per docent
+
+        // $schooljaarStart = date("Y")-1;
+        // if(date('n') >= 8) $schooljaarStart++;
+        // $schooljaarStart.='-08-01';
+
+        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $date = new DateTime();
+        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+
+        $select='';
+        for($i=0; $i<7; $i++){  
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+            $dayNr--;
+            if ($dayNr < 0) $dayNr=6; 
+        }
+        // $select .= "\n,sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar'";
+        $select .= "\n,sum(1) '+Week'";
+
+        $sql = "
+            SELECT grader_name naam
+            $select
+            FROM all_submissions s
+            where grader_name is not null
+            and datediff(curdate(),s.graded_at)<=7
+            group by 1
+            order by 1
+        ";
+
+        $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);     
+        $lastLine = "<hr><a href=\"".Yii::$app->request->referrer."\" class=\"btn bottom-button left\"><< terug</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Aantal beoordelingen over c20, c21, c22.',
+            'lastLine' => $lastLine,
+            'width' => [0,80,80,80,80,80,80,80,80],
+        ]);
+    }
+
+    // END of MENU Rapporten
+
+
+    // Menu 2 -- presentie
+
+    public function actionTodayOverzicht($export=false,$klas='') {
+
+        $sql="
+        SELECT  u.klas '#Klas',
+        concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
+		min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
+        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste',
+        max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden',
+        CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN 1 ELSE NULL END '+Telling'
+        FROM user u
+        left join check_in c  on c.studentId=u.id and c.action='i' and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
+        where LENGTH(u.code) > 10
+        ".$this->getKlas($klas)."
+		group by 1,2
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
+        ]);
+
+    }
+
+    public function actionTodayCheckIn($export=false,$klas='') {
+
+        $sql="
+        SELECT  u.klas '#Klas',
+                u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
+        FROM check_in c
+        join user u on u.id=c.studentId
+        where c.action='i'
+        and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
+        ".$this->getKlas($klas)."
+        group by 1,2
+        order by 1 ASC,2 ASC, 3 DESC";
+
+        $data = parent::executeQuery($sql, "Laatste check-in", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Meest recente check in van de afgelopen 8 uur',
+        ]);
+
+    }
+
+    public function actionTodayNoCheckIn($export=false,$klas='') {
+
+        $sql="
+        SELECT u.klas '#Klas', u.name 'Student'
+        FROM user u
+        where u.id not in ( select cc.studentId from check_in cc where TIMESTAMPDIFF(HOUR, cc.timestamp, now()) < 8 )
+        ".$this->getKlas($klas)."
+        and CHAR_LENGTH(u.code)>8
+        order by 1,2";
+
+        $data = parent::executeQuery($sql, "Niet aanwezig", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a><br>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Niet ingecheckt afgelopen 8 uur',
+            'lastLine' => $lastLine,
+        ]);
+
+    }
+
+    public function actionWeekAllCheckIn($export=false,$klas='') {
+
+        $sql="
+        SELECT  u.klas '#Klas', 
+                concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
+                left(dayname(c.timestamp),2) 'Dag',
+                DATE_FORMAT(c.timestamp,'%d-%c') 'Datum',
+                min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
+                max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste'
+        FROM check_in c
+        join user u  on u.id=c.studentId
+        where c.action='i'
+        and DATEDIFF(now(), c.timestamp) < 8
+        ".$this->getKlas($klas)."
+        group by 1,2,3,4
+        order by 1,2,4";
+
+
+        $data = parent::executeQuery($sql, "Alle check-ins", $export);
+
+        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Eerste en laatste check-in per dag van de afgelopen week',
+            'lastLine' => $lastLine,
+            'nocount' => true,
+        ]);
+
+    }
+
+    // Menu Beheer
+
+    public function actionStudentenLijst($export=false, $klas='') // menu 6.2 - Studentencodes (export)
+    { 
+        $sql = "SELECT  klas Klas,
+                        id '-Canvas Id',
+                        student_nr 'Student nr',
+                        name Naam,
+                        login_id '-email',
+                        code '-Code',
+                        comment Comment,
+                        message Message
+                FROM user u
+                where length(u.klas)>1 ".$this->getKlas($klas);
+
+        $data = parent::executeQuery($sql, "Studentenlijst", $export);
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Studentenlijst (voor Export naar Excel)',
+        ]);
+    }
+
+    public function actionAdvies($export = false, $klas='') // Menu 6.3 - Dev Voortgang (Adviezen)
+    { 
+
+        $sql = " select 
+            u.id id, u.name name, u.message message, u.code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
+            from resultaat r
+            JOIN user u on u.student_nr= r.student_nummer
+            where module_pos <= 100 ";
+        $sql.=  $this->getKlas($klas);
+        $sql.=" group by 1,2,3,4 order by 5 desc, 6 desc;";
+
+        $data = parent::executeQuery($sql, "Advies", $export);
+
+        return $this->render('advies', [
+            'data' => $data,
+            'action' => Yii::$app->controller->action->id."?",
+            'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
+            'width' => [80,80,80],
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+        ]);
+    }
+
+    public function actionModules($export=false){ // menu 6.5 - Modules
+        $sql = "
+        select  c.korte_naam '#Blok',
+                c.naam 'Naam',
+                count(r.id) 'Res',
+                concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
+                a.id 'Module ID',
+                case when d.id is null then '&#10060;' else '&#10003;' end 'In CM',
+                case when d.naam is null then
+                    concat(a.name,'|/module-def/create|id|',a.id,'|name|',a.name)
+                else
+                    concat(d.naam,'|/module-def/update|id|',d.id)
+                end '!Module Canvas-naam',
+                -- d.naam 'Module Monitor Naam',
+                d.pos 'Positie'
+        from course c
+        join assignment_group a on c.id=a.course_id
+        left outer join module_def d on a.id=d.id
+        left outer join resultaat r on r.module_id=a.id
+        where substring(a.name,1,1) != '!'
+        group by 1,2,4,5,6,7,8
+        order by c.pos, d.pos
+        ";
+
+        $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
+            'nocount' => true,
+            'width' => [50,160,60,80,80,60,200],
+        ]);
+    }
+
+
+
+
+
+
+    public function actionModulesOpen($moduleId, $voldaan=0, $export = false) // report accessible via ModuleFinished
+    { 
+        if ($voldaan) {
+            $voldaanQuery="voldaan = 'V'";
+        } else {
+            $voldaanQuery="voldaan != 'V'";
+        }
+        $sql = "
+            SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
+            u.comment 'Comment',
+            u.klas 'Klas',
+            concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
+            r.ingeleverd ingeleverd,
+            round(r.punten*100/r.punten_max) 'Punten %'
+            FROM resultaat r
+            LEFT OUTER JOIN course c on c.id = r.course_id
+            INNER JOIN module_def d on d.id=r.module_id
+            INNER JOIN user u on u.student_nr=r.student_nummer
+            WHERE $voldaanQuery
+            and r.module_id=$moduleId
+            and u.grade=1
+            order by r.ingeleverd, r.punten
+        ";
+        $data = parent::executeQuery($sql, "placeholder", $export);
+
+        $data['title'] = ( $voldaan ? 'Afgeronde' : 'Open' )." opdrachten voor ".$data['row'][0]['-Module'];
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
+        ]);
+    }
+
+    public function actionBeoordeeld($export = false) // menu 3.6 - Laatste beoordeling per module
+    { 
+        $sql = "
+            select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
+            from resultaat 
+            group by 1
+            order by 2 desc
+        ";
+        $data = parent::executeQuery($sql, "Laatste beoordeling per module", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Minimaal één opdracht van de module is beoordeeld ... dagen gelden.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
+        ]);
+    }
+
+    public function actionAantalBeoordelingen($export = false, $klas = '') // menu 3.7 - Beoordelingen per module over tijd
+    { 
+
+        $sql = "
+            select module Module,
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=7) then 1 else 0 end) '+7',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=14  && datediff(curdate(),laatste_beoordeling)>7 ) then 1 else 0 end) '+14',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=21 && datediff(curdate(),laatste_beoordeling)>14 ) then 1 else 0 end) '+21',
+            sum(case when (datediff(curdate(),laatste_beoordeling)<=28 && datediff(curdate(),laatste_beoordeling)>21 ) then 1 else 0 end) '+28',
+            sum(1) 'Aantal'
+            from resultaat
+            where 1
+            ".$this->getKlas($klas)."
+            group by 1
+            order by 2 desc
+        ";
+        $data = parent::executeQuery($sql, "Beoordelingen over tijd " . $klas, $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => '(minimaal 1 opdracht van) module voor x studenten beoordeeld over 2, 7 en 14 dagen.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
+        ]);
+    }
+
+    public function actionNakijkenWie($export = false, $user_id=false) // Wie beoordeeld wat
+    { 
+
+        if ($user_id) {
+            $select="where u.id=$user_id";
+        } else {
+            $select = "";
+        }
+        $sql = "
+            SELECT u.name '#naam', m.pos '-pos', m.naam Module, sum(case when (datediff(curdate(),s.graded_at)<=7) then 1 else 0 end) '+laatste 7 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)> 7 && datediff(curdate(),s.graded_at)<=14 ) then 1 else 0 end) '+7-14 dagen',
+            sum(case when (datediff(curdate(),s.graded_at)>14 && datediff(curdate(),s.graded_at)<=21 ) then 1 else 0 end) '+14-21 dagen',
+            sum(1) '+Schooljaar'
+            FROM submission s
+            inner join assignment a on s.assignment_id=a.id
+            inner join user u on u.id=s.grader_id
+            inner join assignment_group g on g.id = a.assignment_group_id
+            inner join module_def m on m.id = g.id
+            $select
+            group by 1,2,3
+            order by 1,2
+        ";
+        $data = parent::executeQuery($sql, "Modules nagekeken door", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
         ]);
     }
 
@@ -678,29 +875,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-        ]);
-    }
-
-    public function actionAdvies($export = false, $klas='')
-    { 
-
-        $sql = " select 
-            u.id id, u.name name, u.message message, u.code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
-            from resultaat r
-            JOIN user u on u.student_nr= r.student_nummer
-            where module_pos <= 100 ";
-        $sql.=  $this->getKlas($klas);
-        $sql.=" group by 1,2,3,4 order by 5 desc, 6 desc;";
-
-        $data = parent::executeQuery($sql, "Advies", $export);
-
-        return $this->render('advies', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
-            'width' => [80,80,80],
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
         ]);
     }
 
@@ -742,7 +917,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
         ]);
     }
@@ -804,43 +979,8 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Een cluster is een serie opdrachten van minimaal 5 waarbij er minimaal elke 5 minuten een opdracht is ingeleverd.<br>Change URL params f.e. ..report/cluster-submissions?clusterSize=3&clusterTime=180'
-        ]);
-    }
-
-    
-    public function actionModules($export=false){
-        $sql = "
-        select  c.korte_naam '#Blok',
-                c.naam 'Naam',
-                count(r.id) 'Res',
-                concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
-                a.id 'Module ID',
-                case when d.id is null then '&#10060;' else '&#10003;' end 'In CM',
-                case when d.naam is null then
-                    concat(a.name,'|/module-def/create|id|',a.id,'|name|',a.name)
-                else
-                    concat(d.naam,'|/module-def/update|id|',d.id)
-                end '!Module Canvas-naam',
-                -- d.naam 'Module Monitor Naam',
-                d.pos 'Positie'
-        from course c
-        join assignment_group a on c.id=a.course_id
-        left outer join module_def d on a.id=d.id
-        left outer join resultaat r on r.module_id=a.id
-        where substring(a.name,1,1) != '!'
-        group by 1,2,4,5,6,7,8
-        order by c.pos, d.pos
-        ";
-
-        $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
-            'nocount' => true,
-            'width' => [50,160,60,80,80,60,200],
         ]);
     }
 
@@ -861,42 +1001,6 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionPogingen($export = false, $klas='') 
-    { 
-        $sql="select cast( (select sum(1)from submission) / (select sum(1) from user where grade=1) as unsigned integer) average";
-        $result =  Yii::$app->db->createCommand($sql)->queryAll();
-        $average = $result[0]['average']; // average of number of submitted assignements
-
-        $sql = "
-            select
-            u.klas Klas,
-            concat(u.name,'|/public/index|code|',u.code) '!Student',
-            round(sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt>1) then 1 else 0 end) * 100 / sum(case when (datediff(curdate(),submitted_at)<=42 && s.attempt=1) then 1 else 0 end) ,0) 'Herkansingen % Recent',
-            round(sum(case when s.attempt>1 then 1 else 0 end) * 100 / sum(case when s.attempt=1 then 1 else 0 end) ,0) '% Totaal',
-            '',
-            sum(case when (datediff(curdate(),submitted_at)<=42) then 1 else 0 end) 'Gemaakt Recent',
-            sum(1) 'Totaal',
-            ''
-            from submission s
-            join assignment a on a.id=s.assignment_id
-            join user u on u.id = s.user_id
-            join assignment_group g on g.id = a.assignment_group_id
-            where s.submitted_at <> '1970-01-01 00:00:00'
-            and s.workflow_state='graded'
-            ".$this->getKlas($klas)."
-            group by 1,2
-            order by 3 desc
-        ";
-        $data = parent::executeQuery($sql, "Meerdere pogingen", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
-                        <br>Recent is van de laatste 6 weken.',
-            'width' => [80,300,100,100,120,100,100],
-        ]);
-    }
 
     public function actionTodayCheckIn2Weg($export=false,$klas='') {
 
@@ -916,30 +1020,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Meest recente check in van de afgelopen 8 uur',
-        ]);
-
-    }
-
-    public function actionTodayCheckIn($export=false,$klas='') {
-
-        $sql="
-        SELECT  u.klas '#Klas',
-                u.name 'Student', DATE_FORMAT(c.timestamp,'%H:%i') 'Check-in', max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden'
-        FROM check_in c
-        join user u on u.id=c.studentId
-        where c.action='i'
-        and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
-        ".$this->getKlas($klas)."
-        group by 1,2
-        order by 1 ASC,2 ASC, 3 DESC";
-
-        $data = parent::executeQuery($sql, "Laatste check-in", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Meest recente check in van de afgelopen 8 uur',
         ]);
 
@@ -963,66 +1044,8 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
-        ]);
-
-    }
-
-    public function actionTodayOverzicht($export=false,$klas='') {
-
-        $sql="
-        SELECT  u.klas '#Klas',
-        concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
-		min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
-        max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste',
-        max(TIMESTAMPDIFF(HOUR, c.timestamp, now())) 'Uren geleden',
-        CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN 1 ELSE NULL END '+Telling'
-        FROM user u
-        left join check_in c  on c.studentId=u.id and c.action='i' and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
-        where LENGTH(u.code) > 10
-        ".$this->getKlas($klas)."
-		group by 1,2
-        order by 1 ASC,2 ASC, 3 DESC";
-
-        $data = parent::executeQuery($sql, "Alle check-ins", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
-        ]);
-
-    }
-
-    public function actionWeekAllCheckIn($export=false,$klas='') {
-
-        $sql="
-        SELECT  u.klas '#Klas', 
-                concat(u.name,'|/report/check-in-student|id|',u.id) '!#Student',
-                left(dayname(c.timestamp),2) 'Dag',
-                DATE_FORMAT(c.timestamp,'%d-%c') 'Datum',
-                min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
-                max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste'
-        FROM check_in c
-        join user u  on u.id=c.studentId
-        where c.action='i'
-        and DATEDIFF(now(), c.timestamp) < 8
-        ".$this->getKlas($klas)."
-        group by 1,2,3,4
-        order by 1,2,4";
-
-
-        $data = parent::executeQuery($sql, "Alle check-ins", $export);
-
-        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a>";
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Eerste en laatste check-in per dag van de afgelopen week',
-            'lastLine' => $lastLine,
-            'nocount' => true,
         ]);
 
     }
@@ -1047,59 +1070,10 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'over de afgelopen 90 dagen',
         ]);
 
-    }
-
-    public function actionTodayNoCheckIn($export=false,$klas='') {
-
-        $sql="
-        SELECT u.klas '#Klas', u.name 'Student'
-        FROM user u
-        where u.id not in ( select cc.studentId from check_in cc where TIMESTAMPDIFF(HOUR, cc.timestamp, now()) < 8 )
-        ".$this->getKlas($klas)."
-        and CHAR_LENGTH(u.code)>8
-        order by 1,2";
-
-        $data = parent::executeQuery($sql, "Niet aanwezig", $export);
-
-        $lastLine = "<hr><a href=\"/check-in/index\" class=\"btn btn-light\" style=\"float: right;\">Alle check-ins</a><br>";
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Niet ingecheckt afgelopen 8 uur',
-            'lastLine' => $lastLine,
-        ]);
-
-    }
-
-    public function actionAantalOpdrachten($export=false){
-        $sql = "
-            select
-            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.korte_naam,' &#129062;</a>') '#Blok',
-            m.pos 'Pos',
-            c.naam 'Naam',
-            concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
-            sum(1) '+Aantal',
-            norm_uren 'Normuren'
-            from module_def m
-            left join assignment a on a.assignment_group_id = m.id
-            left join course c on c.id = a.course_id
-            group by 1,2,3
-            order by m.pos
-        ";
-
-        $data = parent::executeQuery($sql, "Module-overzicht", $export);
-
-        return $this->render('output', [
-            'data' => $data,
-            // 'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Blok, modulenaam en aantal opdrachten per module',
-            'width' => [80,80,160,300],
-        ]);
     }
 
     public function actionAantalOpdrachten2($export=false){
@@ -1129,7 +1103,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'Blok, modulenaam en aantal opdrachten per module',
             'width' => [80,80,160,300],
         ]);
@@ -1159,7 +1133,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'lastLine' => $lastLine,
             'descr' => 'Opdrachten en punten voor dit blok',
             'width' => [0,0,80,600,80],
@@ -1198,25 +1172,68 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionStudentenLijst($export=false, $klas='') // menu 6.2 - Studentencodes (export)
-    { 
-        $sql = "SELECT  klas Klas,
-                        id '-Canvas Id',
-                        student_nr 'Student nr',
-                        name Naam,
-                        login_id '-email',
-                        code '-Code',
-                        comment Comment,
-                        message Message
-                FROM user u
-                where length(u.klas)>1 ".$this->getKlas($klas);
+    public function actionActivity($studentnr='99', $export=false){
+        $sql = "
+            select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, convert_tz(s.submitted_at,'+00:00','+02:00') ingeleverd, s.attempt poging,
+            s.course_id 'course_id', a.id 'assignment_id', u.id 'student_id',
+            case when s.submitted_at <= s.graded_at then 1 else 0 end 'graded',
+            a.points_possible 'max_points', s.entered_score 'points'
+            from submission s
+            join assignment a on a.id=s.assignment_id
+            join user u on u.id = s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            where u.student_nr = $studentnr
+            and s.submitted_at <> '1970-01-01 00:00:00'
+            order by submitted_at DESC
+            limit 400
+        ";
+ 
+        $data = $this->executeQuery($sql, "place_holder", $export);
 
-        $data = parent::executeQuery($sql, "Studentenlijst", $export);
+        if ( $data &&isset($data['row'][0]['student']) ) {
+            $studentNr=$data['row'][0]['student_nr'];
+            $klas=$data['row'][0]['klas'];
+        } else {
+            $studentNr=0;
+            $klas="";
+        }
 
-        return $this->render('/report/output', [
+        $data['title'] = "Activity report for ".$studentNr." / ".$klas;
+        
+
+        return $this->render('studentActivity', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
-            'descr' => 'Studentenlijst (voor Export naar Excel)',
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&studentnr='.$studentNr, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
+        ]);
+    }
+
+    public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // ??? - Student werken aan...
+    { 
+
+        $sql = "
+            select m.pos, m.naam Module,
+            sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Ingeleverd',
+            sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) '+Waarvan nagekeken'
+            -- round ( (sum(case when (s.workflow_state='graded' && datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end)*100)/ ( sum(case when (datediff(curdate(),s.submitted_at)<=14) then 1 else 0 end) ) ,0) '+Test'
+            from module_def m
+            join assignment_group g on g.id = m.id
+            join assignment a on a.assignment_group_id=g.id
+            left outer join submission s on s.assignment_id=a.id
+            join user u on u.id = s.user_id
+            ".$this->getKlas($klas)."
+            group by 1,2
+            order by m.pos $sort
+        ";
+
+        $data = parent::executeQuery($sql, "Studenten " . $klas . " werken aan", $export);
+
+        $data['show_from']=1;
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'descr' => 'Aantal opdrachten ingeleverd en nageken per module over de afgelopen 14 dagen <br><i>Nakijken</i> telt alleen de modules die ook over de laatste twee weken zijn ingeleverd.',
         ]);
     }
 
