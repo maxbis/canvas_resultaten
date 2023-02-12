@@ -332,9 +332,11 @@ class ReportController extends QueryBaseController
         if ( $generiek==0) {
             $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=1\" class=\"btn bottom-button right\">Alles</a>";
             $button1=['name' => 'Alles', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=1', 'class' => 'btn btn-secondary', 'title' => 'Toon Alle Blokken' ,];
+            $descr='Overzicht van alle dev blokken';
         }else{
             $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=0\" class=\"btn bottom-button right\">Dev</a>";
             $button1=['name' => 'Dev', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=0', 'class' => 'btn btn-secondary', 'title' => 'Toon Dev Blokken' ,];
+            $descr='Overzicht van alle blokken (dev plus generiek)';
         }
         
     
@@ -345,7 +347,7 @@ class ReportController extends QueryBaseController
                             ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
                         ],
             'lastLine' => $lastLine,
-            'descr' => 'Blok, modulenaam en aantal opdrachten per module',
+            'descr' => $descr,
             'width' => [40,60,300,60,60,60],
         ]);
     }
@@ -1133,7 +1135,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&id='.$id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'lastLine' => $lastLine,
             'descr' => 'Opdrachten en punten voor dit blok',
             'width' => [0,0,80,600,80],
