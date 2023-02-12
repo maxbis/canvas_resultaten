@@ -83,11 +83,11 @@ echo Nav::widget([
             // && $this->context->route == 'resultaat/start' 
             'visible' => (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin'),
             'items' => [
-                ['label' => 'Overzicht vandaag',        'url' => ['/report/today-overzicht']],
-                ['label' => 'Aanwezig vandaag',         'url' => ['/report/today-check-in']],
-                ['label' => 'Absent vandaag',           'url' => ['/report/today-no-check-in']],
+                ['label' => 'Overzicht vandaag',        'url' => ['/present/today-overzicht']],
+                ['label' => 'Aanwezig vandaag',         'url' => ['/present/today-check-in']],
+                ['label' => 'Absent vandaag',           'url' => ['/present/today-no-check-in']],
                 ['label' => '----------------',],
-                ['label' => 'Weekoverzicht',            'url' => ['/report/week-all-check-in']],
+                ['label' => 'Weekoverzicht',            'url' => ['/present/week-all-check-in']],
             ],
 
         ],

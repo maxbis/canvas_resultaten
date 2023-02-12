@@ -53,6 +53,24 @@ class QueryBaseController extends Controller
         ];
     }
 
+    public function getKlasQueryPart($klas) {
+        if ($klas) {
+            if ($klas=='all') {
+                $select = "";
+                setcookie('klas', null, -1, '/'); 
+            } else {
+                $select = "and u.klas='$klas'";
+                setcookie('klas', $klas, 0, '/');
+            }
+        } else {
+            if ( isset($_COOKIE['klas']) ){
+                $select = "and u.klas='". $_COOKIE['klas']."'";
+            } else {
+                $select = '';
+            }
+        }
+        return $select;
+    }
 
     public function executeQuery($sql, $title = "no title", $export = false)
     {
@@ -147,6 +165,13 @@ class QueryBaseController extends Controller
         return(strip_tags($newQuery));
     }
 
+    public function exportButton($klas='false') {
+        if ($klas <> '' ) {
+            return( ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,]);
+        } else {
+            return( ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,]);
+        }
+    }
 
     public function exportExcel($data)
     {
