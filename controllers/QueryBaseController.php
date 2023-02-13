@@ -76,7 +76,7 @@ class QueryBaseController extends Controller
     {
 
         if ($export) {
-            $sql=$this->exportQueryFilter2($sql);
+            $sql=$this->exportQueryFilter($sql);
         }
 
         if ($result = Yii::$app->db->createCommand($sql)->queryAll()) {
@@ -120,8 +120,9 @@ class QueryBaseController extends Controller
 
             if (strtolower(substr($item, 0, 6))=='concat') {
                 $sub= $components = preg_split("/[,(]/", $item);
-                dd($sub);
-                if ( count($sub) < 2 ) {
+                if ( count($sub) <= 2 ) {
+                    // cannot filter becasue we have spaces in the concat, defaults back to Simple filter
+                    return $this->exportQueryFilterSimple($query);
                     dd('concat in SQL query can not be tranformed for export; unknown syntax in concat.');
                 }
                 $item=$sub[1];
@@ -139,7 +140,7 @@ class QueryBaseController extends Controller
         return($newQuery);
     }
 
-    private function exportQueryFilter2($query) // filter + - en ! column names and concats from sql statement for export - deze speciale tekens zijn indicatoren voor de view
+    private function exportQueryFilterSimple($query) // filter + - en ! column names and concats from sql statement for export - deze speciale tekens zijn indicatoren voor de view
     {
         # return($query);
         $components = preg_split("/[\s]/", $query);
