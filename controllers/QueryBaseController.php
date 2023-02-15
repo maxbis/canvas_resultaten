@@ -113,6 +113,9 @@ class QueryBaseController extends Controller
 
         $newQuery = "";
 
+        // $test = preg_split("/[\s]/",$query);
+        // dd($test);
+
         foreach($components as $item) { // itterate through the whole query *** !be aware, no spaces in concat! ***
             if ( str_contains(substr($item,0,4), "|") ) { // if the first 4 chars of this item contains | then we probably have a space in the concat string of the !item column
                 dd('Part of Query ('.$item.') has |, possible space in concat() of the !row in select?');

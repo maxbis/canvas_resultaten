@@ -301,7 +301,8 @@ class ReportController extends QueryBaseController
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
             m.pos 'Positie<br>Overzicht',
             sum(1) '+Aantal<br>Opgaven',
-            norm_uren '+Normuren'
+            norm_uren 'Normuren',
+            norm_uren '++Normuren'
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
             left join course c on c.id = a.course_id
@@ -330,7 +331,7 @@ class ReportController extends QueryBaseController
                         ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40,60,300,60,60,60],
+            'width' => [40,60,300,60,60,60,60],
         ]);
     }
 
