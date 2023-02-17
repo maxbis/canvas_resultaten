@@ -339,6 +339,10 @@ def calcRanking():
         )"""
     cursor.execute(sql)
     con.commit()
+    # normuren achieved are registered per module per student. This figure is stored n times per assignement
+    # this should be normilized but there is not yet an results table per assignment
+
+    # first calculate the bits and pieces normuren per not yet finished module
     sql="""
         UPDATE resultaat t1
         INNER JOIN ( SELECT r.student_nummer, module_id, round(sum( round(d.norm_uren*(r.punten*10/r.punten_max))  )/10) sum_norm_uren
@@ -348,6 +352,7 @@ def calcRanking():
             GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
         SET norm_uren = sum_norm_uren;
     """
+    # ...then add the finished modules
     sql+="""
         UPDATE resultaat t1
         INNER JOIN ( SELECT r.student_nummer, module_id, sum( d.norm_uren) sum_norm_uren
@@ -355,7 +360,7 @@ def calcRanking():
             INNER JOIN module_def d ON d.id=module_id AND d.generiek=0
             WHERE r.voldaan='V'
             GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
-        SET norm_uren = sum_norm_uren;
+        SET t1.norm_uren = sum_norm_uren;
     """
     cursor.execute(sql)
     con.commit()

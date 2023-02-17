@@ -262,8 +262,7 @@ class ReportController extends QueryBaseController
                 r.klas Klas,
                 concat(u.name,'|/public/index|code|',u.code) '!Student',
                 min(concat(r.module_pos,' ',r.module)) 'Module',
-                max(ranking_score) '+Score',
-                max(r.norm_uren) 'Normuren'
+                max(ranking_score) '+Score'
             FROM resultaat r
             JOIN user u on u.student_nr=r.student_nummer
             JOIN module_def d ON d.id=r.module_id
@@ -374,7 +373,6 @@ class ReportController extends QueryBaseController
         }
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
-            u.comment 'Comment',
             u.klas 'Klas',
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
             r.ingeleverd ingeleverd,
@@ -394,7 +392,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&moduleId='.$moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
         ]);
     }
