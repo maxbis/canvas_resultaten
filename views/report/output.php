@@ -166,7 +166,11 @@ $tot = [];
                             }
                             
                         } elseif (substr($columnName, 0, 1) <> '-') {
-                            echo "<td>" . $item[$columnName] . "</td>";
+                            if (substr($columnName, 1, 1) == '+') {
+                                echo "<td>" .  $tot[$columnName] . "</td>";
+                            }else{
+                                echo "<td>" . $item[$columnName] . "</td>";
+                            }
                         }
                         
                     }

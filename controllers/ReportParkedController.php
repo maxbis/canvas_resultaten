@@ -230,37 +230,6 @@ class ReportParkedController extends QueryBaseController
         ]);
     }
 
-    public function actionOpdrachtenModule($id, $export=false){
-        $sql = "
-            select c.id 'course_id', c.naam 'cursus_naam',
-                korte_naam '#Blok',
-                concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
-                a.points_possible '+Punten', ''
-            from assignment a
-            left join course c on c.id=a.course_id
-            where assignment_group_id=$id
-            and a.published=1
-            order by a.position
-        ";
-
-        $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
-        $data['show_from']=2;
-        $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
-       
-        if (isset($data['row'][0]['cursus_naam']) )  {
-            $data['title']=$data['row'][0]['cursus_naam'];
-            $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/".$data['row'][0]['course_id']."\">Naar module &#129062;</a>";
-        }
-
-        return $this->render('output', [
-            'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&id='.$id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
-            'lastLine' => $lastLine,
-            'descr' => 'Opdrachten en punten voor dit blok',
-            'width' => [0,0,80,600,80],
-        ]);
-    }
-
     public function actionTest() {
         $assGroupId="8131";
         $code="879906e1182be0feb8066e270443988b";
