@@ -159,7 +159,9 @@ class ResultaatController extends Controller
             
             $html .= "<td>".$item['aantal']."</td>";
 
-            $html .= "<td>(".$item['oudste'].")</td>";
+            $style = "";
+            if ( $item['oudste'] > 14 ) $style="style=\"font-weight: 650;\"";
+            $html .= "<td $style>".$item['oudste']."</td>";
 
             $html .= "</tr>";
         }
