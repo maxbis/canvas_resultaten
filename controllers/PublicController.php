@@ -55,7 +55,7 @@ class PublicController extends Controller
                     d.voldaan_rule voldaanRule,
                     u.message Message,
                     u.klas Klas,
-                    d.Generiek,
+                    d.Generiek generiek,
                     u.ranking_score Ranking,
                     r.norm_uren
                 FROM resultaat r

@@ -9,6 +9,7 @@ use yii\helpers\Html;
             $totOpdrachten = 0;
             $totPunten = 0;
             $totNormuren = 0;
+            $totPercentage = 0;
 
             // header of table
             echo "<tr>";
@@ -25,12 +26,16 @@ use yii\helpers\Html;
 
             $prevBlok = '';
             foreach ($data as $item) {
-                if ($item['Voldaan'] == 'V') {
+                if ($item['Voldaan'] == 'V' && $item['generiek'] == 0 ) {
                     $totVoldaan += 1;
                 }
-                $totPunten += $item['Punten'];
-                $totOpdrachten += $item['Opdrachten'];
-                $totNormuren += $item['norm_uren'];
+
+                if ( $item['generiek'] == 0 ) {
+                    $totPunten += $item['Punten'];
+                    $totOpdrachten += $item['Opdrachten'];
+                    $totNormuren += $item['norm_uren'];
+                    $totPercentage += $item['Punten %'];
+                }
 
                 $dagen = intval((time() - strtotime($item['Laatste Actief'])) / 86400);
                 if ($dagen <= 7) {
@@ -106,7 +111,7 @@ use yii\helpers\Html;
                 echo "<td class=\"tright grey\" title=\"Totaal aantal gemaakte opdrachten\">". $totOpdrachten ."</td>";
                 echo "<td></td>";
                 echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
-                echo "<td></td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde %\">". round($totPercentage,0) ."</td>";
                 echo "<td colspan=1 class=\"tright grey\" title=\"Score/Normuren\" class=\"tright\">";
                 echo "(".$item['Ranking']."/".$totNormuren.")";
                 echo "</td>";
