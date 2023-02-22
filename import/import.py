@@ -331,7 +331,7 @@ def calcRanking():
     sql="""
         update user u set ranking_score=
         (
-            select (SUM(case when voldaan='V' then 1 else 0 end))*100+round(100*sum(punten)/max(punten_max)) 'Ranking Score'
+            select (SUM(case when voldaan='V' then 1 else 0 end))*100+round(100*sum(punten)/sum(punten_max)) 'Ranking Score'
             FROM resultaat r
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer

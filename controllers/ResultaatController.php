@@ -138,7 +138,7 @@ class ResultaatController extends Controller
                 sum(1) aantal,
                 max(datediff(now(), submitted_at)) oudste
             FROM assignment a
-            left outer join submission s on s.assignment_id= a.id
+            join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
             join module_def m on m.id = a.assignment_group_id
             join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
