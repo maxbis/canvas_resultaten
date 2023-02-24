@@ -105,13 +105,13 @@ use yii\helpers\Html;
             echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
             
             echo ($style!='standard') ?  "<td></td>" : "";
-            echo "<td colspan=2  title=\"Toaal aantal afgeronde modules\">" .$totVoldaan . "</td>";
+            echo "<td colspan=2  title=\"Toaal aantal afgeronde dev-modules\">" .$totVoldaan . "</td>";
             echo ($style=='standard') ?  "<td></td>" : "";
             if( ! isMobileDevice() ){
-                echo "<td class=\"tright grey\" title=\"Totaal aantal gemaakte opdrachten\">". $totOpdrachten ."</td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal gemaakte dev-opdrachten \">". $totOpdrachten ."</td>";
                 echo "<td></td>";
-                echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde punten\">". round($totPunten,0) ."</td>";
-                echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde %\">". round($totPercentage,0) ."</td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal behaalde dev-punten\">". round($totPunten,0) ."</td>";
+                echo "<td class=\"tright grey\" title=\"Totaal aantal dev-behaalde %\">". round($totPercentage,0) ."</td>";
                 echo "<td colspan=1 class=\"tright grey\" title=\"Score/Normuren\" class=\"tright\">";
                 echo "(".$item['Ranking']."/".$totNormuren.")";
                 echo "</td>";
