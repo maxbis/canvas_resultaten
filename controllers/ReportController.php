@@ -375,7 +375,7 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
             u.klas 'Klas',
-            concat(r.student_naam,'|/public/details-module|code|',u.code,'|moduleId|',r.module_id) '!Student',
+            concat(r.student_naam,'|/public/details-module|code|',u.code,'|assGroupId|',r.module_id) '!Student',
             r.ingeleverd ingeleverd,
             round(r.punten*100/r.punten_max) 'Punten %'
             FROM resultaat r
@@ -393,7 +393,7 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&assGroupId='.$moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&moduleId='.$moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
         ]);
     }
