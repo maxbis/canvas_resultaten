@@ -377,6 +377,7 @@ class ReportController extends QueryBaseController
             u.klas 'Klas',
             concat(r.student_naam,'|/public/details-module|code|',u.code,'|assGroupId|',r.module_id) '!Student',
             r.ingeleverd ingeleverd,
+            round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
             round(r.punten*100/r.punten_max) 'Punten %'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
@@ -395,6 +396,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&moduleId='.$moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
+            # 'width' => [40,40,60,160,80,80,80 ], 
         ]);
     }
 
