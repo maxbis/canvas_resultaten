@@ -193,7 +193,7 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
     json_data = getJsonData(apiPath, courseId)
 
     if json_data=='error':
-        log('API error, stopping import',0)
+        log('API error, gracefully stopping import for table '+tableName,0)
         sys.exit(1)
 
     # ToDo check if data is returned else exit(1)
@@ -204,6 +204,7 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
         sql = "delete from "+tableName+" where course_id="+str(courseId)
         log(sql, 3)
         cursor.execute(sql)
+    
     count = 1
     returnList = []
     sql = ""
@@ -236,7 +237,7 @@ def importTable(courseId, apiPath, tableName, fields, doDelete=True):
 
     return(returnList) # return list of id's f.e. ['8131', '8127', '8128', '8324']
 
-# Clear course
+# Clear course (if requested from command line param)
 # delete from assignment_group where course_id = xxx;
 # delete from module where course_id = xxx;
 # delete from assignment where course_id=xxx

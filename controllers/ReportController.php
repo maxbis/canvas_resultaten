@@ -253,6 +253,58 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionVoortgang2($export=false, $klas = '') { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
+
+        $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
+                from module_def m
+                join assignment_group g on g.id=m.id
+                join course c on c.id = g.course_id
+                where generiek = 0
+                order by m.pos";
+
+        $modules = Yii::$app->db->createCommand($sql)->queryAll();
+
+        $query = "";
+        $count = 0;
+        foreach($modules as $module) {
+            $count++;
+            // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.ingeleverd=r.aantal_opdrachten then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end) else 0 end) '".str_pad($count,3,"0", STR_PAD_LEFT)."'";
+        }
+
+        $sql = "
+            SELECT
+            ranking_score 'Rank',
+            u.student_nr '-Nummer',
+            u.klas Klas,
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            u.comment '-Comment',
+            u.message '-Message',
+            sum( case when r.ingeleverd=r.aantal_opdrachten then 1 else 0 end) '-Tot'
+            $query
+            FROM resultaat r
+            LEFT OUTER JOIN course c on c.id = r.course_id
+            INNER JOIN module_def d on d.id=r.module_id
+            INNER JOIN user u on u.student_nr=r.student_nummer
+            WHERE d.generiek = 0
+            and u.student_nr > 10
+            ".$this->getKlas($klas)."
+            GROUP BY 1,2,3,4,5,6
+            ORDER BY 1 DESC
+        ";
+        $data = $this->executeQuery($sql, "Voortgang Dev Modules", $export);
+        $data['show_from']=1;
+
+        return $this->render('outputVoortgang', [
+            'data' => $data,
+            // 'action' => Yii::$app->controller->action->id."?",
+            'action' => parent::exportButton($klas??='false'),
+            'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
+            'modules' => $modules,
+            # 'nocount' => 1,
+        ]);
+    }
+
     public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
     { 
 
