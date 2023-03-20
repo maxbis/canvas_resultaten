@@ -25,6 +25,7 @@ use yii\helpers\Html;
             echo "</tr>";
 
             $prevBlok = '';
+            #dd($data);
             foreach ($data as $item) {
                 if ($item['Voldaan'] == 'V' && $item['generiek'] == 0 ) {
                     $totVoldaan += 1;
@@ -33,7 +34,7 @@ use yii\helpers\Html;
                 if ( $item['generiek'] == 0 ) {
                     $totPunten += $item['Punten'];
                     $totOpdrachten += $item['Opdrachten'];
-                    $totNormuren += $item['norm_uren'];
+                    # $totNormuren += $item['norm_uren'];
                     $totPercentage += $item['Punten %'];
                 }
 
@@ -89,7 +90,7 @@ use yii\helpers\Html;
                     echo "<td>".Html::a($item['Module'], ['/public/details-module', 'assGroupId' => $item['module_id'], 'code' => $item['Code']])."</td>";
                     echo "<td class=\"tright bleft\">" . $item['Opdrachten'] . "</td>";
                     echo "<td class=\"tright bright\">" . $item['Opdrachten %'] . "%</td>";
-                    echo "<td class=\"tright bleft\" title=\"Behaalde normuren: ".$item['norm_uren']."\">" . $item['Punten'] . "</td>";
+                    echo "<td class=\"tright bleft\" title=\"Normuren/behaald: ".$item['Normuren']."/".$item['NormurenBehaald']."\">" . $item['Punten'] . "</td>";
                     echo "<td class=\"tright bright\">" . $item['Punten %'] . "%</td>";
                     if (substr($item['Laatste Actief'], 0, 4) == "1970") {
                         echo "<td class=\"tcenter\"> - </td>";

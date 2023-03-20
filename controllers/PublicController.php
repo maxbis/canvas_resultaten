@@ -41,12 +41,16 @@ class PublicController extends Controller
         // MyHelpers::CheckIP();
 
         // Create report for one student(status)
-        $sql = "SELECT r.module_id, r.student_naam Student, u.id student_id, c.korte_naam Blok ,d.naam Module, r.voldaan Voldaan,
+        $sql = "SELECT r.module_id,
+                    r.student_naam Student,
+                    u.id student_id,
+                    c.korte_naam Blok,
+                    d.naam Module,
+                    r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
                     round(r.punten*100/r.punten_max) 'Punten %',
                     r.laatste_activiteit 'Laatste Actief',
                     r.ingeleverd Opdrachten,
-                    r.module_id,
                     r.student_nummer,
                     r.aantal_opdrachten,
                     r.punten Punten,
@@ -57,7 +61,8 @@ class PublicController extends Controller
                     u.klas Klas,
                     d.Generiek generiek,
                     u.ranking_score Ranking,
-                    r.norm_uren
+                    r.norm_uren NormurenBehaald, 
+                    d.norm_uren Normuren
                 FROM resultaat r
                 -- LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN course c on c.id = r.course_id

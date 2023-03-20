@@ -74,7 +74,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                         ?>
                     </div>
                     <div class="col-sm-7">
-                        <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> true])->label('Code voor student om zijn pagina te bekijken') ?>
+                        <?= $form->field($model, 'code')->textInput(['maxlength' => true,'readonly'=> false])->label('Code voor student om zijn pagina te bekijken') ?>
                     </div>
                 </div>
             </td>
