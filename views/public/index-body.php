@@ -34,7 +34,7 @@ use yii\helpers\Html;
                 if ( $item['generiek'] == 0 ) {
                     $totPunten += $item['Punten'];
                     $totOpdrachten += $item['Opdrachten'];
-                    # $totNormuren += $item['norm_uren'];
+                    $totNormuren += $item['NormurenBehaald'];
                     $totPercentage += $item['Punten %'];
                 }
 
