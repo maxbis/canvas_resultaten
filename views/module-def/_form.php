@@ -97,7 +97,7 @@ use yii\widgets\ActiveForm;
         </tr>
         <tr>
             <td></td>
-            <td>Totaal aantal punten moet meer dan 90 zijn en totaal aantal punten voor eidnopdrachten moet meer dan 20 zijn. Daarbij moeten alle 10 opdrachten zijn ingeleverd en voor elke opdracht minimaal 1 punt worden gescoord.</td>
+            <td>Totaal aantal punten moet meer dan 90 zijn en totaal aantal punten voor eindopdrachten moet meer dan 20 zijn. Daarbij moeten alle 10 opdrachten zijn ingeleverd en voor elke opdracht minimaal 1 punt worden gescoord.</td>
         </tr>
     </table>
 
