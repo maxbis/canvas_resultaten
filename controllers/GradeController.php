@@ -301,7 +301,6 @@ class GradeController extends QueryBaseController
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
             and m.id=$moduleId
-            -- and s.submitted_at < '2023-04-11'
             order by a.position, s.attempt, s.submitted_at
         ";
 
