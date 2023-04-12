@@ -143,8 +143,8 @@ class ResultaatController extends Controller
             join module_def m on m.id = a.assignment_group_id
             join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
-            and s.submitted_at < '2023-04-11'
-            and m.pos < 70
+            -- and s.submitted_at < '2023-04-11'
+            -- and m.pos < 70
          group by 1,2,3
          order by 1";
         $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
