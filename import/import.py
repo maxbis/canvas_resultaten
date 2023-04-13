@@ -419,7 +419,9 @@ def checkAssignmentGroups(assignementGroup, assignments):
 # wrapper for updateAssignmentGroup, this fucntion updates all (recent-hot) assignment groups.
 # recent-hot is defeined in the SQL query
 def updateAssignmentGroups():
-    sql="select distinct assignment_group_id from submission s join assignment a on a.id=s.assignment_id where datediff(curdate(),submitted_at) < 7 or datediff(curdate(),graded_at) < 7"
+    # sql="select distinct assignment_group_id from submission s join assignment a on a.id=s.assignment_id where datediff(curdate(),submitted_at) < 7 or datediff(curdate(),graded_at) < 7"
+    sql="SELECT distinct g.id, g.course_id, g.name, m.naam FROM assignment_group g JOIN module_def m on m.id=g.id JOIN assignment a on a.assignment_group_id=g.id JOIN submission s on s.assignment_id=a.id where datediff(curdate(),submitted_at) < 7 or datediff(curdate(),graded_at) < 7 order by m.pos"
+
     cursor.execute(sql)
     assignementGroups = cursor.fetchall()
     for assignementGroup in assignementGroups:
