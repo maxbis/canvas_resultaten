@@ -810,6 +810,27 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionNakijkenWie2($export = false) // Wie beoordeeld wat de laatste week
+    { 
+
+        $sql = "
+            select g.name Docent, u.name Student , s.graded_at Beoordeeld, s.entered_score Score, m.naam Module
+            from submission s
+            join user u on u.id=s.user_id
+            join user g on g.id=s.grader_id
+            join assignment a on a.id=s.assignment_id
+            join module_def m on m.id = a.assignment_group_id
+            WHERE datediff(now(), s.graded_at)<7
+            order by g.name
+            ";
+        $data = parent::executeQuery($sql, "Modules nagekeken door", $export);
+
+        return $this->render('output', [
+            'data' => $data,
+            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+        ]);
+    }
+
     public function actionClusterSubmissions($clusterSize=8, $clusterTime=300, $export=false){
         $sql = "
             select u.name Student, g.name Module, UNIX_TIMESTAMP(s.submitted_at) unix_ts, s.submitted_at Submitted
