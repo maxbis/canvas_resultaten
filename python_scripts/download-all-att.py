@@ -52,7 +52,7 @@ def downloadAssignment(assignment):
         except:
             userName = "*Unknown"
 
-        downloads = 'd:\downloads\dl-canvas'
+        downloads = 'd:\downloads\dl-canvas2'
 
         path = os.path.join(downloads,userName)
         path = os.path.join(path, assignment.name)
