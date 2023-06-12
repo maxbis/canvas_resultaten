@@ -14,8 +14,12 @@ use yii\web\Controller;
 class ApiController extends Controller
 {
 
-    public function actionModules()
-    {
+    public function actionModules($s='') {
+
+    $search_criteria='';
+    if ( $s != '' ) {
+        $search_criteria="AND ( c.naam like '%$s%' OR m.naam like '%$s%' )";
+    }
         $sql = "
         select
             c.id course_id,
@@ -31,6 +35,7 @@ class ApiController extends Controller
         JOIN assignment a ON a.assignment_group_id = m.id
         JOIN course c ON c.id = a.course_id
         WHERE a.published=1
+        $search_criteria
         ORDER BY m.pos, a.position
         ";
 
