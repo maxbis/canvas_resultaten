@@ -68,7 +68,7 @@ class CanvasDb:
         if len(courses)==0:
            print(f"No Canvas courses (blocks) found")
            return None
-        
+
         return courses
 
     def teachers(self, searchString='Bisschop'):
@@ -95,6 +95,7 @@ courses = canvasDb.courses(courseName)
 teacher = canvasDb.teachers(userName)
 
 if not teacher or not courses:
+    print('No teacher or course')
     sys.exit()
 
 print('\nAssigning %s with id %s to:' % (teacher[1], teacher[0]))
@@ -102,7 +103,7 @@ print('\nAssigning %s with id %s to:' % (teacher[1], teacher[0]))
 for course in courses:
         print('  %s with id %s' % (course[1], course[0]))
 
-        
+
 
 print("\nstarting Canvas API update");
 
@@ -117,9 +118,29 @@ for course in courses:
     thisUser = canvas.get_user(teacher[0])
     print(thisUser.name)
 
+    # print(thisCourse.get_enrollments(sis_user_id='M120869'))
+    # sys.exit()
+
     if args['execute']:
         print("Execute")
         result=thisCourse.enroll_user(thisUser, 'TeacherEnrollment', enrollment_state='active')
         print(result)
     else:
         print("No execution, use -x")
+
+
+# ChatGPT example of how to remove an enrollement (to be tested)
+
+# from canvasapi import Canvas
+
+# API_URL = "https://<your-institution>.instructure.com"
+# API_KEY = "<your-api-key>"
+
+# canvas = Canvas(API_URL, API_KEY)
+
+# course = canvas.get_course(<course_id>)
+# enrollments = course.get_enrollments()
+
+# for enrollment in enrollments:
+#     if enrollment.user_id == <user_id_to_remove>:
+#         enrollment.deactivate(enrollment_task="delete")
