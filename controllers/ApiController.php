@@ -22,15 +22,15 @@ class ApiController extends Controller
     }
         $sql = "
         select
-            c.id course_id,
-            c.korte_naam 'korte_naam',
-            c.naam course_naam,
+            a.id assignment_id,
+            m.pos mpos,
+            a.position apos,
+            a.name assignment_naam,
             m.id module_id,
             m.naam module_naam,
-            a.id assignment_id,
-            a.name assignment_naam,
-            m.pos module_pos,
-            a.position assignment_pos
+            c.id course_id,
+            c.korte_naam 'korte_naam',
+            c.naam course_naam
             from module_def m
         JOIN assignment a ON a.assignment_group_id = m.id
         JOIN course c ON c.id = a.course_id
