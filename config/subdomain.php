@@ -15,7 +15,7 @@ function subDomain() {
     } elseif ( $subDomain == 'c20') {
         $DB='canvas-c20';
     } else {
-        $DB='canvas';
+        $DB='canvas-c22';
     }
 
     # $DB='canvas';

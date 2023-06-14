@@ -753,7 +753,8 @@ class ReportController extends QueryBaseController
             select c.id 'course_id', c.naam 'cursus_naam',
                 korte_naam '#Blok',
                 concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
-                a.points_possible '+Punten', ''
+                a.points_possible '+Punten', '',
+                concat('☛ ','|/nakijken/update/|assignment_id|',a.id) '!Nakijken'
             from assignment a
             left join course c on c.id=a.course_id
             where assignment_group_id=$id
