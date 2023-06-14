@@ -14,6 +14,9 @@ import datetime
 config = configparser.ConfigParser()
 config.read("canvas.ini")
 
+userNamesList = ['Waal']
+
+downloads = 'd:\downloads\dl-canvas-juni'
 
 # Canvas API URL
 API_URL = config.get('main', 'host')
@@ -29,6 +32,11 @@ def translate(text):
         text = text.replace(char, translate[char])
     return text
 
+def checkSubstringsFromList(fullString, lst):
+    for item in lst:
+        if item in fullString:
+            return True
+    return False
 
 def downloadAssignment(assignment):
     print("\nAssignemnt: %s (%s)" % (assignment.name, assignment.id) )
@@ -42,17 +50,22 @@ def downloadAssignment(assignment):
 
         if (submission.workflow_state == "unsubmitted"):
             continue
-
-        today=datetime.datetime.now().replace(tzinfo=None)
-        past=submission.submitted_at_date.replace(tzinfo=None)
-        diff=today-past     
-
+    
         try:
             userName = canvas.get_user(submission.user_id).name
         except:
             userName = "*Unknown"
 
-        downloads = 'd:\downloads\dl-canvas2'
+        if ( userNamesList and checkSubstringsFromList(userName, userNamesList) ):
+            print(f" -> Downloading {userName}")
+        else:
+            print(f"Skipping {userName}, not in list.")
+            continue
+            
+
+        today=datetime.datetime.now().replace(tzinfo=None)
+        past=submission.submitted_at_date.replace(tzinfo=None)
+        diff=today-past     
 
         path = os.path.join(downloads,userName)
         path = os.path.join(path, assignment.name)
@@ -77,25 +90,13 @@ def downloadAssignment(assignment):
 
     print()
 
-# check blok id
-# course = canvas.get_course(8761)
-# course = canvas.get_course(6580) # blok 2 c22
-# course = canvas.get_course(4999) # blok 6 c21
-# course = canvas.get_course(6586) # blok 9/10 c21
+
 
 course = canvas.get_course(8761) # examen portfolio
-
-
 print(course.name)
 
-# assignment = course.get_assignment(93446)
-# checkAssignment(assignment)
-
 assignments = course.get_assignments()
-
 
 for assignment in assignments:
     print(assignment.id, assignment.name)
     downloadAssignment(assignment)
-
-
