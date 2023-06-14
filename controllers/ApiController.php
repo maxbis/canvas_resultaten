@@ -75,7 +75,7 @@ class ApiController extends Controller
             JOIN nakijken n on n.assignment_id = a.id
             WHERE g.name='Yii - Level 2'
             $search_criteria
-            ORDER by g.name, c_position, a_position";
+            ORDER by g.name, cpos, apos";
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
