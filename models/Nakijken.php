@@ -24,7 +24,7 @@ class Nakijken extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'nakijken';
+        return 'canvas.nakijken';
     }
 
     /**

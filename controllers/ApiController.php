@@ -72,7 +72,7 @@ class ApiController extends Controller
             JOIN assignment_group g on g.id=a.assignment_group_id
             JOIN course c on c.id=a.course_id 
             JOIN module_def m on m.id=g.id
-            JOIN nakijken n on n.assignment_id = a.id
+            JOIN canvas.nakijken n on n.assignment_id = a.id
             WHERE g.name='Yii - Level 2'
             $search_criteria
             ORDER by g.name, cpos, apos";
