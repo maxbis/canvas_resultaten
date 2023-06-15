@@ -14,12 +14,9 @@ use yii\web\Controller;
 class ApiController extends Controller
 {
 
-    public function actionModules($mid='',$s='') {
+    public function actionModules($s='') {
 
         $search_criteria='';
-        if ( $mid != '' ) {
-            $search_criteria="AND ( m.id = $mid )";
-        }
         if ( $s != '' ) {
             $search_criteria="AND ( c.naam like '%$s%' OR m.naam like '%$s%' )";
         }
@@ -53,11 +50,14 @@ class ApiController extends Controller
         return $output  ;
     }
 
-    public function actionNakijken($s='') {
+    public function actionNakijken($s='', $mid='') {
 
         $search_criteria='';
         if ( $s != '' ) {
             $search_criteria="AND ( g.name like '%$s%' or n.label like '%$s%')";
+        }
+        if ( $mid != '' ) {
+            $search_criteria="AND ( m.id = $mid )";
         }
         $sql = "
         select c.id FROM nakijken
@@ -67,7 +67,7 @@ class ApiController extends Controller
         ";
  
         $sql="
-            SELECT a.course_id course_id, c.naam course_name, c.pos cpos, a.position apos, m.pos mpos,
+            sSELECT a.course_id course_id, c.naam course_name, c.pos cpos, a.position apos, m.pos mpos,
 		            a.id assignment_id, g.name module_name, a.name assignment_name,
                     m.id module_id,
                     n.words_in_order words_in_order, n.file_type file_type, n.instructie hint
@@ -76,7 +76,7 @@ class ApiController extends Controller
             JOIN course c on c.id=a.course_id 
             JOIN module_def m on m.id=g.id
             JOIN canvas.nakijken n on n.assignment_id = a.id
-            WHERE g.name='Yii - Level 2'
+            WHERE 1=1
             $search_criteria
             ORDER by g.name, cpos, apos";
 

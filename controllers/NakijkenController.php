@@ -147,8 +147,9 @@ class NakijkenController extends Controller
                 WHERE module_name = '". $result['module_name']."'
                 AND assignment_name = '".$result['assignment_name']."'
             ";
-
             $existing = Yii::$app->db->createCommand($sql)->queryAll();
+
+            $databaseName = Yii::$app->db->createCommand('SELECT DATABASE() db')->queryOne()['db'];
 
             $model = new Nakijken();
 
@@ -157,6 +158,8 @@ class NakijkenController extends Controller
             $model->module_name = $result['module_name'];
             $model->assignment_name = $result['assignment_name'];
             $model->module_id=$result['module_id'];
+            #$model->database_name=substr($databaseName,-3);
+            #dd($model->database_name);
 
             if(count($existing)==1){
                 $model->file_type=$existing[0]['file_type'];
