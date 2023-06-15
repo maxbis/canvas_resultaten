@@ -14,9 +14,12 @@ use yii\web\Controller;
 class ApiController extends Controller
 {
 
-    public function actionModules($s='') {
+    public function actionModules($mid='',$s='') {
 
         $search_criteria='';
+        if ( $mid != '' ) {
+            $search_criteria="AND ( m.id = $mid )";
+        }
         if ( $s != '' ) {
             $search_criteria="AND ( c.naam like '%$s%' OR m.naam like '%$s%' )";
         }

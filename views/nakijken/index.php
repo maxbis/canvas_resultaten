@@ -30,10 +30,17 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute'=>'course_id',
+                'label' => 'cid',
                 'contentOptions' => ['style' => 'width:40px;'],
             ],
             [
                 'attribute'=>'assignment_id',
+                'label' => 'aid',
+                'contentOptions' => ['style' => 'width:40px;'],
+            ],
+            [
+                'attribute'=>'module_id',
+                'label' => 'mid',
                 'contentOptions' => ['style' => 'width:40px;'],
             ],
             'module_name',

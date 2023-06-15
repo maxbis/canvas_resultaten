@@ -96,7 +96,7 @@ class NakijkenController extends Controller
         $model = $this->findModel($assignment_id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'assignment_id' => $model->assignment_id]);
+            return $this->redirect(['/report/opdrachten-module', 'id' => $model->module_id]);
         }
 
         return $this->render('update', [
@@ -113,6 +113,7 @@ class NakijkenController extends Controller
      */
     public function actionDelete($assignment_id)
     {
+
         $this->findModel($assignment_id)->delete();
 
         return $this->redirect(['index']);
@@ -131,7 +132,7 @@ class NakijkenController extends Controller
             return $model;
         } else {
             $sql="
-                SELECT c.id course_id, m.naam module_name, a.name assignment_name
+                SELECT c.id course_id, m.naam module_name, a.name assignment_name, m.id module_id
                 FROM assignment a
                 JOIN assignment_group g on g.id=a.assignment_group_id
                 JOIN course c on c.id=a.course_id 
@@ -155,6 +156,7 @@ class NakijkenController extends Controller
             $model->assignment_id = $assignment_id;
             $model->module_name = $result['module_name'];
             $model->assignment_name = $result['assignment_name'];
+            $model->module_id=$result['module_id'];
 
             if(count($existing)==1){
                 $model->file_type=$existing[0]['file_type'];
