@@ -136,7 +136,7 @@ class NakijkenController extends Controller
                 JOIN assignment_group g on g.id=a.assignment_group_id
                 JOIN course c on c.id=a.course_id 
                 JOIN module_def m on m.id=g.id
-                WHERE a.id=110623
+                WHERE a.id=$assignment_id
             ";
             $result = Yii::$app->db->createCommand($sql)->queryOne();
             $model = new Nakijken();
