@@ -754,8 +754,11 @@ class ReportController extends QueryBaseController
                 korte_naam '#Blok',
                 concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
                 a.points_possible '+Punten', '',
-                concat('☛ ','|/nakijken/update/|assignment_id|',a.id) '!Nakijken',
-                n.assignment_id
+                CASE 
+                    WHEN n.assignment_id is null THEN '-' 
+                    ELSE '&#10003;'
+                END Nakijken,
+                concat('✎ ','|/nakijken/update/|assignment_id|',a.id) '!Update'
             from assignment a
             left join course c on c.id=a.course_id
             left outer join canvas.nakijken n on n.assignment_id=a.id
