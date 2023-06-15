@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\nakijken;
-use app\models\nakijkenSearch;
+use app\models\Nakijken;
+use app\models\NakijkenSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -40,7 +40,7 @@ class NakijkenController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new nakijkenSearch();
+        $searchModel = new NakijkenSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -69,7 +69,7 @@ class NakijkenController extends Controller
      */
     public function actionCreate()
     {
-        $model = new nakijken();
+        $model = new Nakijken();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -139,7 +139,7 @@ class NakijkenController extends Controller
                 WHERE a.id=110623
             ";
             $result = Yii::$app->db->createCommand($sql)->queryOne();
-            $model = new nakijken();
+            $model = new Nakijken();
             $model->course_id = $result['course_id'];
             $model->assignment_id = $assignment_id;
             $model->module_name = $result['module_name'];
