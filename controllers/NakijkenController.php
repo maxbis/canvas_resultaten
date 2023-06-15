@@ -127,7 +127,7 @@ class NakijkenController extends Controller
      */
     protected function findModel($assignment_id)
     {
-        if (($model = nakijken::findOne(['assignment_id' => $assignment_id])) !== null) {
+        if (($model = Nakijken::findOne(['assignment_id' => $assignment_id])) !== null) {
             return $model;
         } else {
             $sql="
