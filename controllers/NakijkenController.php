@@ -73,7 +73,7 @@ class NakijkenController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'assignment_id' => $model->assignment_id]);
+                return $this->redirect(['index', 'assignment_id' => $model->assignment_id]);
             }
         } else {
             $model->loadDefaultValues();
@@ -96,7 +96,7 @@ class NakijkenController extends Controller
         $model = $this->findModel($assignment_id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'assignment_id' => $model->assignment_id]);
+            return $this->redirect(['index', 'assignment_id' => $model->assignment_id]);
         }
 
         return $this->render('update', [
@@ -139,11 +139,28 @@ class NakijkenController extends Controller
                 WHERE a.id=$assignment_id
             ";
             $result = Yii::$app->db->createCommand($sql)->queryOne();
+
+            $sql="
+                SELECT file_type, words_in_order, instructie
+                FROM canvas.nakijken
+                WHERE module_name = '". $result['module_name']."'
+                AND assignment_name = '".$result['assignment_name']."'
+            ";
+
+            $existing = Yii::$app->db->createCommand($sql)->queryAll();
+
             $model = new Nakijken();
+
             $model->course_id = $result['course_id'];
             $model->assignment_id = $assignment_id;
             $model->module_name = $result['module_name'];
             $model->assignment_name = $result['assignment_name'];
+
+            if(count($existing)==1){
+                $model->file_type=$existing[0]['file_type'];
+                $model->words_in_order=$existing[0]['words_in_order'];
+                $model->instructie=$existing[0]['instructie'];
+            }
 
             return $model;
         }

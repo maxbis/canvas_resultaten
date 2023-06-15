@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var app\models\nakijkenSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Nakijkens';
+$this->title = 'Nakijken';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="nakijken-index">
@@ -28,12 +28,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'course_id',
-            'assignment_id',
+            [
+                'attribute'=>'course_id',
+                'contentOptions' => ['style' => 'width:40px;'],
+            ],
+            [
+                'attribute'=>'assignment_id',
+                'contentOptions' => ['style' => 'width:40px;'],
+            ],
             'module_name',
             'assignment_name',
-            'file_type',
+            [
+                'attribute'=>'file_type',
+                'contentOptions' => ['style' => 'width:40px;'],
+            ],
             //'words_in_order',
             //'points_possible',
             //'instructie',
