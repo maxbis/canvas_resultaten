@@ -68,7 +68,7 @@ class nakijkenSearch extends Nakijken
             ->andFilterWhere(['like', 'file_type', $this->file_type])
             ->andFilterWhere(['like', 'words_in_order', $this->words_in_order])
             ->andFilterWhere(['like', 'instructie', $this->instructie])
-            ->andFilterWhere(['like', 'cohort', $this->cohort]);
+            ->andFilterWhere(['like', 'cohort', $this->cohort]); #
 
         return $dataProvider;
     }
