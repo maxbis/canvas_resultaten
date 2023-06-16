@@ -18,7 +18,7 @@ class nakijkenSearch extends Nakijken
     {
         return [
             [['course_id', 'assignment_id', 'module_id', 'points_possible'], 'integer'],
-            [['module_name', 'assignment_name', 'file_type', 'words_in_order', 'instructie', 'label'], 'safe'],
+            [['module_name', 'assignment_name', 'file_type', 'words_in_order', 'instructie', 'cohort'], 'safe'],
         ];
     }
 
@@ -68,7 +68,7 @@ class nakijkenSearch extends Nakijken
             ->andFilterWhere(['like', 'file_type', $this->file_type])
             ->andFilterWhere(['like', 'words_in_order', $this->words_in_order])
             ->andFilterWhere(['like', 'instructie', $this->instructie])
-            ->andFilterWhere(['like', 'label', $this->label]);
+            ->andFilterWhere(['like', 'cohort', $this->cohort]);
 
         return $dataProvider;
     }
