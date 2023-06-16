@@ -771,6 +771,8 @@ class ReportController extends QueryBaseController
         $data['show_from']=2;
         $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
        
+        $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
+
         if (isset($data['row'][0]['cursus_naam']) )  {
             $data['title']=$data['row'][0]['cursus_naam'];
             $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/".$data['row'][0]['course_id']."\">Naar module &#129062;</a>";
