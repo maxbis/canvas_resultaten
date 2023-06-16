@@ -1,12 +1,14 @@
 <?php
 
-function subDomain() {
+function subDomain($return='DB') {
     $subDomain = "www";
 
     if ( isset($_SERVER['SERVER_NAME'])) {
         $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
     }
-
+    if ($return=='SD') {
+        return $subDomain;
+    }
 
     if ( $subDomain == 'c22') {
         $DB='canvas-c22';

@@ -41,9 +41,6 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-2">
                 <?= $form->field($model, 'file_type')->textInput(['maxlength' => true]) ?>
             </div>
-            <div class="col-sm-2">
-                <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
-            </div>
         </div>
 
         <div class="row">
@@ -82,9 +79,6 @@ use yii\widgets\ActiveForm;
                 ]) ?>
             </div>
         </div>
-
-
-
 
     </div>
 

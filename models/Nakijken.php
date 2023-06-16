@@ -35,8 +35,9 @@ class Nakijken extends \yii\db\ActiveRecord
         return [
             [['course_id', 'assignment_id', 'module_name', 'assignment_name', 'file_type'], 'required'],
             [['course_id', 'assignment_id', 'module_id','points_possible'], 'integer'],
-            [['module_name', 'assignment_name', 'label'], 'string', 'max' => 40],
+            [['module_name', 'assignment_name'], 'string', 'max' => 40],
             [['file_type'], 'string', 'max' => 4],
+            [['cohort'], 'string', 'max' => 3],
             [['words_in_order', 'instructie'], 'string', 'max' => 200],
             [['assignment_id'], 'unique'],
         ];
@@ -57,6 +58,8 @@ class Nakijken extends \yii\db\ActiveRecord
             'points_possible' => 'Points Possible',
             'instructie' => 'Instructie',
             'label' => 'Label',
+            'module_id' => 'Module ID',
+            'cohort' => 'Cohort'
         ];
     }
 }

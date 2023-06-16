@@ -67,7 +67,7 @@ class ApiController extends Controller
         ";
  
         $sql="
-            sSELECT a.course_id course_id, c.naam course_name, c.pos cpos, a.position apos, m.pos mpos,
+            SELECT n.cohort cohort, a.course_id course_id, c.naam course_name, c.pos cpos, a.position apos, m.pos mpos,
 		            a.id assignment_id, g.name module_name, a.name assignment_name,
                     m.id module_id,
                     n.words_in_order words_in_order, n.file_type file_type, n.instructie hint
