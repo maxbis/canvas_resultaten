@@ -41,6 +41,22 @@ $tot = [];
         document.getElementById("main").style.display = "none";
         document.getElementById("wait").style.display = "block";
    }
+
+   function working(url) {
+      // Hide the 'main' div
+        document.getElementById('main').style.display = 'none';
+        document.getElementById('busy').style.display = 'block';
+
+        setInterval(function() {
+        var myDiv = document.getElementById('busy');
+        myDiv.textContent = myDiv.textContent + '.';
+        }, 400);
+
+        // Redirect to the new URL
+        window.location.href = url;
+
+    }
+    
 </script>
 
 <div class="card" id="wait" style="display:none;">
@@ -48,6 +64,8 @@ $tot = [];
         <br><h1>Processing...</h1></br>
     </div>
 </div>
+
+<h1><div class="container" id="busy" style="display: none;width:500px;">Working....</div></h1>
 
 <div class="card" id="main">
 
@@ -143,6 +161,8 @@ $tot = [];
                             if (count($part) == 2){
                                 if (substr($part[0],0,5)=='Grade') { # Only for Grade Link
                                     echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
+                                }elseif (substr($part[0],0,4)=='(ac)') {
+                                    echo "<td><a onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" onclick=\"working('".$part[1]."');\" title=\"Auto Correct\">".$part[0]."</td>";
                                 } else { # Generic
                                     //echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
                                     echo "<td><a href=\"".$part[1]."\">$part[0]</a></td>";
