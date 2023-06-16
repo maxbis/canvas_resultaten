@@ -776,7 +776,7 @@ class ReportController extends QueryBaseController
         if (isset($data['row'][0]['cursus_naam']) )  {
             $data['title']=$data['row'][0]['cursus_naam'];
             $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/".$data['row'][0]['course_id']."\">Naar module &#129062;</a>";
-            $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"http://localhost:5000/section/refresh/".subDomain('SD').'/'.$id."\">Naar nakijken &#129062;</a>";
+            $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"http://localhost:5000/section/refresh/".$subDomain.'/'.$id."\">Naar nakijken &#129062;</a>";
         }
 
         return $this->render('output', [
