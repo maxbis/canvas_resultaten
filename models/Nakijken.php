@@ -7,6 +7,7 @@ use Yii;
 /**
  * This is the model class for table "nakijken".
  *
+ * *
  * @property int $course_id
  * @property int $assignment_id
  * @property string $module_name
