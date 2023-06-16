@@ -9,7 +9,7 @@ use app\models\Nakijken;
 /**
  * nakijkenSearch represents the model behind the search form of `app\models\nakijken`.
  */
-class nakijkenSearch extends Nakijken
+class NakijkenSearch extends Nakijken
 {
     /**
      * {@inheritdoc}
