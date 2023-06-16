@@ -93,10 +93,16 @@ class NakijkenController extends Controller
      */
     public function actionUpdate($assignment_id)
     {
-        $model = $this->findModel($assignment_id);
+        $model = $this->findModel($assignment_id, $alt_return=0);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            # if (alt)return is set this means we came from grading page
+            if ($alt_return==1) {
+                return $this->redirect(['/grade/not-graded-module', 'moduleId' => $model->module_id, 'regrading' => 2]);
+            }
+            # oterhwise we go back to the complete module overview
             return $this->redirect(['/report/opdrachten-module', 'id' => $model->module_id]);
+            
         }
 
         return $this->render('update', [

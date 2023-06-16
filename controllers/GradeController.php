@@ -280,7 +280,7 @@ class GradeController extends QueryBaseController
     public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
         //$this->actionUpdateModuleGrading($moduleId, $regrading);
-
+        $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
         $sql = "
             SELECT
                 m.naam Module,
@@ -292,6 +292,12 @@ class GradeController extends QueryBaseController
                 concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
                 case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
                 -- s.attempt poging,
+                CASE 
+                    WHEN n.assignment_id is null THEN '-' 
+                    ELSE '&#10003;'
+                END Nakijken,
+                concat('✎ ','|/nakijken/update/|assignment_id|',a.id,'|alt_return|',1) '!Upd',
+                concat('(ac)','|http://localhost:5000/correcta/$cohort','/',a.id) '!ac',
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id
@@ -299,6 +305,7 @@ class GradeController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             join module_def m on m.id = g.id
             join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            left outer join canvas.nakijken n on n.assignment_id=a.id
             where u.grade=1 and s.submitted_at > s.graded_at
             and m.id=$moduleId
             order by a.position, s.attempt, s.submitted_at
