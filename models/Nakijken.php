@@ -63,4 +63,13 @@ class Nakijken extends \yii\db\ActiveRecord
             'cohort' => 'Cohort'
         ];
     }
+
+    public function rules()
+    {
+        return [
+            ['your_field', 'filter', 'filter' => function ($value) {
+                return str_replace('.', '', $value);
+            }],
+        ];
+    }
 }
