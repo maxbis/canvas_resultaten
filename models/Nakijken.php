@@ -39,7 +39,7 @@ class Nakijken extends \yii\db\ActiveRecord
             [['module_name', 'assignment_name'], 'string', 'max' => 40],
             [['file_type'], 'string', 'max' => 4],
             [['cohort'], 'string', 'max' => 3],
-            [['words_in_order', 'instructie'], 'string', 'max' => 200],
+            [['words_in_order', 'instructie'], 'string', 'max' => 400],
             [['assignment_id'], 'unique'],
         ];
     }
