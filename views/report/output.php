@@ -65,7 +65,7 @@ $tot = [];
     </div>
 </div>
 
-<h1><div class="container" id="busy" style="display: none;width:500px;">Working....</div></h1>
+<h1><div class="container" id="busy" style="display:none;width:500px;padding-top:500px;">Working....</div></h1>
 
 <div class="card" id="main">
 

@@ -277,7 +277,7 @@ class GradeController extends QueryBaseController
     }
 
 
-    public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    public function actionNotGradedModule2($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
     {
         //$this->actionUpdateModuleGrading($moduleId, $regrading);
         $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
@@ -293,11 +293,93 @@ class GradeController extends QueryBaseController
                 case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
                 -- s.attempt poging,
                 CASE 
-                    WHEN n.assignment_id is null THEN '-' 
+                    WHEN n.assignment_id is null
+                    THEN '-' 
                     ELSE '&#10003;'
                 END Nakijken,
                 concat('✎ ','|/nakijken/update/|assignment_id|',a.id,'|alt_return|',1) '!Upd',
                 concat('(ac)','|http://localhost:5000/correcta/$cohort','/',a.id) '!ac',
+                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+            FROM assignment a
+            join submission s on s.assignment_id= a.id
+            join user u on u.id=s.user_id
+            join assignment_group g on g.id = a.assignment_group_id
+            join module_def m on m.id = g.id
+            join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
+            left outer join canvas.nakijken n on n.assignment_id=a.id
+            where u.grade=1 and s.submitted_at > s.graded_at
+            and m.id=$moduleId
+            order by a.position, s.attempt, s.submitted_at
+        ";
+
+        $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
+
+        if (! isset($data['row']) ) {
+            return $this->render('/report/output', [
+                'data' => $data,
+            ]);
+        }
+
+        $data['title'].=" voor <i>".$data['row'][0]['Module']."</i>";
+        $data['show_from']=1;
+
+
+        // Create lastLineButton with buttons to open $pagesPerButton in one go
+        $lastLine= "<script>\n";
+        $count=0;
+        $pagesPerButton=10;
+        $buttons=[];
+
+        foreach ($data['row'] as $item) {
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "function openAllInNewTab".$count."() {\n";
+                array_push($buttons, $count);
+            }
+            // dd( explode('|',$item['!Link'])[1] );
+            $lastLine.= "window.open('". explode('|',$item['!Link'])[1] ."', '_blank');\n";
+            $count++;
+            if ( $count%$pagesPerButton == 0) {
+                $lastLine.= "}\n";
+            }
+        }
+        if ( $count%$pagesPerButton != 0) {
+            $lastLine.= "}\n";
+        }
+        $lastLine.= "</script><hr>\n";
+
+        // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
+        $count=count($buttons);
+        foreach (array_reverse($buttons) as $elem) {
+            if($count-- < 7) { // max number of buttons at bottom of page
+                $start=$elem+1;
+                $stop=min($elem+10,count($data['row']));
+                $lastLine.="&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
+            }
+        }
+        $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
+
+        return $this->render('/report/output', [
+            'data' => $data,
+            'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
+            'lastLine' => $lastLine,
+        ]);
+    }
+
+    public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
+    {
+        //$this->actionUpdateModuleGrading($moduleId, $regrading);
+        $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
+        $sql = "
+            SELECT
+                m.naam Module,
+                a.position '-pos',
+                concat(a.name,'|/public/details-module|assGroupId|',m.id,'|code|',u.code) '!Opdracht',
+                concat(u.name,'|/public/index|code|',u.code) '!Student',
+                u.klas Klas,
+                substring(u.comment,1,3) 'Code',
+                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
+                s.attempt poging,
                 concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
             FROM assignment a
             join submission s on s.assignment_id= a.id
