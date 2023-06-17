@@ -26,6 +26,9 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-2">
                 <?= $form->field($model, 'module_id')->textInput() ?>
             </div>
+            <div class="col-sm-2">
+                <?= $form->field($model, 'cohort')->textInput() ?>
+            </div>
         </div>
 
         <div class="row">

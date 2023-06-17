@@ -382,7 +382,7 @@ class ReportController extends QueryBaseController
                         ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40,60,300,60,60,60,60],
+            'width' => [40,90,300,60,60,60,60],
         ]);
     }
 

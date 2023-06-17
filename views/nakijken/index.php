@@ -43,6 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'mid',
                 'contentOptions' => ['style' => 'width:40px;'],
             ],
+            [
+                'attribute'=>'cohort',
+                'label' => 'Cohort',
+                'contentOptions' => ['style' => 'width:40px;'],
+            ],
             'module_name',
             'assignment_name',
             [
