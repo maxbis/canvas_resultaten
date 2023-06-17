@@ -164,8 +164,7 @@ class NakijkenController extends Controller
             $model->module_name = $result['module_name'];
             $model->assignment_name = $result['assignment_name'];
             $model->module_id=$result['module_id'];
-            #$model->database_name=substr($databaseName,-3);
-            #dd($model->database_name);
+            $model->cohort=substr($databaseName,-3);
 
             if(count($existing)==1){
                 $model->file_type=$existing[0]['file_type'];
