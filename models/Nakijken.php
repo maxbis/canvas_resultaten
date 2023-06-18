@@ -41,6 +41,9 @@ class Nakijken extends \yii\db\ActiveRecord
             [['cohort'], 'string', 'max' => 3],
             [['words_in_order', 'instructie'], 'string', 'max' => 400],
             [['assignment_id'], 'unique'],
+            ['file_type', 'filter', 'filter' => function ($value) {
+                return str_replace('.', '', $value);
+            }],
         ];
     }
 
@@ -64,12 +67,4 @@ class Nakijken extends \yii\db\ActiveRecord
         ];
     }
 
-    public function rules()
-    {
-        return [
-            ['your_field', 'filter', 'filter' => function ($value) {
-                return str_replace('.', '', $value);
-            }],
-        ];
-    }
 }

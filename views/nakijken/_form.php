@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
 
         <div class="row">
             <div class="col-sm-2">
-                <?= $form->field($model, 'file_type')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'file_type')->dropDownList(['png' => 'png','php' => 'php','sql' => 'sql','js'  => 'js']);?>
             </div>
         </div>
 

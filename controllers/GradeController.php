@@ -283,23 +283,26 @@ class GradeController extends QueryBaseController
         $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
         $sql = "
             SELECT
-                m.naam Module,
-                a.position '-pos',
-                concat(a.name,'|/public/details-module|assGroupId|',m.id,'|code|',u.code) '!Opdracht',
-                concat(u.name,'|/public/index|code|',u.code) '!Student',
-                u.klas Klas,
-                substring(u.comment,1,3) 'Code',
-                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'Ingeleverd',
+                m.naam module_name,
+                m.id module_id,
+                u.code student_code,
+                a.id assignment_id,
+                a.position assignment_pos,
+                a.name assignment_name,
+                n.assignment_id nakijken_id,
+                u.name student_name,
+                u.klas student_klas,
+                concat(date(s.submitted_at),' (',datediff(now(), s.submitted_at),')') 'ingeleverd',
                 case when s.attempt <=3 then s.attempt else concat(s.attempt,'**') end 'poging',
-                -- s.attempt poging,
+                s.attempt poging,
                 CASE 
                     WHEN n.assignment_id is null
                     THEN '-' 
                     ELSE '&#10003;'
-                END Nakijken,
+                END nakijken,
                 concat('✎ ','|/nakijken/update/|assignment_id|',a.id,'|alt_return|',1) '!Upd',
-                concat('(ac)','|http://localhost:5000/correcta/$cohort','/',a.id) '!ac',
-                concat('Grade&#10142;','|https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) '!Link'
+                concat('http://localhost:5000/correcta/$cohort','/',a.id) 'ac_link',
+                concat('https://talnet.instructure.com/courses/',a.course_id,'/gradebook/speed_grader?assignment_id=',a.id,'&student_id=',u.id) 'canvas_link'
             FROM assignment a
             join submission s on s.assignment_id= a.id
             join user u on u.id=s.user_id
@@ -311,6 +314,12 @@ class GradeController extends QueryBaseController
             and m.id=$moduleId
             order by a.position, s.attempt, s.submitted_at
         ";
+
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $this->render('/grade/gradeModule', [
+            'data' => $result
+        ]);
+
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
 
@@ -358,7 +367,7 @@ class GradeController extends QueryBaseController
         }
         $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
 
-        return $this->render('/report/output', [
+        return $this->render('/grade/gradeModule', [
             'data' => $data,
             'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
             'lastLine' => $lastLine,
