@@ -14,6 +14,22 @@ use yii\helpers\Html;
     .grey-column {
         color:#a0a0a0;
     }
+    .button {
+    display: inline-block;
+    padding: 1px 2px;
+    font-size: 0.7em;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: rgba(0, 123, 255, 0.75);;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.1s ease;
+    }
+    .button:hover, .regular-link:hover {
+        background-color: #ffdd00;
+        color:#000000;
+    }
     td {
         padding-right:5px;
     }
@@ -21,7 +37,6 @@ use yii\helpers\Html;
         font-size:0.8em;
     }
 </style>
-
 <script>
     function hide() {
         document.getElementById("main").style.display = "none";
@@ -67,15 +82,15 @@ use yii\helpers\Html;
                 <td><?=$row['poging']?></td>
                 <td>&nbsp;&nbsp;&nbsp;</td>
                 <td> 
-                    <a style="font-size: 0.8em;" href="<?=$row['canvas_link']?>" target="_blank" onmouseover="this.style.background='yellow'" onmouseout="this.style.background='none'" title="Naar opdracht">Canvas➞</a>
+                    <a class="button" href="<?=$row['canvas_link']?>" target="_blank" title="Naar opdracht">Canvas➞</a>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;</td>
                 <td class="nakijken">
-                    <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class']); ?>
+                    <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class regular-link']); ?>
                 </td>
                 <td class="nakijken">
                     <?php if ($row['nakijken_id'] <> '') { ?>
-                        <a style="font-size: 0.8em;" href="<?=$row['ac_link']?>" target="_blank" onmouseover="this.style.background='yellow'" onmouseout="this.style.background='none'" title="Naar opdracht">AC➞</a>
+                        <a class="button" href="<?=$row['ac_link']?>" target="_blank" title="Naar opdracht">AC➞</a>
                     <?php } ?>
                 </td>
             </tr>
