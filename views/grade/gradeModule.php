@@ -21,7 +21,7 @@ use yii\helpers\Html;
     text-align: center;
     text-decoration: none;
     color: #fff;
-    background-color: rgba(0, 123, 255, 0.75);;
+    background-color: rgba(0, 123, 255, 0.6);;
     border: none;
     border-radius: 4px;
     transition: background-color 0.1s ease;
@@ -54,7 +54,8 @@ use yii\helpers\Html;
     <div class="container">
         <table class="table table-sm hoverTable">
         <thead>
-            <th></th>
+            <th>#</th>
+            <th colspan=2>AC</th>
             <th>Opdracht</th>
             <th>Student</th>
             <th>Klas</th>
@@ -64,14 +65,32 @@ use yii\helpers\Html;
             <th></th>
             <th>Canvas</th>
             <th></th>
-            <th>AC</th>
-            <th></th>
         </thead>
-        <?php foreach ($data as $row) { ?>
+
+        <?php
+        $prev_assignment_pos=0;
+        foreach ($data as $row) {
+        ?>
             <tr>
-                <td class="grey-column"><?=$row['assignment_pos']?></td>
+                <td class="grey-column"><?php if ($prev_assignment_pos != $row['assignment_pos']) { echo $row['assignment_pos'];} ?></td>
+
+                <?php if ($row['nakijken_id'] <> '' && $prev_assignment_pos != $row['assignment_pos'] ) { ?>
+                    <td>
+                        <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class regular-link']); ?>
+                    </td>
+                    <td>
+                        <a class="button" href="<?=$row['ac_link']?>" target="_blank" title="Auto Correct">AC➞</a>
+                    </td>
+                <?php }else{ ?>
+                    <td></td><td></td>
+                <?php } ?>
+
                 <td>
-                    <?php echo Html::a($row['assignment_name'], ['public/details-module', 'assGroupId' => $row['module_id'], 'code' => $row['student_code']], ['class' => 'link-class']); ?>
+                    <?php 
+                        if ($prev_assignment_pos != $row['assignment_pos']) {
+                            echo Html::a($row['assignment_name'], ['public/details-module', 'assGroupId' => $row['module_id'], 'code' => $row['student_code']], ['class' => 'link-class']);
+                        }
+                    ?>
                 </td>
                 <td>
                     <?php echo Html::a($row['student_name'], ['public/index', 'code' => $row['student_code']], ['class' => 'link-class']); ?>
@@ -85,16 +104,12 @@ use yii\helpers\Html;
                     <a class="button" href="<?=$row['canvas_link']?>" target="_blank" title="Naar opdracht">Canvas➞</a>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;</td>
-                <td class="nakijken">
-                    <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class regular-link']); ?>
-                </td>
-                <td class="nakijken">
-                    <?php if ($row['nakijken_id'] <> '') { ?>
-                        <a class="button" href="<?=$row['ac_link']?>" target="_blank" title="Naar opdracht">AC➞</a>
-                    <?php } ?>
-                </td>
+  
             </tr>
-        <?php } ?>
+            <?php
+                $prev_assignment_pos=$row['assignment_pos'];
+            }
+            ?>
         </table>
     </div>
 </div>

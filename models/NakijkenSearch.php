@@ -17,8 +17,8 @@ class NakijkenSearch extends Nakijken
     public function rules()
     {
         return [
-            [['course_id', 'assignment_id', 'module_id', 'points_possible'], 'integer'],
-            [['module_name', 'assignment_name', 'file_type', 'words_in_order', 'instructie', 'cohort'], 'safe'],
+            [['course_id', 'assignment_id', 'module_id'], 'integer'],
+            [['module_name', 'assignment_name', 'file_type', 'file_name', 'words_in_order', 'instructie', 'cohort'], 'safe'],
         ];
     }
 
@@ -60,12 +60,13 @@ class NakijkenSearch extends Nakijken
         $query->andFilterWhere([
             'course_id' => $this->course_id,
             'assignment_id' => $this->assignment_id,
-            'points_possible' => $this->points_possible,
+            'module_id' => $this->module_id,
         ]);
 
         $query->andFilterWhere(['like', 'module_name', $this->module_name])
             ->andFilterWhere(['like', 'assignment_name', $this->assignment_name])
             ->andFilterWhere(['like', 'file_type', $this->file_type])
+            ->andFilterWhere(['like', 'file_name', $this->file_name])
             ->andFilterWhere(['like', 'words_in_order', $this->words_in_order])
             ->andFilterWhere(['like', 'instructie', $this->instructie])
             ->andFilterWhere(['like', 'cohort', $this->cohort]); #
