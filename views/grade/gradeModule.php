@@ -101,11 +101,11 @@ use yii\helpers\Html;
 
 
 <?php
-foreach ($data as $row) {
-    foreach ($row as $fieldName => $fieldValue) {
-        echo "Field: $fieldName, Value: $fieldValue<br/>";
-    }
-    echo "----------------------<br/>";
-}
+// foreach ($data as $row) {
+//     foreach ($row as $fieldName => $fieldValue) {
+//         echo "Field: $fieldName, Value: $fieldValue<br/>";
+//     }
+//     echo "----------------------<br/>";
+// }
 ?>
 </div>
