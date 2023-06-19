@@ -74,12 +74,14 @@ use yii\helpers\Html;
             <tr>
                 <td class="grey-column"><?php if ($prev_assignment_pos != $row['assignment_pos']) { echo $row['assignment_pos'];} ?></td>
 
-                <?php if ($row['nakijken_id'] <> '' && $prev_assignment_pos != $row['assignment_pos'] ) { ?>
+                <?php if ($prev_assignment_pos != $row['assignment_pos'] ) { ?>
                     <td>
                         <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class regular-link']); ?>
                     </td>
                     <td>
-                        <a class="button" href="<?=$row['ac_link']?>" target="_blank" title="Auto Correct">AC➞</a>
+                        <?php if ($row['nakijken_id'] <> '') { ?>
+                            <a class="button" href="<?=$row['ac_link']?>" target="_blank" title="Auto Correct">AC➞</a>
+                        <?php } ?>
                     </td>
                 <?php }else{ ?>
                     <td></td><td></td>
