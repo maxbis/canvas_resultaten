@@ -14,9 +14,9 @@ import datetime
 config = configparser.ConfigParser()
 config.read("canvas.ini")
 
-userNamesList = ['Waal']
+# userNamesList = ['Waal']
 
-downloads = 'd:\downloads\dl-canvas-juni'
+downloads = 'd:\downloads\dl-canvas-20230606-1455'
 
 # Canvas API URL
 API_URL = config.get('main', 'host')
@@ -56,11 +56,11 @@ def downloadAssignment(assignment):
         except:
             userName = "*Unknown"
 
-        if ( userNamesList and checkSubstringsFromList(userName, userNamesList) ):
-            print(f" -> Downloading {userName}")
-        else:
-            print(f"Skipping {userName}, not in list.")
-            continue
+        # if ( userNamesList and checkSubstringsFromList(userName, userNamesList) ):
+        #     print(f" -> Downloading {userName}")
+        # else:
+        #     print(f"Skipping {userName}, not in list.")
+        #     continue
             
 
         today=datetime.datetime.now().replace(tzinfo=None)

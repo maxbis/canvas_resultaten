@@ -88,11 +88,9 @@ use yii\helpers\Html;
                 <?php } ?>
 
                 <td>
-                    <?php 
-                        if ($prev_assignment_pos != $row['assignment_pos']) {
-                            echo Html::a($row['assignment_name'], ['public/details-module', 'assGroupId' => $row['module_id'], 'code' => $row['student_code']], ['class' => 'link-class']);
-                        }
-                    ?>
+                    <?php if ($prev_assignment_pos != $row['assignment_pos']) { ?>
+                        <a href="https://talnet.instructure.com/courses/<?=$row['course_id']?>/assignments/<?=$row['assignment_id']?>" target="_blank" title="Naar opdracht"><?=$row['assignment_name']?>➞</a>
+                    <?php } ?>
                 </td>
                 <td>
                     <?php echo Html::a($row['student_name'], ['public/index', 'code' => $row['student_code']], ['class' => 'link-class']); ?>

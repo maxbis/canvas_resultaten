@@ -289,6 +289,7 @@ class GradeController extends QueryBaseController
                 a.id assignment_id,
                 a.position assignment_pos,
                 a.name assignment_name,
+                a.course_id course_id,
                 n.assignment_id nakijken_id,
                 u.name student_name,
                 u.klas student_klas,
