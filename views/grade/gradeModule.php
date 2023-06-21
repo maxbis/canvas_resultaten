@@ -76,7 +76,7 @@ use yii\helpers\Html;
 
                 <?php if ($prev_assignment_pos != $row['assignment_pos'] ) { ?>
                     <td>
-                        <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id']], ['class' => 'link-class regular-link']); ?>
+                        <?php echo Html::a('✎ ', ['nakijken/update', 'assignment_id' => $row['assignment_id'],'alt_return' => 1], ['class' => 'link-class regular-link']); ?>
                     </td>
                     <td>
                         <?php if ($row['nakijken_id'] <> '') { ?>

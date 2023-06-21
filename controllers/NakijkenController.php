@@ -91,9 +91,9 @@ class NakijkenController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($assignment_id)
+    public function actionUpdate($assignment_id, $alt_return=0)
     {
-        $model = $this->findModel($assignment_id, $alt_return=0);
+        $model = $this->findModel($assignment_id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             # if (alt)return is set this means we came from grading page
