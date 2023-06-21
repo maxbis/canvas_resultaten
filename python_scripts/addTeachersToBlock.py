@@ -18,7 +18,7 @@ teacher_emails = ['t.monincx@rocva.nl', 's.krachumott@rocva.nl', 'a.vogel@rocva.
 teacher_ids=['8904', '73267', '8887', '8844', '67247', '8889']
 # teacher_ids=['8904']
 
-# Get the course c24-dev 1 tm 4: 10755 12463 12621 12622  - 12623 12624
+# Get the course c24-dev 1 tm 12: 10755 12463 12621 12622  - 12623 12624 12625 12626 - 12627 12628 12629 12630
 course_id = 12624
 try:
     course = canvas.get_course(course_id)
