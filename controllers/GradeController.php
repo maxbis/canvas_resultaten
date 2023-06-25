@@ -55,6 +55,7 @@ class GradeController extends QueryBaseController
         $sql = "SELECT
             m.pos '-pos',
             c.korte_naam '#_Blok',
+            concat('-','|/grade/not-graded-module2|moduleId|',m.id) '!_alternatieve_link',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
             sum( case when (not m.generiek) then 1 else 0 end ) '$nHide+Dev',
             sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',
@@ -72,7 +73,7 @@ class GradeController extends QueryBaseController
         join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
         join assignment_group g on g.id=m.id
             
-        group by 1, 2, 3, 8
+        group by 1, 2, 3,4, 9
         order by m.pos";
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling", $export);
@@ -91,7 +92,7 @@ class GradeController extends QueryBaseController
             'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             'lastLine' => $lastLine,
             'descr' => 'Cohort '.Yii::$app->params['subDomain'],
-            'width' => [20,60,350,60,60,150,100,100],
+            'width' => [20,60,5,350,60,60,150,100,100],
         ]);
     }
 
