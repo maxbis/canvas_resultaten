@@ -770,7 +770,7 @@ class ReportController extends QueryBaseController
         $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
         $data['show_from']=2;
         $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
-       
+        
         $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
 
         if (isset($data['row'][0]['cursus_naam']) )  {

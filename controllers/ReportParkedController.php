@@ -3,6 +3,7 @@
 // report controller, child of QueryBase. Standard reports.
 
 namespace app\controllers;
+
 use Yii;
 
 use DateTime;
@@ -10,12 +11,13 @@ use DateTime;
 class ReportParkedController extends QueryBaseController
 {
 
-    private function getKlas($klas) {
+    private function getKlas($klas)
+    {
         return parent::getKlasQueryPart($klas);
     }
 
     public function actionWegBeoordeeld($export = false) // Laatste beoordeling per module
-    { 
+    {
         $sql = "
             select module Module, max(laatste_beoordeling) Beoordeeld,  datediff(curdate(), max(laatste_beoordeling)) 'Dagen'
             from resultaat 
@@ -26,13 +28,14 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Minimaal één opdracht van de module is beoordeeld ... dagen gelden.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
         ]);
     }
 
     public function actionWegAantalBeoordelingen($export = false, $klas = '') // menu 3.7 - Beoordelingen per module over tijd
-    { 
+    {
 
         $sql = "
             select module Module,
@@ -43,7 +46,7 @@ class ReportParkedController extends QueryBaseController
             sum(1) 'Aantal'
             from resultaat
             where 1
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             group by 1
             order by 2 desc
         ";
@@ -51,13 +54,14 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => '(minimaal 1 opdracht van) module voor x studenten beoordeeld over 2, 7 en 14 dagen.<br/>Automatisch beoordeeelde opdrachten worden ook geteld.',
         ]);
     }
 
-    public function actionWegVoortgangDev($export = false, $klas='') // not used anymore -> actionAdvies
-    { 
+    public function actionWegVoortgangDev($export = false, $klas = '') // not used anymore -> actionAdvies
+    {
 
         $sql = " select concat('&#9998;','|/student/update|id|',u.id) '!Actie',
             concat(u.name,'|/public/index|code|',u.code) '!Student',
@@ -67,8 +71,8 @@ class ReportParkedController extends QueryBaseController
             from resultaat r
             JOIN user u on u.student_nr= r.student_nummer
             where voldaan='V'";
-        $sql.=  $this->getKlas($klas);
-        $sql.=" and module_pos <= 100
+        $sql .= $this->getKlas($klas);
+        $sql .= " and module_pos <= 100
             group by 1,2,3,4
             order by 5 desc, 1;";
 
@@ -76,11 +80,13 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
         ]);
     }
 
-    public function actionWegVoortgangPunten($export=false) {
+    public function actionWegVoortgangPunten($export = false)
+    {
 
         $sql = "SELECT id, naam, substring(naam,1,4) 'mod' from module_def where generiek = 0 order by pos";
 
@@ -88,11 +94,11 @@ class ReportParkedController extends QueryBaseController
 
         $query = "";
         $count = 0;
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
             // $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 0 else (r.aantal_opdrachten - r.ingeleverd) end) else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
+            $query .= ",sum( case when r.module_id=" . $module['id'] . " then (case  when r.voldaan='V' then 0 else (r.aantal_opdrachten - r.ingeleverd) end) else 0 end) '" . str_pad($count, 2, "0", STR_PAD_LEFT) . "'";
         }
 
         $sql = "
@@ -114,18 +120,20 @@ class ReportParkedController extends QueryBaseController
         ";
         $data = $this->executeQuery($sql, "Voortgang Dev Modules (voor BSA)", $export);
 
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
         ]);
     }
 
-    public function actionWegTodayCheckIn2($export=false,$klas='') {
+    public function actionWegTodayCheckIn2($export = false, $klas = '')
+    {
 
-        $sql="
+        $sql = "
         SELECT  u.klas '#Klas',
                 u.name 'Student',
                 CASE WHEN (TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8) THEN DATE_FORMAT(c.timestamp,'%H:%i') ELSE '-' END 'Check-in',
@@ -133,7 +141,7 @@ class ReportParkedController extends QueryBaseController
         FROM check_in c
         join user u  on u.id=c.studentId
         where c.action='i'
-        ".$this->getKlas($klas)."
+        " . $this->getKlas($klas) . "
         group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
@@ -141,15 +149,17 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Meest recente check in van de afgelopen 8 uur',
         ]);
 
     }
 
-    public function actionTodayMinMaxCheckIn($export=false,$klas='') {
+    public function actionTodayMinMaxCheckIn($export = false, $klas = '')
+    {
 
-        $sql="
+        $sql = "
         SELECT u.klas '#Klas', u.name '#Student',
         min(DATE_FORMAT(c.timestamp,'%H:%i')) 'Eerste',
         max(DATE_FORMAT(c.timestamp,'%H:%i')) 'Laatste'
@@ -157,7 +167,7 @@ class ReportParkedController extends QueryBaseController
         join user u  on u.id=c.studentId
         where c.action='i'
         and TIMESTAMPDIFF(HOUR, c.timestamp, now()) < 8
-        ".$this->getKlas($klas)."
+        " . $this->getKlas($klas) . "
         group by 1,2
         order by 1 ASC,2 ASC, 3 DESC";
 
@@ -165,15 +175,17 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Eerste en laatste check-in van de afgelopen 8 uur',
         ]);
 
     }
 
-    public function actionCheckInStudent($export=false,$klas='',$id) {
+    public function actionCheckInStudent($export = false, $klas = '', $id)
+    {
 
-        $sql="
+        $sql = "
         SELECT u.name '#Student',
             DATE_FORMAT(c.timestamp,'%v') '#week',
             left(dayname(c.timestamp),2) 'Dag',
@@ -184,20 +196,22 @@ class ReportParkedController extends QueryBaseController
         where c.action='i'
         and DATEDIFF(c.timestamp, now()) < 90
         and u.id=$id
-        ".$this->getKlas($klas)."
+        " . $this->getKlas($klas) . "
         order by 4 DESC";
 
         $data = parent::executeQuery($sql, "Alle check-ins", $export);
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'over de afgelopen 90 dagen',
         ]);
 
     }
 
-    public function actionAantalOpdrachten2($export=false){
+    public function actionAantalOpdrachten2($export = false)
+    {
         $sql = "
             select
             concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.korte_naam,' &#129062;</a>') '#Blok',
@@ -224,17 +238,19 @@ class ReportParkedController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Blok, modulenaam en aantal opdrachten per module',
-            'width' => [80,80,160,300],
+            'width' => [80, 80, 160, 300],
         ]);
     }
 
-    public function actionTest() {
-        $assGroupId="8131";
-        $code="879906e1182be0feb8066e270443988b";
+    public function actionTest()
+    {
+        $assGroupId = "8131";
+        $code = "879906e1182be0feb8066e270443988b";
 
-        $sql="
+        $sql = "
         SELECT mi.title, mi.html_url,
 		u.id u_id, a.id a_id, a.course_id, u.name naam, md.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
         CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
@@ -261,6 +277,5 @@ class ReportParkedController extends QueryBaseController
             'data' => $data,
         ]);
     }
-    
-}
 
+}
