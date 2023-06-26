@@ -86,7 +86,7 @@ class ApiController extends Controller
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         foreach ($result as $key => $value) {
-            $result[$key]['words_in_order'] = explode(' ', $result[$key]['words_in_order']);
+            $result[$key]['words_in_order'] = explode(' ', trim($result[$key]['words_in_order']));
         }
 
         $output = json_encode($result, JSON_PRETTY_PRINT);
