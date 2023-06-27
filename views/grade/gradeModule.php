@@ -15,16 +15,16 @@ use yii\helpers\Html;
         color:#a0a0a0;
     }
     .button {
-    display: inline-block;
-    padding: 1px 2px;
-    font-size: 0.7em;
-    text-align: center;
-    text-decoration: none;
-    color: #fff;
-    background-color: rgba(0, 123, 255, 0.6);;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.1s ease;
+        display: inline-block;
+        padding: 1px 2px;
+        font-size: 0.7em;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0, 123, 255, 0.6);;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.1s ease;
     }
     .button:hover, .regular-link:hover {
         background-color: #ffdd00;
