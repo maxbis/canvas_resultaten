@@ -170,6 +170,7 @@ class NakijkenController extends Controller
                 $model->file_type=$existing[0]['file_type'];
                 $model->words_in_order=$existing[0]['words_in_order'];
                 $model->instructie=$existing[0]['instructie'];
+                $model->file_name=$existing[0]['file_name'];
             }
 
             return $model;
