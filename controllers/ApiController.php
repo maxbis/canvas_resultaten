@@ -86,7 +86,9 @@ class ApiController extends Controller
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         foreach ($result as $key => $value) {
-            $result[$key]['words_in_order'] = explode(' ', $result[$key]['words_in_order']);
+            $cleanText = $result[$key]['words_in_order'];
+            $cleanText = preg_replace('/\s+/', ' ', trim($cleanText)); // remove leading and trailing spaces as well as more than one space
+            $result[$key]['words_in_order'] = explode(' ',$cleanText);
         }
 
         $output = json_encode($result, JSON_PRETTY_PRINT);

@@ -41,11 +41,11 @@ use yii\widgets\ActiveForm;
         </div>
 
         <div class="row">
-            <div class="col-sm-2">
-                <?= $form->field($model, 'file_type')->dropDownList(['png' => 'png','php' => 'php','sql' => 'sql','js'  => 'js']);?>
+            <div class="col-sm-4">
+                <?= $form->field($model, 'file_type')->dropDownList(['png' => 'no auto correct (png/jpg/pdf)','php' => 'php','sql' => 'sql','js'  => 'js', 'txt' => 'txt']);?>
             </div>
             <div class="col-sm-4">
-                <?= $form->field($model, 'file_name')->textInput() ?>
+                <?= $form->field($model, 'file_name',)->textInput(['title' => '(part of) the file name to match for auto-correct)']) ?>
             </div>
         </div>
 
@@ -89,6 +89,24 @@ use yii\widgets\ActiveForm;
     </div>
 
    
+    <div class="row" style="padding:10px;background-color:#ffffff;font-size:14px;color:#808080;margin-top:80px;margin-bottom:80px;">
+        <div class="col-sm-8">
+        <hr>
+            <p></p>
+            <h4>Auto Grading</h4>
+            <p>For each submission, only one attachment will be auto-graded. This attachment must be a text file. Currently, we support files with the extensions php, sql, js, txt.</p>
+            <p>Any png/jpg/pdf attachments will be displayed on the grading screen.</p>
+            <p>Auto-grading is based on occurrences of words. In its simplest form, words are matched in order. Matching is based on case-insensitive partial matches, for example, 'Word' will match 'word01'.</p>
+            <p>When a match is found, any subsequent word will be scanned for in the text from the position of the last match.</p>
+            <h4>Negative Search</h4>
+            <p>When a word starts with a <b>'!'</b>, this word <b>must not</b> occur in the text (negative search). If the word must not occur in the entire text, start with the negative match (place it at the beginning of your word list).</p>
+            <h4>Any-order Search</h4>
+            <p>When a group of words is placed between <b>( and )</b>, the words may occur in <b>any order</b>. So 'word1 word2' will match the text 'word2 word1'.</p>
+            <h4>Or Search</h4>
+            <p>When a group of words is placed between <b>[ and ], one or more</b> of these words must match. When a word matches, the algorithm will not try to match the next word in this group, hence the search position is advanced to the first match.</p>
+            <hr>
+        </div>
+    </div>
 
 </div>
 
