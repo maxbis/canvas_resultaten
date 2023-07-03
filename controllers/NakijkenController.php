@@ -152,6 +152,7 @@ class NakijkenController extends Controller
                 FROM canvas.nakijken
                 WHERE module_name = '". $result['module_name']."'
                 AND assignment_name = '".$result['assignment_name']."'
+                order by timestamp DESC
             ";
             $existing = Yii::$app->db->createCommand($sql)->queryAll();
 
