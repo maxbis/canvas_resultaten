@@ -61,6 +61,7 @@ class NakijkenSearch extends Nakijken
             'course_id' => $this->course_id,
             'assignment_id' => $this->assignment_id,
             'module_id' => $this->module_id,
+            'attchments' => $this->attachments,
         ]);
 
         $query->andFilterWhere(['like', 'module_name', $this->module_name])

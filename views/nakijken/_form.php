@@ -41,11 +41,14 @@ use yii\widgets\ActiveForm;
         </div>
 
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <?= $form->field($model, 'file_type')->dropDownList(['png' => 'no auto correct (png/jpg/pdf)','php' => 'php','sql' => 'sql','js'  => 'js', 'txt' => 'txt']);?>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <?= $form->field($model, 'file_name',)->textInput(['title' => '(part of) the file name to match for auto-correct)']) ?>
+            </div>
+            <div class="col-sm-2">
+                <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
         </div>
 
