@@ -3,6 +3,7 @@
 // report controller, child of QueryBase. Standard reports.
 
 namespace app\controllers;
+
 use Yii;
 
 use DateTime;
@@ -10,7 +11,8 @@ use DateTime;
 class ReportController extends QueryBaseController
 {
 
-    private function getKlas($klas) {
+    private function getKlas($klas)
+    {
         return parent::getKlasQueryPart($klas);
     }
 
@@ -18,7 +20,8 @@ class ReportController extends QueryBaseController
 
     // Menu Rapporten
 
-    public function actionActief($export = false, $klas = '') { // menu 3.1 - Student laatst actief op....
+    public function actionActief($export = false, $klas = '')
+    { // menu 3.1 - Student laatst actief op....
 
         $sql = "
             SELECT
@@ -30,7 +33,7 @@ class ReportController extends QueryBaseController
             (select max(laatste_activiteit) from resultaat i where i.student_nummer=o.student_nummer)
             and year(laatste_activiteit) >= 2020
             and o.klas is not NULL
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
         UNION
             SELECT
             concat(u.name,'|/public/index|code|',u.code) '!Student',
@@ -39,24 +42,26 @@ class ReportController extends QueryBaseController
             AND u.student_nr > 0
         order by 4 desc
         ";
-        
+
         return $this->render('/report/output', [
-            'data' =>parent::executeQuery($sql, "Laatste activiteit per student " . $klas, $export),
-            'action' => parent::exportButton($klas??='false'),
+            'data' => parent::executeQuery($sql, "Laatste activiteit per student " . $klas, $export),
+            'action' => parent::exportButton($klas ??= 'false'),
         ]);
     }
 
-    public function actionAantalActiviteitenWeek($export = false, $klas= '') {  // menu 3.2 - Week overzicht 
+    public function actionAantalActiviteitenWeek($export = false, $klas = '')
+    { // menu 3.2 - Week overzicht 
 
-        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $weekday = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
         $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+        $dayNr = $date->format('N') - 1; // 7 for zondag
 
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+        $select = '';
+        for ($i = 0; $i < 7; $i++) {
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
             $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
+            if ($dayNr < 0)
+                $dayNr = 6;
         }
 
         // for($i=7; $i<9; $i++){  
@@ -72,38 +77,38 @@ class ReportController extends QueryBaseController
             FROM user u
             left outer join submission s on u.id=s.user_id
             where student_nr > 0
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             group by 1,2
             order by 10 DESC,3 DESC,4 DESC,5 DESC, 6 DESC
         ";
-  
+
 
         return $this->render('output', [
             'data' => parent::executeQuery($sql, "Ingeleverd afgelopen week", $export),
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
-            'width' => [60,280,40,40,40,40,40,40,90],
+            'width' => [60, 280, 40, 40, 40, 40, 40, 40, 90],
         ]);
     }
 
     public function actionAantalActiviteiten($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht -- export does not work!
-    { 
-        $weekNumber = date("W"); 
+    {
+        $weekNumber = date("W");
 
-        $weekNumbersArray=[];
-        for($i=11; $i>=0; $i--) {
+        $weekNumbersArray = [];
+        for ($i = 11; $i >= 0; $i--) {
             $thisWeekNumber = $weekNumber - $i;
-            if ($thisWeekNumber<=0) {
+            if ($thisWeekNumber <= 0) {
                 $thisWeekNumber = $thisWeekNumber + 52; // if year has 53 weeks, week 53 will be added to week 52
             }
             array_push($weekNumbersArray, $thisWeekNumber);
         }
         //dd($weekNumbersArray);
 
-        $sum_column="";
-        $i=11;
-        foreach($weekNumbersArray as $thisWeek) {
-            $sum_column.="
+        $sum_column = "";
+        $i = 11;
+        foreach ($weekNumbersArray as $thisWeek) {
+            $sum_column .= "
                 sum(case when week(submitted_at,1)=$thisWeek then 1 else 0 end  ) '+$thisWeek',";
             $i--;
         }
@@ -122,7 +127,7 @@ class ReportController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where u.klas <> '0'
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             and datediff(curdate(),submitted_at)<81
             group by 1,2,3,4
             order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
@@ -134,33 +139,33 @@ class ReportController extends QueryBaseController
         // exit;
 
         $data = parent::executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('studentenActivity', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => '',
         ]);
     }
 
     public function actionAantalActiviteiten2($export = false, $klas = '') // menu 3.2 - 12 wekenoverzicht -- meer weken )expirimenteel
-    { 
-        $weekNumber = date("W"); 
+    {
+        $weekNumber = date("W");
 
-        $weekNumbersArray=[];
-        for($i=21; $i>=0; $i--) {
+        $weekNumbersArray = [];
+        for ($i = 21; $i >= 0; $i--) {
             $thisWeekNumber = $weekNumber - $i;
-            if ($thisWeekNumber<=0) {
+            if ($thisWeekNumber <= 0) {
                 $thisWeekNumber = $thisWeekNumber + 52; // if year has 53 weeks, week 53 will be added to week 52
             }
             array_push($weekNumbersArray, $thisWeekNumber);
         }
         //dd($weekNumbersArray);
 
-        $sum_column="";
-        $i=11;
-        foreach($weekNumbersArray as $thisWeek) {
-            $sum_column.="
+        $sum_column = "";
+        $i = 11;
+        foreach ($weekNumbersArray as $thisWeek) {
+            $sum_column .= "
                 sum(case when week(submitted_at,1)=$thisWeek then 1 else 0 end  ) '+$thisWeek',";
             $i--;
         }
@@ -180,7 +185,7 @@ class ReportController extends QueryBaseController
             join user u on u.id=s.user_id
             join assignment_group g on g.id = a.assignment_group_id
             where u.klas <> '0'
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             and datediff(curdate(),submitted_at)<365
             group by 1,2,3,4
             order by sum(case when (datediff(curdate(),submitted_at)<=84) then 1 else 0 end)  DESC
@@ -192,32 +197,33 @@ class ReportController extends QueryBaseController
         // exit;
 
         $data = parent::executeQuery($sql, "Activiteiten over de laatste 12 weken" . $klas, $export);
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('studentenActivity', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => '',
         ]);
     }
 
-    public function actionVoortgang($export=false, $klas = '') { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
+    public function actionVoortgang($export = false, $klas = '')
+    { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
         $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
-                from module_def m
-                join assignment_group g on g.id=m.id
-                join course c on c.id = g.course_id
-                where generiek = 0
-                order by m.pos";
+                FROM module_def m
+                JOIN assignment_group g on g.id=m.id
+                JOIN course c on c.id = g.course_id
+                WHERE generiek = 0
+                ORDER BY m.pos";
 
         $modules = Yii::$app->db->createCommand($sql)->queryAll();
 
         $query = "";
         $count = 0;
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '".str_pad($count,3,"0", STR_PAD_LEFT)."'";
+            $query .= ",sum( case when r.module_id=" . $module['id'] . " then (case  when r.voldaan='V' then 100 else round(r.punten*100/r.punten_max,0) end) else 0 end) '" . str_pad($count, 3, "0", STR_PAD_LEFT) . "'";
         }
 
         $sql = "
@@ -225,7 +231,7 @@ class ReportController extends QueryBaseController
             ranking_score 'Rank',
             u.student_nr '-Nummer',
             u.klas Klas,
-            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            concat( (CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10), ' ', 1), ' ', SUBSTRING(SUBSTRING_INDEX(u.name, ' ', -1), 1, 1)) ) ,'|/public/index|code|',u.code) '!Student',
             u.comment '-Comment',
             u.message '-Message',
             sum( case when r.voldaan='V' then 1 else 0 end) '-Tot'
@@ -236,24 +242,25 @@ class ReportController extends QueryBaseController
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
             and u.student_nr > 10
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             GROUP BY 1,2,3,4,5,6
             ORDER BY 1 DESC
         ";
         $data = $this->executeQuery($sql, "Voortgang Dev Modules", $export);
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('outputVoortgang', [
             'data' => $data,
             // 'action' => Yii::$app->controller->action->id."?",
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'modules' => $modules,
             # 'nocount' => 1,
         ]);
     }
 
-    public function actionVoortgang2($export=false, $klas = '') { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
+    public function actionVoortgang2($export = false, $klas = '')
+    { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
         $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
                 from module_def m
@@ -266,10 +273,10 @@ class ReportController extends QueryBaseController
 
         $query = "";
         $count = 0;
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-            $query.=",sum( case when r.module_id=".$module['id']." then (case  when r.ingeleverd=r.aantal_opdrachten then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end) else 0 end) '".str_pad($count,3,"0", STR_PAD_LEFT)."'";
+            $query .= ",sum( case when r.module_id=" . $module['id'] . " then (case  when r.ingeleverd=r.aantal_opdrachten then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end) else 0 end) '" . str_pad($count, 3, "0", STR_PAD_LEFT) . "'";
         }
 
         $sql = "
@@ -288,17 +295,17 @@ class ReportController extends QueryBaseController
             INNER JOIN user u on u.student_nr=r.student_nummer
             WHERE d.generiek = 0
             and u.student_nr > 10
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             GROUP BY 1,2,3,4,5,6
             ORDER BY 1 DESC
         ";
         $data = $this->executeQuery($sql, "Voortgang Dev Modules", $export);
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('outputVoortgang', [
             'data' => $data,
             // 'action' => Yii::$app->controller->action->id."?",
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'modules' => $modules,
             # 'nocount' => 1,
@@ -306,7 +313,7 @@ class ReportController extends QueryBaseController
     }
 
     public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
-    { 
+    {
 
         # if a teacher is also student he has no code (code is null), so only get students with a code
         $sql = "
@@ -322,7 +329,7 @@ class ReportController extends QueryBaseController
             AND r.module_pos < 100
             AND u.code is not null
             AND length(u.klas) > 1
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             group by 1,2
             order by 4 Desc, 3 desc
         ";
@@ -331,18 +338,19 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
-            'descr'=> "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
+            'action' => parent::exportButton($klas ??= 'false'),
+            'descr' => "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
         ]);
     }
 
     // menu devider ----------------
 
-    public function actionAantalOpdrachten($export=false, $generiek=0){ // menu 3.5 - Module overzicht
-        if ($generiek==0) {
-            $where=" where m.generiek=0";
+    public function actionAantalOpdrachten($export = false, $generiek = 0)
+    { // menu 3.5 - Module overzicht
+        if ($generiek == 0) {
+            $where = " where m.generiek=0";
         } else {
-            $where="";
+            $where = "";
         }
 
         $sql = "
@@ -363,31 +371,32 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Module-overzicht", $export);
-        if ( $generiek==0) {
+        if ($generiek == 0) {
             $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=1\" class=\"btn bottom-button right\">Alles</a>";
-            $button1=['name' => 'Alles', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=1', 'class' => 'btn btn-secondary', 'title' => 'Toon Alle Blokken' ,];
-            $descr='Overzicht van alle dev blokken';
-        }else{
+            $button1 = ['name' => 'Alles', 'link' => '/report/aantal-opdrachten', 'param' => 'generiek=1', 'class' => 'btn btn-secondary', 'title' => 'Toon Alle Blokken',];
+            $descr = 'Overzicht van alle dev blokken';
+        } else {
             $lastLine = "<hr><a href=\"/report/aantal-opdrachten?generiek=0\" class=\"btn bottom-button right\">Dev</a>";
-            $button1=['name' => 'Dev', 'link' => '/report/aantal-opdrachten' , 'param' => 'generiek=0', 'class' => 'btn btn-secondary', 'title' => 'Toon Dev Blokken' ,];
-            $descr='Overzicht van alle blokken (dev plus generiek)';
+            $button1 = ['name' => 'Dev', 'link' => '/report/aantal-opdrachten', 'param' => 'generiek=0', 'class' => 'btn btn-secondary', 'title' => 'Toon Dev Blokken',];
+            $descr = 'Overzicht van alle blokken (dev plus generiek)';
         }
-        
-    
+
+
         return $this->render('output', [
             'data' => $data,
             // 'action' => Yii::$app->controller->action->id."?",
-            'action' => [   $button1,
-                            parent::exportButton($klas??='false'),
-                        ],
+            'action' => [
+                $button1,
+                parent::exportButton($klas ??= 'false'),
+            ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40,90,300,60,60,60,60],
+            'width' => [40, 90, 300, 60, 60, 60, 60],
         ]);
     }
 
     public function actionModulesFinished($export = false, $klas = '') // menu 3.6 - Module is c keer voldaan
-    { 
+    {
 
         $sql = "
             select
@@ -402,7 +411,7 @@ class ReportController extends QueryBaseController
                     JOIN course c on c.id = course_id
                     JOIN user u on u.student_nr=o.student_nummer
                     where u.grade = 1
-                    ".$this->getKlas($klas)."
+                    " . $this->getKlas($klas) . "
                     group by 1,2,3,4
                     order by d.pos) alias
         ";
@@ -411,18 +420,18 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
             'nocount' => true,
         ]);
     }
 
-    public function actionModulesOpen($moduleId, $voldaan=0, $export = false) // menu 3.6.1 - report accessible via ModuleFinished report
-    { 
+    public function actionModulesOpen($moduleId, $voldaan = 0, $export = false) // menu 3.6.1 - report accessible via ModuleFinished report
+    {
         if ($voldaan) {
-            $voldaanQuery="voldaan = 'V'";
+            $voldaanQuery = "voldaan = 'V'";
         } else {
-            $voldaanQuery="voldaan != 'V'";
+            $voldaanQuery = "voldaan != 'V'";
         }
         $sql = "
             SELECT r.module_pos '-c1', r.module_id  '-c2', r.module '-Module',
@@ -442,39 +451,41 @@ class ReportController extends QueryBaseController
         ";
         $data = parent::executeQuery($sql, "placeholder", $export);
 
-        $data['title'] = ( $voldaan ? 'Afgeronde' : 'Open' )." opdrachten voor ".$data['row'][0]['-Module'];
+        $data['title'] = ($voldaan ? 'Afgeronde' : 'Open') . " opdrachten voor " . $data['row'][0]['-Module'];
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&moduleId='.$moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&moduleId=' . $moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
             # 'width' => [40,40,60,160,80,80,80 ], 
         ]);
     }
 
-    public function actionLastReportByStudent($export=false, $klas = '') { // menu 3.7 - Student keek in monitor
+    public function actionLastReportByStudent($export = false, $klas = '')
+    { // menu 3.7 - Student keek in monitor
 
-        $sql=  "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
+        $sql = "SELECT u.name Student, u.klas Klas, min( case when (isnull(l.timestamp)) then 999 else datediff(curdate(),l.timestamp) end) 'Dagen geleden'
                 FROM user u
                 LEFT OUTER JOIN log l on ( u.name = l.message and  l.subject = \"Student /public/index\" )
                 WHERE LENGTH(u.klas) = 2 ";
-        $sql.=  $this->getKlas($klas);
-        $sql.= " group by 1,2
+        $sql .= $this->getKlas($klas);
+        $sql .= " group by 1,2
                 order by 3 ASC, 1";
 
         $data = parent::executeQuery($sql, "Studenten keken in Canvas Monitor", $export);
 
         return $this->render('output', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Hoeveel dagen is het geleden dat het studentrapport is opgevraagd door iemand die <i>niet</i> is aangelogd in de Canvas Monitor?',
         ]);
     }
 
-    public function actionPogingen($export = false, $klas='') // menu 3.8 - Pogingen
-    { 
-        $sql="select cast( (select sum(1)from submission) / (select sum(1) from user where grade=1) as unsigned integer) average";
-        $result =  Yii::$app->db->createCommand($sql)->queryAll();
+    public function actionPogingen($export = false, $klas = '') // menu 3.8 - Pogingen
+    {
+        $sql = "select cast( (select sum(1)from submission) / (select sum(1) from user where grade=1) as unsigned integer) average";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
         $average = $result[0]['average']; // average of number of submitted assignements
 
         $sql = "
@@ -493,7 +504,7 @@ class ReportController extends QueryBaseController
             join assignment_group g on g.id = a.assignment_group_id
             where s.submitted_at <> '1970-01-01 00:00:00'
             and s.workflow_state='graded'
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             group by 1,2
             order by 3 desc
         ";
@@ -501,10 +512,10 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Percentage is herkansingen ten opzichte van 1ste poging. 100% betekent dat de student gemiddeld 2 pogingen nodig heeft.<br>De laatset twee percentages laten zien of het aantal herkansingen per kandidaat groeit, daalt of gelijk blijft.
                         <br>Recent is van de laatste 6 weken.',
-            'width' => [80,300,100,100,120,100,100],
+            'width' => [80, 300, 100, 100, 120, 100, 100],
         ]);
     }
 
@@ -512,10 +523,11 @@ class ReportController extends QueryBaseController
     // menu 3.9 -> resultaat index
 
     public function actionNakijkenWeek($export = false) // Menu 3.10 - Aantal beoordeligen per docent
-    { 
-        $schooljaarStart = date("Y")-1;
-        if(date('n') >= 8) $schooljaarStart++;
-        $schooljaarStart.='-08-01';
+    {
+        $schooljaarStart = date("Y") - 1;
+        if (date('n') >= 8)
+            $schooljaarStart++;
+        $schooljaarStart .= '-08-01';
 
         $sql = "
             SELECT concat(u.name,'|/report/nakijken-wie|user_id|',u.id) '!Naam', 
@@ -534,26 +546,28 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => parent::exportButton($klas??='false'),
+            'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0,150,150,150,150,150 ], 
+            'width' => [0, 150, 150, 150, 150, 150],
         ]);
     }
 
-        // Nakijken sub-reports
+    // Nakijken sub-reports
 
-    public function actionNakijkenDag($export = false) { // menu 3.10.1
+    public function actionNakijkenDag($export = false)
+    { // menu 3.10.1
 
-        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $weekday = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
         $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+        $dayNr = $date->format('N') - 1; // 7 for zondag
 
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+        $select = '';
+        for ($i = 0; $i < 7; $i++) {
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
             $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
+            if ($dayNr < 0)
+                $dayNr = 6;
         }
 
         // inner join on assignment and module_def is added to filter out assignements that are not part (any more) of the Canvas Monitor
@@ -569,34 +583,37 @@ class ReportController extends QueryBaseController
             order by 1
         ";
 
-        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);     
+        $data = parent::executeQuery($sql, "Aantal opdrachten beoordeeld door", $export);
         $lastLine = "<a href=\"/report/nakijken-week\" class=\"btn bottom-button left\"><< terug</a>";
-        $lastLine.= "<a href=\"/report/nakijken-dag-all\" class=\"btn bottom-button\" >Alle cohorten</a>";
+        $lastLine .= "<a href=\"/report/nakijken-dag-all\" class=\"btn bottom-button\" >Alle cohorten</a>";
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80],
+            'width' => [0, 80, 80, 80, 80, 80, 80, 80],
         ]);
     }
 
-    public function actionNakijkenDagAll($export = false) { // menu 3.10.2 - Aantal beoordelingen per docent
+    public function actionNakijkenDagAll($export = false)
+    { // menu 3.10.2 - Aantal beoordelingen per docent
 
         // $schooljaarStart = date("Y")-1;
         // if(date('n') >= 8) $schooljaarStart++;
         // $schooljaarStart.='-08-01';
 
-        $weekday=['ma','di','wo','do','vr','za','zo'];
+        $weekday = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
         $date = new DateTime();
-        $dayNr = $date->format( 'N' ) - 1; // 7 for zondag
+        $dayNr = $date->format('N') - 1; // 7 for zondag
 
-        $select='';
-        for($i=0; $i<7; $i++){  
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -".$i." DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+".$weekday[$dayNr]."'";
+        $select = '';
+        for ($i = 0; $i < 7; $i++) {
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(s.graded_at as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
             $dayNr--;
-            if ($dayNr < 0) $dayNr=6; 
+            if ($dayNr < 0)
+                $dayNr = 6;
         }
         // $select .= "\n,sum(case when ( s.graded_at>'$schooljaarStart' ) then 1 else 0 end) '+Schooljaar'";
         $select .= "\n,sum(1) '+Week'";
@@ -611,15 +628,16 @@ class ReportController extends QueryBaseController
             order by 1
         ";
 
-        $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);     
-        $lastLine = "<hr><a href=\"".Yii::$app->request->referrer."\" class=\"btn bottom-button left\"><< terug</a>";
+        $data = parent::executeQuery($sql, "Totaal aantal opdrachten beoordeeld door", $export);
+        $lastLine = "<hr><a href=\"" . Yii::$app->request->referrer . "\" class=\"btn bottom-button left\"><< terug</a>";
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Aantal beoordelingen over c20, c21, c22.',
             'lastLine' => $lastLine,
-            'width' => [0,80,80,80,80,80,80,80,80],
+            'width' => [0, 80, 80, 80, 80, 80, 80, 80, 80],
         ]);
     }
 
@@ -628,8 +646,8 @@ class ReportController extends QueryBaseController
 
     // *** Menu Beheer ***
 
-    public function actionStudentenLijst($export=false, $klas='') // menu 6.2 - Studentencodes (export)
-    { 
+    public function actionStudentenLijst($export = false, $klas = '') // menu 6.2 - Studentencodes (export)
+    {
         $sql = "SELECT  klas Klas,
                         id '-Canvas Id',
                         student_nr 'Student nr',
@@ -639,40 +657,43 @@ class ReportController extends QueryBaseController
                         comment Comment,
                         message Message
                 FROM user u
-                where length(u.klas)>1 ".$this->getKlas($klas);
+                where length(u.klas)>1 " . $this->getKlas($klas);
 
         $data = parent::executeQuery($sql, "Studentenlijst", $export);
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Studentenlijst (voor Export naar Excel)',
         ]);
     }
 
-    public function actionAdvies($export = false, $klas='') // Menu 6.3 - Dev Voortgang (Adviezen)
-    { 
+    public function actionAdvies($export = false, $klas = '') // Menu 6.3 - Dev Voortgang (Adviezen)
+    {
 
         $sql = " select 
             u.id id, u.name name, u.message message, u.code, sum(case when voldaan='V' then 1 else 0 end) 'voldaan', sum(ingeleverd) ingeleverd
             from resultaat r
             JOIN user u on u.student_nr= r.student_nummer
             where module_pos <= 100 ";
-        $sql.=  $this->getKlas($klas);
-        $sql.=" group by 1,2,3,4 order by 5 desc, 6 desc;";
+        $sql .= $this->getKlas($klas);
+        $sql .= " group by 1,2,3,4 order by 5 desc, 6 desc;";
 
         $data = parent::executeQuery($sql, "Advies", $export);
 
         return $this->render('advies', [
             'data' => $data,
-            'action' => Yii::$app->controller->action->id."?",
+            'action' => Yii::$app->controller->action->id . "?",
             'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
-            'width' => [80,80,80],
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'width' => [80, 80, 80],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
         ]);
     }
 
-    public function actionModules($export=false){ // menu 6.5 - Modules
+    public function actionModules($export = false)
+    { // menu 6.5 - Modules
         $sql = "
         select  c.korte_naam '#Blok',
                 c.naam 'Naam',
@@ -702,7 +723,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
             'nocount' => true,
-            'width' => [50,160,60,80,80,60,200],
+            'width' => [50, 160, 60, 80, 80, 60, 200],
         ]);
     }
 
@@ -711,7 +732,8 @@ class ReportController extends QueryBaseController
 
 
     // Complette activity list per student (accessed from student home page by admin user)
-    public function actionActivity($studentnr='99', $export=false){ // activity report per user when/what - click on graph on users home page - needs to be here becasue students cannot access this.
+    public function actionActivity($studentnr = '99', $export = false)
+    { // activity report per user when/what - click on graph on users home page - needs to be here becasue students cannot access this.
         $sql = "
             select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, convert_tz(s.submitted_at,'+00:00','+02:00') ingeleverd, s.attempt poging,
             s.course_id 'course_id', a.id 'assignment_id', u.id 'student_id',
@@ -726,29 +748,31 @@ class ReportController extends QueryBaseController
             order by submitted_at DESC
             limit 400
         ";
- 
+
         $data = $this->executeQuery($sql, "place_holder", $export);
 
-        if ( $data &&isset($data['row'][0]['student']) ) {
-            $studentNr=$data['row'][0]['student_nr'];
-            $klas=$data['row'][0]['klas'];
+        if ($data && isset($data['row'][0]['student'])) {
+            $studentNr = $data['row'][0]['student_nr'];
+            $klas = $data['row'][0]['klas'];
         } else {
-            $studentNr=0;
-            $klas="";
+            $studentNr = 0;
+            $klas = "";
         }
 
-        $data['title'] = "Activity report for ".$studentNr." / ".$klas;
-        
+        $data['title'] = "Activity report for " . $studentNr . " / " . $klas;
+
 
         return $this->render('studentActivity', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&studentnr='.$studentNr, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&studentnr=' . $studentNr, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
         ]);
     }
 
     // called form module overzicht
-    public function actionOpdrachtenModule($id, $export=false){
+    public function actionOpdrachtenModule($id, $export = false)
+    {
         $sql = "
             select c.id 'course_id', c.naam 'cursus_naam',
                 korte_naam '#Blok',
@@ -768,32 +792,33 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
-        $data['show_from']=2;
+        $data['show_from'] = 2;
         $lastLine = "<a href=\"/report/aantal-opdrachten\" class=\"btn bottom-button left\"><< terug</a>";
-        
+
         $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
 
-        if (isset($data['row'][0]['cursus_naam']) )  {
-            $data['title']=$data['row'][0]['cursus_naam'];
-            $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/".$data['row'][0]['course_id']."\">Naar module &#129062;</a>";
+        if (isset($data['row'][0]['cursus_naam'])) {
+            $data['title'] = $data['row'][0]['cursus_naam'];
+            $lastLine .= "<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/" . $data['row'][0]['course_id'] . "\">Naar module &#129062;</a>";
             # $lastLine.="<a target=_blank class=\"button btn bottom-button\" title=\"Naar Module\" href=\"http://localhost:5000/section/refresh/".$subDomain.'/'.$id."\">Naar nakijken &#129062;</a>";
         }
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&id='.$id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'lastLine' => $lastLine,
             'descr' => 'Opdrachten en punten voor dit blok',
-            'width' => [0,0,80,600,80],
+            'width' => [0, 0, 80, 600, 80],
         ]);
     }
 
     // *** hidden features ***
-    public function actionNakijkenWie($export = false, $user_id=false) // Wie beoordeeld wat
-    { 
+    public function actionNakijkenWie($export = false, $user_id = false) // Wie beoordeeld wat
+    {
 
         if ($user_id) {
-            $select="where u.id=$user_id";
+            $select = "where u.id=$user_id";
         } else {
             $select = "";
         }
@@ -815,12 +840,13 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
         ]);
     }
 
     public function actionNakijkenWie2($export = false) // Wie beoordeeld wat de laatste week
-    { 
+    {
 
         $sql = "
             select g.name Docent, u.name Student , s.graded_at Beoordeeld, s.entered_score Score, m.naam Module
@@ -836,11 +862,13 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
         ]);
     }
 
-    public function actionClusterSubmissions($clusterSize=8, $clusterTime=300, $export=false){
+    public function actionClusterSubmissions($clusterSize = 8, $clusterTime = 300, $export = false)
+    {
         $sql = "
             select u.name Student, g.name Module, UNIX_TIMESTAMP(s.submitted_at) unix_ts, s.submitted_at Submitted
             from submission s
@@ -853,40 +881,41 @@ class ReportController extends QueryBaseController
             order by 1,2,3
         ";
 
-        $result =  Yii::$app->db->createCommand($sql)->queryAll();
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
 
-        $clusters=[];
-        $cStudent='';
-        $cModule='';
-        $prevTime=0;
-        $thisCluster=0;
-        $start=0;
-        $prevDate='';
+        $clusters = [];
+        $cStudent = '';
+        $cModule = '';
+        $prevTime = 0;
+        $thisCluster = 0;
+        $start = 0;
+        $prevDate = '';
 
-        foreach($result as $item) {
+        foreach ($result as $item) {
             // d([$thisCluster, $item, ($item['unix_ts']-$prevTime)]);
-            if($cStudent!=$item['Student'] || $cModule!=$item['Module'] ) {
-                $cStudent=$item['Student'];
-                $cModule=$item['Module'];
-                $thisCluster=0;
-                $start=$item['Submitted'];
+            if ($cStudent != $item['Student'] || $cModule != $item['Module']) {
+                $cStudent = $item['Student'];
+                $cModule = $item['Module'];
+                $thisCluster = 0;
+                $start = $item['Submitted'];
             } else {
-                if ( ($item['unix_ts']-$prevTime) < $clusterTime) {
+                if (($item['unix_ts'] - $prevTime) < $clusterTime) {
                     $thisCluster++;
                 } else {
                     if ($thisCluster >= $clusterSize) {
                         //d([$start, $thisCluster, $item]);
-                        array_push($clusters, [ 'Student'=>$item['Student'], 'Module'=>$item['Module'], 'Start'=>$start, 'Eind'=>$prevDate, 'Aantal'=>$thisCluster ]);
+                        array_push($clusters, ['Student' => $item['Student'], 'Module' => $item['Module'], 'Start' => $start, 'Eind' => $prevDate, 'Aantal' => $thisCluster]);
                     }
-                    $thisCluster=0;
-                    $start=$item['Submitted'];
+                    $thisCluster = 0;
+                    $start = $item['Submitted'];
                 }
             }
             $prevTime = $item['unix_ts'];
             $prevDate = $item['Submitted'];
         }
 
-        if ($result) $data['col'] = array_keys($clusters[0]);
+        if ($result)
+            $data['col'] = array_keys($clusters[0]);
         $data['row'] = $clusters;
         $data['title'] = "Cluster Submissions";
         //dd(['end']);
@@ -897,13 +926,14 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Een cluster is een serie opdrachten van minimaal 5 waarbij er minimaal elke 5 minuten een opdracht is ingeleverd.<br>Change URL params f.e. ..report/cluster-submissions?clusterSize=3&clusterTime=180'
         ]);
     }
- 
+
     public function actionWorkingOn($sort = 'asc', $export = false, $klas = '') // ??? - Student werken aan...
-    { 
+    {
 
         $sql = "
             select  m.pos, c.korte_naam '#&nbsp',m.naam Module,
@@ -916,21 +946,21 @@ class ReportController extends QueryBaseController
             left outer join submission s on s.assignment_id=a.id
             left join course c on c.id = a.course_id
             join user u on u.id = s.user_id
-            ".$this->getKlas($klas)."
+            " . $this->getKlas($klas) . "
             group by 1,2
             order by m.pos $sort
         ";
 
         $data = parent::executeQuery($sql, "Studenten " . $klas . " werken aan", $export);
 
-        $data['show_from']=1;
+        $data['show_from'] = 1;
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1&klas='.$klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
             'descr' => 'Aantal opdrachten ingeleverd en nageken per module over de afgelopen 14 dagen <br><i>Nakijken</i> telt alleen de modules die ook over de laatste twee weken zijn ingeleverd.',
         ]);
     }
 
 }
-
