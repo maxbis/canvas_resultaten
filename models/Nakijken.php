@@ -46,7 +46,7 @@ class Nakijken extends \yii\db\ActiveRecord
             'assignment_name' => 'Assignment Name',
             'file_type' => 'File Type',
             'file_name' => 'File Name',
-            'attachments' => 'Attachments'
+            'attachments' => 'Attachments',
             'words_in_order' => 'Words In Order',
             'instructie' => 'Instructie',
             'label' => 'Label',
