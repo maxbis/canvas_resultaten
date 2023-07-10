@@ -91,8 +91,12 @@ class StudentController extends Controller
     {
         $model = new Student();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ) {
+            $salt = "MaxBiss23";
+            $code = md5($salt . $item['studentNummer']);
+            if ( $model->save() ) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -205,7 +209,7 @@ class StudentController extends Controller
             $sql = "";
             foreach ($data as $item) {
                 $count += 1;
-                $salt = "MaxBiss22";
+                $salt = "MaxBiss23";
                 $code = md5($salt . $item['studentNummer']);
                 # echo "<br>Line " . $count . " new code: ". $code . " for " . $item['name'];
                 $sql .= "update user set code='" . $code . "' where student_nr=" . $item['studentNummer'] . ";\n";
