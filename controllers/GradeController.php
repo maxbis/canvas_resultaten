@@ -318,10 +318,9 @@ class GradeController extends QueryBaseController
         ";
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
-        return $this->render('/grade/gradeModule', [
-            'data' => $result
-        ]);
+        return $this->render('/grade/gradeModule', [ 'data' => $result ]);
 
+        $a = 1/0;
 
         $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
 
@@ -331,7 +330,7 @@ class GradeController extends QueryBaseController
             ]);
         }
 
-        $data['title'].=" voor <i>".$data['row'][0]['Module']."</i>";
+        $data['title'] .= " voor <i>".$data['row'][0]['Module']."</i>";
         $data['show_from']=1;
 
 
