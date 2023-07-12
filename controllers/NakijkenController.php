@@ -148,7 +148,7 @@ class NakijkenController extends Controller
             $result = Yii::$app->db->createCommand($sql)->queryOne();
 
             $sql="
-                SELECT file_type, words_in_order, instructie, file_name
+                SELECT file_type, words_in_order, instructie, file_name, attachments
                 FROM canvas.nakijken
                 WHERE module_name = '". $result['module_name']."'
                 AND assignment_name = '".$result['assignment_name']."'
