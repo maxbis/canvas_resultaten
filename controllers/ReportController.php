@@ -771,8 +771,15 @@ class ReportController extends QueryBaseController
     }
 
     // called form module overzicht
-    public function actionOpdrachtenModule($id, $export = false)
+    public function actionOpdrachtenModule($id, $export = false, $test=0)
     {
+        if ($test == 1) {
+            $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
+            $link = ", concat('ac', '|http://localhost:5000/correcta/$cohort/',a.id) '!ac'";
+        } else {
+            $link = "";
+        }
+
         $sql = "
             select c.id 'course_id', c.naam 'cursus_naam',
                 korte_naam '#Blok',
@@ -783,6 +790,7 @@ class ReportController extends QueryBaseController
                     ELSE '&#10003;'
                 END Nakijken,
                 concat('✎ ','|/nakijken/update/|assignment_id|',a.id) '!Update'
+                $link
             from assignment a
             left join course c on c.id=a.course_id
             left outer join canvas.nakijken n on n.assignment_id=a.id
