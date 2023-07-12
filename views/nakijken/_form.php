@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
 
         <div class="row">
             <div class="col-sm-3">
-                <?= $form->field($model, 'file_type')->dropDownList(['png' => 'no auto correct (png/jpg/pdf)','php' => 'php','sql' => 'sql','js'  => 'js', 'txt' => 'txt']);?>
+                <?= $form->field($model, 'file_type')->dropDownList(['png' => 'png/jpg/pdf','onl'=>'online','php' => 'php','sql' => 'sql','js'  => 'js', 'txt' => 'txt']);?>
             </div>
             <div class="col-sm-3">
                 <?= $form->field($model, 'file_name',)->textInput(['title' => '(part of) the file name to match for auto-correct)']) ?>
