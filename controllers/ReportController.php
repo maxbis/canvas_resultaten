@@ -232,6 +232,7 @@ class ReportController extends QueryBaseController
             u.student_nr '-Nummer',
             u.klas Klas,
             concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!Student',
+            u.name '-naam',
             u.comment '-Comment',
             u.message '-Message',
             sum( case when r.voldaan='V' then 1 else 0 end) '-Tot'

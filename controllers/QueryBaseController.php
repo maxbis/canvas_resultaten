@@ -105,6 +105,7 @@ class QueryBaseController extends Controller
         }
     }
 
+
     private function exportQueryFilter($query) // filter + - en ! column names and concats from sql statement for export - deze speciale tekens zijn indicatoren voor de view
     {
         # return($query);
@@ -137,7 +138,13 @@ class QueryBaseController extends Controller
             if (strtolower(substr($item, 0, 6))=='limit') { // for export we don't have a limit, since limit is the last statement return query as is at this moment
                 break;
             }
-            $newQuery .= " ".$item;
+            if (substr($item, 1, 1)=='!') {
+                $newQuery = substr($newQuery, 0, ( strrpos($str, ' ') ) );
+                $newQuery .= '\n';
+            } else {
+                $newQuery .= " ".$item;
+            }
+            
         }
 
         return($newQuery);
@@ -166,6 +173,7 @@ class QueryBaseController extends Controller
             $newQuery .= " ".$item;
             
         }
+        
         return(strip_tags($newQuery));
     }
 
