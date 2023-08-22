@@ -209,7 +209,7 @@ class StudentController extends Controller
             $sql = "";
             foreach ($data as $item) {
                 $count += 1;
-                $salt = "MaxBiss23";
+                $salt = "MaxBiss";
                 $code = md5($salt . $item['studentNummer']);
                 # echo "<br>Line " . $count . " new code: ". $code . " for " . $item['name'];
                 $sql .= "update user set code='" . $code . "' where student_nr=" . $item['studentNummer'] . ";\n";
