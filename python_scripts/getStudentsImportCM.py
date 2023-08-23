@@ -4,6 +4,7 @@
 
 from canvasapi import Canvas
 import configparser
+import sys
 
 config = configparser.ConfigParser()
 if ( not (config.read("../import/canvas.ini") or config.read("canvas.ini"))):
@@ -17,17 +18,25 @@ API_KEY = config.get('main', 'api_key')
 
 canvas = Canvas(API_URL, API_KEY)
 
-account = canvas.get_account(82)
+course_id = 10755
 
-all_users = account.get_users()
+course = canvas.get_course(course_id)
+all_users = course.get_users(enrollment_type=['student'])
+
+print(f"Course Name: {course.name}")
+
+# for user in all_users:
+#     if user.created_at[0:4] != '2023':
+#     print(user.name, user.id, user.created_at)
+
+# sys.exit()
 
 # Iterate through the list of users
 i=1
 for user in all_users:
-    if user.created_at[0:4] == '2023':
-        parts = user.login_id.split('@')
-        student_nr = parts[0]
-        # print(f"{i} id: {user.id}, name: {user.name}, login_id: {user.login_id} student_nr: {student_nr}")
-        print(f"insert into user (id, name, login_id, student_nr) values ('{user.id}', '{user.name}', '{user.login_id}', '{student_nr}');")
-        i=i+1
+    student_nr = user.sis_user_id[1:]
+    email = student_nr + 'talnet.nl'
+    # print(f"{i} id: {user.id}, name: {user.name}, login_id: {email} student_nr: {student_nr}")
+    print(f"insert into user (id, name, login_id, student_nr, klas) values ('{user.id}', '{user.name}', '{email}', '{student_nr}', '4x');")
+    i=i+1
 
