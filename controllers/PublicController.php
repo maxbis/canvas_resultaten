@@ -9,7 +9,6 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 
 use DateTime;
-
 /**
  * CourseController implements the CRUD actions for Course model.
  */

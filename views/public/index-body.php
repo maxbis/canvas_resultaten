@@ -50,8 +50,8 @@ use yii\helpers\Html;
                 $daysAgoColor="rgb(253,255,".min(255,(199+$dagen*4)).")"; // color fades away from yellow as the age is older
 
                 // Module wrap-up line, print on all reports except in the standard report
-                if ( $item['Blok'] != $prevBlok && $style!='standard') {
-                    if ($aggregatedData[$item['Blok']]['voldaan'] ) {
+                if ( $item['Blok'] != $prevBlok && $style!='standard' && $style!='todo') {
+                    if ($aggregatedData[$item['Blok']]['voldaan']) {
                         $done=$aggregatedData[$item['Blok']]['countVoldaan'];
                         echo "\n<tr class=\"clickable\" id=\"blok-".$item['Blok']."\"><td>&#10004;</td><td class=\"voldaan\">".$item['Blok']."</td><td class=\"voldaan\">Alle $done modules voldaan <i class=\"bi bi-emoji-smile\"></i></td><td></td><td></td><td></td><td></td><td></td></tr>";
                     } else { // niet voldaan
@@ -64,25 +64,28 @@ use yii\helpers\Html;
                 if ( ($aggregatedData[$item['Blok']]['voldaan'] && $style=='compact') || $style=='mini') {
                     // only voldaan blok in compact tab can be clicked open: init-hide hides on load and line-blok-<block name> is used to identify line in order to show/hide
                     echo "\n<tr class=\"init-hide line-blok-".$item['Blok']."\">";
+                } elseif ($item['Voldaan'] =='V' && $style == "todo")  {
+                    //dd($item);
+                    // not voldaan blok stays open all the time
+                    echo "\n<tr style=\"display:none;\">";
                 } else {
                     // not voldaan blok stays open all the time
                     echo "\n<tr>";
                 }
 
-
-                if ($style!='standard') {
+                if ($style!='standard' && $style!='todo') {
                     echo "<td width=60px>&nbsp;</td>";
                 }
 
                 if ($item['Minpunten'] < 0) {
                     echo "<td title=\"Module kan niet worden afgetekend, vraag docent\" width=60px class=\"\" style=\"font-weight:bolder;color:#821600;\">???</td>";
-                } elseif ($item['Voldaan'] == 'V') {
+                } elseif ($item['Voldaan'] == 'V' ) {
                     echo "<td title=\"Voldaan (" . $item['voldaanRule'] . ")\" style=\"width:60px;color:green\" class=\"\">&#10004;</td>";
                 } else {
                     echo "<td title=\"Niet voldaan (" . $item['voldaanRule'] . ")\" width=60px class=\"\">&#11096;</td>";
                 }
 
-                if ($style=='standard') {
+                if ( $style=='standard' || $style=='todo' ) {
                     echo "<td width=60px>" . $item['Blok'] . "</td>";
                 }
 

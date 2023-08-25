@@ -35,6 +35,7 @@
     $bodyCompact = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'compact' ]);
     $bodyFull    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'mini' ]);
     $bodyStandard= $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'standard' ]);
+    $bodyTodo    = $this->render( 'index-body',   ['data' => $data,'timeStamp' => $timeStamp, 'aggregatedData'=>$aggregatedData, 'style'=>'todo' ]);
     $bodyPrefs   = "";
     $achievements= "";
 
@@ -177,6 +178,7 @@
         <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
         <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>
         <li class="nav-item"><a href="#mini" class="nav-link" data-toggle="tab">Mini</a></li>
+        <li class="nav-item"><a href="#todo" class="nav-link" data-toggle="tab">Todo</a></li>
         <!-- <li class="nav-item"><a href="#prefs" class="nav-link" data-toggle="tab">Settings</a></li> -->
     </ul>
     
@@ -187,6 +189,7 @@
                 <div class="tab-pane show active" id="standard"><?= $bodyStandard; ?></div>
                 <div class="tab-pane" id="compact"><?= $bodyCompact; ?></div>
                 <div class="tab-pane" id="mini"><?= $bodyFull; ?></div>
+                <div class="tab-pane" id="todo"><?= $bodyTodo; ?></div>
                 <!-- <div class="tab-pane" id="prefs"><?= $bodyPrefs; ?></div> -->
             </div>
         </div>
