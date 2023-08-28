@@ -175,10 +175,10 @@
 <div class="m-4">
 
     <ul class="nav nav-tabs" id="myTab">
-        <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab">Standard</a></li>
-        <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab">Compact</a></li>
-        <li class="nav-item"><a href="#mini" class="nav-link" data-toggle="tab">Mini</a></li>
-        <li class="nav-item"><a href="#todo" class="nav-link" data-toggle="tab">Todo</a></li>
+        <li class="nav-item"><a href="#standard" class="nav-link" data-toggle="tab" title="Laat alle modules van alle blokken zien">Standard</a></li>
+        <li class="nav-item"><a href="#compact" class="nav-link" data-toggle="tab" title="Blokken die geheel zijn voldaan zijn dichtgeklapt">Compact</a></li>
+        <li class="nav-item"><a href="#mini" class="nav-link" data-toggle="tab" title="Alle blokken zijn dichtgeklapt">Mini</a></li>
+        <li class="nav-item"><a href="#todo" class="nav-link" data-toggle="tab" title="Laat alleen de modules zien die nog niet zijn voldaan">Todo</a></li>
         <!-- <li class="nav-item"><a href="#prefs" class="nav-link" data-toggle="tab">Settings</a></li> -->
     </ul>
     
