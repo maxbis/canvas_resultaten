@@ -92,13 +92,15 @@ class StudentController extends Controller
         $model = new Student();
 
         if ($model->load(Yii::$app->request->post()) ) {
-            $salt = "MaxBiss23";
-            $code = md5($salt . $item['studentNummer']);
+            if ( $model->student_nr ) {
+                $salt = "MaxBiss23";
+                $model->code = md5($salt . $model->student_nr);
+            }
             if ( $model->save() ) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
-
+ 
         return $this->render('create', [
             'model' => $model,
         ]);
