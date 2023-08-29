@@ -17,8 +17,8 @@ account = canvas.get_account(82)
 
 course = account.create_course(
     course={
-        'name':'Examens - C22',
-        'course_code':'LCT-SD-OP11-C22-25604OR',
+        'name':'Nederlands - C23',
+        'course_code':'LCT-GNR-NED-C23-25604OR',
         'default_view': 'modules',
         'licence': 'private',
     }
