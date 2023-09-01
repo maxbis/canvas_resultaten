@@ -21,6 +21,9 @@ if ($subDomain=='c21'){
 if ($subDomain=='c22'){
     $klassen=['2A','2B','2C'];
 }
+if ($subDomain=='c23'){
+    $klassen=['3A','3B','3C'];
+}
 
 return [
     'adminEmail' => 'admin@example.com',

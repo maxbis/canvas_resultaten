@@ -14,11 +14,12 @@ API_KEY = config.get('main', 'api_key')
 canvas = Canvas(API_URL, API_KEY)
 
 # Define your list of teacher emails here
-teacher_emails = ['t.monincx@rocva.nl', 's.krachumott@rocva.nl', 'a.vogel@rocva.nl', 'a.vanderlinden1@rocva.nl', 'y.kurt@rocva.nl', 'm.bisschop@rocva.nl', 't.vanderstam@rocva.nl', 'n.vandalum@rocva.nl']
+teacher_emails = ['t.monincx@rocva.nl', 's.krachumott@rocva.nl', 'a.vogel@rocva.nl', 'a.vanderlinden1@rocva.nl', 'y.kurt@rocva.nl', 'm.bisschop@rocva.nl', 't.vanderstam@rocva.nl']
 teacher_ids=['8904', '8882', '73267', '8887', '8844', '67247', '8889', '8876']
+# teacher_ids=['8904']
 
 # Get the course c24-dev 1 tm 12: 10755 12463 12621 12622  - 12623 12624 12625 12626 - 12627 12628 12629 12630
-course_id = 14156
+course_id = 14238
 try:
     course = canvas.get_course(course_id)
 except exceptions.ResourceDoesNotExist:
