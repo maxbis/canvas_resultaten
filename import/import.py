@@ -146,20 +146,20 @@ def slashJoin(*args):
     return "/".join(arg.strip("/") for arg in args)
 
 def convertDate(stringDate): # converts GMT to CET and correct for DST
-    dstOffset=-1
+    dstOffset=1
     datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ')
     thisYear=datetimeObject.year
     thisMonth=datetimeObject.month
     thisDay=datetimeObject.day
 
     if ( str(thisYear) not in DST_DATES ):
-       log(' *** Year for DST not defined, take defautl offset (-1) ***', 1)
+       log(' *** Year for DST not defined, take defautl offset (+1) ***', 1)
     elif ( thisMonth>3 and thisMonth<10):
-        dstOffset=-2
+        dstOffset=2
     elif (thisMonth==3 and thisDay>=DST_DATES[str(thisYear)][0]):
-        dstOffset=-2
+        dstOffset=2
     elif (thisMonth==10 and thisDay<=DST_DATES[str(thisYear)][1]):
-        dstOffset=-2
+        dstOffset=2
     
     datetimeObject = datetime.strptime(stringDate, '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours=dstOffset)
     return datetimeObject.strftime('%Y-%m-%d %H:%M:%S')
