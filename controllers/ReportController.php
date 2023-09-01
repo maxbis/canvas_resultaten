@@ -636,7 +636,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
             ],
-            'descr' => 'Aantal beoordelingen van alle cohorten.',
+            'descr' => 'Aantal beoordelingen over c20, c21, c22.',
             'lastLine' => $lastLine,
             'width' => [0, 80, 80, 80, 80, 80, 80, 80, 80],
         ]);
@@ -736,7 +736,7 @@ class ReportController extends QueryBaseController
     public function actionActivity($studentnr = '99', $export = false)
     { // activity report per user when/what - click on graph on users home page - needs to be here becasue students cannot access this.
         $sql = "
-            select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, convert_tz(s.submitted_at,'+00:00','+00:00') ingeleverd, s.attempt poging,
+            select u.name 'student', u.student_nr 'student_nr', u.klas 'klas', g.name module, a.name opdracht, s.submitted_at ingeleverd, s.attempt poging,
             s.course_id 'course_id', a.id 'assignment_id', u.id 'student_id',
             case when s.submitted_at <= s.graded_at then 1 else 0 end 'graded',
             a.points_possible 'max_points', s.entered_score 'points'
