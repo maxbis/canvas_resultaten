@@ -69,7 +69,9 @@ use yii\widgets\ActiveForm;
                 &nbsp;&nbsp;&nbsp;
                 <?= Html::a( 'Cancel', Yii::$app->request->referrer , ['class'=>'btn btn-primary']); ?>
                 &nbsp;&nbsp;&nbsp;
-                <?= Html::submitButton('&nbsp;&nbsp;Save&nbsp;&nbsp;', ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Save & Stay', ['class' => 'btn btn-info', 'name' => 'action', 'value' => 'stay']) ?>
+                &nbsp;&nbsp;&nbsp;
+                <?= Html::submitButton('&nbsp;&nbsp;Save&nbsp;&nbsp;', ['class' => 'btn btn-success', 'name' => 'action', 'value' => 'openModule']) ?>
             </div>
         </div>
 
@@ -79,6 +81,7 @@ use yii\widgets\ActiveForm;
 
         <div class="row">
             <div class="col-sm-8 text-right btn-sm">
+               
                 <?= Html::a('Delete', ['delete', 'assignment_id' => $model->assignment_id], [
                 'class' => 'btn btn-light',
                 'data' => [

@@ -94,12 +94,24 @@ class NakijkenController extends Controller
     public function actionUpdate($assignment_id, $alt_return=0)
     {
         $model = $this->findModel($assignment_id);
+        $action = Yii::$app->request->post('action');
+
+        # TODO there are two ways to redirect to another page when saved
+        # the GET param that is given grade/not-graded-module2 report and report/opdrachten-module?id=29979 report
+        # the param given by the submit button in the nakijken _form L72
+        # the method shoudl be unified
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+
+            if ($action == 'stay') {
+                return $this->redirect(['update', 'assignment_id' => $model->assignment_id]);
+            }
+            
             # if (alt)return is set this means we came from grading page
             if ($alt_return==1) {
                 return $this->redirect(['/grade/not-graded-module2', 'moduleId' => $model->module_id, 'regrading' => 2]);
             }
+
             # oterhwise we go back to the complete module overview
             return $this->redirect(['/report/opdrachten-module', 'id' => $model->module_id]);
             
