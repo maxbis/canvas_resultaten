@@ -26,6 +26,22 @@ use yii\helpers\Html;
         border-radius: 4px;
         transition: background-color 0.1s ease;
     }
+    
+    .bottom-button {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8em;
+        text-align: center;
+        cursor: pointer;
+        color: #404040;
+        font-weight: 400px;
+        background-color: #f8f9fa;
+        border: solid 1px;
+        border-color: #d0d0d0;
+        border-radius: 0.25rem;
+        float: right;
+        margin-left: 20px;
+    }
+
     .button:hover, .regular-link:hover {
         background-color: #ffdd00;
         color:#000000;
@@ -111,9 +127,9 @@ use yii\helpers\Html;
             }
             ?>
         </table>
+        <?php if ( isset($lastLine) ) echo $lastLine; ?>
     </div>
 </div>
-
 
 <?php
 // foreach ($data as $row) {

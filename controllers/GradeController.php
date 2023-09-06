@@ -318,61 +318,17 @@ class GradeController extends QueryBaseController
         ";
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
-        return $this->render('/grade/gradeModule', [ 'data' => $result ]);
 
-        $a = 1/0;
+        $lastLine  = "<hr>";
+        $lastLine .= "<a class=\"btn bottom-button\" href=\"http://c23.cmon.local/grade/not-graded-module2?moduleId=".$moduleId."\">Update</a>"; 
+        $lastLine  .= "<br>&nbsp;";
 
-        $data = parent::executeQuery($sql, "Wachten op beoordeling ", $export);
-
-        if (! isset($data['row']) ) {
-            return $this->render('/report/output', [
-                'data' => $data,
-            ]);
-        }
-
-        $data['title'] .= " voor <i>".$data['row'][0]['Module']."</i>";
-        $data['show_from']=1;
+        // $lastLine =  "<hr>";
+        // $lastLine .= "<a class=\"bottom-button left\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\"><< Terug</a>"; 
 
 
-        // Create lastLineButton with buttons to open $pagesPerButton in one go
-        $lastLine= "<script>\n";
-        $count=0;
-        $pagesPerButton=10;
-        $buttons=[];
+        return $this->render('/grade/gradeModule', [ 'data' => $result, 'lastLine' => $lastLine ]);
 
-        foreach ($data['row'] as $item) {
-            if ( $count%$pagesPerButton == 0) {
-                $lastLine.= "function openAllInNewTab".$count."() {\n";
-                array_push($buttons, $count);
-            }
-            // dd( explode('|',$item['!Link'])[1] );
-            $lastLine.= "window.open('". explode('|',$item['!Link'])[1] ."', '_blank');\n";
-            $count++;
-            if ( $count%$pagesPerButton == 0) {
-                $lastLine.= "}\n";
-            }
-        }
-        if ( $count%$pagesPerButton != 0) {
-            $lastLine.= "}\n";
-        }
-        $lastLine.= "</script><hr>\n";
-
-        // $lastLine.= Html::a("↺", ['canvas-update/update-grading-status', 'moduleId'=>$moduleId, 'regrading'=>'2'], ['title'=>'Update and back', 'class'=>'btn btn-link', 'style'=>'float: right'] );
-        $count=count($buttons);
-        foreach (array_reverse($buttons) as $elem) {
-            if($count-- < 7) { // max number of buttons at bottom of page
-                $start=$elem+1;
-                $stop=min($elem+10,count($data['row']));
-                $lastLine.="&nbsp;&nbsp;<button class=\"btn btn-link\" style=\"float: right;\" onclick=openAllInNewTab".$elem."() title=\"Open all submissions\">Grade ".$start."-".$stop." &#10142;</button>";
-            }
-        }
-        $lastLine.="&nbsp;&nbsp;&nbsp;<div style=\"float: left;\"><a class=\"btn btn-light\" href=\"".Yii::$app->request->referrer."\"><< Back</a></div><br><br>";
-
-        return $this->render('/grade/gradeModule', [
-            'data' => $data,
-            'descr' => '** student heeft meer dan 3 pogingen, maximaal aantal punten -/- 20%',
-            'lastLine' => $lastLine,
-        ]);
     }
 
     public function actionNotGradedModule($moduleId = '', $export = false) // Menu 4.1b - 4.2b Nog beoordelen = ingeleverd en nog geen beoordeling van één module
