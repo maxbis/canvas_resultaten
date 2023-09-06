@@ -636,7 +636,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
             ],
-            'descr' => 'Aantal beoordelingen over c20, c21, c22.',
+            'descr' => 'Aantal beoordelingen over alle cohorten',
             'lastLine' => $lastLine,
             'width' => [0, 80, 80, 80, 80, 80, 80, 80, 80],
         ]);
