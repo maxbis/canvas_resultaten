@@ -319,13 +319,11 @@ class GradeController extends QueryBaseController
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
-        $lastLine  = "<hr>";
-        $lastLine .= "<a class=\"btn bottom-button\" href=\"https://c23.cmon.ovh/grade/not-graded-module2?moduleId=".$moduleId."\">Update</a>"; 
-        $lastLine  .= "<br>&nbsp;";
+        # return page is wrong
 
-        // $lastLine =  "<hr>";
-        // $lastLine .= "<a class=\"bottom-button left\" href=\"".Yii::$app->controller->action->id."?update=".abs($update-1)."\"><< Terug</a>"; 
-
+        // $lastLine  = "<hr>";
+        // $lastLine .= "<a class=\"btn bottom-button\" href=\"https://c23.cmon.ovh/canvas-update/update?assignmentGroup=".$moduleId."&show_processing=1\">Update</a>"; 
+        // $lastLine  .= "<br>&nbsp;";
 
         return $this->render('/grade/gradeModule', [ 'data' => $result, 'lastLine' => $lastLine ]);
 
