@@ -325,6 +325,8 @@ class GradeController extends QueryBaseController
         // $lastLine .= "<a class=\"btn bottom-button\" href=\"https://c23.cmon.ovh/canvas-update/update?assignmentGroup=".$moduleId."&show_processing=1\">Update</a>"; 
         // $lastLine  .= "<br>&nbsp;";
 
+        $lastLine = "";
+
         return $this->render('/grade/gradeModule', [ 'data' => $result, 'lastLine' => $lastLine ]);
 
     }
