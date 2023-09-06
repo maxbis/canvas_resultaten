@@ -332,7 +332,7 @@ def calcRanking():
     sql="""
         update user u set ranking_score=
         (
-            select (SUM(case when voldaan='V' then 1 else 0 end))*100+round(100*sum(punten/(punten_max)) 'Ranking Score'
+            select (SUM(case when voldaan='V' then 1 else 0 end))*100+round(100*sum(punten/punten_max)) 'Ranking Score'
             FROM resultaat r
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer
@@ -347,11 +347,11 @@ def calcRanking():
     # first calculate the bits and pieces normuren per not yet finished module
     sql="""
         UPDATE resultaat t1
-        INNER JOIN ( SELECT r.student_nummer, module_id, round(sum( round(d.norm_uren*(r.punten*10/(r.punten_max))  )/10) sum_norm_uren
+        INNER JOIN ( SELECT r.student_nummer, module_id, round(sum( round(d.norm_uren*(r.punten*10/r.punten_max))  )/10) sum_norm_uren
             FROM resultaat r
             INNER JOIN module_def d ON d.id=module_id AND d.generiek=0
             WHERE r.voldaan!='V'
-            AND r.punten_max > 0
+            and punten_max > 0
             GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
         SET norm_uren = sum_norm_uren;
     """
