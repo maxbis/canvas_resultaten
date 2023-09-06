@@ -320,7 +320,7 @@ class GradeController extends QueryBaseController
         $result = Yii::$app->db->createCommand($sql)->queryAll();
 
         $lastLine  = "<hr>";
-        $lastLine .= "<a class=\"btn bottom-button\" href=\"http://c23.cmon.local/grade/not-graded-module2?moduleId=".$moduleId."\">Update</a>"; 
+        $lastLine .= "<a class=\"btn bottom-button\" href=\"https://c23.cmon.ovh/grade/not-graded-module2?moduleId=".$moduleId."\">Update</a>"; 
         $lastLine  .= "<br>&nbsp;";
 
         // $lastLine =  "<hr>";
