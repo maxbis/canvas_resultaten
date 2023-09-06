@@ -337,6 +337,7 @@ def calcRanking():
             inner join module_def d on d.id=r.module_id 
             where u.student_nr=r.student_nummer
             and d.generiek=0
+            and punten_max > 0
         )"""
     cursor.execute(sql)
     con.commit()
@@ -350,6 +351,7 @@ def calcRanking():
             FROM resultaat r
             INNER JOIN module_def d ON d.id=module_id AND d.generiek=0
             WHERE r.voldaan!='V'
+            AND r.punten_max > 0
             GROUP BY r.student_nummer, module_id ) t2 ON t2.student_nummer=t1.student_nummer and t2.module_id=t1.module_id
         SET norm_uren = sum_norm_uren;
     """
