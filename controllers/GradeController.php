@@ -96,7 +96,7 @@ class GradeController extends QueryBaseController
         ]);
     }
 
-    public function actionAllModules($export=false, $update=false) // Menu 4.1 - 4.2 - Wachten op beoordeling <TODO> drie overzichten in één tabbed overzicht.
+    public function actionAllModules($export=false, $update=true) // Menu 4.1 - 4.2 - Wachten op beoordeling <TODO> drie overzichten in één tabbed overzicht.
     {
         if ($update) {
             $hide="";
