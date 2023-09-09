@@ -144,9 +144,9 @@ class GradeController extends QueryBaseController
         return $this->render('/report/output', [
             'data' => $data,
             'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
-            'lastLine' => $lastLine,
+            # 'lastLine' => $lastLine,
             'nocount' => true,
-            'descr' => 'Dit is een beta feature. Update loopt via een snelle multi-threading PHP-Python koppeling en is afhankelijk van server instellingen.',
+            'descr' => '',
         ]);
     }
 
