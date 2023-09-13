@@ -55,7 +55,7 @@ class GradeController extends QueryBaseController
         $sql = "SELECT
             m.pos '-pos',
             c.korte_naam '#_Blok',
-            concat('-','|/grade/not-graded-module2|moduleId|',m.id) '!_alternatieve_link',
+            concat('&nbsp;[ac]&nbsp;','|/grade/not-graded-module2|moduleId|',m.id) '!_alternatieve_link',
             concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id) '!Module',
             sum( case when (not m.generiek) then 1 else 0 end ) '$nHide+Dev',
             sum( case when (m.generiek) then 1 else 0 end ) '$nHide+Gen',

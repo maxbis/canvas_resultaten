@@ -58,7 +58,7 @@ class ReportController extends QueryBaseController
 
         $select = '';
         for ($i = 0; $i < 7; $i++) {
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
+            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+00:00') as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
             $dayNr--;
             if ($dayNr < 0)
                 $dayNr = 6;
@@ -73,7 +73,7 @@ class ReportController extends QueryBaseController
         $sql = "
             SELECT u.klas Klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
             $select
-            ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+02:00') as date) ) then 1 else 0 end) '+wk'
+            ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+00:00') as date) ) then 1 else 0 end) '+wk'
             FROM user u
             left outer join submission s on u.id=s.user_id
             where student_nr > 0
