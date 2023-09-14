@@ -1,4 +1,6 @@
 # https://canvasapi.readthedocs.io/en/stable/getting-started.html
+#
+# Get all attachnments from a course, specified on line 97
 
 from html.parser import HTMLParser
 from io import StringIO
