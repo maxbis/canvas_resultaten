@@ -74,7 +74,7 @@ use yii\widgets\ActiveForm;
                 <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
             <div class="col-sm-2 text-right">
-                <a class="button" href="/grade/not-graded-module2?moduleId=<?= $model->module_id ?>" target="_blank" title="Auto Correct">AC➞</a>
+                <a class="button" href="http://localhost:5000/corecta/<?= $model->cohort ?>/<?= $model->assignment_id ?>" target="_blank" title="Auto Correct">AC➞</a>
             </div>
         </div>
 
