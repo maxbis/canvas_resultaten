@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<br>
+<br><br>
 
 <div class="nakijken-form">
 
@@ -18,39 +18,49 @@ use yii\widgets\ActiveForm;
 
         <div class="row">
             <div class="col-sm-2">
-                <?= $form->field($model, 'course_id')->textInput() ?>
+                <?= $form->field($model, 'course_id')->textInput(['readonly' => true]) ?>
             </div>
             <div class="col-sm-2">
-                <?= $form->field($model, 'assignment_id')->textInput() ?>
+                <?= $form->field($model, 'assignment_id')->textInput(['readonly' => true]) ?>
             </div>
             <div class="col-sm-2">
-                <?= $form->field($model, 'module_id')->textInput() ?>
+                <?= $form->field($model, 'module_id')->textInput(['readonly' => true]) ?>
             </div>
             <div class="col-sm-2">
-                <?= $form->field($model, 'cohort')->textInput() ?>
+                <?= $form->field($model, 'cohort')->textInput(['readonly' => true]) ?>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-3">
-                <?= $form->field($model, 'module_name')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'module_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
             </div>
             <div class="col-sm-3">
-                <?= $form->field($model, 'assignment_name')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'assignment_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
             </div>
         </div>
 
+        <br>
+
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?= $form->field($model, 'file_type')->dropDownList(['png' => 'png/jpg/pdf','onl'=>'online','php' => 'php', 'html' => 'html', 'sql' => 'sql','js'  => 'js', 'py' => 'py', 'txt' => 'txt']);?>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?= $form->field($model, 'file_name',)->textInput(['title' => '(part of) the file name to match for auto-correct)']) ?>
             </div>
             <div class="col-sm-2">
                 <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-2">
+                <?= $form->field($model, 'config[php_exe]')->checkbox(['value' => 1, 'uncheck' => 0, 'label' => 'Run PHP', 'checked' => isset($model->json_config['php_exe']) && $model->json_config['php_exe'] == 1]) ?>
+            </div>
+        </div>
+
+        <br>
 
         <div class="row">
             <div class="col-sm-8">
@@ -74,6 +84,7 @@ use yii\widgets\ActiveForm;
                 <?= Html::submitButton('&nbsp;&nbsp;Save&nbsp;&nbsp;', ['class' => 'btn btn-success', 'name' => 'action', 'value' => 'openModule']) ?>
             </div>
         </div>
+              
 
         <?php ActiveForm::end(); ?>
 
@@ -110,6 +121,11 @@ use yii\widgets\ActiveForm;
             <p>When a group of words is placed between <b>( and )</b>, the words may occur in <b>any order</b>. So 'word1 word2' will match the text 'word2 word1'.</p>
             <h4>Or Search</h4>
             <p>When a group of words is placed between <b>[ and ], one or more</b> of these words must match. When a word matches, the algorithm will not try to match the next word in this group, hence the search position is advanced to the first match.</p>
+            <p><br></p>
+            <h4>Escaping</h4>
+            <p>When a word is put in between "" the starting ! [ ] ( ) will not be interperted but will be part of the match. A "" itself cannot be escaped. Escaping does not work in combination with ! [ ] ( )</p>
+            <h4>Run PHP</h4>
+            <p>Simple PHP can be tested by running it. The code will run on the client, so you need to have PHP installed. Only single files without dependencies can be run.</p>
             <hr>
         </div>
     </div>

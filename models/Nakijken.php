@@ -6,6 +6,7 @@ use Yii;
 
 class Nakijken extends \yii\db\ActiveRecord
 {
+    
     /**
      * {@inheritdoc}
      */
@@ -31,6 +32,7 @@ class Nakijken extends \yii\db\ActiveRecord
             ['file_type', 'filter', 'filter' => function ($value) {
                 return str_replace('.', '', $value);
             }],
+            [['config'], 'safe'], 
         ];
     }
 
@@ -53,6 +55,11 @@ class Nakijken extends \yii\db\ActiveRecord
             'module_id' => 'Module ID',
             'cohort' => 'Cohort'
         ];
+    }
+
+    public function getJson_config()
+    {
+        return json_decode($this->getAttribute('config'), true);
     }
 
 }

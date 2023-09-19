@@ -16,7 +16,7 @@ API_URL = config.get('main', 'host')
 API_KEY = config.get('main', 'api_key')
 
 canvas = Canvas(API_URL, API_KEY)
-
+account = canvas.get_account(82) 
 
 
 # Replace with the course ID
@@ -26,12 +26,18 @@ course_id = 10755
 student_full_name = 'Lucas Justus'
 
 # Replace with the name of the assignment group you want to target
-target_assignment_group_name = 'Introductie'
+target_assignment_group_name = 'Front End - Level 1'
 
 
 
 # Get the course object
-course = canvas.get_course(course_id)
+courses = account.get_courses()
+
+course = None
+for c in courses:
+    if c.id == course_id:
+        course = c
+        break
 
 # Find the student by full name
 students = course.get_users(enrollment_type=['student'])
@@ -68,8 +74,15 @@ else:
         total = 0
         for assignment in assignments:
             if assignment.assignment_group_id == target_assignment_group.id:
-                rating = int(assignment.points_possible - 1)
-                total += rating
+                rating = max( 0, int(assignment.points_possible - 1) )
                 print(f"About to rate {assignment.name} with { rating }")
-                #  assignment.edit_submission(submission_type='', body={'grade_data': {'text_comment': 'Auto Excused'}, 'posted_grade': rating })
+                submissions = assignment.get_submissions(include=["user", "submission_comments"])
+                for i, submission in enumerate(submissions):
+                    if ( submission.user['short_name'] == student_full_name ):
+                        print(f"Rate {submission.id} {submission.user['short_name']}")
+                        total += rating
+                        submission.edit(submission={"posted_grade": str(rating)})
+                        submission.edit(comment={"text_comment": 'No grading', "attempt": submission.attempt})
+
+
         print(f"Total points given: {total}")

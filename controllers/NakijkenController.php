@@ -72,8 +72,12 @@ class NakijkenController extends Controller
         $model = new Nakijken();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index', 'assignment_id' => $model->assignment_id]);
+            if ($model->load($this->request->post()) ) {
+                $model->config = json_encode($model->config);
+
+                if ($model->validate() && $model->save()) {
+                    return $this->redirect(['index', 'assignment_id' => $model->assignment_id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -101,15 +105,19 @@ class NakijkenController extends Controller
         # the param given by the submit button in the nakijken _form L72
         # the method shoudl be unified
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post()) ) {
+            $model->config = json_encode($model->config);
 
-            if ($action == 'stay') {
-                return $this->redirect(['update', 'assignment_id' => $model->assignment_id]);
-            }
-            
-            # if (alt)return is set this means we came from grading page
-            if ($alt_return==1) {
-                return $this->redirect(['/grade/not-graded-module2', 'moduleId' => $model->module_id, 'regrading' => 2]);
+            if ( $model->save() ) {
+
+                if ($action == 'stay') {
+                    return $this->redirect(['update', 'assignment_id' => $model->assignment_id]);
+                }
+                
+                # if (alt)return is set this means we came from grading page
+                if ($alt_return==1) {
+                    return $this->redirect(['/grade/not-graded-module2', 'moduleId' => $model->module_id, 'regrading' => 2]);
+                }
             }
 
             # oterhwise we go back to the complete module overview
