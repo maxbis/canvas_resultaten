@@ -29,6 +29,11 @@ use yii\widgets\ActiveForm;
     }
 </style>
 
+<script>
+    // Modify the document.title property to change the page title
+    document.title = "Edit <?= $model->assignment_id ?>";
+</script>
+
 <br><br>
 
 <div class="nakijken-form">
