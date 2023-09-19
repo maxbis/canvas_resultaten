@@ -8,6 +8,27 @@ use yii\widgets\ActiveForm;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
+<style>
+    .button {
+        display: inline-block;
+        padding: 1px 2px;
+        font-size: 0.7em;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0, 123, 255, 0.6);;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.1s ease;
+        margin-top: 40px;
+    }
+
+    .button:hover, .regular-link:hover {
+        background-color: #ffdd00;
+        color:#000000;
+    }
+</style>
+
 <br><br>
 
 <div class="nakijken-form">
@@ -52,6 +73,9 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-2">
                 <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
+            <div class="col-sm-2 text-right">
+                <a class="button" href="/grade/not-graded-module2?moduleId=<?= $model->module_id ?>" target="_blank" title="Auto Correct">AC➞</a>
+            </div>
         </div>
 
         <div class="row">
@@ -88,19 +112,21 @@ use yii\widgets\ActiveForm;
 
         <?php ActiveForm::end(); ?>
 
+
         <br><br>
 
         <div class="row">
+
             <div class="col-sm-8 text-right btn-sm">
-               
                 <?= Html::a('Delete', ['delete', 'assignment_id' => $model->assignment_id], [
-                'class' => 'btn btn-light',
-                'data' => [
-                    'confirm' => 'Are you sure you want to delete this item?',
-                    'method' => 'post',
-                ],
+                    'class' => 'btn btn-light',
+                    'data' => [
+                        'confirm' => 'Are you sure you want to delete this item?',
+                        'method' => 'post',
+                    ],
                 ]) ?>
             </div>
+
         </div>
 
     </div>
