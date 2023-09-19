@@ -66,7 +66,7 @@ class ApiController extends Controller
             SELECT  n.cohort cohort, a.course_id course_id, c.naam course_name, c.pos cpos, a.position apos, m.pos mpos,
 		            a.id assignment_id, g.name module_name, a.name assignment_name,
                     m.id module_id,
-                    n.words_in_order words_in_order, n.file_type file_type, n.file_name file_name, n.attachments attachments, n.instructie hint
+                    n.words_in_order words_in_order, n.file_type file_type, n.file_name file_name, n.attachments attachments, n.instructie hint, n.config config
             FROM assignment a
             JOIN assignment_group g on g.id=a.assignment_group_id
             JOIN course c on c.id=a.course_id 
