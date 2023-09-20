@@ -34,8 +34,6 @@ use yii\widgets\ActiveForm;
     document.title = "Edit <?= $model->assignment_id ?>";
 </script>
 
-<br><br>
-
 <div class="nakijken-form">
 
     <div class="container">
@@ -64,9 +62,10 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-3">
                 <?= $form->field($model, 'assignment_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
             </div>
+            <div class="col-sm-2 text-right">
+                <a class="button" href="http://localhost:5000/correcta/<?= $model->cohort ?>/<?= $model->assignment_id ?>" target="_blank" title="Auto Correct">AC➞</a>
+            </div>
         </div>
-
-        <br>
 
         <div class="row">
             <div class="col-sm-2">
@@ -78,18 +77,12 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-2">
                 <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
-            <div class="col-sm-2 text-right">
-                <a class="button" href="http://localhost:5000/correcta/<?= $model->cohort ?>/<?= $model->assignment_id ?>" target="_blank" title="Auto Correct">AC➞</a>
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col-sm-2">
+                <br><br>
                 <?= $form->field($model, 'config[php_exe]')->checkbox(['value' => 1, 'uncheck' => 0, 'label' => 'Run PHP', 'checked' => isset($model->json_config['php_exe']) && $model->json_config['php_exe'] == 1]) ?>
             </div>
         </div>
 
-        <br>
 
         <div class="row">
             <div class="col-sm-8">
