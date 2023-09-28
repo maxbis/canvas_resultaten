@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'points_possible',
             'instructie',
             'label',
+            'config'
         ],
     ]) ?>
 
