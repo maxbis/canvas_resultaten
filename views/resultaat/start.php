@@ -62,6 +62,25 @@ $subDomain=Yii::$app->params['subDomain'];
         font-size: 0.8em;
         color:#999;
     }
+    .ac-button {
+        display: inline-block;
+        padding: 1px 2px;
+        font-size: 0.7em;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0, 123, 255, 0.25);;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.1s ease;
+        margin-top: 0px;
+    }
+
+    .ac-button:hover, .regular-link:hover {
+        background-color: #ffdd00;
+        color:#000000;
+    }
+
 </style>
 
 
