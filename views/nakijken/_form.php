@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
         border: none;
         border-radius: 4px;
         transition: background-color 0.1s ease;
-        margin-top: 40px;
+        margin-top: 0px;
     }
 
     .button:hover, .regular-link:hover {
@@ -55,17 +55,16 @@ use yii\widgets\ActiveForm;
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-3">
-                <?= $form->field($model, 'module_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+        <!--
+            <div class="row">
+                <div class="col-sm-3">
+                    <?= $form->field($model, 'module_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                </div>
+                <div class="col-sm-3">
+                    <?= $form->field($model, 'assignment_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                </div>
             </div>
-            <div class="col-sm-3">
-                <?= $form->field($model, 'assignment_name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-            </div>
-            <div class="col-sm-2 text-right">
-                <a class="button" href="http://localhost:5000/correcta/<?= $model->cohort ?>/<?= $model->assignment_id ?>" target="_blank" title="Auto Correct">AC➞</a>
-            </div>
-        </div>
+        -->
 
         <div class="row">
             <div class="col-sm-2">
@@ -78,15 +77,26 @@ use yii\widgets\ActiveForm;
                 <?= $form->field($model, 'attachments',)->textInput(['title' => 'Number of requested attachments (empty=no check)']) ?>
             </div>
             <div class="col-sm-2">
-                <br><br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2">
                 <?= $form->field($model, 'config[php_exe]')->checkbox(['value' => 1, 'uncheck' => 0, 'label' => 'Run PHP', 'checked' => isset($model->json_config['php_exe']) && $model->json_config['php_exe'] == 1]) ?>
+            </div>
+            <div class="col-sm-2">
+                <?= $form->field($model, 'config[html_render]')->checkbox(['value' => 1, 'uncheck' => 0, 'label' => 'Render HTML', 'checked' => isset($model->json_config['html_render']) && $model->json_config['html_render'] == 1]) ?>
+            </div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2 text-right">
+                <a class="button" href="http://localhost:5000/correcta/<?= $model->cohort ?>/<?= $model->assignment_id ?>" target="_blank" title="Auto Correct">AC➞</a>
             </div>
         </div>
 
 
         <div class="row">
             <div class="col-sm-8">
-                <?= $form->field($model, 'words_in_order')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'words_in_order')->textArea(['maxlength' => true, 'rows'=>2]) ?>
             </div>
         </div>
 
@@ -110,8 +120,7 @@ use yii\widgets\ActiveForm;
 
         <?php ActiveForm::end(); ?>
 
-
-        <br><br>
+        <br>
 
         <div class="row">
 
@@ -126,11 +135,10 @@ use yii\widgets\ActiveForm;
             </div>
 
         </div>
-
     </div>
 
    
-    <div class="row" style="padding:10px;background-color:#ffffff;font-size:14px;color:#808080;margin-top:80px;margin-bottom:80px;">
+    <div class="row" style="padding:10px;background-color:#ffffff;font-size:14px;color:#808080;margin-top:80px;margin-bottom:40px;">
         <div class="col-sm-8">
         <hr>
             <p></p>

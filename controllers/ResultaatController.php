@@ -152,6 +152,12 @@ class ResultaatController extends Controller
          order by 1";
         $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
 
+        $url = strtolower('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+        $host = parse_url($url, PHP_URL_HOST);
+        $parts = explode('.', $host);
+        $cohort = $parts[0];
+
+
         $html="<tr><th></th><th>module</th><th>aantal</th><th>oudste</th></tr>";
         $prev="";
         foreach($nakijken as $item) {
@@ -167,6 +173,14 @@ class ResultaatController extends Controller
             $style = "";
             if ( $item['oudste'] > 14 ) $style="style=\"font-weight: 650;\"";
             $html .= "<td $style>".$item['oudste']."</td>";
+
+            $html .= "<td>";
+            // $html .= "<a class=\"ac-button\" href=\"/grade/not-graded-module2?moduleId=" . $item['id'] . "\" target=\"_blank\" title=\"Auto Correct\">AC➞</a>";
+            $html .= Html::a( 'AC➞',
+                        [ '/grade/not-graded-module2', 'moduleId'=>$item['id']],
+                        [ 'class' => 'ac-button', 'target' => '_blank', 'title' => 'Auto Correct']
+                    );
+            $html .= "</td>";
 
             $html .= "</tr>";
         }
