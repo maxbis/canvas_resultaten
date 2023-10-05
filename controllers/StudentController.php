@@ -184,13 +184,17 @@ class StudentController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionSetMessage() {
+    public function actionSetMessage() { // AJAX update
+        // functions updates message or comment in user table.
+        // the posted field contains the column name to be updated
         $data = Yii::$app->request->post();
-        $id=$data['id'];
-        $message=$data['message'];
+        $id=$data['id'];            // id of user to be updated
+        $message=$data['message'];  // content of the field
+        $field=$data['field'];      // field name to be updated
+
         $message = trim(preg_replace('/\s\s+/', ' ', $message)); // filter multi spaces and tabs and the like
         // function set message
-        $sql="update user set message=:message where id = :id;";
+        $sql="update user set $field=:message where id = :id;";
         $params = [':id'=>$id, ':message'=>$message,];
         Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
         return;
