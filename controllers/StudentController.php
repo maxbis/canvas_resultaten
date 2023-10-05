@@ -224,4 +224,56 @@ class StudentController extends Controller
             echo "<br><b>Done</b><br>";
         }
     }
+
+    public function actionPredict($id) {
+        $sql ="select s.submitted_at date, s.entered_score achievement from submission s
+            where  s.user_id = $id
+            and entered_score != 0
+            and YEAR(s.submitted_at) > 1970
+            order by date";
+        $data = Yii::$app->db->createCommand($sql)->queryAll();
+        $prediction = $this->predictAchievementDate($data, 4000);
+        dd($prediction);
+    }
+
+    function predictAchievementDate($dataset, $targetAchievement) {
+        // Calculate cumulative achievements
+        $cumulativeAchievement = 0;
+        foreach ($dataset as &$data) {
+            $cumulativeAchievement += $data['achievement'];
+            $data['cumulative'] = $cumulativeAchievement;
+        }
+    
+        // Calculate weighted slope using recent data points
+        $weight = 1; // Initial weight
+        $weightedSlopeSum = 0;
+        $weightSum = 0;
+        for ($i = count($dataset) - 1; $i >= 0 && $i > count($dataset) - 10; $i--) { // using last 10 data points
+            if ($i > 0) {
+                $daysDifference = strtotime($dataset[$i]['date']) - strtotime($dataset[$i-1]['date']);
+                echo $dataset[$i]['date'],  $dataset[$i-1]['date'];
+                echo "<br>";
+                echo strtotime($dataset[$i]['date'])." - ". strtotime($dataset[$i-1]['date'])." - ". strtotime($dataset[$i]['date']) - strtotime($dataset[$i-1]['date']);
+                echo "<br>";
+                d($daysDifference/86400);
+                $achievementDifference = $dataset[$i]['cumulative'] - $dataset[$i-1]['cumulative'];
+                $slope = $achievementDifference / $daysDifference; // achievements per day
+                $weightedSlopeSum += $slope * $weight;
+                $weightSum += $weight;
+                $weight++; // Increase weight for more recent data
+            }
+        }
+    
+        $averageWeightedSlope = $weightedSlopeSum / $weightSum;
+    
+        // Predict the date when cumulative achievement reaches target
+        $daysToTarget = ($targetAchievement - $cumulativeAchievement) / $averageWeightedSlope;
+        echo "<br>targetAchievement: ".$targetAchievement."<br>";
+        echo "<br>cumulativeAchievement: ".$cumulativeAchievement."<br>";
+        echo "<br>Days to target: ". $daysToTarget/86400 ."<br>";
+        $predictedDate = date('Y-m-d', strtotime($dataset[count($dataset)-1]['date'] . ' + ' . round($daysToTarget/86400) . ' days'));
+    
+        return $predictedDate;
+    }
+
 }
