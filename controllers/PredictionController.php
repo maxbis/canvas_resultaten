@@ -62,17 +62,18 @@ class PredictionController
         $startDate = isset($dataset[0]['date']) ? $dataset[0]['date'] : null;
 
         $decay = 0.85; // the part to be done is decelerated with 15%, becasue it becomes more difficult. 
-        $daysPassed = $this->countWorkingDays($startDate, date('Y-m-d')); 
+        $today = date('Y-m-d');
+        $daysPassed = $this->countWorkingDays($startDate, $today); 
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
-        $predictedDate = $this->getDateAfterWorkingDays($startDate, $daysToGo);
+        $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
 
         $output = "";
         
         $output .= "<pre>";
         $output .= "\n cumulativeAchievement: ".$cumulativeAchievement;
         $output .= "\n startDate:             ".$startDate;
-        $output .= "\n endDate (today):       ".date('Y-m-d');
+        $output .= "\n endDate (today):       ".$today;
         $output .= "\n daysPassed:            ".$daysPassed;
         $output .= "\n slope:                 ".$slope;
         $output .= "\n daysToGo:              ".$daysToGo;
