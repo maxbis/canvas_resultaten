@@ -232,7 +232,7 @@ class StudentController extends Controller
             and YEAR(s.submitted_at) > 1970
             order by date";
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        $prediction = $this->predictAchievementDate($data, 2500);
+        $prediction = $this->predictAchievementDate($data, 3900);
         dd($prediction);
     }
 
@@ -255,15 +255,15 @@ class StudentController extends Controller
 
         $predictedDate = $this->getDateAfterWorkingDays($startDate, $daysToGo);
         
-        // echo "<pre>";
-        // echo "\n cumulativeAchievement: ".$cumulativeAchievement;
-        // echo "\n startDate: ".$startDate;
-        // echo "\n endDate: ".date('Y-m-d');
-        // echo "\n daysPassed: ".$daysPassed;
-        // echo "\n slope: ".$slope;
-        // echo "\n daysToGo: ".$daysToGo;
-        // echo "\n predictedDate: ".$predictedDate;
-        // exit();
+        echo "<pre>";
+        echo "\n cumulativeAchievement: ".$cumulativeAchievement;
+        echo "\n startDate: ".$startDate;
+        echo "\n endDate: ".date('Y-m-d');
+        echo "\n daysPassed: ".$daysPassed;
+        echo "\n slope: ".$slope;
+        echo "\n daysToGo: ".$daysToGo;
+        echo "\n predictedDate: ".$predictedDate;
+        exit();
      
         return $predictedDate;
     }

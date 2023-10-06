@@ -35,7 +35,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                     <div class="card" style="width: 24rem;">
                         <div class="card-body">
                         <h5 class="card-title">Courses open for this student</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">(experimenteel)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"></h6>
                         
                         <?php
                             if (isset($openCourses) && count($openCourses) ) {
@@ -53,6 +53,16 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                             }
                         ?>
                         </div>
+
+                        <small style="color:#b0b0b0;font-style: italic;margin-left:20px;">
+                            <details>
+                                <summary>&nbsp;</summary>
+                                    <ul>
+                                        <li><a href="/student/predict?id=<?=$model->id?>" target="_blank">Prediction</a></li>
+                                    </ul>
+                            </details>
+                        </small>
+
                     </div>
                 <?php } ?>
 
