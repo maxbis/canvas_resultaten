@@ -232,7 +232,7 @@ class StudentController extends Controller
             and YEAR(s.submitted_at) > 1970
             order by date";
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        $prediction = $this->predictAchievementDate($data, 4000);
+        $prediction = $this->predictAchievementDate($data, 2500);
         dd($prediction);
     }
 
@@ -243,37 +243,112 @@ class StudentController extends Controller
             $cumulativeAchievement += $data['achievement'];
             $data['cumulative'] = $cumulativeAchievement;
         }
-    
-        // Calculate weighted slope using recent data points
-        $weight = 1; // Initial weight
-        $weightedSlopeSum = 0;
-        $weightSum = 0;
-        for ($i = count($dataset) - 1; $i >= 0 && $i > count($dataset) - 10; $i--) { // using last 10 data points
-            if ($i > 0) {
-                $daysDifference = strtotime($dataset[$i]['date']) - strtotime($dataset[$i-1]['date']);
-                echo $dataset[$i]['date'],  $dataset[$i-1]['date'];
-                echo "<br>";
-                echo strtotime($dataset[$i]['date'])." - ". strtotime($dataset[$i-1]['date'])." - ". strtotime($dataset[$i]['date']) - strtotime($dataset[$i-1]['date']);
-                echo "<br>";
-                d($daysDifference/86400);
-                $achievementDifference = $dataset[$i]['cumulative'] - $dataset[$i-1]['cumulative'];
-                $slope = $achievementDifference / $daysDifference; // achievements per day
-                $weightedSlopeSum += $slope * $weight;
-                $weightSum += $weight;
-                $weight++; // Increase weight for more recent data
+        
+        // array is sorted so first element is oldest
+        $startDate = isset($dataset[0]['date']) ? $dataset[0]['date'] : null;
+
+        $daysPassed = $this->countWorkingDays($startDate, date('Y-m-d')); 
+
+        $slope = $cumulativeAchievement / $daysPassed;
+
+        $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
+
+        $predictedDate = $this->getDateAfterWorkingDays($startDate, $daysToGo);
+        
+        // echo "<pre>";
+        // echo "\n cumulativeAchievement: ".$cumulativeAchievement;
+        // echo "\n startDate: ".$startDate;
+        // echo "\n endDate: ".date('Y-m-d');
+        // echo "\n daysPassed: ".$daysPassed;
+        // echo "\n slope: ".$slope;
+        // echo "\n daysToGo: ".$daysToGo;
+        // echo "\n predictedDate: ".$predictedDate;
+        // exit();
+     
+        return $predictedDate;
+    }
+
+    function countWorkingDays($startDate, $endDate) {
+
+        // toDo vallidate the dates!
+        $vacationPeriods = [
+            ['start' => '2023-10-23', 'end' => '2023-10-27', 'name'=>'Herfst'],
+            ['start' => '2023-12-25', 'end' => '2024-01-05', 'name'=>'Kerst'],
+            ['start' => '2024-02-29', 'end' => '2024-02-23', 'name'=>'Krokus'],
+            ['start' => '2024-03-29', 'end' => '2024-03-29', 'name'=>'Goede vrijdag'],
+            ['start' => '2024-04-01', 'end' => '2024-04-01', 'name'=>'Paasmaandag'],
+            ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
+            ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
+            ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
+        ];
+
+        // Generate vacation dates
+        $vacationDates = [];
+        foreach ($vacationPeriods as $period) {
+            $vacationDates = array_merge($vacationDates, $this->generateDatesInRange($period['start'], $period['end']));
+        }
+
+        // Count working days excluding weekends and vacation dates
+        $workingDaysCount = 0;
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate) {
+
+            if ($this->isWeekday($currentDate) && !in_array($currentDate, $vacationDates)) {
+                $workingDaysCount++;
             }
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
         }
     
-        $averageWeightedSlope = $weightedSlopeSum / $weightSum;
+        return $workingDaysCount;
+    }
+
+    function getDateAfterWorkingDays($startDate, $N) {
+        // toDo vallidate the dates!
+        $vacationPeriods = [
+            ['start' => '2023-10-23', 'end' => '2023-10-27', 'name'=>'Herfst'],
+            ['start' => '2023-12-25', 'end' => '2024-01-05', 'name'=>'Kerst'],
+            ['start' => '2024-02-29', 'end' => '2024-02-23', 'name'=>'Krokus'],
+            ['start' => '2024-03-29', 'end' => '2024-03-29', 'name'=>'Goede vrijdag'],
+            ['start' => '2024-04-01', 'end' => '2024-04-01', 'name'=>'Paasmaandag'],
+            ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
+            ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
+            ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
+        ];
+
+        $vacationDates = [];
+        foreach ($vacationPeriods as $period) {
+            $vacationDates = array_merge($vacationDates, $this->generateDatesInRange($period['start'], $period['end']));
+        }
     
-        // Predict the date when cumulative achievement reaches target
-        $daysToTarget = ($targetAchievement - $cumulativeAchievement) / $averageWeightedSlope;
-        echo "<br>targetAchievement: ".$targetAchievement."<br>";
-        echo "<br>cumulativeAchievement: ".$cumulativeAchievement."<br>";
-        echo "<br>Days to target: ". $daysToTarget/86400 ."<br>";
-        $predictedDate = date('Y-m-d', strtotime($dataset[count($dataset)-1]['date'] . ' + ' . round($daysToTarget/86400) . ' days'));
+        // Find the date after N working days excluding weekends and vacation dates
+        $workingDaysCount = 0;
+        $currentDate = $startDate;
+        while ($workingDaysCount < $N) {
+            if ($this->isWeekday($currentDate) && !in_array($currentDate, $vacationDates)) {
+                $workingDaysCount++;
+            }
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
+        }
     
-        return $predictedDate;
+        return $currentDate;
+    }
+    
+
+    function isWeekday($date) {
+        $dayOfWeek = date('w', strtotime($date));
+        return ($dayOfWeek >= 1 && $dayOfWeek <= 5); // 1 for Monday and 5 for Friday
+    }
+
+    function generateDatesInRange($startDate, $endDate) {
+        $dates = [];
+        $currentDate = $startDate;
+    
+        while ($currentDate <= $endDate) {
+            $dates[] = $currentDate;
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
+        }
+    
+        return $dates;
     }
 
 }
