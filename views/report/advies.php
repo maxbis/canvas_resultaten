@@ -54,7 +54,7 @@ use yii\helpers\Url;
                 $.ajax({
                     type: 'post',
                     url:  url,
-                    data: '_csrf=' +csrfToken+"&id="+myId+"&message="+myMessage+"&ield="+myField
+                    data: '_csrf=' +csrfToken+"&id="+myId+"&message="+myMessage+"&field="+myField
                 });
                 console.log("Ajax call sent");
             }
