@@ -243,6 +243,15 @@ class StudentController extends Controller
             $cumulativeAchievement += $data['achievement'];
             $data['cumulative'] = $cumulativeAchievement;
         }
+
+        $minDate = isset($dataset[0]['date']) ? $dataset[0]['date'] : null;
+        foreach ($dataset as $data) {
+            if ($data['date'] < $minDate) {
+                $minDate = $data['date'];
+            }
+        }
+
+        
     
         // Calculate weighted slope using recent data points
         $weight = 1; // Initial weight
