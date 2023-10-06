@@ -30,7 +30,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                 </div>
             </td>
 
-            <td rowspan=3 style="vertical-align: top;">
+            <td rowspan=5 style="vertical-align: top;">
                 <?php if ( $model->student_nr>0) { ?>
                     <div class="card" style="width: 24rem;">
                         <div class="card-body">
@@ -52,14 +52,11 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                                 echo "None";
                             }
                         ?>
-                        </div>
 
                         <small style="color:#b0b0b0;font-style: italic;margin-left:20px;">
                             <details>
-                                <summary>&nbsp;</summary>
-                                    <ul>
-                                        <li><a href="/student/predict?id=<?=$model->id?>" target="_blank">Prediction</a></li>
-                                    </ul>
+                                <summary>Prediction (experimenteel)</summary>
+                                <?= $prediction ?>
                             </details>
                         </small>
 
@@ -95,10 +92,10 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
 
             <td>
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-5">
                         <?= $form->field($model, 'student_nr')->textInput()->label('Studentennummer (0 indien docent)') ?>
                     </div>
-                    <div class="col-sm-7">
+                    <div class="col-sm-5">
                         <?= $form->field($model, 'login_id')->textInput(['maxlength' => true]) ?>
                     </div>
                 </div>
@@ -118,17 +115,15 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
 
             </td>
 
-            <td></td>
-
         </tr>
 
         <tr>
 
-            <td colspan=2>
+            <td colspan=>
                 <div class="row">
                     <div class="col-sm-10">
                         <?= $form->field($model, 'comment')->textInput(['maxlength' => true])->label('Aantekening (alleen zichtbaar voor docenten)') ?>
-                        <?= $form->field($model, 'message')->textInput(['maxlength' => true])->label('Boodschap (zichtbaar voor studenten)') ?>
+                        <?= $form->field($model, 'message')->textArea(['maxlength' => true, 'rows'=>2])->label('Boodschap (zichtbaar voor studenten)') ?>
                     </div>
                 </div>
             </td>

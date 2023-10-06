@@ -13,6 +13,8 @@ use yii\filters\VerbFilter;
 
 use yii\filters\AccessControl;
 
+use app\controllers\PredictionController;
+
 /**
  * StudentController implements the CRUD actions for Student model.
  */
@@ -140,9 +142,13 @@ class StudentController extends Controller
         $sql="select id, naam from course where id not in ( select distinct r.course_id from resultaat r join course c on c.id=r.course_id where r.student_nummer=".$model['student_nr']." ) order by pos";
         $openCourses = Yii::$app->db->createCommand($sql)->queryAll();
 
+        $prediction = new PredictionController;
+        $output = $prediction->actionPredict($model->id);
+        
         return $this->render('update', [
             'model' => $model,
             'openCourses' => $openCourses,
+            'prediction' => $output,
         ]);
     }
 
@@ -223,136 +229,6 @@ class StudentController extends Controller
             Yii::$app->db->createCommand($sql)->execute();
             echo "<br><b>Done</b><br>";
         }
-    }
-
-    public function actionPredict($id) {
-        $sql ="select s.submitted_at date, s.entered_score achievement from submission s
-            where  s.user_id = $id
-            and entered_score != 0
-            and YEAR(s.submitted_at) > 1970
-            order by date";
-        $data = Yii::$app->db->createCommand($sql)->queryAll();
-        $prediction = $this->predictAchievementDate($data, 3900);
-        dd($prediction);
-    }
-
-    function predictAchievementDate($dataset, $targetAchievement) {
-        // Calculate cumulative achievements
-        $cumulativeAchievement = 0;
-        foreach ($dataset as &$data) {
-            $cumulativeAchievement += $data['achievement'];
-            $data['cumulative'] = $cumulativeAchievement;
-        }
-        
-        // array is sorted so first element is oldest
-        $startDate = isset($dataset[0]['date']) ? $dataset[0]['date'] : null;
-
-        $daysPassed = $this->countWorkingDays($startDate, date('Y-m-d')); 
-        $slope = ( $cumulativeAchievement / $daysPassed * 0.9 );
-        $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
-        $predictedDate = $this->getDateAfterWorkingDays($startDate, $daysToGo);
-        
-        echo "<pre>";
-        echo "\n cumulativeAchievement: ".$cumulativeAchievement;
-        echo "\n startDate:             ".$startDate;
-        echo "\n endDate:               ".date('Y-m-d');
-        echo "\n daysPassed:            ".$daysPassed;
-        echo "\n slope:                 ".$slope;
-        echo "\n daysToGo:              ".$daysToGo;
-        echo "\n =================================";
-        echo "\n predictedDate:         ".$predictedDate;
-        exit();
-     
-        return $predictedDate;
-    }
-
-    function countWorkingDays($startDate, $endDate) {
-
-        // toDo vallidate the dates!
-        $vacationPeriods = [
-            ['start' => '2023-10-23', 'end' => '2023-10-27', 'name'=>'Herfst'],
-            ['start' => '2023-12-25', 'end' => '2024-01-05', 'name'=>'Kerst'],
-            ['start' => '2024-02-29', 'end' => '2024-02-23', 'name'=>'Krokus'],
-            ['start' => '2024-03-29', 'end' => '2024-03-29', 'name'=>'Goede vrijdag'],
-            ['start' => '2024-04-01', 'end' => '2024-04-01', 'name'=>'Paasmaandag'],
-            ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
-            ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
-            ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
-            ['start' => '2024-10-26', 'end' => '2024-11-03', 'name'=>'Herfst'],
-            ['start' => '2024-12-21', 'end' => '2025-01-05', 'name'=>'Kerst'],
-            ['start' => '2025-02-15', 'end' => '2025-02-23', 'name'=>'Krokus'],
-        ];
-
-        // Generate vacation dates
-        $vacationDates = [];
-        foreach ($vacationPeriods as $period) {
-            $vacationDates = array_merge($vacationDates, $this->generateDatesInRange($period['start'], $period['end']));
-        }
-
-        // Count working days excluding weekends and vacation dates
-        $workingDaysCount = 0;
-        $currentDate = $startDate;
-        while ($currentDate <= $endDate) {
-
-            if ($this->isWeekday($currentDate) && !in_array($currentDate, $vacationDates)) {
-                $workingDaysCount++;
-            }
-            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
-        }
-    
-        return $workingDaysCount;
-    }
-
-    function getDateAfterWorkingDays($startDate, $N) {
-        // toDo vallidate the dates!
-        $vacationPeriods = [
-            ['start' => '2023-10-23', 'end' => '2023-10-27', 'name'=>'Herfst'],
-            ['start' => '2023-12-25', 'end' => '2024-01-05', 'name'=>'Kerst'],
-            ['start' => '2024-02-29', 'end' => '2024-02-23', 'name'=>'Krokus'],
-            ['start' => '2024-03-29', 'end' => '2024-03-29', 'name'=>'Goede vrijdag'],
-            ['start' => '2024-04-01', 'end' => '2024-04-01', 'name'=>'Paasmaandag'],
-            ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
-            ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
-            ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
-            ['start' => '2024-10-26', 'end' => '2024-11-03', 'name'=>'Herfst'],
-            ['start' => '2024-12-21', 'end' => '2025-01-05', 'name'=>'Kerst'],
-            ['start' => '2025-02-15', 'end' => '2025-02-23', 'name'=>'Krokus'],
-        ];
-
-        $vacationDates = [];
-        foreach ($vacationPeriods as $period) {
-            $vacationDates = array_merge($vacationDates, $this->generateDatesInRange($period['start'], $period['end']));
-        }
-    
-        // Find the date after N working days excluding weekends and vacation dates
-        $workingDaysCount = 0;
-        $currentDate = $startDate;
-        while ($workingDaysCount < $N) {
-            if ($this->isWeekday($currentDate) && !in_array($currentDate, $vacationDates)) {
-                $workingDaysCount++;
-            }
-            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
-        }
-    
-        return $currentDate;
-    }
-    
-
-    function isWeekday($date) {
-        $dayOfWeek = date('w', strtotime($date));
-        return ($dayOfWeek >= 1 && $dayOfWeek <= 5); // 1 for Monday and 5 for Friday
-    }
-
-    function generateDatesInRange($startDate, $endDate) {
-        $dates = [];
-        $currentDate = $startDate;
-    
-        while ($currentDate <= $endDate) {
-            $dates[] = $currentDate;
-            $currentDate = date('Y-m-d', strtotime($currentDate . ' + 1 day'));
-        }
-    
-        return $dates;
     }
 
 }
