@@ -248,21 +248,19 @@ class StudentController extends Controller
         $startDate = isset($dataset[0]['date']) ? $dataset[0]['date'] : null;
 
         $daysPassed = $this->countWorkingDays($startDate, date('Y-m-d')); 
-
-        $slope = $cumulativeAchievement / $daysPassed;
-
+        $slope = ( $cumulativeAchievement / $daysPassed * 0.9 );
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
-
         $predictedDate = $this->getDateAfterWorkingDays($startDate, $daysToGo);
         
         echo "<pre>";
         echo "\n cumulativeAchievement: ".$cumulativeAchievement;
-        echo "\n startDate: ".$startDate;
-        echo "\n endDate: ".date('Y-m-d');
-        echo "\n daysPassed: ".$daysPassed;
-        echo "\n slope: ".$slope;
-        echo "\n daysToGo: ".$daysToGo;
-        echo "\n predictedDate: ".$predictedDate;
+        echo "\n startDate:             ".$startDate;
+        echo "\n endDate:               ".date('Y-m-d');
+        echo "\n daysPassed:            ".$daysPassed;
+        echo "\n slope:                 ".$slope;
+        echo "\n daysToGo:              ".$daysToGo;
+        echo "\n =================================";
+        echo "\n predictedDate:         ".$predictedDate;
         exit();
      
         return $predictedDate;
@@ -280,6 +278,9 @@ class StudentController extends Controller
             ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
             ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
             ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
+            ['start' => '2024-10-26', 'end' => '2024-11-03', 'name'=>'Herfst'],
+            ['start' => '2024-12-21', 'end' => '2025-01-05', 'name'=>'Kerst'],
+            ['start' => '2025-02-15', 'end' => '2025-02-23', 'name'=>'Krokus'],
         ];
 
         // Generate vacation dates
@@ -313,6 +314,9 @@ class StudentController extends Controller
             ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
             ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
             ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
+            ['start' => '2024-10-26', 'end' => '2024-11-03', 'name'=>'Herfst'],
+            ['start' => '2024-12-21', 'end' => '2025-01-05', 'name'=>'Kerst'],
+            ['start' => '2025-02-15', 'end' => '2025-02-23', 'name'=>'Krokus'],
         ];
 
         $vacationDates = [];
