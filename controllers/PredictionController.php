@@ -75,7 +75,7 @@ class PredictionController
         $output .= "\n week/mod:              ". round(1 / ($slope*5/90), 1);
         $output .= "\n daysToGo:              ".$daysToGo;
         $output .= "\n =================================";
-        $output .= "\n predictedDate          ".$predictedDate;
+        $output .= "\n predictedDate          ". round($predictedDate, 0);
         $output .= "</pre>";
         // echo $output;
         // exit();
