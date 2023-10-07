@@ -65,6 +65,7 @@ class PredictionController
 
         $result =
                 [ 'cumulativeAchievement' => round($cumulativeAchievement, 0),
+                  'percCompleted' => number_format( ($cumulativeAchievement / $targetAchievement)*100 ,1) . '%',
                   'startDate' => $startDate,
                   'today' => $today,
                   'daysPassed' => $daysPassed,

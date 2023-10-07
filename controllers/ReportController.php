@@ -361,6 +361,7 @@ class ReportController extends QueryBaseController
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
             m.pos 'Positie<br>Overzicht',
             sum(1) '+Aantal<br>Opgaven',
+            sum(a.points_possible) '+Punten',
             norm_uren 'Normuren',
             norm_uren '++Normuren'
             from module_def m
