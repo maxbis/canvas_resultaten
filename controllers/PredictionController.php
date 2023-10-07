@@ -71,8 +71,8 @@ class PredictionController
         $output .= "\n endDate (today):       " . $today;
         $output .= "\n daysPassed:            " . $daysPassed;
         $output .= "\n slope:                 " . round($slope, 2);
-        $output .= "\n mod/week:              " . round($slope*5/90, 1) ;
-        $output .= "\n week/mod:              " . round(1 / ($slope*5/90), 1);
+        $output .= "\n mod/week:              " . round($slope*5/100, 1) ;
+        $output .= "\n week/mod:              " . round(1 / ($slope*5/100), 1);
         $output .= "\n daysToGo:              " . round( $daysToGo, 0);
         $output .= "\n =================================";
         $output .= "\n predictedDate          ".$predictedDate;
