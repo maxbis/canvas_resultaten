@@ -1,9 +1,11 @@
 <?php
 
 namespace app\controllers;
-use Yii;
 
-class PredictionController
+use Yii;
+use yii\filters\AccessControl;
+
+class Prediction
 {
 
     private $vacationPeriods = [
@@ -31,7 +33,13 @@ class PredictionController
     }
 
 
-    public function predict($id) {
+    public function actionIndex()
+    {
+       $this->predict($id);
+    }
+
+
+    public function actionPredict($id) {
         $sql ="select u.name name, s.submitted_at date, s.entered_score achievement
             from submission s
             join user u on u.id = s.user_id
@@ -40,11 +48,8 @@ class PredictionController
             and YEAR(s.submitted_at) > 1970
             order by date";
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        if ( $data ) {
-            $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
-            return $prediction;
-        }
-        return;
+        $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
+        return $prediction;
     }
 
     function predictAchievementDate($dataset, $targetAchievement, $name="") {
@@ -62,24 +67,20 @@ class PredictionController
         $today = date('Y-m-d');
         $daysPassed = $this->countWorkingDays($startDate, $today); 
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
-        if ( $slope ==0 ) { $slope = 0.01; }
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
         $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
 
         $output = "";
         
         $output .= "<pre>";
-        $output .= "\n".$name;
-        $output .= "\n cumulativeAchievement: " . $cumulativeAchievement;
-        $output .= "\n startDate:             " . $startDate;
-        $output .= "\n endDate (today):       " . $today;
-        $output .= "\n daysPassed:            " . $daysPassed;
-        $output .= "\n slope:                 " . intval($slope*100)/100;
-        $output .= "\n mod/wk:                " . intval($slope*5)/90;
-        $output .= "\n wk/mod:                " . intval(10/(intval($slope*5)/90))/10;
-        $output .= "\n daysToGo:              "  .intval($daysToGo);
-        $output .= "\n ====================================";
-        $output .= "\npredictedDate           " . $predictedDate;
+        $output .= "\n cumulativeAchievement: ".$cumulativeAchievement;
+        $output .= "\n startDate:             ".$startDate;
+        $output .= "\n endDate (today):       ".$today;
+        $output .= "\n daysPassed:            ".$daysPassed;
+        $output .= "\n slope:                 ".$slope;
+        $output .= "\n daysToGo:              ".$daysToGo;
+        $output .= "\n =================================";
+        $output .= "\n predictedDate          ".$predictedDate;
         $output .= "</pre>";
         // echo $output;
         // exit();
