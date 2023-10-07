@@ -67,6 +67,7 @@ class PredictionController
                 [ 'cumulativeAchievement' => round($cumulativeAchievement, 0),
                   'startDate' => $startDate,
                   'today' => $today,
+                  'daysPassed' => $daysPassed,
                   'slope' => number_format($slope, 2),
                   'mod/week' => number_format($slope*5/100, 1),
                   'week/mod' => number_format(1 / ($slope*5/100), 1),
