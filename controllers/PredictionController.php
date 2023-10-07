@@ -63,24 +63,36 @@ class PredictionController
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
         $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
 
-        $output = "";
+        $result =
+                [ 'cumulativeAchievement' => round($cumulativeAchievement, 0),
+                  'startDate' => $startDate,
+                  'today' => $today,
+                  'slope' => number_format($slope, 2),
+                  'mod/week' => number_format($slope*5/100, 1),
+                  'week/mod' => number_format(1 / ($slope*5/100), 1),
+                  'daysToGo' => round( $daysToGo, 0),
+                  'predictedDate' => $predictedDate
+                ];
+
+        // $output = "";
         
-        $output .= "<pre>";
-        $output .= "\n cumulativeAchievement: " . $cumulativeAchievement;
-        $output .= "\n startDate:             " . $startDate;
-        $output .= "\n endDate (today):       " . $today;
-        $output .= "\n daysPassed:            " . $daysPassed;
-        $output .= "\n slope:                 " . round($slope, 2);
-        $output .= "\n mod/week:              " . round($slope*5/100, 1) ;
-        $output .= "\n week/mod:              " . round(1 / ($slope*5/100), 1);
-        $output .= "\n daysToGo:              " . round( $daysToGo, 0);
-        $output .= "\n =================================";
-        $output .= "\n predictedDate          ".$predictedDate;
-        $output .= "</pre>";
+        // $output .= "<pre>";
+        // $output .= "\n cumulativeAchievement: " . round($cumulativeAchievement, 0);
+        // $output .= "\n startDate:             " . $startDate;
+        // $output .= "\n endDate (today):       " . $today;
+        // $output .= "\n daysPassed:            " . $daysPassed;
+        // $output .= "\n slope:                 " . round($slope, 2);
+        // $output .= "\n mod/week:              " . round($slope*5/100, 1) ;
+        // $output .= "\n week/mod:              " . round(1 / ($slope*5/100), 1);
+        // $output .= "\n daysToGo:              " . round( $daysToGo, 0);
+        // $output .= "\n =================================";
+        // $output .= "\n predictedDate          ".$predictedDate;
+        // $output .= "</pre>";
         // echo $output;
         // exit();
+        
      
-        return $output;
+        return $result;
     }
 
 
