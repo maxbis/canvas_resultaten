@@ -1,11 +1,9 @@
 <?php
 
 namespace app\controllers;
-
 use Yii;
-use yii\filters\AccessControl;
 
-class Prediction
+class PredictionController
 {
 
     private $vacationPeriods = [
@@ -33,13 +31,8 @@ class Prediction
     }
 
 
-    public function actionIndex()
-    {
-       $this->predict($id);
-    }
 
-
-    public function actionPredict($id) {
+    public function predict($id) {
         $sql ="select u.name name, s.submitted_at date, s.entered_score achievement
             from submission s
             join user u on u.id = s.user_id
@@ -77,7 +70,9 @@ class Prediction
         $output .= "\n startDate:             ".$startDate;
         $output .= "\n endDate (today):       ".$today;
         $output .= "\n daysPassed:            ".$daysPassed;
-        $output .= "\n slope:                 ".$slope;
+        $output .= "\n slope:                 ". round($slope, 2);
+        $output .= "\n mod/week:              ". round($slope*5/90, 1) ;
+        $output .= "\n week/mod:              ". round(1 / ($slope*5/90), 1);
         $output .= "\n daysToGo:              ".$daysToGo;
         $output .= "\n =================================";
         $output .= "\n predictedDate          ".$predictedDate;
