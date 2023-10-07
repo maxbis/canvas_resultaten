@@ -9,6 +9,8 @@ class PredictionController
 {
 
     private $vacationPeriods = [
+        ['start' => '2022-01-01', 'end' => '2022-04-01', 'name'=>'vrij22'],
+        ['start' => '2023-01-01', 'end' => '2023-04-01', 'name'=>'vrij23'],
         ['start' => '2023-10-23', 'end' => '2023-10-27', 'name'=>'Herfst'],
         ['start' => '2023-12-25', 'end' => '2024-01-05', 'name'=>'Kerst'],
         ['start' => '2024-02-29', 'end' => '2024-02-23', 'name'=>'Krokus'],
