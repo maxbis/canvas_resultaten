@@ -143,7 +143,7 @@ class StudentController extends Controller
         $openCourses = Yii::$app->db->createCommand($sql)->queryAll();
 
         $prediction = new PredictionController;
-        $output = $prediction->actionPredict($model->id);
+        $output = $prediction->predict($model->id);
         
         return $this->render('update', [
             'model' => $model,

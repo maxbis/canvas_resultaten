@@ -1,9 +1,7 @@
 <?php
 
 namespace app\controllers;
-
 use Yii;
-use yii\filters\AccessControl;
 
 class PredictionController
 {
@@ -33,13 +31,7 @@ class PredictionController
     }
 
 
-    public function actionIndex()
-    {
-       $this->predict($id);
-    }
-
-
-    public function actionPredict($id) {
+    public function predict($id) {
         $sql ="select u.name name, s.submitted_at date, s.entered_score achievement
             from submission s
             join user u on u.id = s.user_id
@@ -48,8 +40,11 @@ class PredictionController
             and YEAR(s.submitted_at) > 1970
             order by date";
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
-        return $prediction;
+        if ( $data ) {
+            $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
+            return $prediction;
+        }
+        return;
     }
 
     function predictAchievementDate($dataset, $targetAchievement, $name="") {
@@ -67,20 +62,22 @@ class PredictionController
         $today = date('Y-m-d');
         $daysPassed = $this->countWorkingDays($startDate, $today); 
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
+        if ( $slope ==0 ) { $slope = 0.01; }
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
         $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
 
         $output = "";
         
         $output .= "<pre>";
+        $output .= "\n".$name;
         $output .= "\n cumulativeAchievement: ".$cumulativeAchievement;
         $output .= "\n startDate:             ".$startDate;
         $output .= "\n endDate (today):       ".$today;
         $output .= "\n daysPassed:            ".$daysPassed;
         $output .= "\n slope:                 ".$slope;
         $output .= "\n daysToGo:              ".$daysToGo;
-        $output .= "\n =================================";
-        $output .= "\n predictedDate:         ".$predictedDate;
+        $output .= "\n ====================================";
+        $output .= "\npredictedDate           ".$predictedDate;
         $output .= "</pre>";
         // echo $output;
         // exit();
