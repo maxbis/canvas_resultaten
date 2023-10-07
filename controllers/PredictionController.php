@@ -70,14 +70,16 @@ class PredictionController
         
         $output .= "<pre>";
         $output .= "\n".$name;
-        $output .= "\n cumulativeAchievement: ".$cumulativeAchievement;
-        $output .= "\n startDate:             ".$startDate;
-        $output .= "\n endDate (today):       ".$today;
-        $output .= "\n daysPassed:            ".$daysPassed;
-        $output .= "\n slope:                 ".$slope;
-        $output .= "\n daysToGo:              ".$daysToGo;
+        $output .= "\n cumulativeAchievement: " . $cumulativeAchievement;
+        $output .= "\n startDate:             " . $startDate;
+        $output .= "\n endDate (today):       " . $today;
+        $output .= "\n daysPassed:            " . $daysPassed;
+        $output .= "\n slope:                 " . intval($slope*100)/100;
+        $output .= "\n mod/wk:                " . intval($slope*5)/100;
+        $output .= "\n wk/mod:                " . intval(10/(intval($slope*5)/100))/10;
+        $output .= "\n daysToGo:              "  .intval($daysToGo);
         $output .= "\n ====================================";
-        $output .= "\npredictedDate           ".$predictedDate;
+        $output .= "\npredictedDate           " . $predictedDate;
         $output .= "</pre>";
         // echo $output;
         // exit();
