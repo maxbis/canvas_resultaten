@@ -866,7 +866,7 @@ class ReportController extends QueryBaseController
             join assignment a on a.id=s.assignment_id
             join module_def m on m.id = a.assignment_group_id
             WHERE datediff(now(), s.graded_at)<7
-            order s.graded_at DESC
+            order by s.graded_at DESC
             ";
         $data = parent::executeQuery($sql, "Modules nagekeken door", $export);
 
