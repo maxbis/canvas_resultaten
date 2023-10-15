@@ -156,6 +156,8 @@ use yii\widgets\ActiveForm;
             <p><br></p>
             <h4>Escaping</h4>
             <p>When a word is put in between "" the starting ! [ ] ( ) will not be interperted but will be part of the match. A "" itself cannot be escaped. Escaping does not work in combination with ! [ ] ( )</p>
+            <h4>Spaces</h4>
+            <p>When a word is put in between "" a match will be made even when the target text contains space. For example "age==20" will match "age == 20"</p> 
             <h4>Run PHP</h4>
             <p>Simple PHP can be tested by running it. The code will run on the client, so you need to have PHP installed. Only single files without dependencies can be run.</p>
             <hr>
