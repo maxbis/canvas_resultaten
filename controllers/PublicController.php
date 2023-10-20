@@ -63,12 +63,10 @@ class PublicController extends Controller
                     r.norm_uren NormurenBehaald, 
                     d.norm_uren Normuren
                 FROM resultaat r
-                -- LEFT OUTER JOIN course c on c.id = r.course_id
                 INNER JOIN course c on c.id = r.course_id
                 INNER JOIN module_def d on d.id=r.module_id
                 INNER JOIN user u on u.student_nr=r.student_nummer
                 WHERE code='$code'
-                -- AND c.korte_naam is not NULL
                 ORDER BY c.pos, d.pos;
             ";
 
@@ -143,6 +141,13 @@ class PublicController extends Controller
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
+        $predictionOutput = "";
+        if ( substr($data[0]['Message'], 0, 3) == "   " ) {
+            $prediction = new PredictionController;
+            $predictionOutput = $prediction->predict($data[0]['student_id']);
+        }
+      
+
         return $this->render( 'index', [
             'data' => $data,
             'timeStamp' => $timestamp['timestamp'],
@@ -151,6 +156,7 @@ class PublicController extends Controller
             'minSubmitted' => $minOverLastThreeWeeks,
             'chart' => $chart,
             'score' => $score,
+            'prediction' => $predictionOutput
         ]);
     }
 
