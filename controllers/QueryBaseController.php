@@ -96,8 +96,13 @@ class QueryBaseController extends Controller
         //     exit;
         }
 
+        
         if ($export) {
-            $this->exportExcel($data);
+            if ( $export == 2 ) {
+                echo json_encode($result); //return json output
+            } else {
+                $this->exportExcel($data); // return CSV
+            }
             exit;
         } else {
             $data['title'] = $title;
