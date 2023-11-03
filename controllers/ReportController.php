@@ -359,10 +359,10 @@ class ReportController extends QueryBaseController
             c.korte_naam '#&nbsp',
             concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.naam,' &#129062;</a>') '#Blok',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
+            concat('(s)', '|/report/opdrachten-scores|id|',m.id) '!Scores',
             m.pos 'Positie<br>Overzicht',
             sum(1) '+Aantal<br>Opgaven',
             sum(a.points_possible) '+Punten',
-            norm_uren 'Normuren',
             norm_uren '++Normuren'
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
@@ -393,7 +393,7 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 90, 300, 60, 60, 60, 60],
+            'width' => [40, 200, 200, 60, 60, 60, 60, 60],
         ]);
     }
 
@@ -770,6 +770,38 @@ class ReportController extends QueryBaseController
             ],
             'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
         ]);
+    }
+
+
+    public function actionOpdrachtenScores($id, $export = false)
+    {
+
+        $sql = " select a.position pos, u.name '#Student', a.name Opdracht, s.entered_score Score,
+                    CASE
+                    WHEN s.graded_at >= '1971-01-01' THEN s.graded_at
+                    ELSE '-'
+                    END AS graded,
+                    s.attempt Poging
+                from assignment a
+                left join course c on c.id = a.course_id
+                left join submission s on s.assignment_id = a.id
+                left join user u on u.id = s.user_id
+                where assignment_group_id=$id
+                and a.published=1
+                and u.id is not null
+                order by u.name ASC, a.position";
+            
+        $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
+        $data['show_from'] = 1;
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => 'Opdrachten en punten voor deze module',
+            'width' => [0, 300, 200, 100, 200],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
+        ]);
+
     }
 
     // called form module overzicht
