@@ -1005,4 +1005,49 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function actionPredictions ( $klas='' ) {
+
+        $sql = "select id, name, klas from user u where student_nr > 100 
+                " . $this->getKlas($klas) . "
+                order by klas, name";
+
+        $students = Yii::$app->db->createCommand($sql)->queryAll();
+        
+        $result = [];
+
+        foreach($students as $student) {
+            $id = $student['id'];
+            $query ="select u.name name, s.submitted_at date, s.entered_score achievement
+                from submission s
+                join user u on u.id = s.user_id
+                where entered_score != 0
+                and YEAR(s.submitted_at) > 1970  
+                and u.id = $id 
+                order by date";
+            $data = Yii::$app->db->createCommand($query)->queryAll();
+
+            $prediction = new PredictionController;
+            $thisPrediction = $prediction->predict($id);
+
+            // echo $student['klas'] . "," . $student['name'] . "," . $thisPrediction['mod/week'] . "," . $thisPrediction['predictedDate'] . "<br>";
+            // add results ass array 
+            $result[] = ['Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  'Student' => $student['name'], 'Percentage' => $thisPrediction['percCompleted'] ,'Modules/week' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']];
+
+        }
+
+        usort($result, function ($a, $b) {
+            return ($b['Slope'] - $a['Slope']);
+        });
+
+        $data['col'] = array_keys($result[0]);
+        $data['row'] = $result;
+        $data['title'] = "Predictions";
+        $data['show_from'] = 1;
+        
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => ''
+        ]);
+    }
+
 }
