@@ -1041,8 +1041,8 @@ class ReportController extends QueryBaseController
             // add results ass array 
             // concat(u.name,'|/public/index|code|',u.code) '!Student',
             $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
-                            'Module' => $student['module'], '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
-                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']
+                            '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
+                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],  'Module' => $student['module'], 
                         ];
 
         }
