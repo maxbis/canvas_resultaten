@@ -1036,8 +1036,8 @@ class ReportController extends QueryBaseController
         }
 
         usort($result, function ($a, $b) {
-            $num1 = (int)$a['Percentage']*10;
-            $num2 = (int)$b['Percentage']*10;
+            $num1 = (int)($a['Percentage']*10);
+            $num2 = (int)($b['Percentage']*10);
             return $num2 - $num1;
         });
 
