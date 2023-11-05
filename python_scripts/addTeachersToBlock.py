@@ -20,28 +20,31 @@ teacher_ids=['8904', '8882', '73267', '8887', '8844', '67247', '8889', '8876']
 
 # Get the course c24-dev 1 tm 12: 10755 12463 12621 12622  - 12623 12624 12625 12626 - 12627 12628 12629 12630
 course_id = 14942
-try:
-    course = canvas.get_course(course_id)
-except exceptions.ResourceDoesNotExist:
-    print(f"No course with the ID {course_id} found.")
-    exit(1)
 
-# Iterate over the list of emails
-for id in teacher_ids:
-    print(f"Trying to add {id}")
-    # Search for users with that email
-    user = canvas.get_user(id)
+for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627, 12628, 12629, 12630 ]:
 
-    # If no users found with that email, skip to the next email
-    if not user:
-        print(f"No user found with the email {email}.")
-        continue
+    try:
+        course = canvas.get_course(course_id)
+    except exceptions.ResourceDoesNotExist:
+        print(f"No course with the ID {course_id} found.")
+        exit(1)
 
-    print(user.name)
+    # Iterate over the list of emails
+    for id in teacher_ids:
+        print(f"Trying to add {id}")
+        # Search for users with that email
+        user = canvas.get_user(id)
 
-    # Enroll the teacher in the course
-    result=course.enroll_user(user.id, 'TeacherEnrollment', enrollment_state='active')
-    print(result)
+        # If no users found with that email, skip to the next email
+        if not user:
+            print(f"No user found with the email {email}.")
+            continue
 
-    print(f"Enrolled {user.name} in {course.name}")
-    print()
+        print(user.name)
+
+        # Enroll the teacher in the course
+        result=course.enroll_user(user.id, 'TeacherEnrollment', enrollment_state='active')
+        print(result)
+
+        print(f"Enrolled {user.name} in {course.name}")
+        print()
