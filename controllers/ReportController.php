@@ -1007,8 +1007,16 @@ class ReportController extends QueryBaseController
 
     public function actionPredictions ( $klas='' ) {
 
-        $sql = "select id, name, klas from user u where student_nr > 100 
+        $sql = "select u.id, u.name, u.klas, u.code, max(ranking_score) score, min(concat(r.module_pos,' ',r.module)) 'module'
+                from user u
+                join resultaat r on u.student_nr=r.student_nummer
+                join module_def d on d.id=r.module_id
+                where student_nr > 100 
                 " . $this->getKlas($klas) . "
+                and r.voldaan != 'V'
+                AND u.code is not null
+                AND length(u.klas) > 1
+                group by 1, 2, 3, 4
                 order by klas, name";
 
         $students = Yii::$app->db->createCommand($sql)->queryAll();
@@ -1031,7 +1039,11 @@ class ReportController extends QueryBaseController
 
             // echo $student['klas'] . "," . $student['name'] . "," . $thisPrediction['mod/week'] . "," . $thisPrediction['predictedDate'] . "<br>";
             // add results ass array 
-            $result[] = ['Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  'Student' => $student['name'], 'Percentage' => $thisPrediction['percCompleted'] ,'Modules/week' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']];
+            // concat(u.name,'|/public/index|code|',u.code) '!Student',
+            $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
+                            'Module' => $student['module'], '+Score' => $student['score'] ,'Percentage' => $thisPrediction['percCompleted'],
+                            'Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']
+                        ];
 
         }
 
