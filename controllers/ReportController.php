@@ -1036,14 +1036,14 @@ class ReportController extends QueryBaseController
         }
 
         usort($result, function ($a, $b) {
-            return ($b['Slope'] - $a['Slope']);
+            return strcmp($a['Stage op'], $b['Stage op']);
         });
 
         $data['col'] = array_keys($result[0]);
         $data['row'] = $result;
         $data['title'] = "Predictions";
         $data['show_from'] = 1;
-        
+
         return $this->render('output', [
             'data' => $data,
             'descr' => ''
