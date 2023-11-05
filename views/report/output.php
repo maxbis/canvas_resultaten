@@ -107,7 +107,7 @@ $tot = [];
                         if (!isset($nocount)) echo "<th style=\"width:30px;color:#A0A0A0;\">#</th>";
                         for ($i = $from; $i < count($data['col']); $i++) {
                             $columnName = $data['col'][$i];
-                            if (substr($columnName, 0, 1) == '+') {
+                            if ( substr($columnName, 0, 1) == '+' || substr($columnName, 0, 1) == '~' ) {
                                 $tot[$columnName] = 0;
                                 $columnName = substr($columnName, 1);
                             }
@@ -140,7 +140,7 @@ $tot = [];
                     $count=0;
                     foreach ($data['col'] as $columnName) {
                         if (++$count<=$from) continue;
-                        if (substr($columnName, 0, 1) == '+') {
+                        if ( substr($columnName, 0, 1) == '+' || substr($columnName, 0, 1) == '~' ) {
                             $tot[$columnName] += $item[$columnName];
                         } 
                         if (substr($columnName, 0, 1) == '!' && $item[$columnName]) { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
@@ -185,10 +185,12 @@ $tot = [];
                                 echo "<td></td>";
                             }
                             
-                        } elseif (substr($columnName, 0, 1) <> '-') {
-                            if (substr($columnName, 1, 1) == '+') {
+                        } elseif ( substr($columnName, 0, 1) <> '-' ) {
+                            if ( substr($columnName, 1, 1) == '+' ) {
                                 echo "<td>" .  $tot[$columnName] . "</td>";
-                            }else{
+                            } elseif( substr($columnName, 1, 1) == '~' ) {
+                                echo "<td>" .  $tot[$columnName] . "</td>";
+                            } else {
                                 echo "<td>" . $item[$columnName] . "</td>";
                             }
                         }
@@ -210,7 +212,11 @@ $tot = [];
                             echo "<td>";
                             echo number_format($tot[$columnName], 0, ',', ' ');
                             echo "</td>";
-                        } elseif (substr($columnName, 0, 1) <> '-') {
+                        } elseif ( substr($columnName, 0, 1) == '~' ) {
+                            echo "<td>";
+                            echo number_format(($tot[$columnName]/$nr), 1, ',', ' ');
+                            echo "</td>";
+                        } elseif ( substr($columnName, 0, 1) <> '-' ) {
                             echo "<td></td>";
                         }
                     }

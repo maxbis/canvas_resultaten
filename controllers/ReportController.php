@@ -1041,26 +1041,26 @@ class ReportController extends QueryBaseController
             // add results ass array 
             // concat(u.name,'|/public/index|code|',u.code) '!Student',
             $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
-                            'Module' => $student['module'], '+Score' => $student['score'] ,'Percentage' => $thisPrediction['percCompleted'],
-                            'Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']
+                            'Module' => $student['module'], '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
+                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate']
                         ];
 
         }
 
         usort($result, function ($a, $b) {
-            $num1 = (int)($a['Percentage']*10);
-            $num2 = (int)($b['Percentage']*10);
+            $num1 = (int)($a['~Percentage']*10);
+            $num2 = (int)($b['~Percentage']*10);
             return $num2 - $num1;
         });
 
         $data['col'] = array_keys($result[0]);
         $data['row'] = $result;
-        $data['title'] = "Predictions";
+        $data['title'] = "Ranking and Predictions";
         $data['show_from'] = 1;
 
         return $this->render('output', [
             'data' => $data,
-            'descr' => ''
+            'descr' => 'Prediction is based an data from c22 which is put into an exponential regression model.'
         ]);
     }
 
