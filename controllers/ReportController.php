@@ -1036,7 +1036,9 @@ class ReportController extends QueryBaseController
         }
 
         usort($result, function ($a, $b) {
-            return strcmp($a['Stage op'], $b['Stage op']);
+            $num1 = (int)$a['Percentage']*10;
+            $num2 = (int)$b['Percentage']*10;
+            return $num2 - $num1;
         });
 
         $data['col'] = array_keys($result[0]);
