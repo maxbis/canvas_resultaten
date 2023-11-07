@@ -341,6 +341,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
+            'lastLine' => "<hr><a href=\"/report/predictions\" class=\"btn bottom-button\">Voorspellingen</a>",
         ]);
     }
 
@@ -1057,7 +1058,8 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'descr' => 'Prediction is based an data from c22 which is put into an exponential regression model.'
+            'descr' => 'Prediction is based an data from c22 which is put into an exponential regression model.',
+            'lastLine' => "<hr><a href=\"/report/ranking\" class=\"btn bottom-button\">Ranking</a>",
         ]);
     }
 
