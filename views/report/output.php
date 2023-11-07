@@ -214,7 +214,7 @@ $tot = [];
                             echo "</td>";
                         } elseif ( substr($columnName, 0, 1) == '~' ) {
                             echo "<td>";
-                            echo number_format(($tot[$columnName]/$nr), 1, ',', ' ');
+                            echo number_format(($tot[$columnName]/$nr), 1, '.', ' ');
                             echo "</td>";
                         } elseif ( substr($columnName, 0, 1) <> '-' ) {
                             echo "<td></td>";
