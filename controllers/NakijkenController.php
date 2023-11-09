@@ -167,6 +167,7 @@ class NakijkenController extends Controller
             ";
             $result = Yii::$app->db->createCommand($sql)->queryOne();
 
+            // find existing based on module name and ass. name
             $sql="
                 SELECT file_type, words_in_order, instructie, file_name, attachments
                 FROM canvas.nakijken
@@ -176,10 +177,22 @@ class NakijkenController extends Controller
             ";
             $existing = Yii::$app->db->createCommand($sql)->queryAll();
 
+            // find existing based on module name only
+            if ( count($existing) == 0 ) {
+                $sql="
+                    SELECT file_type, words_in_order, instructie, file_name, attachments
+                    FROM canvas.nakijken
+                    WHERE module_name = '". $result['module_name']."'
+                    order by timestamp DESC
+                ";
+                $existing = Yii::$app->db->createCommand($sql)->queryAll();
+            }
+
             $databaseName = Yii::$app->db->createCommand('SELECT DATABASE() db')->queryOne()['db'];
 
             $model = new Nakijken();
 
+            // Default values to store
             $model->course_id = $result['course_id'];
             $model->assignment_id = $assignment_id;
             $model->module_name = $result['module_name'];
@@ -187,7 +200,8 @@ class NakijkenController extends Controller
             $model->module_id=$result['module_id'];
             $model->cohort=substr($databaseName,-3);
 
-            if(count($existing)==1){
+            // populate data from old/previous values
+            if( count($existing) >= 1 ){
                 $model->file_type=$existing[0]['file_type'];
                 $model->words_in_order=$existing[0]['words_in_order'];
                 $model->instructie=$existing[0]['instructie'];
