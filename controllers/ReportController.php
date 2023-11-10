@@ -364,6 +364,7 @@ class ReportController extends QueryBaseController
             m.pos 'Positie<br>Overzicht',
             sum(1) '+Aantal<br>Opgaven',
             sum(a.points_possible) '+Punten',
+            norm_uren 'Normuren',
             norm_uren '++Normuren'
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
