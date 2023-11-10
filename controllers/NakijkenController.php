@@ -182,7 +182,7 @@ class NakijkenController extends Controller
                 $sql="
                     SELECT file_type, words_in_order, instructie, file_name, attachments
                     FROM canvas.nakijken
-                    WHERE module_name = '". $result['module_name']."'
+                    WHERE assignment_name = '".$result['assignment_name']."'
                     order by timestamp DESC
                 ";
                 $existing = Yii::$app->db->createCommand($sql)->queryAll();
