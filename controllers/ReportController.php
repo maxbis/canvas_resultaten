@@ -256,6 +256,7 @@ class ReportController extends QueryBaseController
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
             'modules' => $modules,
+            'lastLine' => "<hr><a href=\"/report/voortgang2\" class=\"btn bottom-button\">Voortgang (alleen ingeleverd)</a>",
             # 'nocount' => 1,
         ]);
     }
@@ -285,7 +286,7 @@ class ReportController extends QueryBaseController
             ranking_score 'Rank',
             u.student_nr '-Nummer',
             u.klas Klas,
-            concat(u.name,'|/public/index|code|',u.code) '!Student',
+            concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!Student',
             u.comment '-Comment',
             u.message '-Message',
             sum( case when r.ingeleverd=r.aantal_opdrachten then 1 else 0 end) '-Tot'
@@ -300,15 +301,16 @@ class ReportController extends QueryBaseController
             GROUP BY 1,2,3,4,5,6
             ORDER BY 1 DESC
         ";
-        $data = $this->executeQuery($sql, "Voortgang Dev Modules", $export);
+        $data = $this->executeQuery($sql, "Dev Modules Ingeleverd", $export);
         $data['show_from'] = 1;
 
         return $this->render('outputVoortgang', [
             'data' => $data,
             // 'action' => Yii::$app->controller->action->id."?",
             'action' => parent::exportButton($klas ??= 'false'),
-            'descr' => 'Alle dev modules het getal geeft % compleet. 100% geeft aan dat module is voldaan.',
+            'descr' => 'Alle dev modules het getal geeft % ingeleverd.',
             'modules' => $modules,
+            'lastLine' => "<hr><a href=\"/report/voortgang\" class=\"btn bottom-button\">Voortgang (beoordeeld)</a>",
             # 'nocount' => 1,
         ]);
     }
