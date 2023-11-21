@@ -141,8 +141,12 @@ class PublicController extends Controller
         $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
+        $thisCohort = explode('.', $_SERVER['SERVER_NAME'])[0];
+        $currentYearLastTwoDigits = (int) substr(date("Y"), -2);
+        $studentYear = $currentYearLastTwoDigits - (int) substr($thisCohort, 1);
+
         $predictionOutput = "";
-        if ( substr($data[0]['Message'], 0, 3) == "   " ) {
+        if ( $studentYear < 2 ) { # if current year - curretn cohort < 2, this is the first 1.5 year, the predcition is calculated
             $prediction = new PredictionController;
             $predictionOutput = $prediction->predict($data[0]['student_id']);
         }

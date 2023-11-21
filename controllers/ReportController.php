@@ -315,6 +315,13 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+    public function getStudentYear() {
+        # determine how many years old this cohort is 
+        $thisCohort = explode('.', $_SERVER['SERVER_NAME'])[0];
+        $currentYearLastTwoDigits = (int) substr(date("Y"), -2);
+        return $currentYearLastTwoDigits - (int) substr($thisCohort, 1);
+    }
+
     public function actionRanking($export = false, $klas = '') // menu 3.4 - Ranking studenten
     {
 
@@ -339,11 +346,18 @@ class ReportController extends QueryBaseController
 
         $data = parent::executeQuery($sql, "Ranking Dev " . $klas, $export);
 
+        if ( $this->getStudentYear() < 2) {
+            $lastLine = "<hr><a href=\"/report/predictions\" class=\"btn bottom-button\">Voorspellingen</a>";
+        } else {
+            $lastLine = "";
+        }
+
+
         return $this->render('output', [
             'data' => $data,
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => "Genoemde module is de <b>eerste</b> dev-module die nog niet af is. Score is %punten per module + 100 voor elke afgeronde module.",
-            'lastLine' => "<hr><a href=\"/report/predictions\" class=\"btn bottom-button\">Voorspellingen</a>",
+            'lastLine' => $lastLine,
         ]);
     }
 
@@ -386,7 +400,6 @@ class ReportController extends QueryBaseController
             $button1 = ['name' => 'Dev', 'link' => '/report/aantal-opdrachten', 'param' => 'generiek=0', 'class' => 'btn btn-secondary', 'title' => 'Toon Dev Blokken',];
             $descr = 'Overzicht van alle blokken (dev plus generiek)';
         }
-
 
         return $this->render('output', [
             'data' => $data,
@@ -1041,11 +1054,24 @@ class ReportController extends QueryBaseController
             $prediction = new PredictionController;
             $thisPrediction = $prediction->predict($id);
 
-            $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
-                            '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
-                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],
-                            'Studieduur' =>$thisPrediction['studieDuur'] ,'Module' => $student['module'], 
-                        ];
+            $thisCohort = explode('.', $_SERVER['SERVER_NAME'])[0];
+            $currentYearLastTwoDigits = (int) substr(date("Y"), -2);
+            $studentYear = $currentYearLastTwoDigits - (int) substr($thisCohort, 1);
+
+            if ( $studentYear < 2) {
+                $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
+                    '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
+                    '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],
+                    'Studieduur' =>$thisPrediction['studieDuur'] ,'Module' => $student['module'], 
+                ];
+            } else {
+                $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
+                    '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
+                    'Module' => $student['module'], 
+                ];
+            }
+
+           
 
         }
 

@@ -55,7 +55,7 @@ class PredictionController
             $studieduur = '2';
         } elseif($interval->days < 330) {
             $studieduur = '2.5';
-        } elseif($interval->days < 530) {
+        } elseif($interval->days < 580) {
             $studieduur = '3';
         } elseif($interval->days < 700) {
             $studieduur = '3.5';

@@ -216,36 +216,39 @@
         <?php } ?>
 
         <?php
-            if ( $prediction ) {
-                echo "<p><table style=\"color:#D0D0D0;\">";
-                foreach($prediction as $key => $value) {
-                    echo "<tr>\n";
-                    $color="#808080";
-                    $fontWeight = 500;
-                    if ( $key == "week/mod" ) {
-                        $fontWeight = 700;
-                        if ( $value > 2.0 ) {
-                            $color = "#800000";
-                        } elseif ( $value > 1.7 ) {
-                            $color = "#ff0000";
-                        } elseif ($value > 1.6) {
-                            $color = "#FFA500";
-                        } elseif ($value > 1) {
-                            $color = "#008000";
-                        } else {
-                            $color = "#66CDAA";
-                        }
-                    }
-                    echo "<td>$key&nbsp;&nbsp;&nbsp;</td><td style=\"font-weight:$fontWeight;color:$color\">$value</td>";
-                    echo "</tr>\n";
-                }
-                echo "</table><p>";
-                // echo "<p>Naar verwachting kan jij op <b>".$prediction['predictedDate']."</b> op stage.";
-                // echo "<br>Volgens deze indicatie zou jou studie naar verachting ".$prediction['studieDuur']." jaar duren.<p>";
-            }
+            // if ( $prediction ) {
+            //     echo "<p><table style=\"color:#D0D0D0;\">";
+            //     foreach($prediction as $key => $value) {
+            //         echo "<tr>\n";
+            //         $color="#808080";
+            //         $fontWeight = 500;
+            //         if ( $key == "week/mod" ) {
+            //             $fontWeight = 700;
+            //             if ( $value > 2.0 ) {
+            //                 $color = "#800000";
+            //             } elseif ( $value > 1.7 ) {
+            //                 $color = "#ff0000";
+            //             } elseif ($value > 1.6) {
+            //                 $color = "#FFA500";
+            //             } elseif ($value > 1) {
+            //                 $color = "#008000";
+            //             } else {
+            //                 $color = "#66CDAA";
+            //             }
+            //         }
+            //         echo "<td>$key&nbsp;&nbsp;&nbsp;</td><td style=\"font-weight:$fontWeight;color:$color\">$value</td>";
+            //         echo "</tr>\n";
+            //     }
+            //     echo "</table><p>";
+            // }
+        if ( $prediction ) {
+            echo "<p>Je hebt <b>".$prediction['percCompleted']."%</b> van de eerste 1.5 jaar afgerond. ";
+            echo "Naar verwachting kan jij op <b>".$prediction['predictedDate']."</b> op stage.";
+            echo "<br>Volgens deze indicatie zou je studie naar verwachting <b>".$prediction['studieDuur']."</b> jaar duren.<p>";
+        }
         ?>
         <p>flip <?=$link?> (laat ingeleverd werk óf behaalde punten zien)</p>
-        <p>v 2.11.25 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 2.12.02 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>
 
