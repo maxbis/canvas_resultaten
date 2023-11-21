@@ -146,7 +146,6 @@ class PublicController extends Controller
             $prediction = new PredictionController;
             $predictionOutput = $prediction->predict($data[0]['student_id']);
         }
-      
 
         return $this->render( 'index', [
             'data' => $data,

@@ -1043,7 +1043,8 @@ class ReportController extends QueryBaseController
 
             $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
                             '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
-                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],  'Module' => $student['module'], 
+                            '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],
+                            'Studieduur' =>$thisPrediction['studieDuur'] ,'Module' => $student['module'], 
                         ];
 
         }

@@ -206,9 +206,8 @@
 <small style="color:#b0b0b0;font-style: italic;">
     <details>
         <summary>Disclaimer/footer</summary>
-        <p>De groene vinkjes geven aan of een module is voldaan.<br>Behoudens technische storingen of configuratiefouten zijn de resultaten uit dit overzicht leidend.</p>
+        <p>De groene vinkjes geven aan of een module is voldaan. Behoudens technische storingen of configuratiefouten zijn de resultaten uit dit overzicht leidend.</p>
 
-        <p>flip <?=$link?> </p>
         <?php if (! Yii::$app->user->isGuest ) { ?>
             <ul>
                 <li><a href="https://talnet.educus.nl/app/deelnemer/Deelnemerkaart/<?=$data[0]['student_nummer']?>" target="_blank">Eduarte (indien toegang)</a></li>
@@ -218,7 +217,7 @@
 
         <?php
             if ( $prediction ) {
-                echo "<table style=\"color:#D0D0D0;\">";
+                echo "<p><table style=\"color:#D0D0D0;\">";
                 foreach($prediction as $key => $value) {
                     echo "<tr>\n";
                     $color="#808080";
@@ -240,10 +239,12 @@
                     echo "<td>$key&nbsp;&nbsp;&nbsp;</td><td style=\"font-weight:$fontWeight;color:$color\">$value</td>";
                     echo "</tr>\n";
                 }
-                echo "</table>";
+                echo "</table><p>";
+                // echo "<p>Naar verwachting kan jij op <b>".$prediction['predictedDate']."</b> op stage.";
+                // echo "<br>Volgens deze indicatie zou jou studie naar verachting ".$prediction['studieDuur']." jaar duren.<p>";
             }
         ?>
-        <br>
+        <p>flip <?=$link?> (laat ingeleverd werk óf behaalde punten zien)</p>
         <p>v 2.11.25 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 use Yii;
+use DateTime;
 
 class PredictionController
 {
@@ -45,6 +46,27 @@ class PredictionController
         return $prediction;
     }
 
+    function predictedStudieDuur($strStart, $strEnd) {
+        $startDate = new DateTime($strStart);
+        $endDate = new DateTime($strEnd);
+        $interval = $endDate->diff($startDate);
+
+        if ($interval->days < 210) {
+            $studieduur = '2';
+        } elseif($interval->days < 330) {
+            $studieduur = '2.5';
+        } elseif($interval->days < 530) {
+            $studieduur = '3';
+        } elseif($interval->days < 700) {
+            $studieduur = '3.5';
+        } elseif($interval->days < 900) {
+            $studieduur = '4';
+        } else {
+            $studieduur = '4+';
+        }
+        return $studieduur;
+    }
+
     function predictAchievementDate($dataset, $targetAchievement, $name="") {
         // Calculate cumulative achievements
         $cumulativeAchievement = 0;
@@ -62,6 +84,7 @@ class PredictionController
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
         $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
         $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
+        $studieDuur =  $this->predictedStudieDuur($startDate, $predictedDate);
 
         $result =
                 [ 'cumulativeAchievement' => round($cumulativeAchievement, 0)."/".$targetAchievement,
@@ -73,7 +96,8 @@ class PredictionController
                   'mod/week' => number_format($slope*5/100, 1),
                   'week/mod' => number_format(1 / ($slope*5/100), 1),
                   'daysToGo' => round( $daysToGo, 0),
-                  'predictedDate' => $predictedDate
+                  'predictedDate' => $predictedDate,
+                  'studieDuur' => $studieDuur
                 ];
 
         // $output = "";
