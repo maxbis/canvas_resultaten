@@ -82,7 +82,12 @@ class PredictionController
         $today = date('Y-m-d');
         $daysPassed = $this->countWorkingDays($startDate, $today); 
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
-        $daysToGo = ( $targetAchievement - $cumulativeAchievement ) / $slope;
+        $daysToGo = max(0, ( $targetAchievement - $cumulativeAchievement ) / $slope);
+        if ( $daysToGo > 0 ) {
+            $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
+        } else {
+            $predictedDate = $today;
+        }
         $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
         $studieDuur =  $this->predictedStudieDuur($startDate, $predictedDate);
 
