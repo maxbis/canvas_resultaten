@@ -83,6 +83,7 @@ class PredictionController
         $daysPassed = $this->countWorkingDays($startDate, $today); 
         $slope = ( $cumulativeAchievement / $daysPassed * $decay );
         $daysToGo = max(0, ( $targetAchievement - $cumulativeAchievement ) / $slope);
+
         if ( $daysToGo > 0 && $daysPassed > 20 ) {
             $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
         } elseif ( $daysPassed > 20 ) {
@@ -91,7 +92,7 @@ class PredictionController
             # not teted; when less than 20 days at work, get a more or less fixed date.
             $predictedDate = $this->getDateAfterWorkingDays($today, 580 - $daysPassed);
         }
-        $predictedDate = $this->getDateAfterWorkingDays($today, $daysToGo);
+
         $studieDuur =  $this->predictedStudieDuur($startDate, $predictedDate);
 
         $result =
