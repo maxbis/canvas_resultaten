@@ -613,7 +613,7 @@ else:
         log("About to update "+str(len(courses))+" courses (blokken)", 1)
         for blok in courses:
             if (blok != 0 ):
-                log("Create "+str(blok)+" "+blok.name,1)
+                log("Create "+str(blok),1)
                 createBlok(blok)
 
 createResultaat()
