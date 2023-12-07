@@ -237,6 +237,7 @@ class ReportController extends QueryBaseController
             u.message '-Message',
             sum( case when r.voldaan='V' then 1 else 0 end) '-Tot'
             $query
+            ,concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!naam'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
             INNER JOIN module_def d on d.id=r.module_id
@@ -278,7 +279,7 @@ class ReportController extends QueryBaseController
         foreach ($modules as $module) {
             $count++;
             // $query.=",sum( case when r.module_id=".$module['id']." && r.voldaan='V' then 1 else 0 end) '".str_pad($count,2,"0", STR_PAD_LEFT)."'";
-            $query .= ",sum( case when r.module_id=" . $module['id'] . " then (case  when r.ingeleverd=r.aantal_opdrachten then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end) else 0 end) '" . str_pad($count, 3, "0", STR_PAD_LEFT) . "'";
+            $query .= ",sum( case when r.module_id=" . $module['id'] . " then (case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end) else 0 end) '" . str_pad($count, 3, "0", STR_PAD_LEFT) . "'";
         }
 
         $sql = "
@@ -292,6 +293,7 @@ class ReportController extends QueryBaseController
             u.message '-Message',
             sum( case when r.ingeleverd=r.aantal_opdrachten then 1 else 0 end) '-Tot'
             $query
+            ,concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!naam'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
             INNER JOIN module_def d on d.id=r.module_id
