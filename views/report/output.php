@@ -132,18 +132,33 @@ $tot = [];
                             }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) != '-') {
+                                // if ( isset($width[$i]) && $width[$i]!=0 ){
+                                //     if ( isset($ccolor[$i]) && $ccolor[$i]!='' ) {
+                                //         echo "<th style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
+                                //         $td[$i]= "<td style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
+                                //     } else {
+                                //         echo "<th style=\"width:".$width[$i]."px;\">";
+                                //         $td[$i]= "<td style=\"width:".$width[$i]."px;\">";
+                                //     }
+                                // }else {
+                                //     echo "<th>";
+                                //     $td[$i]= "<td>";
+                                // }
+
+                                $style = "";
                                 if ( isset($width[$i]) && $width[$i]!=0 ){
-                                    if ( isset($ccolor[$i]) && $ccolor[$i]!='' ) {
-                                        echo "<th style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
-                                        $td[$i]= "<td style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
-                                    } else {
-                                        echo "<th style=\"width:".$width[$i]."px;\">";
-                                        $td[$i]= "<td style=\"width:".$width[$i]."px;\">";
-                                    }
-                                }else {
-                                    echo "<th>";
-                                    $td[$i]= "<td>";
+                                    $style .= "width:".$width[$i]."px;";
                                 }
+                                if ( isset($bgcolor[$i]) && $bgcolor[$i]!='' ) {
+                                    $style .= "background-color:".$bgcolor[$i].";";
+                                }
+                                if ( isset($color[$i]) && $color[$i]!='' ) {
+                                    $style .= "color:".$color[$i].";";
+                                }
+                                //echo "<th style='".$style."'>";
+                                $td[$i] = "<td style='".$style."'>";
+
+                                echo "<th>";
                                 echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                                 echo "</th>";
                             }
