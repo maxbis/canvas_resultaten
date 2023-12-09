@@ -12,6 +12,7 @@ $tot = [];
    .hoverTable tr:hover td {
         background-color: #f6f6ff;
     }
+
     .bottom-button {
         padding: 0.375rem 0.75rem;
         font-size: 0.8em;
@@ -34,6 +35,24 @@ $tot = [];
     .left {
         float: left;
     }
+    .small-button {
+        display: inline-block;
+        padding: 1px 6px;
+        font-size: 0.7em;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0, 123, 255, 0.25);;
+        border: 1px solid #a0a0a0;
+        border-radius: 4px;
+        transition: background-color 0.1s ease;
+        margin-top: 0px;
+    }
+
+    .small-button:hover {
+        background-color: #ffdd00;
+        color:#000000;
+}
 </style>
 
 <script>
@@ -114,21 +133,31 @@ $tot = [];
                             $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) != '-') {
                                 if ( isset($width[$i]) && $width[$i]!=0 ){
-                                    echo "<th style=\"width:".$width[$i]."px;\">";
+                                    if ( isset($ccolor[$i]) && $ccolor[$i]!='' ) {
+                                        echo "<th style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
+                                        $td[$i]= "<td style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
+                                    } else {
+                                        echo "<th style=\"width:".$width[$i]."px;\">";
+                                        $td[$i]= "<td style=\"width:".$width[$i]."px;\">";
+                                    }
                                 }else {
                                     echo "<th>";
+                                    $td[$i]= "<td>";
                                 }
                                 echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                                 echo "</th>";
                             }
                         }
                     } else {
-                        echo "<td><i>Empty result set</i></td>";
+                        echo "<tr><td><i>Empty result set</i></td><tr>";
                     }
                     ?>
             </thead>
 
             <?php
+            // d($data['col']);
+            // dd($td);
+
             if (isset($data['row'])) {
                 $prevItem='';
                 foreach ($data['row'] as $item) {
@@ -140,6 +169,7 @@ $tot = [];
                     $count=0;
                     foreach ($data['col'] as $columnName) {
                         if (++$count<=$from) continue;
+                        $i = $count - 1;
                         if ( substr($columnName, 0, 1) == '+' || substr($columnName, 0, 1) == '~' ) {
                             $tot[$columnName] += $item[$columnName];
                         } 
@@ -154,44 +184,50 @@ $tot = [];
                             }
                             if ( substr($columnName, 1, 1) == '#' ) {
                                 if ( $prevItem!='' && $item[$columnName] == $prevItem[$columnName] ) {
-                                    echo "<td></td>";
+                                    echo "$td[$count]</td>";
                                     continue;
                                 }
                             }
                             if (count($part) == 2){
                                 if (substr($part[0],0,5)=='Grade') { # Only for Grade Link
-                                    echo "<td><a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
+                                    echo $td[$i]."<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" title=\"Naar opdracht\" href=\"".$part[1]."\">".$part[0]."</td>";
                                 }elseif (substr($part[0],0,4)=='(ac)') {
-                                    echo "<td><a onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" onclick=\"working('".$part[1]."');\" title=\"Auto Correct\">".$part[0]."</td>";
+                                    echo $td[$i]."<a onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='none'\" onclick=\"working('".$part[1]."');\" title=\"Auto Correct\">".$part[0]."</td>";
                                 } else { # Generic
                                     //echo "<td>" . Html::a($part[0], [$part[1]]) . "</td>";
-                                    echo "<td><a href=\"".$part[1]."\">$part[0]</a></td>";
+                                    echo $td[$i]."<a href=\"".$part[1]."\">$part[0]</a></td>";
                                 }
                             } elseif (count($part) == 4) { # Generic
-                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help]) . "</td>";
+                                preg_match('/^\((.*?)\)$/', $part[0], $matches);
+                                if ( !empty($matches[1]) ) {
+                                    echo $td[$i] . Html::a(substr($matches[1],0,3), [$part[1], $part[2] => $part[3]], ['title'=>$matches[1], 'class'=>'small-button']) . "</td>";
+                                } else {
+                                    echo $td[$i] . Html::a($link, [$part[1], $part[2] => $part[3]], ['title'=>$help]) . "</td>";
+                                }
+                                
                             } elseif ( count($part) == 6 ) { # Generic
-                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help] ) . "</td>";
+                                echo$td[$initials] . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help] ) . "</td>";
                             } elseif ( count($part) == 7 ) { # show processing (hack)
-                                echo "<td>" . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help, 'onclick'=>"hide();"] ) . "</td>";
+                                echo $td[$i] . Html::a($link, [$part[1], $part[2] => $part[3], $part[4] => $part[5]], ['title'=>$help, 'onclick'=>"hide();"] ) . "</td>";
                             } else {
-                                echo "<td>Err: Inlvalid link data</td>";
+                                echo $td[$i]."Err: Inlvalid link data</td>";
                                 echo "<pre><hr>";
                                 dd( ["Err: Inlvalid link data", $item, $part] );
                             }
                         } elseif (substr($columnName, 0, 1) == '#' ) {
                             if ( $prevItem=='' || $item[$columnName] != $prevItem[$columnName] ) {
-                                echo "<td>" . $item[$columnName] . "</td>";
+                                echo $td[$i] . $item[$columnName] . "</td>";
                             } else { 
-                                echo "<td></td>";
+                                echo $td[$i] . "</td>";
                             }
                             
                         } elseif ( substr($columnName, 0, 1) <> '-' ) {
                             if ( substr($columnName, 1, 1) == '+' ) {
-                                echo "<td>" .  $tot[$columnName] . "</td>";
+                                echo $td[$i] .  $tot[$columnName] . "</td>";
                             } elseif( substr($columnName, 1, 1) == '~' ) {
-                                echo "<td>" .  $tot[$columnName] . "</td>";
+                                echo $td[$i] .  $tot[$columnName] . "</td>";
                             } else {
-                                echo "<td>" . $item[$columnName] . "</td>";
+                                echo $td[$i] . $item[$columnName] . "</td>";
                             }
                         }
                         
@@ -203,13 +239,13 @@ $tot = [];
                 if (count($tot)) {
                     echo "<tr style=\"background-color:#e8f0ff;box-shadow: 5px 5px 5px #d0d0d0;\">";
                     if (!isset($nocount)) {
-                        echo "<td></td>";
+                        echo $td[$i]."</td>";
                     }
                     $count=0;
                     foreach ($data['col'] as $columnName) {
                         if (++$count<=$from) continue;
                         if (substr($columnName, 0, 1) == '+') {
-                            echo "<td>";
+                            echo $td[$i];
                             echo number_format($tot[$columnName], 0, ',', ' ');
                             echo "</td>";
                         } elseif ( substr($columnName, 0, 1) == '~' ) {
@@ -217,7 +253,7 @@ $tot = [];
                             echo number_format(($tot[$columnName]/$nr), 1, '.', ' ');
                             echo "</td>";
                         } elseif ( substr($columnName, 0, 1) <> '-' ) {
-                            echo "<td></td>";
+                            echo $td[$i]."</td>";
                         }
                     }
                     echo "</tr>";

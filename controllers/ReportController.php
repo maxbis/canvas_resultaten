@@ -369,7 +369,7 @@ class ReportController extends QueryBaseController
     public function actionAantalOpdrachten($export = false, $generiek = 0)
     { // menu 3.5 - Module overzicht
         if ($generiek == 0) {
-            $where = " where m.generiek=0";
+            $where = "and m.generiek=0";
         } else {
             $where = "";
         }
@@ -377,17 +377,21 @@ class ReportController extends QueryBaseController
         $sql = "
             select
             c.korte_naam '#&nbsp',
-            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',c.naam,' &#129062;</a>') '#Blok',
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',substr(c.naam,1,8),' &#129062;</a>') '#Blok',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
-            concat('(s)', '|/report/opdrachten-scores|id|',m.id) '!Scores',
-            m.pos 'Positie<br>Overzicht',
-            sum(1) '+Aantal<br>Opgaven',
-            sum(a.points_possible) '+Punten',
-            norm_uren 'Normuren',
-            norm_uren '++Normuren'
+            m.pos 'Pos',
+            sum(1) '+Aantal<br>Opg',
+            norm_uren 'Uren',
+            norm_uren '++Uren',
+            concat('(scores)','|/report/opdrachten-scores|id|',m.id) '!Sco',
+            concat('(voortgang)','|/report/opdrachten-verdeling|id|',m.id) '!Voo',
+            ceil( sum(a.points_possible) ) '+Aantal<br>Punten',
+            m.voldaan_rule Voldaan
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
             left join course c on c.id = a.course_id
+            where
+            a.published = 1
             $where
             group by 1,2,3
             order by m.pos
@@ -413,7 +417,8 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 200, 200, 60, 60, 60, 60, 60],
+            'width' => [40, 100, 220, 50, 50, 50, 50, 10, 60, 70],
+            'ccolor' => [ '', '', '#f6f6f6','','','','','','','#f6f6f6'],
         ]);
     }
 
@@ -818,6 +823,36 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Opdrachten en punten voor deze module',
             'width' => [0, 300, 200, 100, 200],
+            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            ],
+        ]);
+
+    }
+
+    # accessed via actionAantalOpdrachten()
+    public function actionOpdrachtenVerdeling($id, $export = false)
+    {
+        $sql = "select naam from module_def where id = $id";
+        $moduleNaam = Yii::$app->db->createCommand($sql)->queryOne()['naam'];
+
+        $sql = "
+            select
+            u.klas Klas,
+            u.name Student,
+            COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) af
+            FROM user u
+            LEFT OUTER JOIN resultaat r on u.student_nr=r.student_nummer and r.module_id =$id
+            where u.student_nr > 100
+            order by af;
+        ";
+            
+        $data = parent::executeQuery($sql, "Voortgang \"".$moduleNaam . "\"", $export);
+        $data['show_from'] = 0;
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => '',
+            'width' => [20, 20, 100, 40],
             'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
             ],
         ]);
