@@ -318,6 +318,10 @@ class GradeController extends QueryBaseController
         ";
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
+        if (empty($result)) {
+            // The result is empty, redirect to the desired page
+            return Yii::$app->response->redirect(['resultaat/start'])->send();
+        }
 
         # return page is wrong
 
@@ -326,6 +330,7 @@ class GradeController extends QueryBaseController
         // $lastLine  .= "<br>&nbsp;";
 
         $lastLine = "";
+        if 
 
         return $this->render('/grade/gradeModule', [ 'data' => $result, 'lastLine' => $lastLine ]);
 
