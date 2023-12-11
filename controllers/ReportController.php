@@ -577,7 +577,7 @@ class ReportController extends QueryBaseController
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0, 150, 150, 150, 150, 150],
+            'width' => [250, 150, 150, 150, 150],
         ]);
     }
 
@@ -621,7 +621,7 @@ class ReportController extends QueryBaseController
             ],
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [200, 20, 20, 40, 40, 40, 40, 40],
+            'width' => [250, 60, 60, 60, 60, 60, 60 ],
         ]);
     }
 
@@ -665,7 +665,7 @@ class ReportController extends QueryBaseController
             ],
             'descr' => 'Aantal beoordelingen over alle cohorten',
             'lastLine' => $lastLine,
-            'width' => [200, 20, 20, 40, 40, 40, 40, 40],
+            'width' => [250, 60, 60, 60, 60, 60, 60 ],
         ]);
     }
 
@@ -1110,8 +1110,6 @@ class ReportController extends QueryBaseController
                     'Module' => $student['module'], 
                 ];
             }
-
-           
 
         }
 
