@@ -840,7 +840,8 @@ class ReportController extends QueryBaseController
             select
             u.klas Klas,
             u.name Student,
-            COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) af
+            COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) af,
+            ranking_score 'Score'
             FROM user u
             LEFT OUTER JOIN resultaat r on u.student_nr=r.student_nummer and r.module_id =$id
             where u.student_nr > 100
