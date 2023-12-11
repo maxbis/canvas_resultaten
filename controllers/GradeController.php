@@ -319,7 +319,7 @@ class GradeController extends QueryBaseController
 
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         if (empty($result)) {
-            // The result is empty, redirect to the desired page
+            // The result is empty, redirect back to start (reload)
             return Yii::$app->response->redirect(['resultaat/start']);
         }
 

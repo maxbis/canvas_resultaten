@@ -148,6 +148,9 @@ $tot = [];
                                 $style = "";
                                 if ( isset($width[$i]) && $width[$i]!=0 ){
                                     $style .= "width:".$width[$i]."px;";
+                                    echo "<th style='".$style."'>";
+                                } else {
+                                    echo "<th>";
                                 }
                                 if ( isset($bgcolor[$i]) && $bgcolor[$i]!='' ) {
                                     $style .= "background-color:".$bgcolor[$i].";";
@@ -158,7 +161,7 @@ $tot = [];
                                 //echo "<th style='".$style."'>";
                                 $td[$i] = "<td style='".$style."'>";
 
-                                echo "<th>";
+                               
                                 echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                                 echo "</th>";
                             }
