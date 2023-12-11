@@ -621,7 +621,7 @@ class ReportController extends QueryBaseController
             ],
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [0, 80, 80, 80, 80, 80, 80, 80],
+            'width' => [200, 20, 20, 40, 40, 40, 40, 40],
         ]);
     }
 
@@ -665,7 +665,7 @@ class ReportController extends QueryBaseController
             ],
             'descr' => 'Aantal beoordelingen over alle cohorten',
             'lastLine' => $lastLine,
-            'width' => [0, 80, 80, 80, 80, 80, 80, 80, 80],
+            'width' => [200, 20, 20, 40, 40, 40, 40, 40],
         ]);
     }
 
