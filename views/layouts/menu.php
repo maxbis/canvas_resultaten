@@ -63,7 +63,7 @@ echo Nav::widget([
                 ['label' => '12 wekenoverzicht',                 'url' => ['/report/aantal-activiteiten']],
                 ['label' => 'Voortgang',                         'url' => ['/report/voortgang']],
                 //['label' => 'Studenten werken aan...',           'url' => ['/report/working-on']],
-                ['label' => 'Ranking and Predictions',           'url' => ['/report/predictions']],
+                ['label' => 'Ranking and Predictions',           'url' => ['/report/ranking']],
                 ['label' => '----------------',],
                 ['label' => 'Module-overzicht',                  'url' => ['/report/aantal-opdrachten']],
                 ['label' => 'Voortgang per Module',              'url' => ['/report/modules-finished']],
