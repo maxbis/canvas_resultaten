@@ -11,7 +11,7 @@ $wday=['zo','ma','di','wo','do','vr','za'];
 
 <style>
    .hoverTable tr:hover td {
-        background-color: #f6f6ff!important;
+        background-color: #f6f6ff !important;
     }
 </style>
 
@@ -22,11 +22,6 @@ $wday=['zo','ma','di','wo','do','vr','za'];
    }
 </script>
 
-<div class="card" id="wait" style="display:none;">
-    <div class="container">
-        <br><h1>Processing...</h1></br>
-    </div>
-</div>
 
 <div class="card" id="main">
 

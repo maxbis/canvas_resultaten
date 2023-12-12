@@ -10,7 +10,7 @@ $tot = [];
 
 <style>
    .hoverTable tr:hover td {
-        background-color: #f6f6ff;
+        background-color: #f6f6ff !important;;
     }
 
     .bottom-button {
@@ -132,18 +132,6 @@ $tot = [];
                             }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
                             if (substr($columnName, 0, 1) != '-') {
-                                // if ( isset($width[$i]) && $width[$i]!=0 ){
-                                //     if ( isset($ccolor[$i]) && $ccolor[$i]!='' ) {
-                                //         echo "<th style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
-                                //         $td[$i]= "<td style=\"width:".$width[$i]."px;background-color:".$ccolor[$i]."\">";
-                                //     } else {
-                                //         echo "<th style=\"width:".$width[$i]."px;\">";
-                                //         $td[$i]= "<td style=\"width:".$width[$i]."px;\">";
-                                //     }
-                                // }else {
-                                //     echo "<th>";
-                                //     $td[$i]= "<td>";
-                                // }
 
                                 $style = "";
                                 if ( isset($width[$i]) && $width[$i]!=0 ){

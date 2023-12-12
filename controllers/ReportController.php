@@ -145,6 +145,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => '',
+            'color' => ['','','','#f0f0f0','','','','','',]
         ]);
     }
 
@@ -1128,6 +1129,8 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Prediction is based an data from c22 which is put into an exponential regression model.',
             'lastLine' => "<hr><a href=\"/report/ranking\" class=\"btn bottom-button\">Ranking</a>",
+            'bgcolor' => ['','','','','', '', '','#f5fff9', '#'],
+            'color' => ['','','','#707070','', '', '#707070','', '#707070'],
         ]);
     }
 
