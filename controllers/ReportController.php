@@ -233,12 +233,10 @@ class ReportController extends QueryBaseController
             u.student_nr '-Nummer',
             u.klas Klas,
             concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!Student',
-            u.name '-naam',
-            u.comment '-Comment',
-            u.message '-Message',
+            u.name '-Student-naam',
             sum( case when r.voldaan='V' then 1 else 0 end) '-Tot'
             $query
-            ,concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!naam'
+            ,concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!Naam'
             FROM resultaat r
             LEFT OUTER JOIN course c on c.id = r.course_id
             INNER JOIN module_def d on d.id=r.module_id
@@ -246,7 +244,7 @@ class ReportController extends QueryBaseController
             WHERE d.generiek = 0
             and u.student_nr > 10
             " . $this->getKlas($klas) . "
-            GROUP BY 1,2,3,4,5,6
+            GROUP BY 1,2,3,4,5
             ORDER BY 1 DESC
         ";
         $data = $this->executeQuery($sql, "Voortgang Dev Modules", $export);
@@ -289,9 +287,7 @@ class ReportController extends QueryBaseController
             u.student_nr '-Nummer',
             u.klas Klas,
             concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!Student',
-            u.name '-naam',
-            u.comment '-Comment',
-            u.message '-Message',
+            u.name '-Student-naam',
             sum( case when r.ingeleverd=r.aantal_opdrachten then 1 else 0 end) '-Tot'
             $query
             ,concat((CONCAT(SUBSTRING_INDEX(SUBSTRING(u.name,1,10),char(32),1),'',SUBSTRING(SUBSTRING_INDEX(u.name,char(32),-1),1,1))),'|/public/index|code|',u.code) '!naam'
@@ -302,7 +298,7 @@ class ReportController extends QueryBaseController
             WHERE d.generiek = 0
             and u.student_nr > 10
             " . $this->getKlas($klas) . "
-            GROUP BY 1,2,3,4,5,6
+            GROUP BY 1,2,3,4,5
             ORDER BY 1 DESC
         ";
         $data = $this->executeQuery($sql, "Dev Modules Ingeleverd", $export);
