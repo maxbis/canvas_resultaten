@@ -52,7 +52,32 @@ $tot = [];
     .small-button:hover {
         background-color: #ffdd00;
         color:#000000;
-}
+    }
+
+    .processing {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+        }
+
+    .dots {
+        line-height: 1em;
+    }
+
+    .dots::after {
+        content: '.';
+        animation: dotAnimation 3.0s infinite;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    @keyframes dotAnimation {
+        0%, 10% { content: ' '; }
+        10%, 20% { content: '.'; }
+        25%, 50% { content: '..'; }
+        55%, 80% { content: '...'; }
+        85%, 100% { content: '....'; }
+    }
+
 </style>
 
 <script>
@@ -80,7 +105,7 @@ $tot = [];
 
 <div class="card" id="wait" style="display:none;">
     <div class="container">
-        <br><h1>Processing...</h1></br>
+        <br><h1>Processing<span class="dots">&nbsp;</span></h1></br>
     </div>
 </div>
 
