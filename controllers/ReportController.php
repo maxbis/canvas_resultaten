@@ -383,7 +383,8 @@ class ReportController extends QueryBaseController
             concat('(scores)','|/report/opdrachten-scores|id|',m.id) '!Sco',
             concat('(voortgang)','|/report/opdrachten-verdeling|id|',m.id) '!Voo',
             ceil( sum(a.points_possible) ) '+Aantal<br>Punten',
-            m.voldaan_rule Voldaan
+            concat(m.voldaan_rule,'|module-def/update|id|',m.id) '!Voldaan'
+            
             from module_def m
             left join assignment a on a.assignment_group_id = m.id
             left join course c on c.id = a.course_id
