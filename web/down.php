@@ -92,7 +92,7 @@
 <body>
     <div class="maintenance-message">
         <div class="maintenance-header">
-            <img src="canvas-bar.png" alt="Canvas Image" width="600" style="opacity:0.7">
+            <img src="/canvas-bar.png" alt="Canvas Image" width="600" style="opacity:0.7">
         </div>
         
         <script src="script.js"></script>
@@ -100,7 +100,7 @@
 
             <h1>Oops, wrong moment...</h1>
 
-            <img src="maintenance-image.webp" alt="Maintenance Image" width="200" style="opacity:0.8">
+            <img src="/maintenance-image.webp" alt="Maintenance Image" width="200" style="opacity:0.8">
             <p>We're busy updating data from the Canvas database.</p>
             <p>Please check back soon!</p>
             <div class="progress-bar">
