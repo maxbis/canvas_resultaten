@@ -100,30 +100,46 @@ class NakijkenController extends Controller
         $model = $this->findModel($assignment_id);
         $action = Yii::$app->request->post('action');
 
-        # TODO there are two ways to redirect to another page when saved
-        # the GET param that is given grade/not-graded-module2 report and report/opdrachten-module?id=29979 report
-        # the param given by the submit button in the nakijken _form L72
-        # the method shoudl be unified
+        if ($action == 'cancel') {
+            // no save go back to referrer
+            $returnUrl = Yii::$app->user->returnUrl ?: ['/question/view', 'id' => $id];            
+            return $this->redirect($returnUrl);
+        }
 
         if ($this->request->isPost && $model->load($this->request->post()) ) {
             $model->config = json_encode($model->config);
 
             if ( $model->save() ) {
-
-                if ($action == 'stay') {
-                    return $this->redirect(['update', 'assignment_id' => $model->assignment_id]);
-                }
+                Yii::$app->session->setFlash('success', ' Record Updated');
                 
-                # if (alt)return is set this means we came from grading page
-                if ($alt_return==1) {
-                    return $this->redirect(['/grade/not-graded-module2', 'moduleId' => $model->module_id, 'regrading' => 2]);
+                if ($action == 'stay') {
+                    return $this->render('update', [
+                        'model' => $model,
+                    ]);
                 }
+
+                $returnUrl = Yii::$app->user->returnUrl ?: ['/question/view', 'id' => $id];            
+                return $this->redirect($returnUrl);
+                
+                // # if (alt)return is set this means we came from grading page
+                // if ($alt_return==1) {
+                //     return $this->redirect(['/grade/not-graded-module2', 'moduleId' => $model->module_id, 'regrading' => 2]);
+                // }
+            } else {
+                Yii::$app->session->setFlash('error', 'Update Failed');
             }
 
-            # oterhwise we go back to the complete module overview
-            return $this->redirect(['/report/opdrachten-module', 'id' => $model->module_id]);
+            // get return URL from session
+            $returnUrl = Yii::$app->user->returnUrl ?: ['/question/view', 'id' => $id];            
+            return $this->redirect($returnUrl);
+
+            // # oterhwise we go back to the complete module overview
+            // return $this->redirect(['/report/opdrachten-module', 'id' => $model->module_id]);
             
         }
+
+        // save refererer in session
+        Yii::$app->user->returnUrl = Yii::$app->request->referrer;
 
         return $this->render('update', [
             'model' => $model,

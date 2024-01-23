@@ -109,7 +109,7 @@ use yii\widgets\ActiveForm;
         <div class="row">
             <div class="col-sm-8 text-right">
                 &nbsp;&nbsp;&nbsp;
-                <?= Html::a( 'Cancel', Yii::$app->request->referrer , ['class'=>'btn btn-primary']); ?>
+                <?= Html::submitButton('Cancel', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'cancel']) ?>
                 &nbsp;&nbsp;&nbsp;
                 <?= Html::submitButton('Save & Stay', ['class' => 'btn btn-info', 'name' => 'action', 'value' => 'stay']) ?>
                 &nbsp;&nbsp;&nbsp;
