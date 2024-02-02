@@ -260,7 +260,6 @@ class ReportController extends QueryBaseController
             # 'nocount' => 1,
         ]);
     }
-
     public function actionVoortgang2($export = false, $klas = '')
     { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
@@ -800,7 +799,7 @@ class ReportController extends QueryBaseController
     public function actionOpdrachtenScores($id, $export = false)
     {
 
-        $sql = " select a.position pos, u.name '#Student', a.name Opdracht, s.entered_score Score,
+        $sql = " select a.position pos, u.klas klas, u.name '#Student', a.name Opdracht, s.entered_score Score,
                     CASE
                     WHEN s.graded_at >= '1971-01-01' THEN s.graded_at
                     ELSE '-'
@@ -821,7 +820,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'descr' => 'Opdrachten en punten voor deze module',
-            'width' => [0, 300, 200, 100, 200],
+            'width' => [0, 30, 250, 300, 60, 200, 60],
             'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
             ],
         ]);
