@@ -837,12 +837,13 @@ class ReportController extends QueryBaseController
             select
             u.klas Klas,
             u.name Student,
-            COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) af,
+            COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) 'Perc Af',
+            round(r.punten, 0) Punten,
             ranking_score 'Score'
             FROM user u
             LEFT OUTER JOIN resultaat r on u.student_nr=r.student_nummer and r.module_id =$id
             where u.student_nr > 100
-            order by af;
+            order by 3 DESC, 4 DESC;
         ";
             
         $data = parent::executeQuery($sql, "Voortgang \"".$moduleNaam . "\"", $export);
@@ -851,7 +852,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'descr' => '',
-            'width' => [20, 20, 100, 40],
+            'width' => [20, 300, 80, 80, 80],
             'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
             ],
         ]);
