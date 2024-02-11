@@ -44,9 +44,13 @@ API_KEY = config.get('main', 'api_key')
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
+def log(line):
+    with open('d:\\output.log', 'a', encoding='utf-8') as logfile:
+        logfile.write(line + '\n')
+    print("log: " + line)
 
 def checkAssignment(assignment):
-    print("\nAssignemnt: %s (%s)" % (assignment.name, assignment.id) )
+    log("\nAssignment: %s (%s)" % (assignment.name, assignment.id) )
 
     submissions = assignment.get_submissions()
 
@@ -94,33 +98,27 @@ def checkAssignment(assignment):
                         user2 = canvas.get_user( allHashes[thisHash].split()[0] ).name
                         attachment2 = allHashes[thisHash].split()[1]
                         double = (" *** double  *** %s %s and %s %s (size: %s bytes)" % (user1, attachment1, user2, attachment2, att.size))
+                        log(double)
                     else:
                         allHashes[thisHash] = str(submission.user_id) + " "+att.display_name
                         if ( double == ""):
                             double="OK"
 
-        print("%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days ,submission.workflow_state, double))
+        # print("%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days ,submission.workflow_state, double))
+        output_line = "%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days, submission.workflow_state, double)
+        print(output_line)
     print()
 
 # check blok id
-course = canvas.get_course(6586)
-# course = canvas.get_course(6580) # blok 2 c22
-# course = canvas.get_course(4999) # blok 6 c21
-# course = canvas.get_course(6586) # blok 9/10 c21
+course = canvas.get_course(12621) # blok 3 c23
 
-course = canvas.get_course(6580) # blok 3 c22
-
-
-print(course.name)
-
-# assignment = course.get_assignment(93446)
-# checkAssignment(assignment)
+log(course.name)
 
 assignments = course.get_assignments()
 
 for assignment in assignments:
-    print(assignment.id, assignment.name)
-    if ( assignment.name.lower().find('SQL') >= 0 ):
+    # log("Assignment Id: %d Assignment Name: %s" % (assignment.id, assignment.name) )
+    if ( True or assignment.name.lower().find('db1') >= 0 ):
         checkAssignment(assignment)
 
 
