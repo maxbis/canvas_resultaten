@@ -110,15 +110,14 @@ def checkAssignment(assignment):
     print()
 
 # check blok id
-course = canvas.get_course(12621) # blok 3 c23
+course = canvas.get_course(12623) 
 
 log(course.name)
 
 assignments = course.get_assignments()
 
 for assignment in assignments:
-    # log("Assignment Id: %d Assignment Name: %s" % (assignment.id, assignment.name) )
-    if ( True or assignment.name.lower().find('db1') >= 0 ):
+    # log("Assignment Id: %d Assignment Name: %s" % (assignment.id, assignment.name) )git pull
+
+    if ( True or assignment.name.lower().find('-') >= 0 ):
         checkAssignment(assignment)
-
-

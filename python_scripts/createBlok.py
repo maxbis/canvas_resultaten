@@ -17,8 +17,8 @@ account = canvas.get_account(82)
 
 course = account.create_course(
     course={
-        'name':'Rekenen - C23',
-        'course_code':'LCT-GNR-REK-C23-25604OR',
+        'name':'Blok3 - Extra',
+        'course_code':'LCT-SD-OP2-Extra-25604OR',
         'default_view': 'modules',
         'licence': 'private',
     }

@@ -12,13 +12,20 @@ import requests
 
 import os.path
 import datetime
+import re
 
 config = configparser.ConfigParser()
 config.read("canvas.ini")
 
-# userNamesList = ['Waal']
+now = datetime.datetime.now()
+current_year = now.year
+current_month = now.strftime('%B')
 
-downloads = 'd:\downloads\dl-canvas-20230606-1455'
+# userNamesList = []
+course_id = 14895 # c21
+# course_id = 14156 # c22
+# course_id = 8761 # c20
+downloads = os.path.join('d:', 'downloads', f'dl-canvas-c20-{current_year}-{current_month.lower()}-{course_id}')
 
 # Canvas API URL
 API_URL = config.get('main', 'host')
@@ -27,6 +34,16 @@ API_KEY = config.get('main', 'api_key')
 
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
+
+
+def sanitize_filename(filename):
+    # Replace invalid characters with an underscore
+    sanitized = re.sub(r'[\\/:*?"<>|]', '_', filename)
+
+    # Remove trailing spaces and periods
+    sanitized = sanitized.rstrip('. ')
+
+    return sanitized
 
 def translate(text):
     translate={ 'ç':'c', 'Ü':'U', 'ü':'u', 'Ç':'C', 'ğ':'g', 'Ğ':'G', 'ı':'i', 'İ':'I', 'ö':'o', 'Ö':'O', 'ş':'s', 'Ş':'S', 'š':'s', 'ć':'c', ' ':'_','+':'-'}
@@ -58,7 +75,7 @@ def downloadAssignment(assignment):
         except:
             userName = "*Unknown"
 
-        # if ( userNamesList and checkSubstringsFromList(userName, userNamesList) ):
+        # if ( len(userNamesList) and checkSubstringsFromList(userName, userNamesList) ):
         #     print(f" -> Downloading {userName}")
         # else:
         #     print(f"Skipping {userName}, not in list.")
@@ -82,7 +99,7 @@ def downloadAssignment(assignment):
         if (hasattr(submission, 'attachments')):
             for att in submission.attachments:
                 page = requests.get(att.url)
-                fn = os.path.join(path,att.filename)
+                fn = os.path.join( path, sanitize_filename(att.filename) )
                 print("\nOrg file: %s" % (fn) )
                 fn = translate(fn)
                 print("\nCreate file: %s" % (fn) )
@@ -94,11 +111,17 @@ def downloadAssignment(assignment):
 
 
 
-course = canvas.get_course(8761) # examen portfolio
+course = canvas.get_course(course_id) # examen portfolio
 print(course.name)
 
 assignments = course.get_assignments()
 
 for assignment in assignments:
-    print(assignment.id, assignment.name)
-    downloadAssignment(assignment)
+    assignment_group_id = assignment.assignment_group_id
+    assignment_group = course.get_assignment_group(assignment_group_id)
+    assignment_group_name = assignment_group.name
+    if ( 'Kerntaak' in assignment_group.name ):
+        print(f"Downloading {assignment_group.name} - {assignment.name} ({assignment.id})")
+        downloadAssignment(assignment)
+    else:
+        print(f"Skipping {assignment_group.name} - {assignment.name} ({assignment.id})")
