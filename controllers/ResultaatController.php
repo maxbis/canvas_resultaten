@@ -24,7 +24,6 @@ use Spatie\Async\Pool;
  * ResultaatController implements the CRUD actions for Resultaat model.
  */
 class ResultaatController extends Controller
-
 {
 
     /**
@@ -36,18 +35,19 @@ class ResultaatController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
-                ],
+                        'delete' => ['POST'],
+                    ],
             ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    // when logged in, any user
-                    [   'actions' => [],
-                        'allow' => true,
-                        'roles' => ['@'],
+                        // when logged in, any user
+                        [
+                            'actions' => [],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
                     ],
-                ],
             ],
         ];
     }
@@ -63,27 +63,30 @@ class ResultaatController extends Controller
 
         $courses = ArrayHelper::map(Course::find()->orderBy('pos')->asArray()->all(), 'id', 'korte_naam');
         $klas = ArrayHelper::map(Student::find()->where(['not', ['klas' => '']])->orderBy('klas')->asArray()->all(), 'klas', 'klas');
-        $modules =  ArrayHelper::map(Resultaat::find()->orderBy('module_pos')->asArray()->all(), 'module_id', 'module');
-        
+        $modules = ArrayHelper::map(Resultaat::find()->orderBy('module_pos')->asArray()->all(), 'module_id', 'module');
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'courses' => $courses,
             'klas' => $klas,
             'modules' => $modules,
-            'updates_available_for'=>array_keys( $this->getVoldaanCriteria() ),
+            'updates_available_for' => array_keys($this->getVoldaanCriteria()),
         ]);
     }
 
-    public function actionStart() {
-  
-        if (Yii::$app->request->post() ) {
-            $search=Yii::$app->request->post()['search'];
-            $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->orderBy(['name' => 'SORT_ASC'])->all();
+    public function actionStart()
+    {
+
+        if (Yii::$app->request->post()) {
+            $search = Yii::$app->request->post()['search'];
+            // $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->orderBy(['name' => 'SORT_ASC'])->all();
+            // $found=count($resultaten);
+            $resultaten = $this->searchStudents($search);
             $found=count($resultaten);
         } else {
-            $resultaten=[];
-            $found=-1;
+            $resultaten = [];
+            $found = -1;
         }
 
         # $sql="SELECT min(greatest(m.last_updated, g.last_updated)) 'timestamp' FROM module_def m join assignment_group g on g.id=m.id where m.pos is not null";
@@ -93,7 +96,8 @@ class ResultaatController extends Controller
 
         if ($found == 1) { // one student found, redirects to the students page
             return $this->redirect([
-                'public/index','code'=>$resultaten[0]['code'],
+                'public/index',
+                'code' => $resultaten[0]['code'],
             ]);
         } else {
             return $this->render('start', [
@@ -105,36 +109,38 @@ class ResultaatController extends Controller
 
     }
 
-    public function actionRotate() {
+    public function actionRotate()
+    {
         # $controller = Yii::$app->controller->id; 
         # $action = Yii::$app->controller->action->id;
 
-        if ( str_contains($_SERVER['HTTP_REFERER'], 'resultaat/start') == false ) {
+        if (str_contains($_SERVER['HTTP_REFERER'], 'resultaat/start') == false) {
             $this->redirect(Yii::$app->homeUrl);
             return;
         }
 
-        $actualLink = strtolower('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+        $actualLink = strtolower('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 
-        if (str_contains($actualLink, 'c23')) { 
-            $newUrl=str_replace("c23","c22",$actualLink);
+        if (str_contains($actualLink, 'c23')) {
+            $newUrl = str_replace("c23", "c22", $actualLink);
         }
-        if (str_contains($actualLink, 'c22')) { 
-            $newUrl=str_replace("c22","c21",$actualLink);
+        if (str_contains($actualLink, 'c22')) {
+            $newUrl = str_replace("c22", "c21", $actualLink);
         }
-        if (str_contains($actualLink, 'c21')) { 
-            $newUrl=str_replace("c21","c23",$actualLink);
+        if (str_contains($actualLink, 'c21')) {
+            $newUrl = str_replace("c21", "c23", $actualLink);
         }
-        if (str_contains($actualLink, 'c20')) { 
-            $newUrl=str_replace("c20","c23",$actualLink);
+        if (str_contains($actualLink, 'c20')) {
+            $newUrl = str_replace("c20", "c23", $actualLink);
         }
 
         $this->redirect($newUrl);
         return;
     }
 
-    public function actionAjaxNakijken() {
-        $sql="select
+    public function actionAjaxNakijken()
+    {
+        $sql = "select
                 m.pos,
                 m.naam,
                 m.id,
@@ -152,34 +158,36 @@ class ResultaatController extends Controller
          order by 1";
         $nakijken = Yii::$app->db->createCommand($sql)->queryAll();
 
-        $url = strtolower('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+        $url = strtolower('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
         $host = parse_url($url, PHP_URL_HOST);
         $parts = explode('.', $host);
         $cohort = $parts[0];
 
 
-        $html="<tr><th></th><th>module</th><th>aantal</th><th>oudste</th></tr>";
-        $prev="";
-        foreach($nakijken as $item) {
+        $html = "<tr><th></th><th>module</th><th>aantal</th><th>oudste</th><th></th></tr>";
+        $prev = "";
+        foreach ($nakijken as $item) {
             $html .= "<tr>";
             $html .= "<td>&nbsp;</td>";
 
             $html .= "<td>";
-            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId'=>$item['id']] );
+            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId' => $item['id']]);
             $html .= "</td>";
-            
-            $html .= "<td>".$item['aantal']."</td>";
+
+            $html .= "<td>" . $item['aantal'] . "</td>";
 
             $style = "";
-            if ( $item['oudste'] > 14 ) $style="style=\"font-weight: 650;\"";
-            $html .= "<td $style>".$item['oudste']."</td>";
+            if ($item['oudste'] > 14)
+                $style = "style=\"font-weight: 650;\"";
+            $html .= "<td $style>" . $item['oudste'] . "</td>";
 
             $html .= "<td>";
             // $html .= "<a class=\"ac-button\" href=\"/grade/not-graded-module2?moduleId=" . $item['id'] . "\" target=\"_blank\" title=\"Auto Correct\">AC➞</a>";
-            $html .= Html::a( 'AC➞',
-                        [ '/grade/not-graded-module2', 'moduleId'=>$item['id']],
-                        [ 'class' => 'ac-button', 'target' => '_blank', 'title' => 'Auto Correct']
-                    );
+            $html .= Html::a(
+                'AC➞',
+                ['/grade/not-graded-module2', 'moduleId' => $item['id']],
+                ['class' => 'ac-button', 'target' => '_blank', 'title' => 'Auto Correct']
+            );
             $html .= "</td>";
 
             $html .= "</tr>";
@@ -187,43 +195,46 @@ class ResultaatController extends Controller
         return $html;
     }
 
-    protected function getVoldaanCriteria() {
+    protected function getVoldaanCriteria()
+    {
         // create $voldaan_criteria from DB
-        return ArrayHelper::map( ModuleDef::find()->asArray()->all(), 'id','voldaan_rule');
+        return ArrayHelper::map(ModuleDef::find()->asArray()->all(), 'id', 'voldaan_rule');
     }
 
-    public function actionExport(){    
+    public function actionExport()
+    {
         // Code had bug: first line is replaced by headers and therefor teh first line is omited in download.
         // Code not used, export redirected to query export.
-        
+
         // header('Content-type: text/csv');
         // header('Content-Disposition: attachment; filename="canvas-export' . date('YmdHi') .'.csv"');
-         echo "<pre>";
+        echo "<pre>";
         $data = Resultaat::find()->asArray()->all();
 
-        $firstLine=True;
-        $header="";
+        $firstLine = True;
+        $header = "";
         foreach ($data as $line) {                  //regel
-            foreach ( $line as $key => $value) {    // column
+            foreach ($line as $key => $value) {    // column
                 if ($firstLine) {
-                    $header.= $key.",";
+                    $header .= $key . ",";
                 } else {
                     echo "$value, ";
                 }
             }
-            $firstLine=False;
+            $firstLine = False;
             echo "\n";
         }
-        exit;      
+        exit;
     }
 
-    public function getSubmissionFromApi($id) {
+    public function getSubmissionFromApi($id)
+    {
 
-        include __DIR__.'/../config/secrets.php';
+        include __DIR__ . '/../config/secrets.php';
 
-        $authorization = "Authorization: Bearer ".$API_KEY;
+        $authorization = "Authorization: Bearer " . $API_KEY;
 
-        $query="query {
+        $query = "query {
             submission(id: \"$id\") {
               _id
               score
@@ -241,70 +252,73 @@ class ResultaatController extends Controller
         $ch = curl_init($URI);
 
         curl_setopt_array($ch, array(
-            CURLOPT_HTTPHEADER  => array($authorization),
-            CURLOPT_RETURNTRANSFER  =>true,
-            CURLOPT_VERBOSE     => 1
-        ));
+            CURLOPT_HTTPHEADER => array($authorization),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_VERBOSE => 1
+        )
+        );
 
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "query=".$query);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "query=" . $query);
 
         $out = json_decode(curl_exec($ch), true);
         curl_close($ch);
         return $out['data']['submission'];
     }
 
-    public function updateSubmission($data) {
-        $sql="update submission set entered_score=:score, submitted_at=:submitted_at, graded_at=:graded_at, workflow_state=:state where id=:id";
-        $params = array(':score'=> $data['score'] ?: 0, ':submitted_at' => $data['submittedAt'] ?: '1970-01-01T00:00:00', ':graded_at' => $data['gradedAt'] ?: '1970-01-01T00:00:00', ':state' => $data['submissionStatus'] ?: '1970-01-01T00:00:00', ':id'=>$data['_id']);
+    public function updateSubmission($data)
+    {
+        $sql = "update submission set entered_score=:score, submitted_at=:submitted_at, graded_at=:graded_at, workflow_state=:state where id=:id";
+        $params = array(':score' => $data['score'] ?: 0, ':submitted_at' => $data['submittedAt'] ?: '1970-01-01T00:00:00', ':graded_at' => $data['gradedAt'] ?: '1970-01-01T00:00:00', ':state' => $data['submissionStatus'] ?: '1970-01-01T00:00:00', ':id' => $data['_id']);
         $result = Yii::$app->db->createCommand($sql)->bindValues($params)->execute();
         return $result;
     }
 
-    public function actionUpdateAssignment($student_nr, $module_id) { 
+    public function actionUpdateAssignment($student_nr, $module_id)
+    {
         // Live (async) update from GUI 
         # get submission_ids, let's get all submissions that are from this assignment group and this user
-        $sql="  select s.id from submission s
+        $sql = "  select s.id from submission s
                 inner join assignment a on a.id=s.assignment_id
                 inner join assignment_group g on g.id=a.assignment_group_id
                 inner join user u on u.id=user_id
                 where g.id = :module_id and u.student_nr=:user_id";
-        $params = array(':user_id'=> $student_nr, ':module_id' => $module_id );
-        $listOfSubmissions = Yii::$app->db->createCommand($sql)->bindValues($params)->queryAll();               
+        $params = array(':user_id' => $student_nr, ':module_id' => $module_id);
+        $listOfSubmissions = Yii::$app->db->createCommand($sql)->bindValues($params)->queryAll();
 
         # update the list of submissions, these are all submissions that are part of this assignment_group (=module)
         # https://github.com/spatie/async
         # async only works on Linux server, on windows async will be converted into sync processing
-        $count=0;
+        $count = 0;
         $pool = Pool::create();
 
-        $timerStart=round(microtime(true) * 1000);
+        $timerStart = round(microtime(true) * 1000);
         foreach ($listOfSubmissions as $submission) { // get all submissions async since api responce is quite slow
             $count++;
             $pool->add(function () use ($submission, $count, $timerStart) {
                 $data = $this->getSubmissionFromApi($submission['id']);
                 $this->updateSubmission($data);
-                return([$count, $data]);
+                return ([$count, $data]);
             })->then(function ($data) use ($timerStart) {
                 // do nothing for now
                 // writeLog("asycn ".$data[0]." succes: ".$data[1]['_id'].": ".$data[1]['submittedAt']." ".strval(round(microtime(true) * 1000)-$timerStart));
             })->catch(function (Throwable $exception) {
-                writeLog("Error async: ".$exception );
+                writeLog("Error async: " . $exception);
             });
 
         } // endfor
 
-        await($pool); 
-        writeLog("Async Pool(".$count." threads) ready, uS passed: ".strval(round(microtime(true) * 1000)-$timerStart));
+        await($pool);
+        writeLog("Async Pool(" . $count . " threads) ready, uS passed: " . strval(round(microtime(true) * 1000) - $timerStart));
 
         // update resultaat for user (based on login_id) and module
         // note that voldaan or not is not yet determined
 
         // delete and insert (todo: tranform insert into update statement in order to get rid of the delete)
-        $sql="delete from resultaat where student_nummer=$student_nr and module_id=$module_id;";
+        $sql = "delete from resultaat where student_nummer=$student_nr and module_id=$module_id;";
 
         // Insert new values 
-        $sql.="
+        $sql .= "
             insert into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
             SELECT
                 a.course_id course_id,
@@ -332,18 +346,32 @@ class ResultaatController extends Controller
         ";
 
         $voldaan_criteria = $this->getVoldaanCriteria(); // read voldaan criteria from DB (mapped in array)
-        if ( array_key_exists($module_id,$voldaan_criteria) ) {
-            $sql.="update resultaat set voldaan = 'V' WHERE module_id=$module_id and $voldaan_criteria[$module_id] and student_nummer=$student_nr;";
+        if (array_key_exists($module_id, $voldaan_criteria)) {
+            $sql .= "update resultaat set voldaan = 'V' WHERE module_id=$module_id and $voldaan_criteria[$module_id] and student_nummer=$student_nr;";
         }
 
         $result = Yii::$app->db->createCommand($sql)->execute();
 
-        return $this->redirect(['index',
-                    'ResultaatSearch[student_nummer]'=>$student_nr,
-                ]);
+        return $this->redirect([
+            'index',
+            'ResultaatSearch[student_nummer]' => $student_nr,
+        ]);
     }
 
-      
+    private function searchStudents($search) {
+        $databases = Yii::$app->params['databases'];
+        $result = [];
+        foreach ($databases as $db) {
+            $sql = "SELECT * FROM `$db`.`user` WHERE student_nr > 100 AND  name LIKE '%$search%' order by klas, name";
+            $thisResult = Yii::$app->db->createCommand($sql)->queryAll();
+            foreach($thisResult as $row)  {
+                $row['cohort'] = substr($db, -3);;
+                $result[] = $row;
+             }
+        }
+        return $result;
+    }
+
 }
 
 
