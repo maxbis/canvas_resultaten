@@ -77,17 +77,21 @@ class ResultaatController extends Controller
 
     public function actionStart()
     {
-
+        $search = "";
         # When search in search bar is used, put search string in search and let the front end page perform the search
         if (Yii::$app->request->post()) {
             $search = Yii::$app->request->post()['search'];
-        } else {
-            $search = "";
+            $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->all();
+            if ( count($resultaten) == 1 ) { // one student found, redirects to the students page
+                return $this->redirect([
+                    'public/index',
+                    'code' => $resultaten[0]['code'],
+                ]);
+            }
         }
 
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
-
 
         return $this->render('start', [
             'search' => $search,
