@@ -170,8 +170,13 @@ class ResultaatController extends Controller
             $html .= "<tr>";
             $html .= "<td>&nbsp;</td>";
 
+            $moduleName = $item['naam'];
+            if ( strlen($moduleName) > 22 ) {
+                $moduleName = substr($moduleName, 0, 22) . '...';
+            } 
+
             $html .= "<td>";
-            $html .= Html::a($item['naam'], ['/grade/not-graded-module', 'moduleId' => $item['id']]);
+            $html .= Html::a($moduleName, ['/grade/not-graded-module', 'moduleId' => $item['id']]);
             $html .= "</td>";
 
             $html .= "<td>" . $item['aantal'] . "</td>";
