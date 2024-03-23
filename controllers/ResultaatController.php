@@ -78,6 +78,7 @@ class ResultaatController extends Controller
     public function actionStart()
     {
 
+        # When search in search bar is used, put search string in search and let the front end page perform the search
         if (Yii::$app->request->post()) {
             $search = Yii::$app->request->post()['search'];
         } else {

@@ -248,7 +248,6 @@ if (!empty($search)) {
             data: formData,
             success: function (data) {
                 console.log('Student-search form submitted successfully');
-                console.log(data);
 
                 // parse html-data to checker, if only one link is returned redirect to it and stop
                 if (link = checkForOneLink(data)) {
