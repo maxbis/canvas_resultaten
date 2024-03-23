@@ -12,6 +12,8 @@ function isMobileDevice()
 $subDomain = Yii::$app->params['subDomain'];
 ?>
 
+
+
 <style>
     .hoverTable tr:hover td {
         background-color: #f6f6ff;
@@ -148,6 +150,20 @@ $subDomain = Yii::$app->params['subDomain'];
     }
 </style>
 
+<?php
+if (!empty($search)) {
+    // Register a script in the view
+    $this->registerJs("
+        $(document).ready(function() {
+            // Set the value of the search input
+            $('#search-students input[name=\"search\"]').val(" . \yii\helpers\Json::htmlEncode($search) . ");
+
+            // Trigger the click event of button1
+            $('#button1').click();
+        });
+    ", \yii\web\View::POS_READY, 'my-search-trigger');
+}
+?>
 
 <?php if (!isMobileDevice()): ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -249,7 +265,10 @@ $subDomain = Yii::$app->params['subDomain'];
             }
         });
     }
+
 </script>
+
+
 
 <p><small style="color:#999;">Laatste update:
         <?= $timestamp ?>
@@ -288,7 +307,7 @@ $subDomain = Yii::$app->params['subDomain'];
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                   ?>
 
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>

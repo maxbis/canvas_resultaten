@@ -80,32 +80,18 @@ class ResultaatController extends Controller
 
         if (Yii::$app->request->post()) {
             $search = Yii::$app->request->post()['search'];
-            // $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->orderBy(['name' => 'SORT_ASC'])->all();
-            // $found=count($resultaten);
-            $resultaten = $this->searchStudents($search);
-            $found = count($resultaten);
         } else {
-            $resultaten = [];
-            $found = -1;
+            $search = "";
         }
 
-        # $sql="SELECT min(greatest(m.last_updated, g.last_updated)) 'timestamp' FROM module_def m join assignment_group g on g.id=m.id where m.pos is not null";
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
-        #$sql="select max(timestamp) timestamp from log where subject='Import'";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
-        if ($found == 1) { // one student found, redirects to the students page
-            return $this->redirect([
-                'public/index',
-                'code' => $resultaten[0]['code'],
-            ]);
-        } else {
-            return $this->render('start', [
-                'resultaten' => $resultaten,
-                'found' => $found,
-                'timestamp' => $timestamp['timestamp']
-            ]);
-        }
+
+        return $this->render('start', [
+            'search' => $search,
+            'timestamp' => $timestamp['timestamp']
+        ]);
 
     }
 
@@ -171,9 +157,9 @@ class ResultaatController extends Controller
             $html .= "<td>&nbsp;</td>";
 
             $moduleName = $item['naam'];
-            if ( strlen($moduleName) > 22 ) {
+            if (strlen($moduleName) > 22) {
                 $moduleName = substr($moduleName, 0, 22) . '...';
-            } 
+            }
 
             $html .= "<td>";
             $html .= Html::a($moduleName, ['/grade/not-graded-module', 'moduleId' => $item['id']]);
@@ -368,13 +354,14 @@ class ResultaatController extends Controller
     public function actionSearchStudents()
     {
         $search = Yii::$app->request->post('search');
-        $cohort = Yii::$app->request->post('cohort');;
+        $cohort = Yii::$app->request->post('cohort');
+        ;
         $resultaten = $this->searchStudents($search);
         $html = "";
 
         $prevCohort = $resultaten[0]['cohort'];
         foreach ($resultaten as $student) {
-            if ( $cohort == "all" || $cohort == $student['cohort'] ) {
+            if ($cohort == "all" || $cohort == $student['cohort']) {
                 if ($student['cohort'] != $prevCohort) {
                     $prevCohort = $student['cohort'];
                     $style = "margin-top:20px;";
