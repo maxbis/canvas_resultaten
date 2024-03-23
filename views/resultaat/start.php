@@ -17,54 +17,6 @@ $subDomain = Yii::$app->params['subDomain'];
         background-color: #f6f6ff;
     }
 
-    .bottom-button {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.7em;
-        text-align: center;
-        cursor: pointer;
-        color: #404040;
-        font-weight: 400;
-        background-color: #f8f9fa;
-        border: solid 1px;
-        border-color: #d0d0d0;
-        border-radius: 0.25rem;
-        margin: 2px;
-        width: 120px;
-    }
-
-    .bottom-button:hover {
-        background-color: #e6f1ff;
-        text-decoration: none;
-    }
-
-    .bottom-button:active {
-        background-color: #d0d0d0;
-    }
-
-    .top {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: top;
-        height: 100x;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        margin-left: 25px;
-        margin-right: 20px;
-    }
-
-    .my-header {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #e7e7e7;
-    }
-
-    .start-column {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        max-width: 850px;
-    }
-
     h5 {
         color: #606060;
     }
@@ -112,6 +64,10 @@ $subDomain = Yii::$app->params['subDomain'];
         width: 380px;
     }
 
+    .results-container {
+        display: none;
+    }
+
     .form-group {
         margin-bottom: 15px;
         display: flex;
@@ -120,9 +76,9 @@ $subDomain = Yii::$app->params['subDomain'];
 
     .form-group input[type="text"] {
         width: 100%;
-        border: 1px solid #cccccc;
+        /* border: 1px solid #cccccc;
         border-radius: 4px;
-        box-sizing: border-box;
+        box-sizing: border-box; */
     }
 
     .form-group button {
@@ -131,12 +87,20 @@ $subDomain = Yii::$app->params['subDomain'];
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 16px;
-        margin: 20px;
+        font-size: 14px;
+        margin-left: 8px;
+        min-width: 40px;
     }
 
     .form-group button:hover {
         background-color: #0056b3;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-left: 20px;
+        /* Adjusts the alignment with the text box above */
     }
 
     .results-container ul {
@@ -160,33 +124,132 @@ $subDomain = Yii::$app->params['subDomain'];
         color: darkblue;
         text-decoration: none;
     }
+
+    .loader {
+        border: 5px solid #f3f3f3;
+        /* Light grey */
+        border-top: 5px solid #3498db;
+        /* Blue */
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 2s linear infinite;
+        margin: 10px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 
-<?php if (!$resultaten && !isMobileDevice()): ?>
+<?php if (!isMobileDevice()): ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
-        var csrfToken = $('meta[name="csrf-token"]').attr("content");
-        var apiURL = '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
-        jQuery(window).on('load', function () {
-            jQuery.ajax({
-                type: 'POST',
-                data: { '_csrf': csrfToken },
-                dataType: 'html',
-                url: apiURL,
-                success: function (data) {
-                    document.getElementById('nakijken').innerHTML = data;
-                },
-                error: function (data) {
-                    console.log('Ajax Error');
-                    console.log(data);
-                }
-            });
-        });
 
+    <script>
+        $(window).on('load', function () {
+            // Set a timeout to execute after 1 second of idle time post page load
+            setTimeout(function () {
+                var csrfToken = $('meta[name="csrf-token"]').attr("content");
+                var nakijkOverzichtApi = '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
+
+                $.ajax({
+                    type: 'POST',
+                    data: { '_csrf': csrfToken },
+                    dataType: 'html',
+                    url: nakijkOverzichtApi,
+                    success: function (data) {
+                        $('#nakijken').html(data);
+                    },
+                    error: function (data) {
+                        console.log('Ajax Error');
+                        console.log(data);
+                    }
+                });
+            }, 200); // 1000 milliseconds = 1 second
+        });
     </script>
+
+
 <?php endif; ?>
+
+<script>
+    $(document).ready(function () {
+        $('#studentName').keypress(function (e) {
+            if (e.which == 13) { // Enter key has the keycode 13
+                e.preventDefault(); // Prevent the default form submit action
+                $('#button1').click(); // Trigger the click event of the second button
+            }
+        });
+    });
+</script>
+
+
+<script>
+    function checkForOneLink(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var links = doc.querySelectorAll('a');
+        if (links.length === 1) {
+            return links[0].href;
+        } else {
+            return "";
+        }
+    }
+
+    var searchStudentsApi = '<?= Url::toRoute(['resultaat/search-students']); ?>';
+    function submitFormWithValue(value) {
+        var form = $('#search-students');
+        var searchInput = form.find('input[name="search"]').val();
+
+        var searchInputField = form.find('input[name="search"]');
+
+        if (searchInputField.val().length < 2) {
+            searchInputField.val(''); // Clear the current input
+            searchInputField.attr('placeholder', 'Minimum 2 chars');
+            return;
+        }
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'cohort';
+        input.value = value;
+
+        form.append(input);
+        var formData = form.serialize();
+
+        $.ajax({
+            url: searchStudentsApi,
+            type: 'POST',
+            dataType: 'html',
+            data: formData,
+            success: function (data) {
+                console.log('Student-search form submitted successfully');
+                console.log(data);
+
+                // parse html-data to checker, if only one link is returned redirect to it and stop
+                if (link = checkForOneLink(data)) {
+                    window.location.href = link;
+                    return;
+                } else {
+                    document.getElementById('students-list').innerHTML = data;
+                    $("#results-container").show();
+                }
+
+            },
+            error: function () {
+                console.log('An error occurred in API call search-student');
+            }
+        });
+    }
+</script>
 
 <p><small style="color:#999;">Laatste update:
         <?= $timestamp ?>
@@ -201,54 +264,40 @@ $subDomain = Yii::$app->params['subDomain'];
             <div class="row">
                 <div class="form-container">
                     <h5>Zoek Student</h5>
-                    <form method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
-                    <div class="form-group">
-                        <input type="text" id="studentName" name="search" minlength="2" required>
-                        <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
-                        <button type="submit">Zoek</button>
-                    </div>
+                    <form id="search-students" method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
+                        <!-- <?php $form = ActiveForm::begin(['id' => 'search-students',]); ?> -->
+                        <div class="form-group">
+                            <input type="text" id="studentName" name="search" minlength="2" required>
+                            <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
+                            <button type="button" id="button1" onclick="submitFormWithValue('<?= $subDomain ?>')">
+                                <?= $subDomain ?>
+                            </button>
+                            <button type="button" id="button2" onclick="submitFormWithValue('all')">All</button>
+                        </div>
                     </form>
+                    <!-- <?php ActiveForm::end(); ?> -->
                 </div>
 
-                <?php if ($resultaten && $found > 0) { ?>
-                    <div class="results-container">
-                        <h5>Students</h5>
-                        <ul>
-                            <?php $prevCohort = $resultaten[0]['cohort']; ?>
-                            <?php foreach ($resultaten as $student): ?>
-                                <?php
-                                if ($student['cohort'] != $prevCohort) {
-                                    $prevCohort = $student['cohort'];
-                                    $style = "margin-top:20px;";
-                                } else {
-                                    $style = "";
-                                }
-                                ?>
-                                <li style="<?= $style; ?>">
-                                    <?php
-                                    echo "<span style='color:#808080'>" . $student['klas'] . "</span>&nbsp;";
-                                    echo "<a href=\"https://${student['cohort']}.cmon.ovh/public/index?code=${student['code']}\">";
-                                    echo $student['name'];
-                                    echo "</a>";
-                                    ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php } ?>
+                <div class="results-container" id="results-container">
+                    <h5>Students</h5>
+                    <ul id="students-list">
+                    </ul>
+                </div>
             </div>
 
         </div>
 
         <div class="col-sm">
-            <?php if (!$resultaten && !isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown               ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                ?>
 
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
 
                     <table id="nakijken" class="table table-sm hoverTable">
                         <tr>
-                            <td>...</td>
+                            <td>
+                                <div class="loader"></div>
+                            </td>
                         </tr>
                     </table>
 

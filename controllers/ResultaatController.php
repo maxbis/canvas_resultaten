@@ -35,19 +35,19 @@ class ResultaatController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                    'delete' => ['POST'],
+                ],
             ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        // when logged in, any user
-                        [
-                            'actions' => [],
-                            'allow' => true,
-                            'roles' => ['@'],
-                        ],
+                    // when logged in, any user
+                    [
+                        'actions' => [],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
+                ],
             ],
         ];
     }
@@ -83,7 +83,7 @@ class ResultaatController extends Controller
             // $resultaten = student::find()->select(['code','name', 'klas'])->distinct()->where(['like', 'name', $search])->andWhere(['>','student_nr','1'])->orderBy(['name' => 'SORT_ASC'])->all();
             // $found=count($resultaten);
             $resultaten = $this->searchStudents($search);
-            $found=count($resultaten);
+            $found = count($resultaten);
         } else {
             $resultaten = [];
             $found = -1;
@@ -251,11 +251,13 @@ class ResultaatController extends Controller
 
         $ch = curl_init($URI);
 
-        curl_setopt_array($ch, array(
-            CURLOPT_HTTPHEADER => array($authorization),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_VERBOSE => 1
-        )
+        curl_setopt_array(
+            $ch,
+            array(
+                CURLOPT_HTTPHEADER => array($authorization),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_VERBOSE => 1
+            )
         );
 
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -358,16 +360,46 @@ class ResultaatController extends Controller
         ]);
     }
 
-    private function searchStudents($search) {
+    public function actionSearchStudents()
+    {
+        $search = Yii::$app->request->post('search');
+        $cohort = Yii::$app->request->post('cohort');;
+        $resultaten = $this->searchStudents($search);
+        $html = "";
+
+        $prevCohort = $resultaten[0]['cohort'];
+        foreach ($resultaten as $student) {
+            if ( $cohort == "all" || $cohort == $student['cohort'] ) {
+                if ($student['cohort'] != $prevCohort) {
+                    $prevCohort = $student['cohort'];
+                    $style = "margin-top:20px;";
+                } else {
+                    $style = "";
+                }
+                $html .= "<li style=\"$style\">";
+                $html .= "<span style='color:#808080'>" . $student['klas'] . "</span>&nbsp;";
+                $html .= "<a href=\"https://${student['cohort']}.cmon.ovh/public/index?code=${student['code']}\">";
+                $html .= $student['name'];
+                $html .= "</a>";
+                $html .= "</li>\n";
+            }
+        }
+        return $html;
+
+    }
+
+    private function searchStudents($search)
+    {
         $databases = Yii::$app->params['databases'];
         $result = [];
         foreach ($databases as $db) {
             $sql = "SELECT * FROM `$db`.`user` WHERE student_nr > 100 AND  name LIKE '%$search%' order by klas, name";
             $thisResult = Yii::$app->db->createCommand($sql)->queryAll();
-            foreach($thisResult as $row)  {
-                $row['cohort'] = substr($db, -3);;
+            foreach ($thisResult as $row) {
+                $row['cohort'] = substr($db, -3);
+                ;
                 $result[] = $row;
-             }
+            }
         }
         return $result;
     }
