@@ -60,6 +60,7 @@ $subDomain = Yii::$app->params['subDomain'];
         padding-left: 20px;
         padding-right: 20px;
         padding-top: 10px;
+        padding-bottom: 10px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
@@ -151,7 +152,7 @@ $subDomain = Yii::$app->params['subDomain'];
 </style>
 
 <?php
-if (!empty($search)) {
+if (!empty ($search)) {
     // Register a script in the view
     $this->registerJs("
         $(document).ready(function() {
@@ -279,38 +280,34 @@ if (!empty($search)) {
 
     <div class="row">
         <div class="col-sm">
-            <div class="row">
-                <div class="form-container">
-                    <h5>Zoek Student</h5>
-                    <form id="search-students" method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
-                        <!-- <?php $form = ActiveForm::begin(['id' => 'search-students',]); ?> -->
-                        <div class="form-group">
-                            <input type="text" id="studentName" name="search" minlength="2" required>
-                            <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
-                            <button type="button" id="button1" onclick="submitFormWithValue('<?= $subDomain ?>')">
-                                <?= $subDomain ?>
-                            </button>
-                            <button type="button" id="button2" onclick="submitFormWithValue('all')">All</button>
-                        </div>
-                    </form>
-                    <!-- <?php ActiveForm::end(); ?> -->
-                </div>
+            <div class="form-container">
+                <h5>Zoek Student</h5>
+                <form id="search-students" method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
+                    <!-- <?php $form = ActiveForm::begin(['id' => 'search-students',]); ?> -->
+                    <div class="form-group">
+                        <input type="text" id="studentName" name="search" minlength="2" required>
+                        <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
+                        <button type="button" id="button1" onclick="submitFormWithValue('<?= $subDomain ?>')">
+                            <?= $subDomain ?>
+                        </button>
+                        <button type="button" id="button2" onclick="submitFormWithValue('all')">All</button>
+                    </div>
+                </form>
+                <!-- <?php ActiveForm::end(); ?> -->
+            </div>
 
-                <div class="results-container" id="results-container">
-                    <h5>Students</h5>
-                    <ul id="students-list">
-                    </ul>
-                </div>
+            <div class="results-container" id="results-container">
+                <h5>Students</h5>
+                <ul id="students-list">
+                </ul>
             </div>
 
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                   ?>
-
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                     ?>
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
-
                     <table id="nakijken" class="table table-sm hoverTable">
                         <tr>
                             <td>
