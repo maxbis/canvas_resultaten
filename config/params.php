@@ -26,7 +26,7 @@ if ($subDomain=='c23'){
 }
 
 # for searching students in home page
-$databases = ['canvas-c23', 'canvas-c22', 'canvas-c21'];
+$databases = ['canvas-c23', 'canvas-c22', 'canvas-c21', 'canvas-c20'];
 
 return [
     'adminEmail' => 'admin@example.com',
