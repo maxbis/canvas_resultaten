@@ -133,7 +133,7 @@ if (isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role ==
     echo "<div class=\"col-1\"></div>";
     echo "<div style=\"color:#d0d0d0;\">Search: </div>";
 
-    echo "<div class=\"col-1\"><form class=\"col-1\" method=\"post\" action=\"" . Url::toRoute(['/resultaat/start']) . "\"><input placeholder=\"Studentnaam\" size=\"8\" type=\"text\" minlength=\"2\" name=\"search\">";
+    echo "<div class=\"col-1\"><form class=\"col-1\" method=\"post\" action=\"" . Url::toRoute(['/resultaat/start']) . "\"><input placeholder=\"naam\" size=\"8\" type=\"text\" minlength=\"2\" name=\"search\">";
     echo "<input type=\"hidden\" name=\"_csrf\" value=\"" . Yii::$app->request->getCsrfToken() . "\" />";
     echo "</input></form></div>";
 }
