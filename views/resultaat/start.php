@@ -250,9 +250,11 @@ if (!empty ($search)) {
             success: function (data) {
                 console.log('Student-search form submitted successfully');
 
-                if ( data == "" ) {
+                if (data == "") {
+                    originalValue = searchInputField.val();
                     searchInputField.val('');
-                    searchInputField.attr('placeholder', 'Nothing found');
+                    searchInputField.val('Nothing found');
+                    setTimeout(function () { searchInputField.val(originalValue); }, 500);
                     return;
                 }
 
@@ -311,7 +313,7 @@ if (!empty ($search)) {
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                     ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                       ?>
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
                     <table id="nakijken" class="table table-sm hoverTable">
