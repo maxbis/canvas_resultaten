@@ -293,7 +293,7 @@ if (!empty ($search)) {
                 <form id="search-students" method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
                     <!-- <?php $form = ActiveForm::begin(['id' => 'search-students',]); ?> -->
                     <div class="form-group">
-                        <input type="text" id="studentName" name="search" minlength="2" required>
+                        <input type="text" id="studentName" name="search" minlength="2" placeholder="naam" required>
                         <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
                         <button type="button" id="button1" onclick="submitFormWithValue('<?= $subDomain ?>')">
                             <?= $subDomain ?>
