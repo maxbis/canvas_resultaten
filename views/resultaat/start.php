@@ -250,6 +250,12 @@ if (!empty ($search)) {
             success: function (data) {
                 console.log('Student-search form submitted successfully');
 
+                if ( data == "" ) {
+                    searchInputField.val('');
+                    searchInputField.attr('placeholder', 'Nothing found');
+                    return;
+                }
+
                 // parse html-data to checker, if only one link is returned redirect to it and stop
                 if (link = checkForOneLink(data)) {
                     window.location.href = link;

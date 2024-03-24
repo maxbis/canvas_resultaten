@@ -370,7 +370,7 @@ class ResultaatController extends Controller
         $html = "";
 
         if ( ! $resultaten ) {
-            return "<li>...</li>";
+            return "";
         }
 
         $prevCohort = $resultaten[0]['cohort'];
