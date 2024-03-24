@@ -356,13 +356,22 @@ class ResultaatController extends Controller
         ]);
     }
 
-    public function actionSearchStudents()
+    public function actionSearchStudents($search="", $cohort="")
     {
-        $search = Yii::$app->request->post('search');
-        $cohort = Yii::$app->request->post('cohort');
-        ;
+        
+        if ( ! $search ) {
+            $search = Yii::$app->request->post('search');
+        }
+        if ( ! $cohort ) {
+            $cohort = Yii::$app->request->post('cohort');
+        }
+        
         $resultaten = $this->searchStudents($search);
         $html = "";
+
+        if ( ! $resultaten ) {
+            return "<li>...</li>";
+        }
 
         $prevCohort = $resultaten[0]['cohort'];
         foreach ($resultaten as $student) {

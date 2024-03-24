@@ -297,7 +297,7 @@ if (!empty ($search)) {
             </div>
 
             <div class="results-container" id="results-container">
-                <h5>Students</h5>
+                <h5>Studenten</h5>
                 <ul id="students-list">
                 </ul>
             </div>
