@@ -143,7 +143,7 @@ class GradeController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            # 'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=0', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             # 'lastLine' => $lastLine,
             'nocount' => true,
             'descr' => '',
