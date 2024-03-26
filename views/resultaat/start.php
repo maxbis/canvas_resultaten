@@ -327,7 +327,7 @@ if (!empty ($search)) {
         updateModuleApi = updateModuleApi + '?assignmentGroup=' + moduleId + '&flag=ajax';
 
         // console.log('URL: ' + updateModuleApi);
-        $.ajax({where python
+        $.ajax({
             type: 'POST',
             data: { '_csrf': csrfToken },
             dataType: 'html',
