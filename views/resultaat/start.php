@@ -248,8 +248,6 @@ if (!empty ($search)) {
     var timeoutId = null;
     function updateAssignment(moduleId) {
         console.log('updateAssigment: ' + moduleId);
-        $('#messageText').html('...');
-        $("#messageDiv").slideDown('slow');
         $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
         updateModule(moduleId); // AJAX call to update DB via Pytjon sctips on server
     
