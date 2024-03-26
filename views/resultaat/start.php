@@ -337,7 +337,7 @@ if (!empty ($search)) {
             url: updateModuleApi,
             success: function (data) {
                 $('#messageText').html(data);
-                $("#messageDiv").show();
+                $("#messageDiv").slideDown('slow');
                 loadNakijkOverzicht();
             },
             error: function (data) {
@@ -348,8 +348,7 @@ if (!empty ($search)) {
     }
 
 </script>
-
-
+        
 
 <p><small style="color:#999;">Laatste update:
         <?= $timestamp ?>
