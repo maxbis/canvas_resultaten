@@ -325,8 +325,8 @@ if (!empty ($search)) {
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
         var updateModuleApi = '<?= Url::toRoute(['canvas-update/update']); ?>';
         updateModuleApi = updateModuleApi + '?assignmentGroup=' + moduleId + '&flag=ajax';
+        $('#messageText').html('...');
 
-        // console.log('URL: ' + updateModuleApi);
         $.ajax({
             type: 'POST',
             data: { '_csrf': csrfToken },
