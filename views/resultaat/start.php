@@ -248,10 +248,6 @@ if (!empty ($search)) {
     var timeoutId = null;
     function updateAssignment(moduleId) {
         console.log('updateAssigment: ' + moduleId);
-        $('#messageText').html('...');
-        $("#messageDiv").slideDown('slow');
-        $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
-        updateModule(moduleId);
         loadNakijkOverzicht();
         if (timeoutId) {
             clearTimeout(timeoutId);
@@ -339,12 +335,14 @@ if (!empty ($search)) {
             url: updateModuleApi,
             success: function (data) {
                 $('#messageText').html(data);
-                $("#messageDiv").show();
-                loadNakijkOverzicht();
+                $("#messageDiv").slideDown('slow');
+                $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
             },
             error: function (data) {
-                console.log('Ajax Error');
+                console.log('Ajax Error: ' + data);
                 console.log(data);
+                $("#messageDiv").slideDown('slow');
+                $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
             }
         });
     }
@@ -395,7 +393,7 @@ if (!empty ($search)) {
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                              ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                               ?>
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
                     <table id="nakijken" class="table table-sm hoverTable">
