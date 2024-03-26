@@ -358,7 +358,7 @@ if (!empty ($search)) {
 
     <div class="row">
         <div id="messageDiv" class='col-11 msg-container message'>
-            <span id="messageText">Message</span>
+            <span id="messageText">...</span>
             <span class="close-btn">&times;</span>
         </div>
     </div>
