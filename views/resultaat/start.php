@@ -248,7 +248,11 @@ if (!empty ($search)) {
     var timeoutId = null;
     function updateAssignment(moduleId) {
         console.log('updateAssigment: ' + moduleId);
-        loadNakijkOverzicht();
+        $('#messageText').html('...');
+        $("#messageDiv").slideDown('slow');
+        $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
+        updateModule(moduleId); // AJAX call to update DB via Pytjon sctips on server
+    
         if (timeoutId) {
             clearTimeout(timeoutId);
             timeoutId = null;
@@ -335,14 +339,12 @@ if (!empty ($search)) {
             url: updateModuleApi,
             success: function (data) {
                 $('#messageText').html(data);
-                $("#messageDiv").slideDown('slow');
-                $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
+                $("#messageDiv").show();
+                loadNakijkOverzicht();
             },
             error: function (data) {
-                console.log('Ajax Error: ' + data);
+                console.log('Ajax Error');
                 console.log(data);
-                $("#messageDiv").slideDown('slow');
-                $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
             }
         });
     }
@@ -393,7 +395,7 @@ if (!empty ($search)) {
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                               ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                              ?>
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
                     <table id="nakijken" class="table table-sm hoverTable">
