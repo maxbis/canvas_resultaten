@@ -117,7 +117,7 @@ class GradeController extends QueryBaseController
                         $line3
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
                         timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
-                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update',
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id) '$hide!Canvas update',
                         c.update_prio 'Upd.Prio',
                         date(max(r.laatste_beoordeling)) 'Laatste beoordeling'
                 FROM module_def m

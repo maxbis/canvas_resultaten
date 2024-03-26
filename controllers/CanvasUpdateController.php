@@ -156,11 +156,16 @@ class CanvasUpdateController extends Controller {
         //return $this->redirect(['grade/not-graded?update=1&regrading='.$regrading]);
     }
 
-    public function actionUpdate($assignmentGroup) {
+    public function actionUpdate($assignmentGroup, $flag="") {
         $database='canvas-'.Yii::$app->params['subDomain'];
         $cmd = "python3 ../import/import.py --database $database -l 0 -a $assignmentGroup";
+        // $cmd = "python-test ..\import\import.py";
         $cmd = escapeshellcmd($cmd);
         $shellOutput = shell_exec($cmd);
+
+        if ( $flag == "ajax" ) {
+            return $shellOutput;
+        }
 
         Yii::$app->session->setFlash('success', "<pre>$shellOutput</pre>");
         return $this->redirect(Yii::$app->request->referrer);

@@ -55,7 +55,8 @@ $subDomain = Yii::$app->params['subDomain'];
 <style>
     .form-container,
     .results-container,
-    .nakijk-container {
+    .nakijk-container,
+    .msg-container {
         background-color: #ffffff;
         padding-left: 20px;
         padding-right: 20px;
@@ -65,6 +66,12 @@ $subDomain = Yii::$app->params['subDomain'];
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
         width: 380px;
+        position: relative;
+    }
+
+    .msg-container {
+        background-color: #edffee;
+        display: none;
     }
 
     .results-container {
@@ -149,6 +156,23 @@ $subDomain = Yii::$app->params['subDomain'];
             transform: rotate(360deg);
         }
     }
+
+    .update-link,
+    .update-link:hover {
+        color: #050505;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        /* Adjust the right and top values as needed to position the close button */
+        cursor: pointer;
+        font-size: 20px;
+        /* Adjust the font size as needed */
+    }
 </style>
 
 <?php
@@ -171,27 +195,30 @@ if (!empty ($search)) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script>
-        $(window).on('load', function () {
-            // Set a timeout to execute after 1 second of idle time post page load
-            setTimeout(function () {
-                var csrfToken = $('meta[name="csrf-token"]').attr("content");
-                var nakijkOverzichtApi = '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
 
-                $.ajax({
-                    type: 'POST',
-                    data: { '_csrf': csrfToken },
-                    dataType: 'html',
-                    url: nakijkOverzichtApi,
-                    success: function (data) {
-                        $('#nakijken').html(data);
-                    },
-                    error: function (data) {
-                        console.log('Ajax Error');
-                        console.log(data);
-                    }
-                });
-            }, 200); // 1000 milliseconds = 1 second
+        function loadNakijkOverzicht() {
+            var csrfToken = $('meta[name="csrf-token"]').attr("content");
+            var nakijkOverzichtApi = '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
+
+            $.ajax({
+                type: 'POST',
+                data: { '_csrf': csrfToken },
+                dataType: 'html',
+                url: nakijkOverzichtApi,
+                success: function (data) {
+                    $('#nakijken').html(data);
+                },
+                error: function (data) {
+                    console.log('Ajax Error');
+                    console.log(data);
+                }
+            });
+        }
+
+        $(window).on('load', function () {
+            setTimeout(loadNakijkOverzicht, 200); // Delay of 200 milliseconds
         });
+
     </script>
 
 
@@ -199,17 +226,36 @@ if (!empty ($search)) {
 
 <script>
     $(document).ready(function () {
+
         $('#studentName').keypress(function (e) {
             if (e.which == 13) { // Enter key has the keycode 13
                 e.preventDefault(); // Prevent the default form submit action
                 $('#button1').click(); // Trigger the click event of the second button
             }
         });
+
+        $('#messageDiv').click(function () {
+            // Hide the div when it is clicked
+            $(this).slideUp('slow');
+        });
+
     });
 </script>
 
 
 <script>
+
+    function updateAssignment(moduleId) {
+        console.log('updateAssigment: ' + moduleId);
+        $("#messageDiv").slideDown('slow');
+        $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
+        updateModule(moduleId);
+        loadNakijkOverzicht();
+        setTimeout(function () {
+            $("#messageDiv").slideUp('slow');
+        }, 10000);
+    }
+
     function checkForOneLink(html) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(html, 'text/html');
@@ -274,6 +320,30 @@ if (!empty ($search)) {
         });
     }
 
+
+    function updateModule(moduleId) {
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        var updateModuleApi = '<?= Url::toRoute(['canvas-update/update']); ?>';
+        updateModuleApi = updateModuleApi + '?assignmentGroup=' + moduleId + '&flag=ajax';
+
+        // console.log('URL: ' + updateModuleApi);
+        $.ajax({where python
+            type: 'POST',
+            data: { '_csrf': csrfToken },
+            dataType: 'html',
+            url: updateModuleApi,
+            success: function (data) {
+                $('#messageText').html(data);
+                $("#messageDiv").show();
+                loadNakijkOverzicht();
+            },
+            error: function (data) {
+                console.log('Ajax Error');
+                console.log(data);
+            }
+        });
+    }
+
 </script>
 
 
@@ -287,13 +357,20 @@ if (!empty ($search)) {
 <div class="container">
 
     <div class="row">
+        <div id="messageDiv" class='col-11 msg-container message'>
+            <span id="messageText">Message</span>
+            <span class="close-btn">&times;</span>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm">
             <div class="form-container">
                 <h5>Zoek Student</h5>
                 <form id="search-students" method="post" action=<?php Url::toRoute(['resultaat/start']); ?>>
                     <!-- <?php $form = ActiveForm::begin(['id' => 'search-students',]); ?> -->
                     <div class="form-group">
-                        <input type="text" id="studentName" name="search" minlength="2" placeholder="(deel van) naam" required>
+                        <input type="text" id="studentName" name="search" minlength="2" placeholder="(deel van) naam"
+                            required>
                         <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>" />
                         <button type="button" id="button1" onclick="submitFormWithValue('<?= $subDomain ?>')">
                             <?= $subDomain ?>
@@ -313,7 +390,7 @@ if (!empty ($search)) {
         </div>
 
         <div class="col-sm">
-            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                       ?>
+            <?php if (!isMobileDevice()): // show nakijken section if not on mobile and no studentlist is shown                                              ?>
                 <div class="nakijk-container">
                     <h5>Nakijken</h5>
                     <table id="nakijken" class="table table-sm hoverTable">

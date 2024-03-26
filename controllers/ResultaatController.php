@@ -170,7 +170,8 @@ class ResultaatController extends Controller
             $html .= Html::a($moduleName, ['/grade/not-graded-module', 'moduleId' => $item['id']]);
             $html .= "</td>";
 
-            $html .= "<td>" . $item['aantal'] . "</td>";
+            # $html .= "<td>" . $item['aantal'] . "</td>";
+            $html .= "<td onclick=\"updateAssignment(" . $item['id'] . ")\" class=\"update-link\" title=\"Update\" assignment-id=\"" . $item['id'] . "\">". $item['aantal'] . "</td>";
 
             $style = "";
             if ($item['oudste'] > 14)
@@ -178,7 +179,6 @@ class ResultaatController extends Controller
             $html .= "<td $style>" . $item['oudste'] . "</td>";
 
             $html .= "<td>";
-            // $html .= "<a class=\"ac-button\" href=\"/grade/not-graded-module2?moduleId=" . $item['id'] . "\" target=\"_blank\" title=\"Auto Correct\">AC➞</a>";
             $html .= Html::a(
                 'AC➞',
                 ['/grade/not-graded-module2', 'moduleId' => $item['id']],
