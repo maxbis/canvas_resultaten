@@ -245,13 +245,19 @@ if (!empty ($search)) {
 
 <script>
 
+    var timeoutId = null;
     function updateAssignment(moduleId) {
         console.log('updateAssigment: ' + moduleId);
+        $('#messageText').html('...');
         $("#messageDiv").slideDown('slow');
         $('#nakijken').html(`<tr><td><div class="loader"></div></td></tr>`);
         updateModule(moduleId);
         loadNakijkOverzicht();
-        setTimeout(function () {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        timeoutId = setTimeout(function () {
             $("#messageDiv").slideUp('slow');
         }, 10000);
     }
@@ -325,7 +331,6 @@ if (!empty ($search)) {
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
         var updateModuleApi = '<?= Url::toRoute(['canvas-update/update']); ?>';
         updateModuleApi = updateModuleApi + '?assignmentGroup=' + moduleId + '&flag=ajax';
-        $('#messageText').html('...');
 
         $.ajax({
             type: 'POST',
