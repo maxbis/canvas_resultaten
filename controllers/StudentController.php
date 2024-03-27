@@ -142,8 +142,11 @@ class StudentController extends Controller
         $sql="select id, naam from course where id not in ( select distinct r.course_id from resultaat r join course c on c.id=r.course_id where r.student_nummer=".$model['student_nr']." ) order by pos";
         $openCourses = Yii::$app->db->createCommand($sql)->queryAll();
 
-        $prediction = new PredictionController;
-        $output = $prediction->predict($model->id);
+        $output = "";
+        if ( $model->student_nr ) {
+            $prediction = new PredictionController;
+            $output = $prediction->predict($model->id);
+        }
         
         return $this->render('update', [
             'model' => $model,
