@@ -105,7 +105,7 @@ class GradeController extends QueryBaseController
         }
 
         if (Yii::$app->user->identity->username=='beheer') {
-            $line2="concat(c.korte_naam, '|/course/update|id|',c.id) '!#Blok',";
+            $line2="concat(COALESCE(m.korte_naam, c.korte_naam), '|/course/update|id|',c.id) '!#Blok',"; // sub werkt niet omdat de link van een overriden korte naam anders is.
             $line3="concat(m.id, '|/module-def/update|id|',m.id) '!ID',";
         }else{
             $line2=" c.korte_naam '#Blok',";

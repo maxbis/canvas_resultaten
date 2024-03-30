@@ -40,10 +40,16 @@ class PublicController extends Controller
         // MyHelpers::CheckIP();
 
         // Create report for one student(status)
+
+        // To be changed.....
+        // 'Blok' is de indeling en is korte naam uit Course, idee om korte naam op te nemen in module_def
+        // Als korte naam in module_def not null neem dan die, anders de korte naam van de cursus...?
+        // SELECT COALESCE(d.korte_naam, c.korte_naam) AS korte_naam => neem d.korte_naam maar indien null, neem c.korte_naam
+
         $sql = "SELECT r.module_id,
                     r.student_naam Student,
                     u.id student_id,
-                    c.korte_naam Blok,
+                    COALESCE(d.korte_naam, c.korte_naam) Blok,
                     d.naam Module,
                     r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',

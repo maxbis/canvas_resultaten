@@ -7,53 +7,69 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\ModuleDef */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i>
-<br><br><br>
+
+<style>
+    .control-label {
+        color: #404040;
+        font-size: smaller;
+    }
+</style>
+
+<p>
+    <i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i>
+</p>
 
 <div class="module-def-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <?= $form->field($model, 'id')->textInput()->label('Module ID uit Canvas (niet aanpassen)') ?>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-4">
-        <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Module naam in Canvas Monitor') ?>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Module naam in Canvas Monitor') ?>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
-        <?= $form->field($model, 'pos')->textInput()->label('Module positie in overzicht in Canvas Monitor') ?>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Module naam in Canvas Monitor') ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'pos')->textInput()->label('Positie in overzicht in Canvas Monitor') ?>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
-           <?= $form->field($model, 'norm_uren')->textInput(['maxlength' => true])->label('Norm Uren') ?>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'korte_naam')->textInput()->label('Bloknaam; overschrijft die van cusrsus') ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'norm_uren')->textInput(['maxlength' => true])->label('Norm Uren') ?>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
-           <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel') ?>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel') ?>
         </div>
     </div>
 
-    <br/>
+    <br />
 
     <?= $form->field($model, 'generiek')->checkbox() ?>
 
-    <br/>
+    <br />
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         &nbsp;&nbsp;&nbsp;
-        <?= Html::a( 'Cancel', Yii::$app->request->referrer , ['class'=>'btn btn-primary']); ?>
+        <?= Html::a('Cancel', Yii::$app->request->referrer, ['class' => 'btn btn-primary']); ?>
         &nbsp;&nbsp;&nbsp;
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -61,13 +77,28 @@ use yii\widgets\ActiveForm;
                 'confirm' => 'Are you sure you want to de-couple this module from Canvas?',
                 'method' => 'post',
             ],
-    ]) ?>
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
-    <br/><hr>
-    <table  class="table-sm text-muted small">
+    <br />
+    <hr>
+    <table class="table-sm text-muted small">
+        <tr>
+            <th colspan=2>Blok Naam</th>
+        </tr>
+        <tr>
+            <td colspan=2>
+                <p>Course -> Blok -> Assignment Group (=module); hierbij is blok een onderdeel dat niet uit Canvas komt.
+                </p>
+                <p>Een course is serie modules/assignment groups en een cursus (Canvas) = Blok in (CMon). De blok_naam
+                    wordt
+                    in course verplicht gedefinieerd.</p>
+                <p>Indien een blok in de module/assignment group (hier dus) wordt gedefnieerd dan wordt de standaard
+                    bloknaam uit de cursus genegeerd.</p>
+            </td>
+        </tr>
         <tr>
             <th colspan=2>SQL voldaan regels</th>
         </tr>
@@ -77,7 +108,8 @@ use yii\widgets\ActiveForm;
         </tr>
         <tr>
             <td>punten_eo</td>
-            <td> totaal aantal behaalde punten voor alle eindopdrachten (=opdracht met woord <i>eind</i> in de naam van de opdracht).</td>
+            <td> totaal aantal behaalde punten voor alle eindopdrachten (=opdracht met woord <i>eind</i> in de naam van
+                de opdracht).</td>
         </tr>
         <tr>
             <td>ingeleverd</td>
@@ -85,7 +117,8 @@ use yii\widgets\ActiveForm;
         </tr>
         <tr>
             <td>ingeleverd_eo</td>
-            <td> totaal aantal ingeleverde eindopdrachten (=opdracht met woord <i>eind</i> in de naam van de opdracht).</td>
+            <td> totaal aantal ingeleverde eindopdrachten (=opdracht met woord <i>eind</i> in de naam van de opdracht).
+            </td>
         </tr>
         <tr>
             <td>minpunten</td>
@@ -97,7 +130,9 @@ use yii\widgets\ActiveForm;
         </tr>
         <tr>
             <td></td>
-            <td>Totaal aantal punten moet meer dan 90 zijn en totaal aantal punten voor eindopdrachten moet meer dan 20 zijn. Daarbij moeten alle 10 opdrachten zijn ingeleverd en voor elke opdracht minimaal 1 punt worden gescoord.</td>
+            <td>Totaal aantal punten moet meer dan 90 zijn en totaal aantal punten voor eindopdrachten moet meer dan 20
+                zijn. Daarbij moeten alle 10 opdrachten zijn ingeleverd en voor elke opdracht minimaal 1 punt worden
+                gescoord.</td>
         </tr>
     </table>
 
