@@ -21,11 +21,9 @@ now = datetime.datetime.now()
 current_year = now.year
 current_month = now.strftime('%B')
 
-# userNamesList = []
+userNamesList = [ 'Dungen', 'Warella', 'Rijk', 'Eyk', 'Belhaj', 'Abdellaoui' ]
 course_id = 14895 # c21
-# course_id = 14156 # c22
-# course_id = 8761 # c20
-downloads = os.path.join('d:', 'downloads', f'dl-canvas-c20-{current_year}-{current_month.lower()}-{course_id}')
+downloads = os.path.join('d:', 'downloads', f'dl-canvas-{current_year}-{current_month.lower()}-{course_id}')
 
 # Canvas API URL
 API_URL = config.get('main', 'host')
@@ -75,12 +73,12 @@ def downloadAssignment(assignment):
         except:
             userName = "*Unknown"
 
-        # if ( len(userNamesList) and checkSubstringsFromList(userName, userNamesList) ):
-        #     print(f" -> Downloading {userName}")
-        # else:
-        #     print(f"Skipping {userName}, not in list.")
-        #     continue
-            
+        if ( len(userNamesList) ):
+            if ( checkSubstringsFromList(userName, userNamesList) ):
+                print(f" -> Downloading {userName}")
+            else:
+                print(f"Skipping {userName}, not in list.")
+                continue
 
         today=datetime.datetime.now().replace(tzinfo=None)
         past=submission.submitted_at_date.replace(tzinfo=None)

@@ -216,7 +216,7 @@ $tot = [];
                             }
                             if ( substr($columnName, 1, 1) == '#' ) {
                                 if ( $prevItem!='' && $item[$columnName] == $prevItem[$columnName] ) {
-                                    dd($item[$columnName]);
+                                    // dd($item[$columnName]);
                                     echo "$td[$count]</td>";
                                     continue;
                                 }
