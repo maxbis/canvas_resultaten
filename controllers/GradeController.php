@@ -117,7 +117,7 @@ class GradeController extends QueryBaseController
                         $line3
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
                         timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
-                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id) '$hide!Canvas update',
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|params|7|') '$hide!Canvas update',
                         c.update_prio 'Upd.Prio',
                         date(max(r.laatste_beoordeling)) 'Laatste beoordeling'
                 FROM module_def m
@@ -141,7 +141,7 @@ class GradeController extends QueryBaseController
     
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        return $this->render('/report/output', [
+        return $this->render('output', [
             'data' => $data,
             # 'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=0', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             # 'lastLine' => $lastLine,
