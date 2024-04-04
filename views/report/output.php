@@ -171,10 +171,8 @@ $tot = [];
                                 if ( isset($color[$i]) && $color[$i]!='' ) {
                                     $style .= "color:".$color[$i].";";
                                 }
-                                //echo "<th style='".$style."'>";
                                 $td[$i] = "<td style='".$style."'>";
 
-                               
                                 echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                                 echo "</th>";
                             }
@@ -199,11 +197,14 @@ $tot = [];
                     }
                     $count=0;
                     foreach ($data['col'] as $columnName) {
+
                         if (++$count<=$from) continue;
                         $i = $count - 1;
+
                         if ( substr($columnName, 0, 1) == '+' || substr($columnName, 0, 1) == '~' ) {
                             $tot[$columnName] += $item[$columnName];
-                        } 
+                        }
+
                         if (substr($columnName, 0, 1) == '!' && $item[$columnName]) { # column namen starts with ! link in format naam|link|param1|value1|param2|valule2 (0,1,or 2 params)
                             $part = explode('|', $item[$columnName]);
                             if (strlen($part[0])>22) { # if name for link is larger than 20, concat it and put complete link in help (title)
@@ -215,6 +216,7 @@ $tot = [];
                             }
                             if ( substr($columnName, 1, 1) == '#' ) {
                                 if ( $prevItem!='' && $item[$columnName] == $prevItem[$columnName] ) {
+                                    // dd($item[$columnName]);
                                     echo "$td[$count]</td>";
                                     continue;
                                 }

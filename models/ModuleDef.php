@@ -4,14 +4,6 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "module_def".
- *
- * @property int $id
- * @property string $naam
- * @property int $pos
- * @property string $voldaan_rule
- */
 class ModuleDef extends \yii\db\ActiveRecord
 {
     /**
@@ -31,6 +23,7 @@ class ModuleDef extends \yii\db\ActiveRecord
             [['id', 'naam', 'pos', 'voldaan_rule'], 'required'],
             [['id', 'pos', 'generiek', 'norm_uren'], 'integer'],
             [['naam'], 'string', 'max' => 80],
+            [['korte_naam'], 'string', 'max' => 6],
             [['voldaan_rule'], 'string', 'max' => 200],
             [['id', 'pos'], 'unique'],
         ];
@@ -44,6 +37,7 @@ class ModuleDef extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'naam' => 'Naam',
+            'korte_naam' => 'Korte Naam',
             'pos' => 'Pos',
             'voldaan_rule' => 'Voldaan Rule',
             'norm_uren' => 'Norm Uren',

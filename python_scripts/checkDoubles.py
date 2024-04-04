@@ -117,8 +117,7 @@ log(course.name)
 assignments = course.get_assignments()
 
 for assignment in assignments:
-    # log("Assignment Id: %d Assignment Name: %s" % (assignment.id, assignment.name) )
-    if ( True or assignment.name.lower().find('db1') >= 0 ):
+    # log("Assignment Id: %d Assignment Name: %s" % (assignment.id, assignment.name) )git pull
+
+    if ( True or assignment.name.lower().find('-') >= 0 ):
         checkAssignment(assignment)
-
-

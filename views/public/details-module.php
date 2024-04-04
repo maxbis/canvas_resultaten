@@ -7,6 +7,8 @@ $from = isset($data['show_from']) ? $data['show_from'] : 0;
 // dd($data);
 $totScore = 0;
 
+$subDomain = Yii::$app->params['subDomain'];
+
 function getInitials($name)
 {
     $words = explode(" ", $name);
@@ -23,9 +25,12 @@ function getInitials($name)
 
 function getStatus($status)
 {
-    if ($status == "submitted") return 'ingeleverd';
-    if ($status == "graded") return 'beoordeeld';
-    if ($status == "unsubmitted") return '-';
+    if ($status == "submitted")
+        return 'ingeleverd';
+    if ($status == "graded")
+        return 'beoordeeld';
+    if ($status == "unsubmitted")
+        return '-';
     return '?';
 }
 
@@ -44,12 +49,15 @@ function getStatus($status)
         border-left: dashed 1px #c0c0c0;
         background: #fdffff;
     }
+
     .nakijken {
         background: #eeffa8;
     }
+
     .hoverTable tr:hover td {
-            background-color: #f6f6ff;
+        background-color: #f6f6ff;
     }
+
     a:hover {
         background: yellow;
     }
@@ -58,9 +66,26 @@ function getStatus($status)
         box-shadow: 0 0 6px #ff3d61;
     }
 
-    
+    .ac-button {
+        display: inline-block;
+        padding: 1px 2px;
+        font-size: 0.7em;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0, 123, 255, 0.25);
+        ;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.1s ease;
+        margin-top: 0px;
+    }
 
-
+    .ac-button:hover,
+    .regular-link:hover {
+        background-color: #ffdd00;
+        color: #000000;
+    }
 </style>
 
 <div class="card shadow">
@@ -68,11 +93,16 @@ function getStatus($status)
     <div class="container">
         <div class="row  align-items-center">
             <div class="col">
-                <h2>Module <i><?= $data[0]['module'] ?></i> van <?= $data[0]['naam'] ?></h2>
+                <h2>Module <i>
+                        <?= $data[0]['module'] ?>
+                    </i> van
+                    <?= $data[0]['naam'] ?>
+                </h2>
             </div>
 
             <div class="col-md-auto">
-                <a target=_blank class="button btn btn-outline-danger btn-sm" title="Naar Module" href="https://talnet.instructure.com/courses/<?=$data[0]['course_id'];?>">Naar module &#129062;</a>
+                <a target=_blank class="button btn btn-outline-danger btn-sm" title="Naar Module"
+                    href="https://talnet.instructure.com/courses/<?= $data[0]['course_id']; ?>">Naar module &#129062;</a>
             </div>
 
             <div class="col-md-auto">
@@ -83,7 +113,8 @@ function getStatus($status)
 
         <div class="row  align-items-left">
             <div class="col-md-auto">
-                <i style="color: #ab5e5e">Om de volledige module met <b>alle uitleg</b> te raadplegen, druk op de rode knop rechtsboven 'Naar module'.</i>
+                <i style="color: #ab5e5e">Om de volledige module met <b>alle uitleg</b> te raadplegen, druk op de rode
+                    knop rechtsboven 'Naar module'.</i>
             </div>
         </div>
 
@@ -116,10 +147,12 @@ function getStatus($status)
                 if ($item['Status'] == 'submitted' || $item['Status'] == 'graded') {
                     $totSubmitted += 1;
                 }
+
                 $link1 = substr($item['Link'], 0, strpos($item['Link'], "submissions")); // changed "?" into "submissions", get valid link for students (?)
                 $link2 = "https://talnet.instructure.com/courses/" . $item['course_id'] . "/gradebook/speed_grader?assignment_id=" . $item['a_id'] . "&student_id=" . $item['u_id'];
-               
-                if ( $item['a_id'] == "" ) {
+                $link3 = "http://localhost:5000/correcta/" . $subDomain . "/" . $item['a_id'] . "/1/" . $item['naam'];
+
+                if ($item['a_id'] == "") {
                     echo "<tr>";
                     echo "<td>";
                     echo "<a target=_blank title=\"Naar uitleg\" href=\"";
@@ -137,26 +170,30 @@ function getStatus($status)
                     echo "<td>" . getStatus($item['Status']) . "</td>";
                 }
 
-                
 
-                if ($item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] != "") {
+
+                if ($item['Ingeleverd'] > $item['Beoordeeld'] && $item['Beoordeeld'] != "") {
                     echo "<td style=\"background:#f6fce6;\">" . strtok($item['Ingeleverd'], " ") . "</td>";
                 } else {
                     echo "<td>" . strtok($item['Ingeleverd'], " ") . "</td>";
                 }
 
 
-                if ($item['MaxScore']!=0) { $perc=$item['Score']*100/$item['MaxScore']; } else { $perc=100; } // score in percentage
-                if($item['Beoordeeld'] == "" || $item['Ingeleverd'] > $item['Beoordeeld'] || $perc >90) { // if not yet graded or re-submitted or score is 90% then
+                if ($item['MaxScore'] != 0) {
+                    $perc = $item['Score'] * 100 / $item['MaxScore'];
+                } else {
+                    $perc = 100;
+                } // score in percentage
+                if ($item['Beoordeeld'] == "" || $item['Ingeleverd'] > $item['Beoordeeld'] || $perc > 90) { // if not yet graded or re-submitted or score is 90% then
                     echo "<td class=\"left\">" . $item['Score'] . "</td>"; // use normal grade color (black)
-                    $maxScoreStyle="style=\"color:#d0d0d0;\"";
-                } elseif($perc >50) { // else if grade if 50% or more
+                    $maxScoreStyle = "style=\"color:#d0d0d0;\"";
+                } elseif ($perc > 50) { // else if grade if 50% or more
                     echo "<td class=\"left\" title=\"Verbeter opdracht\" style=\"background-color:#f6fce6;\">" . $item['Score'] . "</td>"; // use green-isch background
-                    $maxScoreStyle="style=\"color:#000000;\"";
+                    $maxScoreStyle = "style=\"color:#000000;\"";
                 } else {
                     echo "<td class=\"left\" title=\"Verbeter opdracht!\" style=\"background-color:#f2ffd1;\">" . $item['Score'] . "</td>"; // else use a bit brighter green-isch
-                    $maxScoreStyle="style=\"color:#000000;\"";
-                } 
+                    $maxScoreStyle = "style=\"color:#000000;\"";
+                }
 
                 echo "<td class=\"right\" $maxScoreStyle>" . $item['MaxScore'] . "</td>";
 
@@ -168,12 +205,16 @@ function getStatus($status)
 
                 echo "<td>";
                 // if ($item['Ingeleverd'] > $item['Beoordeeld'] &&  $item['Beoordeeld'] != "") {
-                if ($item['Beoordeeld'] && $item['Ingeleverd'] > $item['Beoordeeld'] ) {
+                if ($item['Beoordeeld'] && $item['Ingeleverd'] > $item['Beoordeeld']) {
                     $style = "#a6ff66";
                 } else {
                     $style = "none";
                 }
                 if ((isset(Yii::$app->user->identity->role) && Yii::$app->user->identity->role == 'admin') && $item['a_id'] != "") {
+                    echo "<a target=_blank class=\"ac-button\"" . $style . "'\" title=\"Auto-Correct\" href=\"";
+                    echo $link3;
+                    echo "\">AC&#10142;</a>";
+                    echo "&nbsp;";
                     echo "<a target=_blank onmouseover=\"this.style.background='yellow'\" onmouseout=\"this.style.background='" . $style . "'\" style=\"background:" . $style . ";\" title=\"Speedgrader\" href=\"";
                     echo $link2;
                     echo "\">Grade&#10142;</a>";
@@ -186,10 +227,10 @@ function getStatus($status)
             echo "<td></td>";
             echo "<td style=\"text-align:left;color:#808080;\" title=\"Totaal aantal opdrachten\">" . $totSubmitted . "</td>";
             echo "<td></td>";
-            echo "<td style=\"text-align:right;\" title=\"Voldaan indien ".$item['VoldaanRule']."\"><b>" . $totScore . "</b></td>";
+            echo "<td style=\"text-align:right;\" title=\"Voldaan indien " . $item['VoldaanRule'] . "\"><b>" . $totScore . "</b></td>";
             echo "<td style=\"text-align:right;\" title=\"Maximaal aantal te behalen punten\"><b>" . $totMaxScore . "</b></td>";
             echo "<td style=\"text-align:right;color:#808080;\" title=\"Totaal aantal keer ingeleverd\">" . $totPoging . "</td>";
-            echo "<td style=\"text-align:left;color:#808080;\" title=\"Gemiddeld aantal ingeleverd (lager is beter)\"> (gem. ".round($totPoging*1/max(1,$totSubmitted),1). ")</td>";
+            echo "<td style=\"text-align:left;color:#808080;\" title=\"Gemiddeld aantal ingeleverd (lager is beter)\"> (gem. " . round($totPoging * 1 / max(1, $totSubmitted), 1) . ")</td>";
             echo "<td></td>";
             echo "<td></td>";
             echo "</tr>";
@@ -203,6 +244,9 @@ function getStatus($status)
     <details>
         <summary>Disclaimer/footer</summary>
         Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
-        <p>v 2.11.1 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 2.11.1 &copy; ROCvA MaxWare :)
+            <?= date('Y') ?>,
+            <?= Yii::powered() ?>
+        </p>
     </details>
 </small>

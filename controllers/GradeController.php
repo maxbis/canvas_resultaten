@@ -105,7 +105,7 @@ class GradeController extends QueryBaseController
         }
 
         if (Yii::$app->user->identity->username=='beheer') {
-            $line2="concat(c.korte_naam, '|/course/update|id|',c.id) '!#Blok',";
+            $line2="concat(COALESCE(m.korte_naam, c.korte_naam), '|/course/update|id|',c.id) '!#Blok',"; // sub werkt niet omdat de link van een overriden korte naam anders is.
             $line3="concat(m.id, '|/module-def/update|id|',m.id) '!ID',";
         }else{
             $line2=" c.korte_naam '#Blok',";
@@ -117,7 +117,7 @@ class GradeController extends QueryBaseController
                         $line3
                         concat(m.naam,'|/grade/not-graded-module|moduleId|',m.id,'|regrading|2') '!Module',
                         timediff( now(), greatest(m.last_updated, g.last_updated) ) 'Last Update',
-                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|show_processing|1|') '$hide!Canvas update',
+                        concat('&#8634; Update','|/canvas-update/update|assignmentGroup|',m.id,'|params|7|') '$hide!Canvas update',
                         c.update_prio 'Upd.Prio',
                         date(max(r.laatste_beoordeling)) 'Laatste beoordeling'
                 FROM module_def m
@@ -141,9 +141,9 @@ class GradeController extends QueryBaseController
     
         $data = parent::executeQuery($sql, $reportTitle, $export);
 
-        return $this->render('/report/output', [
+        return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
+            # 'action' => ['link' => Yii::$app->controller->action->id , 'param' => 'export=0', 'class' => 'btn btn-primary', 'title' => 'Export to CSV' ,],
             # 'lastLine' => $lastLine,
             'nocount' => true,
             'descr' => '',

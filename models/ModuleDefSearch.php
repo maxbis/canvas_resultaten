@@ -18,7 +18,7 @@ class ModuleDefSearch extends ModuleDef
     {
         return [
             [['id', 'pos', 'generiek'], 'integer'],
-            [['naam', 'voldaan_rule'], 'safe'],
+            [['naam', 'korte_naam', 'voldaan_rule'], 'safe'],
         ];
     }
 
@@ -65,6 +65,7 @@ class ModuleDefSearch extends ModuleDef
         ]);
 
         $query->andFilterWhere(['like', 'naam', $this->naam])
+            ->andFilterWhere(['like', 'korte_naam', $this->korte_naam])
             ->andFilterWhere(['like', 'voldaan_rule', $this->voldaan_rule]);
 
         return $dataProvider;

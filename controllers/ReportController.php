@@ -210,7 +210,7 @@ class ReportController extends QueryBaseController
     public function actionVoortgang($export = false, $klas = '')
     { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
-        $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
+        $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', COALESCE(m.korte_naam, c.korte_naam) 'blok'
                 FROM module_def m
                 JOIN assignment_group g on g.id=m.id
                 JOIN course c on c.id = g.course_id
@@ -372,8 +372,8 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
-            c.korte_naam '#&nbsp',
-            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',substr(c.naam,1,8),' &#129062;</a>') '#Blok',
+            COALESCE(m.korte_naam, c.korte_naam)  '#Blok',
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',substr(c.naam,1,8),' &#129062;</a>') 'Course',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
             m.pos 'Pos',
             sum(1) '+Aantal<br>Opg',
@@ -872,7 +872,7 @@ class ReportController extends QueryBaseController
         $sql = "
             select c.id 'course_id', c.naam 'cursus_naam',
                 korte_naam '#Blok',
-                concat(a.name,'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
+                concat(REPLACE(a.name, '|', ':'),'|https://talnet.instructure.com/courses/',a.course_id,'/assignments/',a.id) '!Naam',
                 a.points_possible '+Punten', '',
                 CASE 
                     WHEN n.assignment_id is null THEN '-' 

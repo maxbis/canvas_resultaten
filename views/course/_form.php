@@ -7,25 +7,44 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Course */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<h3><i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i></h3>
+
+<style>
+    .control-label {
+        color: #404040;
+        font-size: smaller;
+    }
+</style>
+
+<p>
+<i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i>
+</p>
 <div class="course-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    Dit is het cursus ID uit canvas
-    <?= $form->field($model, 'id')->textInput() ?>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($model, 'id')->textInput()->label('Dit is het cursus ID uit canvas.') ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Cursusnaam (staat in het moduleoverzicht).') ?>
+        </div>
+    </div>
 
-    Deze naam wordt (nog) nergens gebruikt
-    <?= $form->field($model, 'naam')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($model, 'pos')->textInput()->label('Sort order in cursus overzicht.') ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'korte_naam')->textInput(['maxlength' => true])->label('Bloknaam (B1, B2, B3,..).') ?>
+        </div>
+    </div>
 
-    Deze naam staat op het studenten overzicht
-    <?= $form->field($model, 'korte_naam')->textInput(['maxlength' => true]) ?>
-
-    Sort order in cursus overzicht
-    <?= $form->field($model, 'pos')->textInput() ?>
-
-    Prio voor update: 1 most frequent
-    <?= $form->field($model, 'update_prio')->textInput() ?>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($model, 'update_prio')->textInput()->label('Prio voor update (1, meest).') ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
