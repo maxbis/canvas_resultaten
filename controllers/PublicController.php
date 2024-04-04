@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 
 use DateTime;
+
 /**
  * CourseController implements the CRUD actions for Course model.
  */
@@ -33,9 +34,9 @@ class PublicController extends Controller
      * Lists all Course models.
      * @return mixed
      */
-    public function actionIndex($code = 'none', $score=0)
+    public function actionIndex($code = 'none', $score = 0)
     {
-        if( strlen($code)<16 ) exit; // invalid code in any case
+        if (strlen($code) < 16) exit; // invalid code in any case
         // ipcheck for testing off
         // MyHelpers::CheckIP();
 
@@ -49,7 +50,10 @@ class PublicController extends Controller
         $sql = "SELECT r.module_id,
                     r.student_naam Student,
                     u.id student_id,
-                    COALESCE(d.korte_naam, c.korte_naam) Blok,
+                    CASE
+                        WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                        ELSE d.korte_naam
+                    END AS Blok,
                     d.naam Module,
                     r.voldaan Voldaan,
                     round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
@@ -99,13 +103,13 @@ class PublicController extends Controller
             group by 1,2
         ";
         $result = Yii::$app->db->createCommand($sql)->queryAll();
-        if (! $score) {
+        if (!$score) {
             $chart = $this->chart($result, 'Aantal taken');
         } else {
             $chart = $this->chart($result, 'Score (x10)');
         }
 
-        $minOverLastThreeWeeks = min( array_column(array_slice($result, -4, 3), 'Aantal'),0 );
+        $minOverLastThreeWeeks = min(array_column(array_slice($result, -4, 3), 'Aantal'), 0);
 
         $sql = "
         select (count(id)+1) 'rank'
@@ -132,19 +136,19 @@ class PublicController extends Controller
         ";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
         if ($result) {
-            $pogingPercentage = $result['pogingen'];  
+            $pogingPercentage = $result['pogingen'];
         } else {
             $pogingPercentage = "";
         }
 
         $sql = "select max(timestamp) timestamp from log where subject='Import'";
-        if ( isset(Yii::$app->user->identity->username) ) {
-            $subject="Docent";
+        if (isset(Yii::$app->user->identity->username)) {
+            $subject = "Docent";
         } else {
-            $subject="Student /public/index";
+            $subject = "Student /public/index";
         }
-        
-        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('".$subject."', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
+
+        $sql .= ";INSERT INTO log (subject, message, route) VALUES ('" . $subject . "', '" . $data[0]['Student'] . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
         $timestamp = Yii::$app->db->createCommand($sql)->queryOne();
 
         $thisCohort = explode('.', $_SERVER['SERVER_NAME'])[0];
@@ -152,12 +156,12 @@ class PublicController extends Controller
         $studentYear = $currentYearLastTwoDigits - (int) substr($thisCohort, 1);
 
         $predictionOutput = "";
-        if ( $studentYear < 2 ) { # if current year - curretn cohort < 2, this is the first 1.5 year, the predcition is calculated
+        if ($studentYear < 2) { # if current year - curretn cohort < 2, this is the first 1.5 year, the predcition is calculated
             $prediction = new PredictionController;
             $predictionOutput = $prediction->predict($data[0]['student_id']);
         }
 
-        return $this->render( 'index', [
+        return $this->render('index', [
             'data' => $data,
             'timeStamp' => $timestamp['timestamp'],
             'rank' => $ranking['rank'],
@@ -192,7 +196,7 @@ class PublicController extends Controller
 
         // $sql="
         // SELECT mi.title, mi.html_url,
-		// u.id u_id, a.id a_id, a.course_id, u.name naam, md.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
+        // u.id u_id, a.id a_id, a.course_id, u.name naam, md.naam module, a.name Opdrachtnaam, s.workflow_state 'Status',
         // CASE s.submitted_at WHEN '1970-01-01 00:00:00' THEN '' ELSE s.submitted_at END 'Ingeleverd',
         // s.entered_score Score,
         // a.points_possible MaxScore,
@@ -213,7 +217,7 @@ class PublicController extends Controller
 
         $data = Yii::$app->db->createCommand($sql)->queryAll();
 
-        if(! $data ){
+        if (!$data) {
             return $this->render('error', [
                 'message' => "Oops, found an error in the database.<br/>Probably the import did not finsish correctly?",
             ]);
@@ -231,7 +235,7 @@ class PublicController extends Controller
         return ($date->format("W") === "53" ? 53 : 52);
     }
 
-    private function chart($data, $columnName )
+    private function chart($data, $columnName)
     {
         $workLoadperWeek = [];
 
@@ -249,7 +253,7 @@ class PublicController extends Controller
             $start += $weeksThisYear;
         }
 
-        $chartArray = [['Week', 'norm 5/week', ['role' => 'style' ] ]];
+        $chartArray = [['Week', 'norm 5/week', ['role' => 'style']]];
 
         for ($i = 1; $i <= $aantalWeken; $i++) { // show $i weeks
             $week = $start + $i;
@@ -259,13 +263,13 @@ class PublicController extends Controller
 
             $barColor = '#c0d6eb';
             if (array_key_exists($week, $workLoadperWeek)) {
-                if ( intval($workLoadperWeek[$week])<4 ) {
-                    $barColor='#ff9e9e';
+                if (intval($workLoadperWeek[$week]) < 4) {
+                    $barColor = '#ff9e9e';
                     $barColor = '#c0d6eb';
-                }elseif ( intval($workLoadperWeek[$week])>5 ) {
-                    $barColor='#c4ebc0';
+                } elseif (intval($workLoadperWeek[$week]) > 5) {
+                    $barColor = '#c4ebc0';
                 }
-                array_push($chartArray, [strval($week), intval($workLoadperWeek[$week]),$barColor]); // value from query
+                array_push($chartArray, [strval($week), intval($workLoadperWeek[$week]), $barColor]); // value from query
             } else {
                 array_push($chartArray, [strval($week), 0, $barColor]); // no value means 0, the first loop in this function did not fill the value because thjere was no vlaue returned from query.
             }
@@ -292,13 +296,12 @@ class PublicController extends Controller
 
 
     // Dummy Function
-    public function actionLogin(){
+    public function actionLogin()
+    {
         sleep(3);
         $request = Yii::$app->request;
-        $logLine =  date('Y-m-d H:i:s', time())." ".$_SERVER['REMOTE_ADDR'] ." ".$request->post('name')." ".$request->post('password');
-        file_put_contents('mylog.log',"\r\n".$logLine,FILE_APPEND);
+        $logLine =  date('Y-m-d H:i:s', time()) . " " . $_SERVER['REMOTE_ADDR'] . " " . $request->post('name') . " " . $request->post('password');
+        file_put_contents('mylog.log', "\r\n" . $logLine, FILE_APPEND);
         return $this->render('login-form');
     }
-
 }
-

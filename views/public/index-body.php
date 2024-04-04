@@ -25,7 +25,7 @@ use yii\helpers\Html;
             echo "</tr>";
 
             $prevBlok = '';
-            #dd($data);
+            # dd($data);
             foreach ($data as $item) {
                 if ($item['Voldaan'] == 'V' && $item['generiek'] == 0 ) {
                     $totVoldaan += 1;
