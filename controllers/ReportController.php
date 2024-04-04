@@ -214,7 +214,7 @@ class ReportController extends QueryBaseController
                 CASE
                     WHEN m.korte_naam IS NULL OR m.korte_naam = '' THEN c.korte_naam
                     ELSE m.korte_naam
-                END AS blok,
+                END AS blok
                 FROM module_def m
                 JOIN assignment_group g on g.id=m.id
                 JOIN course c on c.id = g.course_id
