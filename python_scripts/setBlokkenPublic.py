@@ -13,16 +13,12 @@ API_KEY = config.get('main', 'api_key')
 
 canvas = Canvas(API_URL, API_KEY)
 
-account = canvas.get_account(82) 
+account = canvas.get_account(82)
 
-course = account.create_course(
-    course={
-        'name':'Rekenen - C23',
-        'course_code':'LCT-GNR-REK-C23-25604OR',
-        'default_view': 'modules',
-        'licence': 'private',
-    }
-)
 
-print(f"Created course with ID: {course.id}")
+for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627, 12628, 12629, 12630 ]:
+    course = canvas.get_course(course_id)
+    course.update(course={'is_public': False})
+
+
 

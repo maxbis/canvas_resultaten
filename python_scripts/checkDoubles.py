@@ -45,7 +45,7 @@ API_KEY = config.get('main', 'api_key')
 canvas = Canvas(API_URL, API_KEY)
 
 def log(line):
-    with open('d:\\output.log', 'a', encoding='utf-8') as logfile:
+    with open('./output.log', 'a', encoding='utf-8') as logfile:
         logfile.write(line + '\n')
     print("log: " + line)
 
@@ -110,7 +110,7 @@ def checkAssignment(assignment):
     print()
 
 # check blok id
-course = canvas.get_course(12621) # blok 3 c23
+course = canvas.get_course(12623) # blok 5 c23
 
 log(course.name)
 

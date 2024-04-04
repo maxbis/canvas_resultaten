@@ -14,14 +14,16 @@ API_KEY = config.get('main', 'api_key')
 canvas = Canvas(API_URL, API_KEY)
 
 # Define your list of teacher emails here
-teacher_emails = ['t.monincx@rocva.nl', 's.krachumott@rocva.nl', 'a.vogel@rocva.nl', 'a.vanderlinden1@rocva.nl', 'y.kurt@rocva.nl', 'm.bisschop@rocva.nl', 't.vanderstam@rocva.nl']
-teacher_ids=['8904', '8882', '73267', '8887', '8844', '67247', '8889', '8876']
+teacher_emails = ['t.monincx@rocva.nl', 's.krachumott@rocva.nl', 'a.vogel@rocva.nl', 'a.vanderlinden1@rocva.nl', 'y.kurt@rocva.nl', 'm.bisschop@rocva.nl', 't.vanderstam@rocva.nl','a.boutkam@rocva.nl']
+teacher_ids=['8904', '8882', '73267', '8887', '8844', '67247', '8889', '8876', '92253']
+teacher_ids=[ '92253' ]
 # teacher_ids=['8904']
 
 # Get the course c24-dev 1 tm 12: 10755 12463 12621 12622  - 12623 12624 12625 12626 - 12627 12628 12629 12630
 course_id = 14942
 
-for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627, 12628, 12629, 12630 ]:
+# for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627, 12628, 12629, 12630 ]:
+for course_id in [ 3237, 3238, 3239, 3311, 4999, 5429, 6450, 6586, 6587, 8111, 8193, 8761, 14895, 14942, 15470] :
 
     try:
         course = canvas.get_course(course_id)
@@ -31,7 +33,7 @@ for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627
 
     # Iterate over the list of emails
     for id in teacher_ids:
-        print(f"Trying to add {id}")
+        print(f"Trying to add {id} to {course_id}")
         # Search for users with that email
         user = canvas.get_user(id)
 
@@ -48,3 +50,4 @@ for course_id in [ 10755, 12463, 12621, 12622, 12623, 12624, 12625, 12626, 12627
 
         print(f"Enrolled {user.name} in {course.name}")
         print()
+
