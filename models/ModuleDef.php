@@ -24,6 +24,7 @@ class ModuleDef extends \yii\db\ActiveRecord
             [['id', 'pos', 'generiek', 'norm_uren'], 'integer'],
             [['naam'], 'string', 'max' => 80],
             [['korte_naam'], 'string', 'max' => 6],
+            ['korte_naam', 'match', 'pattern' => '/^[^\/]*$/', 'message' => 'Bloknaam cannot contain the "/" character.'],
             [['voldaan_rule'], 'string', 'max' => 200],
             [['id', 'pos'], 'unique'],
         ];

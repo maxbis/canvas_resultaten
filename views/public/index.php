@@ -97,6 +97,7 @@
         // make some tr lines clickable (show/hide)
         $(document).on("click", ".clickable", function() {
             thisBlok = $(this).closest('tr').attr('id');
+            // console.log('toggle '+thisBlok);
             $(".line-"+thisBlok).toggle();
         });
 

@@ -34,6 +34,7 @@ class Course extends \yii\db\ActiveRecord
             [['naam'], 'string', 'max' => 18],
             [['korte_naam'], 'string', 'max' => 6],
             [['id'], 'unique'],
+            ['korte_naam', 'match', 'pattern' => '/^[^\/]*$/', 'message' => 'Bloknaam cannot contain the "/" character.'],
         ];
     }
 
