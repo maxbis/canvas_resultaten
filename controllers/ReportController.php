@@ -339,7 +339,7 @@ class ReportController extends QueryBaseController
             JOIN user u on u.student_nr=r.student_nummer
             JOIN module_def d ON d.id=r.module_id
             WHERE r.voldaan != 'V'
-            AND r.module_pos < 100
+            AND d.generiek = 0
             AND u.code is not null
             AND length(u.klas) > 1
             " . $this->getKlas($klas) . "

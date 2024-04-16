@@ -63,8 +63,12 @@ def checkAssignment(assignment):
             continue
 
         today=datetime.datetime.now().replace(tzinfo=None)
-        past=submission.submitted_at_date.replace(tzinfo=None)
-        diff=today-past     
+        try:
+            past=submission.submitted_at_date.replace(tzinfo=None)
+            diff=today-past    
+            diff_days = diff.days 
+        except:
+            diff_days = 0 
 
         try:
             userName = canvas.get_user(submission.user_id).name
@@ -105,7 +109,7 @@ def checkAssignment(assignment):
                             double="OK"
 
         # print("%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days ,submission.workflow_state, double))
-        output_line = "%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff.days, submission.workflow_state, double)
+        output_line = "%30s - %2s (checked: %2s) %10s - %5s - %3s days-  %14s %s" % (userName, numAttachments, checked, extentions, submission.entered_score, diff_days, submission.workflow_state, double)
         print(output_line)
     print()
 
