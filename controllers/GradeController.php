@@ -72,6 +72,7 @@ class GradeController extends QueryBaseController
         join module_def m on m.id = a.assignment_group_id
         join resultaat r on  module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
         join assignment_group g on g.id=m.id
+        where m.actief = 1
             
         group by 1, 2, 3,4, 9
         order by m.pos";

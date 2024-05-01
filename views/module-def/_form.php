@@ -62,7 +62,14 @@ use yii\widgets\ActiveForm;
 
     <br />
 
-    <?= $form->field($model, 'generiek')->checkbox() ?>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($model, 'generiek')->checkbox() ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'actief')->checkbox() ?>
+        </div>
+    </div>
 
     <br />
 

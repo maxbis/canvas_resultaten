@@ -145,7 +145,7 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => '',
-            'color' => ['','','','#f0f0f0','','','','','',]
+            'color' => ['', '', '', '#f0f0f0', '', '', '', '', '',]
         ]);
     }
 
@@ -219,6 +219,7 @@ class ReportController extends QueryBaseController
                 JOIN assignment_group g on g.id=m.id
                 JOIN course c on c.id = g.course_id
                 WHERE generiek = 0
+                AND actief = 1
                 ORDER BY m.pos";
 
         $modules = Yii::$app->db->createCommand($sql)->queryAll();
@@ -318,7 +319,8 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function getStudentYear() {
+    public function getStudentYear()
+    {
         # determine how many years old this cohort is 
         $thisCohort = explode('.', $_SERVER['SERVER_NAME'])[0];
         $currentYearLastTwoDigits = (int) substr(date("Y"), -2);
@@ -349,7 +351,7 @@ class ReportController extends QueryBaseController
 
         $data = parent::executeQuery($sql, "Ranking Dev " . $klas, $export);
 
-        if ( $this->getStudentYear() < 2) {
+        if ($this->getStudentYear() < 2) {
             $lastLine = "<hr><a href=\"/report/predictions\" class=\"btn bottom-button\">Voorspellingen</a>";
         } else {
             $lastLine = "";
@@ -421,9 +423,9 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' =>   [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
-            'bgcolor' => [ '', '', '#f6f6f6','','','','','','','#f6f6f6'],
-            'color' =>   [ '', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
+            'width' => [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
+            'bgcolor' => ['', '', '#f6f6f6', '', '', '', '', '', '', '#f6f6f6'],
+            'color' => ['', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
         ]);
     }
 
@@ -487,7 +489,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&moduleId=' . $moduleId, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&moduleId=' . $moduleId,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'In het overzicht staan aleen studenten waarvan de grading aan staat',
             # 'width' => [40,40,60,160,80,80,80 ], 
@@ -621,11 +627,15 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Aantal beoordelingen per beoordeelaar.',
             'lastLine' => $lastLine,
-            'width' => [250, 60, 60, 60, 60, 60, 60 ],
+            'width' => [250, 60, 60, 60, 60, 60, 60],
         ]);
     }
 
@@ -665,11 +675,15 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Aantal beoordelingen over alle cohorten',
             'lastLine' => $lastLine,
-            'width' => [250, 60, 60, 60, 60, 60, 60 ],
+            'width' => [250, 60, 60, 60, 60, 60, 60],
         ]);
     }
 
@@ -695,7 +709,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('/report/output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Studentenlijst (voor Export naar Excel)',
         ]);
@@ -719,7 +737,11 @@ class ReportController extends QueryBaseController
             'action' => Yii::$app->controller->action->id . "?",
             'descr' => "Dev modules voldaan , opdrachten gemaakt en BSA-boodschap",
             'width' => [80, 80, 80],
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
         ]);
     }
@@ -732,7 +754,8 @@ class ReportController extends QueryBaseController
                 count(r.id) 'Res',
                 concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
                 a.id 'Module ID',
-                case when d.id is null then '&#10060;' else '&#10003;' end 'In CM',
+                case when d.id is null then '&#10060;' else '&nbsp;&#10003;' end 'In CM',
+                case when d.actief = 0 then '&#10060;' else '&nbsp;&#10003;' end 'Actief',
                 case when d.naam is null then
                     concat(a.name,'|/module-def/create|id|',a.id,'|name|',a.name)
                 else
@@ -746,7 +769,7 @@ class ReportController extends QueryBaseController
         left outer join resultaat r on r.module_id=a.id
         where substring(a.name,1,1) != '!'
         group by 1,2,4,5,6,7,8
-        order by c.pos, d.pos
+        order by (d.pos IS NULL), d.pos ASC
         ";
 
         $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
@@ -755,8 +778,49 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
             'nocount' => true,
-            'width' => [50, 160, 60, 80, 80, 60, 200],
+            'width' => [50, 160, 60, 80, 80, 80, 80, 240],
         ]);
+    }
+
+    public function actionModules2($export = false)
+    { // menu 6.5 - Modules
+        $sql = "
+        select  d.id,
+                concat(
+                    CASE
+                        WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                        ELSE d.korte_naam
+                    END,
+                    ' ',
+                    d.naam
+                ) 'naam'
+        from course c
+        join assignment_group a on c.id=a.course_id
+        join module_def d on a.id=d.id
+        order by (d.pos IS NULL), d.pos ASC
+        ";
+
+        $items = Yii::$app->db->createCommand($sql)->queryAll();
+        ;
+
+
+        return $this->render('sortmodules', [
+            'items' => $items,
+        ]);
+    }
+
+    public function actionUpdateOrder()
+    {
+        $post = Yii::$app->request->post();
+        if (isset($post['items']) && is_array($post['items'])) {
+            foreach ($post['items'] as $pos => $id) {
+                $item = Item::findOne($id);
+                $item['pos'] = $pos;
+                # $item->save();
+            }
+        }
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return ['status' => 'success' ];
     }
 
     // END of MENU Beheer
@@ -796,7 +860,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('studentActivity', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&studentnr=' . $studentNr, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&studentnr=' . $studentNr,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Laaste 400 inzendingen. Geel geacceerd is nog niet beoordeeld.',
         ]);
@@ -820,7 +888,7 @@ class ReportController extends QueryBaseController
                 and a.published=1
                 and u.id is not null
                 order by u.name ASC, a.position";
-            
+
         $data = parent::executeQuery($sql, "Opdrachten voor module", $export);
         $data['show_from'] = 1;
 
@@ -828,7 +896,11 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Opdrachten en punten voor deze module',
             'width' => [0, 30, 250, 300, 60, 200, 60],
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&id=' . $id,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
         ]);
 
@@ -852,22 +924,26 @@ class ReportController extends QueryBaseController
             where u.student_nr > 100
             order by 3 DESC, 4 DESC;
         ";
-            
-        $data = parent::executeQuery($sql, "Voortgang \"".$moduleNaam . "\"", $export);
+
+        $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
         $data['show_from'] = 0;
 
         return $this->render('output', [
             'data' => $data,
             'descr' => '',
             'width' => [20, 300, 80, 80, 80],
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&id=' . $id,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
         ]);
 
     }
 
     // called form module overzicht
-    public function actionOpdrachtenModule($id, $export = false, $test=0)
+    public function actionOpdrachtenModule($id, $export = false, $test = 0)
     {
         if ($test == 1) {
             $cohort = explode('.', $_SERVER['SERVER_NAME'])[0];
@@ -909,7 +985,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&id=' . $id, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&id=' . $id,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'lastLine' => $lastLine,
             'descr' => 'Opdrachten en punten voor dit blok',
@@ -944,7 +1024,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
         ]);
     }
@@ -966,7 +1050,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
         ]);
     }
@@ -1030,7 +1118,11 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1', 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1',
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Een cluster is een serie opdrachten van minimaal 5 waarbij er minimaal elke 5 minuten een opdracht is ingeleverd.<br>Change URL params f.e. ..report/cluster-submissions?clusterSize=3&clusterTime=180'
         ]);
@@ -1061,13 +1153,18 @@ class ReportController extends QueryBaseController
 
         return $this->render('output', [
             'data' => $data,
-            'action' => ['link' => Yii::$app->controller->action->id, 'param' => 'export=1&klas=' . $klas, 'class' => 'btn btn-primary', 'title' => 'Export to CSV',
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&klas=' . $klas,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
             ],
             'descr' => 'Aantal opdrachten ingeleverd en nageken per module over de afgelopen 14 dagen <br><i>Nakijken</i> telt alleen de modules die ook over de laatste twee weken zijn ingeleverd.',
         ]);
     }
 
-    public function actionPredictions ( $klas='' ) {
+    public function actionPredictions($klas = '')
+    {
 
         $sql = "select u.id, u.name, u.klas, u.code, max(ranking_score) score, min(concat(r.module_pos,' ',r.module)) 'module'
                 from user u
@@ -1082,12 +1179,12 @@ class ReportController extends QueryBaseController
                 order by klas, name";
 
         $students = Yii::$app->db->createCommand($sql)->queryAll();
-        
+
         $result = [];
 
-        foreach($students as $student) {
+        foreach ($students as $student) {
             $id = $student['id'];
-            $query ="select u.name name, s.submitted_at date, s.entered_score achievement
+            $query = "select u.name name, s.submitted_at date, s.entered_score achievement
                 from submission s
                 join user u on u.id = s.user_id
                 where entered_score != 0
@@ -1103,24 +1200,34 @@ class ReportController extends QueryBaseController
             $currentYearLastTwoDigits = (int) substr(date("Y"), -2);
             $studentYear = $currentYearLastTwoDigits - (int) substr($thisCohort, 1);
 
-            if ( $studentYear < 2) {
-                $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
-                    '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
-                    '~Mdls/Wk' => $thisPrediction['mod/week'], 'Stage op' => $thisPrediction['predictedDate'],
-                    'Studieduur' =>$thisPrediction['studieDuur'] ,'Module' => $student['module'], 
+            if ($studentYear < 2) {
+                $result[] = [
+                    'Slope' => $thisPrediction['slope'],
+                    'Klas' => $student['klas'],
+                    '!Student' => $student['name'] . '|/public/index|code|' . $student['code'],
+                    '~Score' => $student['score'],
+                    '~Percentage' => $thisPrediction['percCompleted'],
+                    '~Mdls/Wk' => $thisPrediction['mod/week'],
+                    'Stage op' => $thisPrediction['predictedDate'],
+                    'Studieduur' => $thisPrediction['studieDuur'],
+                    'Module' => $student['module'],
                 ];
             } else {
-                $result[] = [   'Slope' => $thisPrediction['slope'], 'Klas'=>$student['klas'],  '!Student' => $student['name'].'|/public/index|code|'. $student['code'],
-                    '~Score' => $student['score'] ,'~Percentage' => $thisPrediction['percCompleted'],
-                    'Module' => $student['module'], 
+                $result[] = [
+                    'Slope' => $thisPrediction['slope'],
+                    'Klas' => $student['klas'],
+                    '!Student' => $student['name'] . '|/public/index|code|' . $student['code'],
+                    '~Score' => $student['score'],
+                    '~Percentage' => $thisPrediction['percCompleted'],
+                    'Module' => $student['module'],
                 ];
             }
 
         }
 
         usort($result, function ($a, $b) {
-            $num1 = (int)($a['~Percentage']*10);
-            $num2 = (int)($b['~Percentage']*10);
+            $num1 = (int) ($a['~Percentage'] * 10);
+            $num2 = (int) ($b['~Percentage'] * 10);
             return $num2 - $num1;
         });
 
@@ -1133,8 +1240,8 @@ class ReportController extends QueryBaseController
             'data' => $data,
             'descr' => 'Prediction is based an data from c22 which is put into an exponential regression model.',
             'lastLine' => "<hr><a href=\"/report/ranking\" class=\"btn bottom-button\">Ranking</a>",
-            'bgcolor' => ['','','','','', '', '','#f5fff9', '#'],
-            'color' => ['','','','#707070','', '', '#707070','', '#707070'],
+            'bgcolor' => ['', '', '', '', '', '', '', '#f5fff9', '#'],
+            'color' => ['', '', '', '#707070', '', '', '#707070', '', '#707070'],
         ]);
     }
 

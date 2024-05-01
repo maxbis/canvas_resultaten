@@ -21,7 +21,7 @@ class ModuleDef extends \yii\db\ActiveRecord
     {
         return [
             [['id', 'naam', 'pos', 'voldaan_rule'], 'required'],
-            [['id', 'pos', 'generiek', 'norm_uren'], 'integer'],
+            [['id', 'pos', 'generiek', 'norm_uren', 'actief'], 'integer'],
             [['naam'], 'string', 'max' => 80],
             [['korte_naam'], 'string', 'max' => 6],
             ['korte_naam', 'match', 'pattern' => '/^[^\/]*$/', 'message' => 'Bloknaam cannot contain the "/" character.'],
@@ -42,7 +42,8 @@ class ModuleDef extends \yii\db\ActiveRecord
             'pos' => 'Pos',
             'voldaan_rule' => 'Voldaan Rule',
             'norm_uren' => 'Norm Uren',
-            'generiek' => 'Generiek',
+            'generiek' => 'Generiek vak',
+            'actief' => 'Actief'
         ];
     }
 }

@@ -143,6 +143,7 @@ class ResultaatController extends Controller
             join module_def m on m.id = a.assignment_group_id
             join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
+            and m.actief = 1
             -- and s.submitted_at < '2023-04-12'
             -- and m.pos < 70
             -- and datediff(now(), submitted_at) < 100 
@@ -357,7 +358,7 @@ class ResultaatController extends Controller
         ]);
     }
 
-    public function actionSearchStudents($search="", $cohort="")
+    public function actionSearchStudents($search="", $cohort="") # this is an Ajax-function called from the home page (resultaat/start)
     {
         
         if ( ! $search ) {
@@ -374,6 +375,18 @@ class ResultaatController extends Controller
             return "";
         }
 
+        $host = $_SERVER['HTTP_HOST'];
+        $parts = explode('.', $host);
+        if (count($parts) >= 3) {
+            // Grab the last two parts for the domain name (e.g., domain.tld)
+            $dynamicDomain = $parts[count($parts) - 2] . '.' . $parts[count($parts) - 1];
+        } else {
+            // Fallback domain if the host name is not as expected
+            $dynamicDomain = 'cmon.ovh';
+        }
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        
+
         $prevCohort = $resultaten[0]['cohort'];
         foreach ($resultaten as $student) {
             if ($cohort == "all" || $cohort == $student['cohort']) {
@@ -385,7 +398,7 @@ class ResultaatController extends Controller
                 }
                 $html .= "<li style=\"$style\">";
                 $html .= "<span style='color:#808080'>" . $student['klas'] . "</span>&nbsp;";
-                $html .= "<a href=\"https://${student['cohort']}.cmon.ovh/public/index?code=${student['code']}\">";
+                $html .= "<a href=\"".$protocol.$student['cohort'].$dynamicDomain."/public/index?code=${student['code']}\">";
                 $html .= $student['name'];
                 $html .= "</a>";
                 $html .= "</li>\n";
@@ -395,7 +408,7 @@ class ResultaatController extends Controller
 
     }
 
-    private function searchStudents($search)
+    private function searchStudents($search) 
     {
         $databases = Yii::$app->params['databases'];
         $result = [];
