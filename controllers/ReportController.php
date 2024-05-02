@@ -772,12 +772,14 @@ class ReportController extends QueryBaseController
         order by (d.pos IS NULL), d.pos ASC
         ";
 
+        $lastLine = "<hr><a href=\"/report/modules2\" class=\"btn bottom-button\">Volgorde aanpassen...</a>";
         $data = parent::executeQuery($sql, "Koppeling van modules tussen Canvas en Canvas Monitor", $export);
 
         return $this->render('output', [
             'data' => $data,
             'descr' => 'Overzicht voor beheer; aanmaken cursussen en modules.',
             'nocount' => true,
+            'lastLine' => $lastLine,
             'width' => [50, 160, 60, 80, 80, 80, 80, 240],
         ]);
     }

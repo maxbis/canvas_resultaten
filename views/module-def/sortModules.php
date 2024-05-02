@@ -43,7 +43,7 @@ use yii\helpers\Url;
     }
 
     .moved {
-        color: red;
+        background-color: lightblue;
     }
 
     .ghost-row {}
@@ -112,8 +112,7 @@ use yii\helpers\Url;
                 <th style="width:60px;">Blok</th>
                 <th style="width:260px;">Naam</th>
                 <th style="width:60px;">Actief</th>
-                <th style="width:90px;">Cursus ID</th>
-                <th style="width:120px;">Cursusnaam</th>
+                <th style="width:120px;">Cursus</th>
             </tr>
         </thead>
         <tbody>
@@ -125,10 +124,9 @@ use yii\helpers\Url;
                 echo "<td>$index</td>";
                 echo "<td>" . $item['blok'] . "</td>";
                 $url = Url::to(['/module-def/update', 'id' => $item['id']]);
-                echo "<td><a href=\"$url\">" . $item['naam'] . "</a></td>";
+                echo "<td><a href=\"$url\" title=\"update\">" . $item['naam'] . "</a></td>";
                 echo "<td>" . $item['actief'] . "</td>";
-                echo "<td>" . $item['cursus_id'] . "</td>";
-                echo "<td>" . $item['cursus_naam'] . "</td>";
+                echo "<td><a href=\"https://talnet.instructure.com/courses/".$item['cursus_id']."/modules\" target=\"_blank\" title=\"Naar canvas module\">" . $item['cursus_naam'] . "➞</a></td>";
                 echo "</tr>";
             }
             ?>
@@ -141,8 +139,9 @@ use yii\helpers\Url;
 <form id="myForm" method="POST" action="<?= $url ?>">
     <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>"></input>
     <input type="hidden" name="order" id="order" value=""></input>
-    <button type="submit" style="width: 80px;" id="submitButton" onclick="mySubmit()" class="btn btn-danger btn-sm">Save</button>
-    <button type="button" style="width: 80px;" class="btn btn-secondary btn-sm" onclick="window.location.reload();">Cancel</button>
+    <a href="/report/modules" style="width: 80px;" class="btn btn-secondary btn-sm"><< back</a>
+    <button type="submit" style="width: 80px;margin-left:20px;" id="submitButton" onclick="mySubmit()" class="btn btn-danger btn-sm">Save</button>
+    <button type="button" style="width: 80px;margin-left:20px;" class="btn btn-primary btn-sm" onclick="window.location.reload();">Cancel</button>
 </form>
 
 
