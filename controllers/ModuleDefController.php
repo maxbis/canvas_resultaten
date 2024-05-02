@@ -28,6 +28,7 @@ class ModuleDefController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'reorder' => ['POST'],
                 ],
             ],
             'access' => [
@@ -35,7 +36,7 @@ class ModuleDefController extends Controller
                 'rules' => [
                     // when logged in, any user
                     [
-                        'actions' => ['update', 'delete', 'create', 'view'],
+                        'actions' => ['update', 'delete', 'create', 'view', 'reorder'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -145,5 +146,18 @@ class ModuleDefController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionReorder()
+    {
+        $orderArray = explode(',', Yii::$app->request->post()['order']);
+        $pos = 10;
+        $sql = "";
+        foreach($orderArray as $item) {
+            $sql .= "update module_def set pos = $pos where id =$item;\n";
+            $pos += 10;
+        }
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        
+        return $this->redirect(['report/modules2']);
     }
 }

@@ -786,14 +786,14 @@ class ReportController extends QueryBaseController
     { // menu 6.5 - Modules
         $sql = "
         select  d.id,
-                concat(
-                    CASE
-                        WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
-                        ELSE d.korte_naam
-                    END,
-                    ' ',
-                    d.naam
-                ) 'naam'
+                CASE
+                    WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                    ELSE d.korte_naam
+                END 'blok',
+                d.naam 'naam',
+                c.id 'cursus_id',
+                c.naam 'cursus_naam',
+                case when d.actief = 0 then '&#10060;' else '&nbsp;&#10003;' end 'actief'
         from course c
         join assignment_group a on c.id=a.course_id
         join module_def d on a.id=d.id
@@ -801,27 +801,13 @@ class ReportController extends QueryBaseController
         ";
 
         $items = Yii::$app->db->createCommand($sql)->queryAll();
-        ;
 
 
-        return $this->render('sortmodules', [
+        return $this->render('/module-def/sortModules', [
             'items' => $items,
         ]);
     }
 
-    public function actionUpdateOrder()
-    {
-        $post = Yii::$app->request->post();
-        if (isset($post['items']) && is_array($post['items'])) {
-            foreach ($post['items'] as $pos => $id) {
-                $item = Item::findOne($id);
-                $item['pos'] = $pos;
-                # $item->save();
-            }
-        }
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return ['status' => 'success' ];
-    }
 
     // END of MENU Beheer
 
