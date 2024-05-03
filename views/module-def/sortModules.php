@@ -141,7 +141,7 @@ use yii\helpers\Url;
     <input type="hidden" name="order" id="order" value=""></input>
     <a href="/report/modules" style="width: 80px;" class="btn btn-secondary btn-sm"><< back</a>
     <button type="submit" style="width: 80px;margin-left:20px;" id="submitButton" onclick="mySubmit()" class="btn btn-danger btn-sm">Save</button>
-    <button type="button" style="width: 80px;margin-left:20px;" class="btn btn-primary btn-sm" onclick="window.location.reload();">Cancel</button>
+    <button type="button" style="width: 80px;margin-left:20px;" class="btn btn-primary btn-sm" onclick="window.location.reload();">Reset</button>
 </form>
 
 
