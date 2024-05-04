@@ -398,7 +398,7 @@ class ResultaatController extends Controller
                 }
                 $html .= "<li style=\"$style\">";
                 $html .= "<span style='color:#808080'>" . $student['klas'] . "</span>&nbsp;";
-                $html .= "<a href=\"".$protocol.$student['cohort'].$dynamicDomain."/public/index?code=${student['code']}\">";
+                $html .= "<a href=\"".$protocol.$student['cohort'].'.'.$dynamicDomain."/public/index?code=${student['code']}\">";
                 $html .= $student['name'];
                 $html .= "</a>";
                 $html .= "</li>\n";

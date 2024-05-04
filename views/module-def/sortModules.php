@@ -6,15 +6,6 @@ use yii\helpers\Url;
 
 
 <style>
-    xtd,
-    xtr,
-    xth {
-        border: 1px solid black;
-        border-collapse: collapse;
-        cursor: all-scroll;
-        padding-left: 8px;
-        padding-right: 8px;
-    }
 
     tr {
         cursor: grab;
@@ -27,17 +18,6 @@ use yii\helpers\Url;
         /* Cursor for dragging state */
     }
 
-    .xtable {
-        border-collapse: collapse;
-        -webkit-user-select: none;
-        /* Safari */
-        -ms-user-select: none;
-        /* IE 10+ and Edge */
-        user-select: none;
-        /* Standard syntax */
-        margin: 0 auto;
-    }
-
     .dragging {
         background-color: lightblue;
     }
@@ -46,7 +26,9 @@ use yii\helpers\Url;
         background-color: lightblue;
     }
 
-    .ghost-row {}
+    .ghost-row {
+
+    }
 </style>
 
 
