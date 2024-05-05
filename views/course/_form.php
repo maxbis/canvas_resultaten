@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'id')->textInput()->label('Dit is het cursus ID uit canvas.') ?>
+            <?= $form->field($model, 'id')->textInput(['readonly' => true])->label('Dit is het cursus ID uit canvas.') ?>
         </div>
         <div class="col-sm-3">
             <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Cursusnaam (staat in het moduleoverzicht).') ?>

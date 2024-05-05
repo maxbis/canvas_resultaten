@@ -46,7 +46,7 @@ class Course extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'naam' => 'Naam',
-            'korte_naam' => 'Korte Naam',
+            'korte_naam' => 'Bloknaam',
             'pos' => 'Pos',
             'update_prio' => 'Update Prio',
         ];

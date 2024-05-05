@@ -144,6 +144,7 @@ class ResultaatController extends Controller
             join resultaat r on module_id=m.id and r.student_nummer = u.student_nr and r.minpunten >= 0
             where u.grade=1 and s.submitted_at > s.graded_at
             and m.actief = 1
+            and m.nakijken = 1
             -- and s.submitted_at < '2023-04-12'
             -- and m.pos < 70
             -- and datediff(now(), submitted_at) < 100 

@@ -9,7 +9,8 @@ use yii\widgets\ActiveForm;
 ?>
 
 <style>
-    .control-label {
+    .control-label,
+    .checkbox-label {
         color: #404040;
         font-size: smaller;
     }
@@ -25,7 +26,7 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'id')->textInput()->label('Module ID uit Canvas (niet aanpassen)') ?>
+            <?= $form->field($model, 'id')->textInput(['readonly' => true])->label('Module ID uit Canvas (read-only)') ?>
         </div>
         <div class="col-sm-3">
             <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Module naam in Canvas Monitor') ?>
@@ -33,21 +34,15 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="row">
-        <div class="col-sm-3">
-            <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Module naam in Canvas Monitor') ?>
+        <div class="col-sm-2">
+            <?= $form->field($model, 'korte_naam')->textInput(['title' => 'Als leeg dan wordt de naam uit de cursus genomen anders overschrijft dit de bloknaam van cusrsus.'])->label('Bloknaam') ?>
         </div>
-        <div class="col-sm-3">
-            <?= $form->field($model, 'pos')->textInput()->label('Positie in overzicht in Canvas Monitor') ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-3">
-            <?= $form->field($model, 'korte_naam')->textInput()->label('Bloknaam; overschrijft die van cusrsus') ?>
-        </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <?= $form->field($model, 'norm_uren')->textInput(['maxlength' => true])->label('Norm Uren') ?>
         </div>
+        <div class="col-sm-2">
+            <?= $form->field($model, 'pos')->textInput(['title' => 'Positie in overzicht'])->label('Positie') ?>
+        </div>
     </div>
 
     <div class="row">
@@ -55,7 +50,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <?= $form->field($model, 'voldaan_rule')->textInput(['maxlength' => true])->label('SQL voldaanregel') ?>
         </div>
     </div>
@@ -63,11 +58,14 @@ use yii\widgets\ActiveForm;
     <br />
 
     <div class="row">
-        <div class="col-sm-3">
-            <?= $form->field($model, 'generiek')->checkbox() ?>
+        <div class="col-sm-2">
+            <?= $form->field($model, 'generiek')->checkbox(['label' => 'Generiek Vak', 'labelOptions' => ['class' => 'checkbox-label'], 'title' => 'Development module indien uit.']) ?>
+        </div>
+        <div class="col-sm-1">
+            <?= $form->field($model, 'actief')->checkbox(['label' => 'Actief', 'labelOptions' => ['class' => 'checkbox-label'], 'title' => 'Zichtbaar in de Canvas Monitor (zelfde effect als verwijderen)']) ?>
         </div>
         <div class="col-sm-3">
-            <?= $form->field($model, 'actief')->checkbox() ?>
+            <?= $form->field($model, 'nakijken')->checkbox(['label' => 'Op Home Page (Nakijken)', 'labelOptions' => ['class' => 'checkbox-label'], 'title' => 'Zichtbaar in nakijkoverzich op Home Page']) ?>
         </div>
     </div>
 
