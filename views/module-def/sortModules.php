@@ -90,11 +90,13 @@ use yii\helpers\Url;
 <table class="table table-sm hoverTable">
         <thead>
             <tr>
-                <th style="width:60px;">Order</th>
+                <th style="width:30px;">&nbsp;</th>
+                <th style="width:30px;text-align:right;padding-right:20px;">Uren</th>
                 <th style="width:60px;">Blok</th>
                 <th style="width:260px;">Naam</th>
-                <th style="width:60px;">Actief</th>
-                <th style="width:120px;">Cursus</th>
+                <th style="width:30px;border-left: 1px dashed;">Actief</th>
+                <th style="width:30px;">Nakijken</th>
+                <th style="width:100px;">Cursus</th>
             </tr>
         </thead>
         <tbody>
@@ -103,12 +105,14 @@ use yii\helpers\Url;
             foreach ($items as $item) {
                 $index = $index + 1;
                 echo "<tr index=\"" . $index . "\" value=\"" . $item['id'] . "\" draggable=\"true\" ondragstart=\"start()\" ondragover=\"dragover()\" ondragend=\"end()\">";
-                echo "<td>$index</td>";
-                echo "<td>" . $item['blok'] . "</td>";
+                echo "<td style=\"color:#909090;\">$index</td>";
+                echo "<td style=\"color:#909090;text-align:right;padding-right:20px;\">" . $item['uren'] . "</td>";
+                echo "<td style=\"color:#606060;\">" . $item['blok'] . "</td>";
                 $url = Url::to(['/module-def/update', 'id' => $item['id']]);
                 echo "<td><a href=\"$url\" title=\"update\">" . $item['naam'] . "</a></td>";
-                echo "<td>" . $item['actief'] . "</td>";
-                echo "<td><a href=\"https://talnet.instructure.com/courses/".$item['cursus_id']."/modules\" target=\"_blank\" title=\"Naar canvas module\">" . $item['cursus_naam'] . "➞</a></td>";
+                echo "<td style=\"color:#909090;border-left: 1px dashed;\">" . $item['actief'] . "</td>";
+                echo "<td style=\"color:#909090;\">" . $item['nakijken'] . "</td>";
+                echo "<td style=\"padding-left:20px;\"><a href=\"https://talnet.instructure.com/courses/".$item['cursus_id']."/modules\" target=\"_blank\" title=\"Naar canvas module\">" . $item['cursus_naam'] . "➞</a></td>";
                 echo "</tr>";
             }
             ?>

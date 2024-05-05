@@ -225,7 +225,7 @@
         }
         ?>
         <p>flip <?=$link?> (laat ingeleverd werk óf behaalde punten zien)</p>
-        <p>v 2.12.02 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
+        <p>v 02.05.24 &copy; ROCvA MaxWare :) <?= date('Y') ?>, <?= Yii::powered() ?></p>
     </details>
 </small>
 

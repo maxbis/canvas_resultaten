@@ -795,7 +795,9 @@ class ReportController extends QueryBaseController
                 d.naam 'naam',
                 c.id 'cursus_id',
                 c.naam 'cursus_naam',
-                case when d.actief = 0 then '&#10060;' else '&nbsp;&#10003;' end 'actief'
+                d.norm_uren 'uren',
+                case when d.actief = 0 then '&#10060;' else '&nbsp;&#10003;' end 'actief',
+                case when d.nakijken = 0 then '&#10060;' else '&nbsp;&#10003;' end 'nakijken'
         from course c
         join assignment_group a on c.id=a.course_id
         join module_def d on a.id=d.id
