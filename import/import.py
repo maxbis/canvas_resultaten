@@ -603,7 +603,7 @@ else:
         for course_id, course_name in courses.items():
             if (course_id != 0 ):
                 log("Create "+str(course_name)+" ("+str(course_id)+")",1)
-                createBlok(blok)
+                createBlok(course_id)
 
 createResultaat()
 calcVoldaan()
