@@ -83,11 +83,11 @@ if ( args['delete'] and int(args['course'])<100 ):
 #### FUNCTIONS ####
 
 def getCourses(prio=3):
-    courses = []
-    sql = "select id from course where update_prio<="+str(prio)
+    courses = {}
+    sql = "select id, naam from course where update_prio<="+str(prio)
     cursor.execute(sql)
     for row in cursor:
-        courses.append(row[0])
+        courses[row[0]] = row[1]
         log('Course found: '+str(row[0]),3)
     return(courses)
 
@@ -562,18 +562,7 @@ def getUpdates(fieldList, courseId, canvasSubmissions, dbSubmissions, asName, th
     return sql
 
 
-### TEST ###
 
-# thisDate="2023-01-09T08:18:54Z";
-# print(thisDate, convertDate(thisDate))
-
-# thisDate="2023-03-26T08:18:54Z";
-# print(thisDate, convertDate(thisDate))
-
-# thisDate="2023-03-27T08:18:54Z";
-# print(thisDate, convertDate(thisDate))
-
-# sys.exit(0)
 
 #### MAIN ####
 
@@ -611,9 +600,9 @@ else:
     if (int(args['course']) != 0):
         courses=getCourses( args['course'] )
         log("About to update "+str(len(courses))+" courses (blokken)", 1)
-        for blok in courses:
-            if (blok != 0 ):
-                log("Create "+str(blok),1)
+        for course_id, course_name in courses.items():
+            if (course_id != 0 ):
+                log("Create "+str(course_name)+" ("+str(course_id)+")",1)
                 createBlok(blok)
 
 createResultaat()
