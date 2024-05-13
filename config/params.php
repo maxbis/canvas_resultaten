@@ -24,6 +24,9 @@ if ($subDomain=='c22'){
 if ($subDomain=='c23'){
     $klassen=['3A','3B','3C'];
 }
+if ($subDomain=='c24'){
+    $klassen=['3A','3B','3C'];
+}
 
 # for searching students in home page
 $databases = ['canvas-c23', 'canvas-c22', 'canvas-c21', 'canvas-c20'];

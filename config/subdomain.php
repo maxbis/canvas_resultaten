@@ -7,7 +7,9 @@ function subDomain() {
         $subDomain = explode('.', $_SERVER['SERVER_NAME'])[0];
     }
 
-    if ( $subDomain == 'c23') {
+    if ( $subDomain == 'c24') {
+        $DB='canvas-c24';
+    } elseif ( $subDomain == 'c23') {
         $DB='canvas-c23';
     } elseif ( $subDomain == 'c22') {
         $DB='canvas-c22';

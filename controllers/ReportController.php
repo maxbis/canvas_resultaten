@@ -366,7 +366,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    // menu devider ----------------
+    // menu devider -----------------
 
     public function actionAantalOpdrachten($export = false, $generiek = 0)
     { // menu 3.5 - Module overzicht

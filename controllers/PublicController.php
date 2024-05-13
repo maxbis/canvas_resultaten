@@ -78,7 +78,7 @@ class PublicController extends Controller
                 INNER JOIN user u on u.student_nr=r.student_nummer
                 WHERE code='$code'
                 and d.actief = 1
-                ORDER BY c.pos, d.pos;
+                ORDER BY d.pos;
             ";
 
 

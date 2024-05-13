@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 </style>
 
 <p>
-<i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i>
+    <i>Alleen in te vullen door degene die de Canvas koppeling beheerd</i>
 </p>
 <div class="course-form">
 
@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'id')->textInput(['readonly' => true])->label('Dit is het cursus ID uit canvas.') ?>
+            <?= $form->field($model, 'id')->textInput(['readonly' => !$model->isNewRecord])->label('Dit is het cursus ID uit canvas.') ?>
         </div>
         <div class="col-sm-3">
             <?= $form->field($model, 'naam')->textInput(['maxlength' => true])->label('Cursusnaam (staat in het moduleoverzicht).') ?>
