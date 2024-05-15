@@ -15,7 +15,18 @@ from pymysql.constants import CLIENT
 from threading import Thread
 from datetime import datetime, timedelta
 
-DST_DATES={'2022':[27,30],'2023':[26,29],'2024':[31,27],'2025':[30,26],'2026':[29,25]}
+# DST_DATES={'2022':[27,30],'2023':[26,29],'2024':[31,27],'2025':[30,26],'2026':[29,25]}
+DST_DATES = {
+    '2022': [27, 30],
+    '2023': [26, 29],
+    '2024': [31, 27],
+    '2025': [30, 26],
+    '2026': [29, 25],
+    '2027': [28, 31],
+    '2028': [26, 29],
+    '2029': [25, 28],
+    '2030': [31, 27]
+}
 
 # Debug-dump and die
 def dd(arg):
@@ -54,6 +65,7 @@ try:
 except:
     dd('Error reading canvas.ini database parameters')
 
+
 logLevel        = args['log']
 prio            = args['course']
 assignmentGroup = args['assignment']
@@ -64,7 +76,7 @@ if (prio is None and assignmentGroup is None):
     print(sys.argv[0]+' -c <curus_id> or -a <assignment_group> is required')
     print()
     print('  -c 0 does only a recalc of passed/notpassed criterea')
-    print('  -c <low_numer> updates all courses with prio <low_number> 1 ..9 where 1 is updating the least')
+    print('  -c <low_numer> updates all courses with prio samller or equal than <low_number>')
     print()
     print('  -a <unknown assignment group> show all groups and courses available (from Canvas Database)')
     print('  -a -1 update all assignment groups that are resently changed')
