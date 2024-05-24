@@ -243,7 +243,7 @@ function getStatus($status)
 <small style="color:#b0b0b0;font-style: italic;">
     <details>
         <summary>Disclaimer/footer</summary>
-        Behoudens technische storingen of configuratiefouten zijn de resutlaten uit dit overzicht leidend.</p>
+        Behoudens technische storingen of configuratiefouten zijn de resultaten uit dit overzicht leidend.</p>
         <p>v 2.11.1 &copy; ROCvA MaxWare :)
             <?= date('Y') ?>,
             <?= Yii::powered() ?>
