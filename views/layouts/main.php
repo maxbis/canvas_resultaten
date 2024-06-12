@@ -18,8 +18,6 @@ if ( file_exists($signal_file) ) {
 
 use app\assets\AppAsset;
 use app\widgets\Alert;
-use yii\bootstrap4\Breadcrumbs;
-use yii\bootstrap4\Html;
 
 AppAsset::register($this);
 ?>
@@ -34,8 +32,9 @@ AppAsset::register($this);
     <title><?= "CMON ".$subDomain ?></title>
     <?php $this->head() ?>
     <style type="text/css">
-    html { font-size: 1rem;  }
+        html { font-size: 1rem;  }
     </style>
+    <link rel="stylesheet" href="/css/bootstrap4.css">
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
@@ -46,9 +45,6 @@ AppAsset::register($this);
 
 <main role="main" class="flex-shrink-0">
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
