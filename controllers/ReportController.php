@@ -749,7 +749,11 @@ class ReportController extends QueryBaseController
     public function actionModules($export = false)
     { // menu 6.5 - Modules
         $sql = "
-        select  c.korte_naam '#Blok',
+        select  
+                CASE
+                    WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                    ELSE d.korte_naam
+                END AS'#Blok',
                 c.naam 'Naam',
                 count(r.id) 'Res',
                 concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
