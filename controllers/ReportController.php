@@ -423,7 +423,7 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
+            'width' => [40, 120, 220, 50, 50, 50, 50, 50, 50, 70],
             'bgcolor' => ['', '', '#f6f6f6', '', '', '', '', '', '', '#f6f6f6'],
             'color' => ['', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
         ]);
