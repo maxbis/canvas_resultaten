@@ -423,7 +423,7 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
+            'width' => [40, 120, 220, 50, 50, 50, 50, 50, 50, 70],
             'bgcolor' => ['', '', '#f6f6f6', '', '', '', '', '', '', '#f6f6f6'],
             'color' => ['', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
         ]);
@@ -749,7 +749,11 @@ class ReportController extends QueryBaseController
     public function actionModules($export = false)
     { // menu 6.5 - Modules
         $sql = "
-        select  c.korte_naam '#Blok',
+        select  
+                CASE
+                    WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                    ELSE d.korte_naam
+                END AS'#Blok',
                 c.naam 'Naam',
                 count(r.id) 'Res',
                 concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
@@ -769,7 +773,7 @@ class ReportController extends QueryBaseController
         left outer join resultaat r on r.module_id=a.id
         where substring(a.name,1,1) != '!'
         group by 1,2,4,5,6,7,8
-        order by (d.pos IS NULL), d.pos ASC
+        order by (d.pos IS NULL), d.pos, c.naam ASC
         ";
 
         $lastLine = "<hr><a href=\"/report/modules2\" class=\"btn bottom-button\">Volgorde aanpassen...</a>";
