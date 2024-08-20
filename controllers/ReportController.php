@@ -49,19 +49,26 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionAantalActiviteitenWeek($export = false, $klas = '')
+    public function actionAantalActiviteitenWeek($export = false, $klas = '', $sort='')
     { // menu 3.2 - Week overzicht 
 
         $weekday = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
         $date = new DateTime();
         $dayNr = $date->format('N') - 1; // 7 for zondag
 
-        $select = '';
+        $selectQuery = '';
         for ($i = 0; $i < 7; $i++) {
-            $select .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+00:00') as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
+            $selectQuery .= "\n,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -" . $i . " DAY) as date) = CAST(convert_tz(s.submitted_at, '+00:00', '+00:00') as date) ) then 1 else 0 end) '+" . $weekday[$dayNr] . "'";
             $dayNr--;
             if ($dayNr < 0)
                 $dayNr = 6;
+        }
+
+        $sortQuery="";
+        if ( $sort ) {
+            $sort = "order by $sort";
+        } else {
+            $sortQuery ="ORDER BY SUBSTRING_INDEX(u.name, ' ', -1)";
         }
 
         // for($i=7; $i<9; $i++){  
@@ -72,22 +79,25 @@ class ReportController extends QueryBaseController
 
         $sql = "
             SELECT u.klas Klas, concat(u.name,'|/public/index|code|',u.code) '!Student'
-            $select
+            $selectQuery
             ,sum(case when ( CAST( DATE_ADD(curdate(), INTERVAL -7 DAY) as date) < CAST(convert_tz(s.submitted_at, '+00:00', '+00:00') as date) ) then 1 else 0 end) '+wk'
             FROM user u
             left outer join submission s on u.id=s.user_id
             where student_nr > 0
             " . $this->getKlas($klas) . "
             group by 1,2
-            order by 10 DESC,3 DESC,4 DESC,5 DESC, 6 DESC
+            $sortQuery
         ";
 
+        // ORDER BY SUBSTRING_INDEX(u.name, ' ', -1)
 
-        return $this->render('output', [
-            'data' => parent::executeQuery($sql, "Ingeleverd afgelopen week", $export),
+
+        return $this->render('weekoverzicht', [
+            'data' => parent::executeQuery($sql, "Ingeleverd afgelopen week*", $export),
             'action' => parent::exportButton($klas ??= 'false'),
             'descr' => 'Aantal opdrachten per student over de laatste 7 dagen.',
             'width' => [60, 280, 40, 40, 40, 40, 40, 40, 90],
+            'sort' => $sort,
         ]);
     }
 
@@ -423,7 +433,7 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 120, 220, 50, 50, 50, 50, 50, 50, 70],
+            'width' => [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
             'bgcolor' => ['', '', '#f6f6f6', '', '', '', '', '', '', '#f6f6f6'],
             'color' => ['', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
         ]);
@@ -749,11 +759,7 @@ class ReportController extends QueryBaseController
     public function actionModules($export = false)
     { // menu 6.5 - Modules
         $sql = "
-        select  
-                CASE
-                    WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
-                    ELSE d.korte_naam
-                END AS'#Blok',
+        select  c.korte_naam '#Blok',
                 c.naam 'Naam',
                 count(r.id) 'Res',
                 concat(c.id,'➞','|https://talnet.instructure.com/courses/',c.id,'/modules') '!Cursus ID',
@@ -773,7 +779,7 @@ class ReportController extends QueryBaseController
         left outer join resultaat r on r.module_id=a.id
         where substring(a.name,1,1) != '!'
         group by 1,2,4,5,6,7,8
-        order by (d.pos IS NULL), d.pos, c.naam ASC
+        order by (d.pos IS NULL), d.pos ASC
         ";
 
         $lastLine = "<hr><a href=\"/report/modules2\" class=\"btn bottom-button\">Volgorde aanpassen...</a>";

@@ -156,6 +156,7 @@ $tot = [];
                                 $columnName = substr($columnName, 1);
                             }
                             $columnName = str_replace(array("#", "!"), '', $columnName);
+
                             if (substr($columnName, 0, 1) != '-') {
 
                                 $style = "";
@@ -171,13 +172,20 @@ $tot = [];
                                 if ( isset($color[$i]) && $color[$i]!='' ) {
                                     $style .= "color:".$color[$i].";";
                                 }
-                                $td[$i] = "<td style='".$style."'>";
+                                $td[$i] = "<td style='${style}'>";
 
                                 if ( $i > 1 && $i < 9 ) {
-                                    echo substr($columnName, 0, 1) != '_' ? "<a href=".Yii::$app->request->url."?sort=".($i+1).">".$columnName."</a>" : '&nbsp;';
+                                    $url = \yii\helpers\Url::base(true) . \yii\helpers\Url::to(['']);
+                                    echo substr($columnName, 0, 1) != '_' ? "<a href=".$url."?sort=".($i+1).">".$columnName."</a>" : '&nbsp;';
+                                }
+                                elseif ( $columnName == "Student" ){
+                                        $url = \yii\helpers\Url::base(true) . \yii\helpers\Url::to(['']);
+                                        echo "<a href=".$url.">".$columnName."</a>";
                                 } else {
                                     echo substr($columnName, 0, 1) != '_' ? $columnName : '&nbsp;';
                                 }
+
+
                                 echo "</th>";
                             }
                         }
