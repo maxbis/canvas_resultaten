@@ -20,6 +20,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'role')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'role')->dropDownList([
+        'admin' => 'user',
+        'admin+' => 'admin/beheer'
+    ], ['prompt' => 'Select Role']) ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
