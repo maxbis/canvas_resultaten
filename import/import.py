@@ -309,8 +309,8 @@ def createResultaat():
             MAX(submitted_at),
             MAX(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
             SUM(1) aantal_opdrachten
-        FROM user u, submission s
-            left join assignment a on s.assignment_id= a.id
+        FROM user u, assignment a
+            left join submission s on s.assignment_id= a.id
             left join assignment_group g on g.id = a.assignment_group_id 
             left join module_def d on d.id=g.id
         WHERE length(u.klas) > 0
