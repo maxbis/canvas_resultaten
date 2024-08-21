@@ -302,20 +302,20 @@ def createResultaat():
             u.name student_naam,
             SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
             SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
-            sum(s.entered_score) punten,
-            min(s.entered_score) minpunten,
-            sum(a.points_possible) punten_max,
-            sum(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
-            max(submitted_at),
-            max(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
-            sum(1) aantal_opdrachten
-
-        FROM assignment a
-        join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
-        join assignment_group g on g.id = a.assignment_group_id 
-        left outer join module_def d on d.id=g.id
+            SUM(s.entered_score) punten,
+            MIN(s.entered_score) minpunten,
+            SUM(a.points_possible) punten_max,
+            SUM(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
+            MAX(submitted_at),
+            MAX(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
+            SUM(1) aantal_opdrachten
+            FROM user u
+            LEFT JOIN submission s on u.id=s.user_id
+            LEFT JOIN  assignment a on s.assignment_id= a.id
+            LEFT JOIN  assignment_group g on g.id = a.assignment_group_id 
+            LEFT JOIN  module_def d on d.id=g.id
         WHERE u.klas is not null
-        and published=1
+        AND (a.published = 1 OR a.published IS NULL)
         group by 1, 2, 3, 4, 5, 6, 7;
     """
     cursor.execute(sql)
