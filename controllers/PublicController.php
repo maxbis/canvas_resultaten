@@ -81,9 +81,42 @@ class PublicController extends Controller
                 ORDER BY d.pos;
             ";
 
+        $sql2 = "SELECT r.module_id,
+            r.student_naam Student,
+            u.id student_id,
+            CASE
+                WHEN d.korte_naam IS NULL OR d.korte_naam = '' THEN c.korte_naam
+                ELSE d.korte_naam
+            END AS Blok,
+            d.naam Module,
+            r.voldaan Voldaan,
+            round( r.ingeleverd*100/r.aantal_opdrachten) 'Opdrachten %',
+            round(r.punten*100/r.punten_max) 'Punten %',
+            r.laatste_activiteit 'Laatste Actief',
+            r.ingeleverd Opdrachten,
+            r.student_nummer,
+            r.aantal_opdrachten,
+            r.punten Punten,
+            r.minpunten Minpunten,
+            u.code Code,
+            d.voldaan_rule voldaanRule,
+            u.message Message,
+            u.klas Klas,
+            d.Generiek generiek,
+            u.ranking_score Ranking,
+            r.norm_uren NormurenBehaald, 
+            d.norm_uren Normuren
+            FROM  user u
+            LEFT JOIN resultaat r on r.student_nummer = u.student_nr
+            LEFT JOIN course c on c.id = r.course_id
+            LEFT JOIN module_def d on d.id=r.module_id
+            WHERE code='$code'
+            and d.actief = 1 or d.actief is NULL
+            ORDER BY d.pos;
+            ";
+
         // Create log if invalid code is received
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        dd($data);
         if (!count($data)) {
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();
