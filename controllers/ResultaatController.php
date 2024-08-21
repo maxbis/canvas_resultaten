@@ -112,6 +112,9 @@ class ResultaatController extends Controller
 
         $actualLink = strtolower('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 
+        if (str_contains($actualLink, 'c24')) {
+            $newUrl = str_replace("c24", "c23", $actualLink);
+        }
         if (str_contains($actualLink, 'c23')) {
             $newUrl = str_replace("c23", "c22", $actualLink);
         }
@@ -119,10 +122,10 @@ class ResultaatController extends Controller
             $newUrl = str_replace("c22", "c21", $actualLink);
         }
         if (str_contains($actualLink, 'c21')) {
-            $newUrl = str_replace("c21", "c23", $actualLink);
+            $newUrl = str_replace("c21", "c24", $actualLink);
         }
         if (str_contains($actualLink, 'c20')) {
-            $newUrl = str_replace("c20", "c23", $actualLink);
+            $newUrl = str_replace("c20", "c24", $actualLink);
         }
 
         $this->redirect($newUrl);
