@@ -43,7 +43,7 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                                 echo "<table>";
                                 foreach($openCourses as $course) {
                                     echo "<tr><td class=\"card-text\">";
-                                    echo "&bull;".$course['naam']." (id: ".$course['naam']. ") ";
+                                    echo "&bull;".$course['naam'];
                                     echo "</td><td><small>";
                                     echo Html::a("koppel", ['/canvas-update/add-user', 'courseId'=>$course['id'], 'userId'=>$model['id'] ]);
                                     echo "</small></td></tr>";
@@ -58,29 +58,31 @@ td { padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:2px; }
                             <details>
                                 <summary>Stats</summary>
                                 <?php
-                                    echo "<table style=\"color:#606060;\">";
-                                    foreach($prediction as $key => $value) {
-                                        echo "<tr>";
-                                        $color="#808080";
-                                        $fontWeight = 600;
-                                        if ( $key == "week/mod" ) {
-                                            $fontWeight = 700;
-                                            if ( $value > 2.0 ) {
-                                                $color = "#800000";
-                                            } elseif ( $value > 1.7 ) {
-                                                $color = "#ff0000";
-                                            } elseif ($value > 1.6) {
-                                                $color = "#FFA500";
-                                            } elseif ($value > 1) {
-                                                $color = "#008000";
-                                            } else {
-                                                $color = "#66CDAA";
+                                    if ( $prediction != '' ) {
+                                        echo "<table style=\"color:#606060;\">";
+                                        foreach($prediction as $key => $value) {
+                                            echo "<tr>";
+                                            $color="#808080";
+                                            $fontWeight = 600;
+                                            if ( $key == "week/mod" ) {
+                                                $fontWeight = 700;
+                                                if ( $value > 2.0 ) {
+                                                    $color = "#800000";
+                                                } elseif ( $value > 1.7 ) {
+                                                    $color = "#ff0000";
+                                                } elseif ($value > 1.6) {
+                                                    $color = "#FFA500";
+                                                } elseif ($value > 1) {
+                                                    $color = "#008000";
+                                                } else {
+                                                    $color = "#66CDAA";
+                                                }
                                             }
+                                            echo "<td>$key</td><td style=\"font-weight:$fontWeight;color:$color\">$value</td>";
+                                            echo "</tr>";
                                         }
-                                        echo "<td>$key</td><td style=\"font-weight:$fontWeight;color:$color\">$value</td>";
-                                        echo "</tr>";
+                                        echo "</table>";
                                     }
-                                    echo "</table>";
                                 ?>
                             </details>
                         </small>

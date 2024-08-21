@@ -81,9 +81,9 @@ class PublicController extends Controller
                 ORDER BY d.pos;
             ";
 
-
         // Create log if invalid code is received
         $data = Yii::$app->db->createCommand($sql)->queryAll();
+        dd($data);
         if (!count($data)) {
             $sql = "INSERT INTO log (subject, message, route) VALUES ('Wrong code', '" . $code . "', '" . $_SERVER['REMOTE_ADDR'] . "');";
             Yii::$app->db->createCommand($sql)->execute();

@@ -18,9 +18,15 @@ class PredictionController
         ['start' => '2024-04-29', 'end' => '2024-05-10', 'name'=>'Mei'],
         ['start' => '2024-05-20', 'end' => '2024-05-20', 'name'=>'Pinkstermaandag'],
         ['start' => '2024-07-15', 'end' => '2024-08-16', 'name'=>'Zomer'],
-        ['start' => '2024-10-26', 'end' => '2024-11-03', 'name'=>'Herfst'],
-        ['start' => '2024-12-21', 'end' => '2025-01-05', 'name'=>'Kerst'],
-        ['start' => '2025-02-15', 'end' => '2025-02-23', 'name'=>'Krokus'],
+        ['start' => '2024-10-28', 'end' => '2024-11-01', 'name'=>'Herfst'],
+        ['start' => '2024-12-23', 'end' => '2025-01-03', 'name'=>'Kerst'],
+        ['start' => '2025-02-17', 'end' => '2025-02-21', 'name'=>'Krokus'],
+        ['start' => '2025-04-18', 'end' => '2025-04-18', 'name'=>'Goede vrijdag'],
+        ['start' => '2025-04-21', 'end' => '2025-05-02', 'name'=>'Mei'],
+        ['start' => '2025-05-05', 'end' => '2025-05-05', 'name'=>'Bevrijding'],
+        ['start' => '2025-05-29', 'end' => '2025-05-30', 'name'=>'Hemelvaart'],
+        ['start' => '2025-06-09', 'end' => '2025-06-09', 'name'=>'Pinkster'],
+        ['start' => '2025-07-14', 'end' => '2024-08-15', 'name'=>'Zomer'],
     ];
 
     private  $vacationDates = [];
@@ -42,7 +48,13 @@ class PredictionController
             and YEAR(s.submitted_at) > 1970
             order by date";
         $data = Yii::$app->db->createCommand($sql)->queryAll();
-        $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
+        
+        if ( isset($data[0]['name']) ) {
+            $prediction = $this->predictAchievementDate($data, 3900, $data[0]['name']);
+        } else {
+            $prediction = '';
+        }
+
         return $prediction;
     }
 

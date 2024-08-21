@@ -392,7 +392,7 @@ class ReportController extends QueryBaseController
                 WHEN m.korte_naam IS NULL OR m.korte_naam = '' THEN c.korte_naam
                 ELSE m.korte_naam
             END AS'#Blok',
-            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',substr(c.naam,1,8),' &#129062;</a>') 'Course',
+            concat('<a target=_blank title=\"Naar Module\" href=\"https://talnet.instructure.com/courses/',c.id,'/modules\">',substr(c.naam,1,12),' &#129062;</a>') 'Course (Track)',
             concat(m.naam,'|/report/opdrachten-module|id|',m.id) '!Naam',
             m.pos 'Pos',
             sum(1) '+Aantal<br>Opg',
@@ -433,7 +433,7 @@ class ReportController extends QueryBaseController
             ],
             'lastLine' => $lastLine,
             'descr' => $descr,
-            'width' => [40, 100, 220, 50, 50, 50, 50, 50, 50, 70],
+            'width' => [40, 180, 240, 40, 40, 40, 40, 40, 40, 60],
             'bgcolor' => ['', '', '#f6f6f6', '', '', '', '', '', '', '#f6f6f6'],
             'color' => ['', '', '', '#8080b0', '#8080b0', '#8080b0', '#8080b0', '#a0a0a0', '', '', '#8080b0'],
         ]);
