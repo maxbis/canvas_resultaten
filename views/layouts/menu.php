@@ -121,7 +121,7 @@ echo Nav::widget([
                 ['label' => 'Studenten (export)',        'url' => ['/report/studenten-lijst']],
                 ['label' => 'Dev Voortgang (adviezen)',  'url' => ['/report/advies']],
                 ['label' => '----------------',],
-                ['label' => 'Cursus (Blok)',  'url' => ['/course']],
+                ['label' => 'Cursus',  'url' => ['/course']],
                 ['label' => 'Modules',        'url' => ['/report/modules']],
             ],
         ],
