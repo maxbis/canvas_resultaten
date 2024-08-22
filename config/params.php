@@ -23,7 +23,8 @@ if ($subDomain=='c22'){
 }
 if ($subDomain=='c23'){
     $klassen=['3A','3B','3C','3D'];
-} 
+}
+if ($subDomain=='c24'){
     $klassen=['3A','3B','3C'];
 }
 
