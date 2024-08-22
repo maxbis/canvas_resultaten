@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 
+# Test to test the inititial initialization of the modules wit an empty cohort.
+
 import pymysql
 import os
 import json
@@ -317,33 +319,7 @@ def createResultaat():
         AND (a.published = 1 OR a.published IS NULL)
         group by 1, 2, 3, 4, 5, 6, 7;
     """
-    sql = """
-        INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
-        SELECT
-            a.course_id course_id,
-            g.id module_id,
-            case when d.naam is null then g.name else d.naam end module,
-            case when d.pos is null then 999 else d.pos end module_pos,
-            u.student_nr student_nummer,
-            u.klas klas,
-            u.name student_naam,
-            SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) ingeleverd,
-            SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) ingeleverd_eo,
-            sum(s.entered_score) punten,
-            min(s.entered_score) minpunten,
-            sum(a.points_possible) punten_max,
-            sum(case when a.name like '%eind%' then s.entered_score else 0 end) punten_eo,
-            max(submitted_at),
-            max(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
-            sum(1) aantal_opdrachten
-        FROM assignment a
-        join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
-        join assignment_group g on g.id = a.assignment_group_id 
-        left outer join module_def d on d.id=g.id
-        WHERE u.klas is not null
-        and published=1
-        group by 1, 2, 3, 4, 5, 6, 7;
-    """
+    
     cursor.execute(sql)
     con.commit()
 
