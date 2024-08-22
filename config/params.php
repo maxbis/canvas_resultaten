@@ -23,13 +23,12 @@ if ($subDomain=='c22'){
 }
 if ($subDomain=='c23'){
     $klassen=['3A','3B','3C','3D'];
-}
-if ($subDomain=='c24'){
+} 
     $klassen=['3A','3B','3C'];
 }
 
 # for searching students in home page
-$databases = ['canvas-c23', 'canvas-c22', 'canvas-c21', 'canvas-c20'];
+$databases = ['canvas-c24', 'canvas-c23', 'canvas-c22', 'canvas-c21', 'canvas-c20'];
 
 return [
     'adminEmail' => 'admin@example.com',

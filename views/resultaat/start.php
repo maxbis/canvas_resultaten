@@ -299,6 +299,7 @@ if (!empty ($search)) {
             data: formData,
             success: function (data) {
                 console.log('Student-search form submitted successfully');
+                console.log('Data:' + data);
 
                 if (data == "") {
                     originalValue = searchInputField.val();
