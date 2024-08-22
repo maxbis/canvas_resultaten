@@ -18,7 +18,7 @@ API_KEY = config.get('main', 'api_key')
 
 canvas = Canvas(API_URL, API_KEY)
 
-course_id = 10755
+course_id = 18660
 
 course = canvas.get_course(course_id)
 all_users = course.get_users(enrollment_type=['student'])
