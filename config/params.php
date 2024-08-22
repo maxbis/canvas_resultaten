@@ -22,7 +22,7 @@ if ($subDomain=='c22'){
     $klassen=['2A','2B','2C'];
 }
 if ($subDomain=='c23'){
-    $klassen=['3A','3B','3C'];
+    $klassen=['3A','3B','3C','3D'];
 }
 if ($subDomain=='c24'){
     $klassen=['3A','3B','3C'];
