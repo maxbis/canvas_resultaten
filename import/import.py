@@ -290,33 +290,34 @@ def createResultaat():
 
     log("Create aggregate into resultaat", 1)
     # Note Grader id < 0 are automatically graded assignments; where s.grader_id > 0
-    sql = """
-        INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
-        SELECT
-            a.course_id AS course_id,
-            g.id AS module_id,
-            case when d.naam is null then g.name else d.naam end AS module,
-            case when d.pos is null then 999 else d.pos end AS module_pos,
-            u.student_nr AS student_nummer,
-            u.klas AS klas,
-            u.name AS student_naam,
-            SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) AS ingeleverd,
-            SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) AS ingeleverd_eo,
-            SUM(IFNULL(s.entered_score, 0)) AS punten,
-            MIN(IFNULL(s.entered_score, 0)) AS minpunten,
-            SUM(IFNULL(a.points_possible, 0)) AS punten_max,
-            SUM(case when a.name like '%eind%' then s.entered_score else 0 end) AS punten_eo,
-            MAX(submitted_at),
-            MAX(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
-            SUM(1) aantal_opdrachten
-        FROM user u, assignment a
-            left join submission s on s.assignment_id= a.id
-            left join assignment_group g on g.id = a.assignment_group_id 
-            left join module_def d on d.id=g.id
-        WHERE length(u.klas) > 0
-        AND (a.published = 1 OR a.published IS NULL)
-        group by 1, 2, 3, 4, 5, 6, 7;
-    """
+    # sql = """
+    #     INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
+    #     SELECT
+    #         a.course_id AS course_id,
+    #         g.id AS module_id,
+    #         case when d.naam is null then g.name else d.naam end AS module,
+    #         case when d.pos is null then 999 else d.pos end AS module_pos,
+    #         u.student_nr AS student_nummer,
+    #         u.klas AS klas,
+    #         u.name AS student_naam,
+    #         SUM(case when s.workflow_state<>'unsubmitted' then 1 else 0 end) AS ingeleverd,
+    #         SUM(case when s.workflow_state<>'unsubmitted' and a.name like '%eind%' then 1 else 0 end) AS ingeleverd_eo,
+    #         SUM(IFNULL(s.entered_score, 0)) AS punten,
+    #         MIN(IFNULL(s.entered_score, 0)) AS minpunten,
+    #         SUM(IFNULL(a.points_possible, 0)) AS punten_max,
+    #         SUM(case when a.name like '%eind%' then s.entered_score else 0 end) AS punten_eo,
+    #         MAX(submitted_at),
+    #         MAX(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
+    #         SUM(1) aantal_opdrachten
+    #     FROM user u, assignment a
+    #         left join submission s on s.assignment_id= a.id
+    #         left join assignment_group g on g.id = a.assignment_group_id 
+    #         left join module_def d on d.id=g.id
+    #     WHERE length(u.klas) > 0
+    #     AND (a.published = 1 OR a.published IS NULL)
+    #     group by 1, 2, 3, 4, 5, 6, 7;
+    # """
+    
     sql = """
         INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
         SELECT
