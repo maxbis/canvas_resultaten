@@ -317,7 +317,7 @@ def createResultaat():
         AND (a.published = 1 OR a.published IS NULL)
         group by 1, 2, 3, 4, 5, 6, 7;
     """
-    sql = """
+    sql2 = """
         INSERT into resultaat (course_id, module_id, module, module_pos, student_nummer, klas, student_naam, ingeleverd, ingeleverd_eo, punten, minpunten, punten_max, punten_eo, laatste_activiteit,laatste_beoordeling, aantal_opdrachten)
         SELECT
             a.course_id course_id,
@@ -336,7 +336,6 @@ def createResultaat():
             max(submitted_at),
             max(case when s.grader_id>0 then graded_at else "1970-01-01 00:00:00" end),
             sum(1) aantal_opdrachten
-
         FROM assignment a
         join submission s on s.assignment_id= a.id join user u on u.id=s.user_id
         join assignment_group g on g.id = a.assignment_group_id 
@@ -346,6 +345,7 @@ def createResultaat():
         group by 1, 2, 3, 4, 5, 6, 7;
     """
     cursor.execute(sql)
+    cursor.execute(sql2)
     con.commit()
 
 def calcVoldaan():
