@@ -146,7 +146,7 @@ class PredictionController
     function countWorkingDays($startDate, $endDate) {
 
         // Count working days excluding weekends and vacation dates
-        $workingDaysCount = 0;
+        $workingDaysCount = 1; // avoid division by zero
         $currentDate = $startDate;
         while ($currentDate <= $endDate) {
 
