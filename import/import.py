@@ -57,9 +57,10 @@ for section, keys in sections_with_keys.items():
         for key in keys:
             if not config.has_option(section, key):  # Check if the key exists in the section
                 current_directory = os.getcwd()
-                print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}' (CWD: {current_directory}).")
+                print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}'.")
     else:
         print(f" *** WARNING *** Section '{section}' does NOT exist.")
+        print*(f" Current Working Directory: {current_directory}")
 
 
 try:
