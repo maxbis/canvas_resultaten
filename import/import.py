@@ -56,7 +56,8 @@ for section, keys in sections_with_keys.items():
     if config.has_section(section):  # Check if the section exists
         for key in keys:
             if not config.has_option(section, key):  # Check if the key exists in the section
-                print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}'.")
+                current_directory = os.getcwd()
+                print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}' (CWD: {current_directory}).")
     else:
         print(f" *** WARNING *** Section '{section}' does NOT exist.")
 
