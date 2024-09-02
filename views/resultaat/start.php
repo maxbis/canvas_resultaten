@@ -200,6 +200,8 @@ if (!empty ($search)) {
             var csrfToken = $('meta[name="csrf-token"]').attr("content");
             var nakijkOverzichtApi = '<?= Url::toRoute(['resultaat/ajax-nakijken']); ?>';
 
+            console.log('ajax call to resultaat/ajax-nakijken')
+
             $.ajax({
                 type: 'POST',
                 data: { '_csrf': csrfToken },
@@ -292,6 +294,8 @@ if (!empty ($search)) {
         form.append(input);
         var formData = form.serialize();
 
+        console.log('ajax call to ' + searchStudentsApi)
+
         $.ajax({
             url: searchStudentsApi,
             type: 'POST',
@@ -299,7 +303,6 @@ if (!empty ($search)) {
             data: formData,
             success: function (data) {
                 console.log('Student-search form submitted successfully');
-                console.log('Data:' + data);
 
                 if (data == "") {
                     originalValue = searchInputField.val();
@@ -330,6 +333,8 @@ if (!empty ($search)) {
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
         var updateModuleApi = '<?= Url::toRoute(['canvas-update/update']); ?>';
         updateModuleApi = updateModuleApi + '?assignmentGroup=' + moduleId + '&flag=ajax';
+
+        console.log('ajax call to ' + updateModuleApi)
 
         $.ajax({
             type: 'POST',
