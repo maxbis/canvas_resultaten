@@ -42,7 +42,7 @@ config = configparser.ConfigParser()
 #     print()
 #     dd('Error: canvas.ini not found')
 
-ini_files = ['./canvas.ini', './database.ini', './main.ini']
+ini_files = ['./canvas.ini', './database.ini', './main.ini', '../import/canvas.ini'] # last one is for update (cwd is /var/www/sites/canvas/web)
 config.read(ini_files)
 
 sections_with_keys = {
