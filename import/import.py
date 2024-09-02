@@ -37,9 +37,29 @@ def dd(arg):
     sys.exit()
 
 config = configparser.ConfigParser()
-if ( not (config.read("../import/canvas.ini") or config.read("canvas.ini"))):
-    print()
-    dd('Error: canvas.ini not found')
+
+# if ( not (config.read("../import/canvas.ini") or config.read("canvas.ini"))):
+#     print()
+#     dd('Error: canvas.ini not found')
+
+ini_files = ['./canvas.ini', './database.ini', './main.ini']
+config.read(ini_files)
+
+sections_with_keys = {
+    'main': ['host', 'baseUrl', 'api_key',],
+    'database': [ 'db', 'user', 'password'],
+}
+
+
+# Validate if keys exist in their respective sections
+for section, keys in sections_with_keys.items():
+    if config.has_section(section):  # Check if the section exists
+        for key in keys:
+            if not config.has_option(section, key):  # Check if the key exists in the section
+                print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}'.")
+    else:
+        print(f" *** WARNING *** Section '{section}' does NOT exist.")
+
 
 try:
     baseUrl  = config.get('main', 'baseUrl')
