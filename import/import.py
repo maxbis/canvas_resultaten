@@ -59,7 +59,7 @@ for section, keys in sections_with_keys.items():
                 print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}'.")
     else:
         current_directory = os.getcwd()
-        print(f" *** WARNING *** Section '{section}' does NOT exist.")
+        print(f" *** WARNING *** Section '{section}' does NOT exist and/or ini file(s) not found.")
         print*(f" Current Working Directory: {current_directory}")
 
 
