@@ -57,10 +57,14 @@ for section, keys in sections_with_keys.items():
         for key in keys:
             if not config.has_option(section, key):  # Check if the key exists in the section
                 print(f" *** WARNING *** Key '{key}' does NOT exists in section '{section}'.")
+                print(f" cwd: {current_directory}")
+                sys.exit()
     else:
         current_directory = os.getcwd()
-        print(f" *** WARNING *** Section '{section}' does NOT exist and/or ini file(s) not found.")
-        print(f" Current Working Directory: {current_directory}")
+        print(f" *** WARNING *** Section '{section}' and/or ini file(s) not found.")
+        print(f"cwd: {current_directory}, ini files:")
+        print(ini_files)
+        sys.exit()
 
 
 try:
@@ -69,6 +73,8 @@ try:
     api_key  = config.get('main', 'api_key')
 except:
     dd('Error reading canvas.ini main parameters')
+
+# print(f"Found api key .....{api_key[-3:]}")    
 
 parser = argparse.ArgumentParser(description='Update resultaten in Canvas Monitor')
 parser.add_argument('-c', '--course', type=int, help='Update course id or update all courses with a specified prio smaller than specified.', required=False)
