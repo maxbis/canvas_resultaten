@@ -25,7 +25,7 @@ if ($subDomain=='c23'){
     $klassen=['3A','3B','3C','3D'];
 }
 if ($subDomain=='c24'){
-    $klassen=['3A','3B','3C'];
+    $klassen=['4A','4B','4C'];
 }
 
 # for searching students in home page
