@@ -49,7 +49,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionAantalActiviteitenWeek($export = false, $klas = '', $sort='')
+    public function actionAantalActiviteitenWeek($export = false, $klas = '', $sort = '')
     { // menu 3.2 - Week overzicht 
 
         $weekday = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
@@ -64,11 +64,11 @@ class ReportController extends QueryBaseController
                 $dayNr = 6;
         }
 
-        $sortQuery="";
-        if ( $sort ) {
+        $sortQuery = "";
+        if ($sort) {
             $sort = "order by $sort";
         } else {
-            $sortQuery ="ORDER BY SUBSTRING_INDEX(u.name, ' ', -1)";
+            $sortQuery = "ORDER BY SUBSTRING_INDEX(u.name, ' ', -1)";
         }
 
         // for($i=7; $i<9; $i++){  
@@ -278,7 +278,11 @@ class ReportController extends QueryBaseController
     public function actionVoortgang2($export = false, $klas = '')
     { // menu 3.3 - Voorgang (kleuren) rendered outputVoortgang.php
 
-        $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod', c.korte_naam 'blok'
+        $sql = "SELECT m.id, m.naam, substring(m.naam,1,4) 'mod',
+                CASE
+                    WHEN m.korte_naam IS NULL OR m.korte_naam = '' THEN c.korte_naam
+                    ELSE m.korte_naam
+                END AS blok
                 from module_def m
                 join assignment_group g on g.id=m.id
                 join course c on c.id = g.course_id
@@ -903,7 +907,6 @@ class ReportController extends QueryBaseController
                 'title' => 'Export to CSV',
             ],
         ]);
-
     }
 
     # accessed via actionAantalOpdrachten()
@@ -939,7 +942,6 @@ class ReportController extends QueryBaseController
                 'title' => 'Export to CSV',
             ],
         ]);
-
     }
 
     // called form module overzicht
@@ -1222,7 +1224,6 @@ class ReportController extends QueryBaseController
                     'Module' => $student['module'],
                 ];
             }
-
         }
 
         usort($result, function ($a, $b) {
@@ -1244,5 +1245,4 @@ class ReportController extends QueryBaseController
             'color' => ['', '', '', '#707070', '', '', '#707070', '', '#707070'],
         ]);
     }
-
 }

@@ -17,8 +17,8 @@ account = canvas.get_account(82)
 
 course = account.create_course(
     course={
-        'name':'Course Introdcutie',
-        'course_code':'LCT-SD-Intro-Stoplicht',
+        'name':'Loopbaanbegeleiding',
+        'course_code':'LCT-SD-KTE-C24',
         'default_view': 'modules',
         'licence': 'private',
     }
