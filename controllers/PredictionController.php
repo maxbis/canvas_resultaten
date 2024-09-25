@@ -101,7 +101,7 @@ class PredictionController
         } elseif ( $daysPassed > 20 ) {
             $predictedDate = $today;
         } else {
-            # not teted; when less than 20 days at work, get a more or less fixed date.
+            # not tested; when less than 20 days at work, get a more or less fixed date.
             $predictedDate = $this->getDateAfterWorkingDays($today, 580 - $daysPassed);
         }
 
