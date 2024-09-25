@@ -787,7 +787,7 @@ class ReportController extends QueryBaseController
         left outer join resultaat r on r.module_id=a.id
         where substring(a.name,1,1) != '!'
         group by 1,2,4,5,6,7,8
-        order by (d.pos IS NULL), d.pos ASC, a.id ASC
+        order by (d.pos IS NULL), 1
         ";
 
         $lastLine = "<hr><a href=\"/report/modules2\" class=\"btn bottom-button\">Volgorde aanpassen...</a>";
