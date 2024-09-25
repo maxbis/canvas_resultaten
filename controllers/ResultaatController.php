@@ -119,7 +119,7 @@ class ResultaatController extends Controller
             $newUrl = str_replace("c23", "c22", $actualLink);
         }
         if (str_contains($actualLink, 'c22')) {
-            $newUrl = str_replace("c22", "c21", $actualLink);
+            $newUrl = str_replace("c22", "c24", $actualLink);
         }
         if (str_contains($actualLink, 'c21')) {
             $newUrl = str_replace("c21", "c24", $actualLink);
