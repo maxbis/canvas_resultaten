@@ -114,7 +114,8 @@ def checkAssignment(assignment):
     print()
 
 # check blok id
-course = canvas.get_course(12623) # blok 5 c23
+# course = canvas.get_course(12623) # blok 5 c23
+course = canvas.get_course(18661) # prog1 C24
 
 log(course.name)
 
