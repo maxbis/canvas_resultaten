@@ -1262,8 +1262,8 @@ class ReportController extends QueryBaseController
             MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS punten_kerntaak2
         FROM `resultaat`
         WHERE 
-            (module like 'Kerntaak 1%' AND ingeleverd = 5) 
-            OR (module like 'Kerntaak 2%' AND ingeleverd = 3)
+            (module like 'Kerntaak 1%') 
+            OR (module like 'Kerntaak 2%')
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
