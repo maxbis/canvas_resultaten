@@ -1251,7 +1251,8 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionKerntaken($export = false, $klas = '') {
+    public function actionKerntaken($export = false, $klas = '')
+    {
         $sql = "SELECT 
             r.klas Klas, 
             concat(u.name,'|/public/index|code|',u.code) '!Student',
@@ -1267,7 +1268,8 @@ class ReportController extends QueryBaseController
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
-            student_nummer, module;
+            COALESCE(MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END), 0) + 
+            COALESCE(MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END), 0) DESC;
         ";
 
         $data = parent::executeQuery($sql, "Overzicht voortgang Kerntaken", $export);
