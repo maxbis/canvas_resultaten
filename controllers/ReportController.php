@@ -1254,7 +1254,6 @@ class ReportController extends QueryBaseController
     public function actionKerntaken($export = false, $klas = '') {
         $sql = "SELECT 
             r.klas Klas, 
-            r.student_naam, 
             concat(u.name,'|/public/index|code|',u.code) '!Student',
             MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END) AS ingeleverd_kerntaak1,
             MAX(CASE WHEN module = 'Kerntaak 1' THEN punten END) AS punten_kerntaak1,
