@@ -1253,17 +1253,18 @@ class ReportController extends QueryBaseController
 
     public function actionKerntaken($export = false, $klas = '') {
         $sql = "SELECT 
-            student_nummer, 
-            klas, 
-            student_naam, 
+            r.klas Klas, 
+            r.student_naam, 
+            concat(u.name,'|/public/index|code|',u.code) '!Student',
             MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END) AS ingeleverd_kerntaak1,
             MAX(CASE WHEN module = 'Kerntaak 1' THEN punten END) AS punten_kerntaak1,
             MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END) AS ingeleverd_kerntaak2,
             MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS punten_kerntaak2
-        FROM `resultaat`
+        FROM resultaat r
+        inner join user u on u.student_nr = r.student_nummer
         WHERE 
-            (module like 'Kerntaak 1%') 
-            OR (module like 'Kerntaak 2%')
+            (module like 'Kerntaak 1%' AND ingeleverd = 5) 
+            OR (module like 'Kerntaak 2%' AND ingeleverd = 3)
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
