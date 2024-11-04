@@ -802,6 +802,7 @@ class ReportController extends QueryBaseController
         ]);
     }
 
+
     public function actionModules2($export = false)
     { // menu 6.5 - Modules
         $sql = "
@@ -1248,5 +1249,33 @@ class ReportController extends QueryBaseController
             'bgcolor' => ['', '', '', '', '', '', '', '#f5fff9', '#'],
             'color' => ['', '', '', '#707070', '', '', '#707070', '', '#707070'],
         ]);
+    }
+
+    public function actionKerntaken($export = false, $klas = '') {
+        $sql = "SELECT 
+            student_nummer, 
+            klas, 
+            student_naam, 
+            MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END) AS ingeleverd_kerntaak1,
+            MAX(CASE WHEN module = 'Kerntaak 1' THEN punten END) AS punten_kerntaak1,
+            MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END) AS ingeleverd_kerntaak2,
+            MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS punten_kerntaak2
+        FROM `resultaat`
+        WHERE 
+            (module like 'Kerntaak 1%' AND ingeleverd = 5) 
+            OR (module like 'Kerntaak 2%' AND ingeleverd = 3)
+        GROUP BY 
+            student_nummer, klas, student_naam
+        ORDER BY 
+            student_nummer, module;
+        ";
+
+        $data = parent::executeQuery($sql, "Overzicht voortgang Kerntaken", $export);
+
+        return $this->render('/report/output', [
+            'data' => parent::executeQuery($sql, "Laatste activiteit per student " . $klas, $export),
+            'action' => parent::exportButton($klas ??= 'false'),
+        ]);
+
     }
 }

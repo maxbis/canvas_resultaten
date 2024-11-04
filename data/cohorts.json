@@ -1,0 +1,44 @@
+{
+    "c24": {
+        "classes": {
+            "4A": "Mina",
+            "4B": "Anton/Muhammed",
+            "4C": "Max"
+        },
+        "database": "canvas-c24"
+    },
+    "c23": {
+        "classes": {
+            "3A": "John",
+            "3B": "Sophia",
+            "3C": "Liam",
+            "3D": "Emma"
+        },
+        "database": "canvas-c23"
+    },
+    "c22": {
+        "classes": {
+            "2A": "John",
+            "2B": "Sophia",
+            "2C": "Liam"
+        },
+        "database": "canvas-c22"
+    },
+    "c21": {
+        "classes": {
+            "1A": "John",
+            "1B": "Sophia",
+            "1C": "Liam",
+            "1D": "Emma"
+        },
+        "database": "canvas-c21"
+    },
+    "c20": {
+        "classes": {
+            "0A": "John",
+            "0B": "Sophia",
+            "0C": "Liam"
+        },
+        "database": "canvas-c20"
+    },
+}
