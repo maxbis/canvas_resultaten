@@ -71,6 +71,7 @@ echo Nav::widget([
                 ['label' => 'Aantal pogingen',                      'url' => ['/report/pogingen']],
                 // ['label' => 'Cluster Submissions',               'url' => ['/report/cluster-submissions']],
                 ['label' => 'Alle resultaten (in Grid)',         'url' => ['/resultaat/index']],
+                ['label' => 'Kerntaken',                         'url' => ['/report/kerntaken']],
                 ['label' => '----------------',],
                 // ['label' => 'Laatste beoordeelding per module',  'url'  => ['/report/beoordeeld']],
                 // ['label' => 'Beoordelingen per module over tijd', 'url' => ['/report/aantal-beoordelingen']],
