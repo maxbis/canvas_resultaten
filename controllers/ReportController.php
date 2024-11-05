@@ -1256,26 +1256,27 @@ class ReportController extends QueryBaseController
         $sql = "SELECT 
             r.klas Klas, 
             concat(u.name,'|/public/index|code|',u.code) '!Student',
-            MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END) AS ingeleverd_kerntaak1,
-            MAX(CASE WHEN module = 'Kerntaak 1' THEN punten END) AS punten_kerntaak1,
-            MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END) AS ingeleverd_kerntaak2,
-            MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS punten_kerntaak2
+            MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END) AS 'KT1 Opdr.',
+            MAX(CASE WHEN module = 'Kerntaak 1' THEN punten END) AS 'KT1 Punt.',
+            MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END) AS 'KT2 Opdr.',
+            MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS 'KT2 punt.',
+            SUM(ingeleverd) 'Tot Opdr.',
+            SUM(punten) 'Tot Punten'
         FROM resultaat r
         inner join user u on u.student_nr = r.student_nummer
         WHERE 
-            (module like 'Kerntaak 1%' AND ingeleverd > 0) 
-            OR (module like 'Kerntaak 2%' AND ingeleverd > 0)
+            (module like 'Kerntaak 1%' AND ingeleverd > 0 ) 
+            OR (module like 'Kerntaak 2%' AND ingeleverd > 0 ) 
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
-            COALESCE(MAX(CASE WHEN module = 'Kerntaak 1' THEN ingeleverd END), 0) + 
-            COALESCE(MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END), 0) DESC;
+            COALESCE(SUM(punten), 0) DESC;
         ";
 
         $data = parent::executeQuery($sql, "Overzicht voortgang Kerntaken", $export);
 
         return $this->render('/report/output', [
-            'data' => parent::executeQuery($sql, "Laatste activiteit per student " . $klas, $export),
+            'data' => parent::executeQuery($sql, "Kerntaken overzicht " . $klas, $export),
             'action' => parent::exportButton($klas ??= 'false'),
         ]);
 
