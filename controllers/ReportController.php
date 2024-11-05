@@ -1265,8 +1265,9 @@ class ReportController extends QueryBaseController
         FROM resultaat r
         inner join user u on u.student_nr = r.student_nummer
         WHERE 
-            (module like 'Kerntaak 1%' AND ingeleverd > 0 ) 
-            OR (module like 'Kerntaak 2%' AND ingeleverd > 0 ) 
+            ((module like 'Kerntaak 1%' AND ingeleverd > 0 ) 
+            OR (module like 'Kerntaak 2%' AND ingeleverd > 0 ))
+            " . $this->getKlas($klas) . "
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
