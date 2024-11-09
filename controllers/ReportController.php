@@ -1272,7 +1272,7 @@ class ReportController extends QueryBaseController
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
-            `Examen` DESC, 
+            `Examen` ASC, 
             COALESCE(SUM(punten), 0) DESC;
         ";
 
