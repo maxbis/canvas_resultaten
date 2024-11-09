@@ -1261,7 +1261,8 @@ class ReportController extends QueryBaseController
             MAX(CASE WHEN module = 'Kerntaak 2' THEN ingeleverd END) AS 'KT2 Opdr.',
             MAX(CASE WHEN module = 'Kerntaak 2' THEN punten END) AS 'KT2 punt.',
             SUM(ingeleverd) 'Tot Opdr.',
-            SUM(punten) 'Tot Punten'
+            SUM(punten) 'Tot Punten',
+            CASE WHEN MIN(minpunten)>1 AND SUM(punten) >=21 THEN 'j' ELSE 'n' END AS 'Examen'
         FROM resultaat r
         inner join user u on u.student_nr = r.student_nummer
         WHERE 
