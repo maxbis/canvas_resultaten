@@ -1272,7 +1272,7 @@ class ReportController extends QueryBaseController
         GROUP BY 
             student_nummer, klas, student_naam
         ORDER BY 
-            COALESCE(SUM(punten), 0) DESC;
+            'Examen', COALESCE(SUM(punten), 0) DESC;
         ";
 
         $data = parent::executeQuery($sql, "Overzicht voortgang Kerntaken", $export);
