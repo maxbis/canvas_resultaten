@@ -107,6 +107,12 @@ use yii\widgets\ActiveForm;
         </div>
 
         <div class="row">
+            <div class="col-sm-8">
+                <?= $form->field($model, 'ai_prompt')->textArea(['maxlength' => true, 'rows'=>2]) ?>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-sm-8 text-right">
                 &nbsp;&nbsp;&nbsp;
                 <?= Html::submitButton('Cancel', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'cancel']) ?>

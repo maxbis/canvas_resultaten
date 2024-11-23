@@ -28,6 +28,7 @@ class Nakijken extends \yii\db\ActiveRecord
             [['file_name'], 'string', 'max' => 20],
             [['cohort'], 'string', 'max' => 3],
             [['words_in_order', 'instructie'], 'string', 'max' => 400],
+            [['ai_prompt'], 'string', 'max' => 600],
             [['assignment_id'], 'unique'],
             ['file_type', 'filter', 'filter' => function ($value) {
                 return str_replace('.', '', $value);
@@ -51,6 +52,7 @@ class Nakijken extends \yii\db\ActiveRecord
             'attachments' => 'Attachments',
             'words_in_order' => 'Words In Order',
             'instructie' => 'Instructie',
+            'ai_prompt' => 'AI Prompt', 
             'label' => 'Label',
             'module_id' => 'Module ID',
             'cohort' => 'Cohort'
