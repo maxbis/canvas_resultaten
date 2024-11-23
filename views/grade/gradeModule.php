@@ -144,8 +144,8 @@ use yii\helpers\Html;
             echo $lastLine; ?>
     </div>
 </div>
-<hr>
-<p style="margin:20px;">
+
+<p style="margin:20px;margin-top:40px;">
     <a class="button apply-to-all-ac" title="Auto Correct All">AC All➞</a>
     <br>
     <small style="font-size:11px;color:#a0a0a0">Deze actie opent voor elke regel een tab. Dit werkt alleen als de browser instellingen goed staan. </small>
