@@ -144,7 +144,7 @@ use yii\helpers\Html;
             echo $lastLine; ?>
     </div>
 </div>
-
+<hr>
 <p style="margin:20px;">
     <a class="button apply-to-all-ac" title="Auto Correct All">AC All➞</a>
     <br>
