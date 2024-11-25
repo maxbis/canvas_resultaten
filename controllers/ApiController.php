@@ -53,7 +53,7 @@ class ApiController extends Controller
 
         $search_criteria='';
         if ( $s != '' ) {
-            $search_criteria="AND ( g.name like '%$s%' or n.label like '%$s%')";
+            $search_criteria="AND ( g.name like '%$s%' )";
         }
         if ( $mid != '' ) {
             $search_criteria="AND ( m.id = $mid )";
