@@ -159,10 +159,11 @@ document.querySelector('.apply-to-all-ac').addEventListener('click', function(ev
     // Get all links with the class 'ac-link'
     let links = document.querySelectorAll('.ac-link');
     
-    links.forEach(function(link) {
-        // Simulate clicking each link
-        console.log(link.href);
-        window.open(link.href, link.target || '_self');
+    links.forEach((link, index) => {
+        setTimeout(() => {
+            console.log(link.href);
+            window.open(link.href, link.target || '_self');
+        }, index * 5000); // 5-second delay for each subsequent link
     });
 });
 JS;
