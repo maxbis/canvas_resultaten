@@ -30,10 +30,19 @@ array_push($myKlassenMenu, $item);
 // dd(Yii::$app->controller->action->controller->module->requestedRoute);
 // $title = $route;
 
+// NavBar::begin([
+//     'brandLabel' => $title,
+//     'brandUrl' =>   '/resultaat/rotate',
+//     'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp&nbsp&nbsp'.$title,
+//     'options' => [
+//         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+//         'title' => 'menu item'
+//     ],
+// ]);
+
 NavBar::begin([
-    'brandLabel' => $title,
-    'brandUrl' =>   '/resultaat/rotate',
-    'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp&nbsp&nbsp'.$title,
+    'brandLabel' => '<img src="/favicon/cmon.ico" class="img-responsive"/>&nbsp;&nbsp;&nbsp;' . $title,
+    'brandUrl' => Yii::$app->user->isGuest ? Yii::$app->request->referrer : '/resultaat/rotate',
     'options' => [
         'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
         'title' => 'menu item'
