@@ -940,7 +940,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'descr' => '',
-            'width' => [20, 300, 80, 80, 80],
+            'width' => [20, 20, 300, 80, 80, 80],
             'action' => [
                 'link' => Yii::$app->controller->action->id,
                 'param' => 'export=1&id=' . $id,
@@ -988,7 +988,7 @@ class ReportController extends QueryBaseController
         return $this->render('output', [
             'data' => $data,
             'descr' => '',
-            'width' => [20, 300, 80, 80, 80],
+            'width' => [20, 20, 300, 80, 80, 80],
             'action' => [
                 'link' => Yii::$app->controller->action->id,
                 'param' => 'export=1&id=' . $id,
