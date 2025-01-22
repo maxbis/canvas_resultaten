@@ -922,6 +922,7 @@ class ReportController extends QueryBaseController
 
         $sql = "
             select
+            u.student_nr 'student_nr',
             u.klas Klas,
             u.name Student,
             COALESCE( case  when r.voldaan='V' then 100 else round(r.ingeleverd*100/r.aantal_opdrachten,0) end,0 ) 'Perc Af',
@@ -934,7 +935,7 @@ class ReportController extends QueryBaseController
         ";
 
         $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
-        $data['show_from'] = 0;
+        $data['show_from'] = 1;
 
         return $this->render('output', [
             'data' => $data,
@@ -948,6 +949,55 @@ class ReportController extends QueryBaseController
             ],
         ]);
     }
+
+    public function actionOpdrachtenVerdeling2($id, $export = false)
+    {
+        // Parse the input IDs and sanitize them
+        $ids = array_map('intval', explode(',', $id)); // Ensure IDs are integers
+        $idList = implode(',', $ids); // Create a comma-separated list for the SQL query
+
+        // Get the module names based on the given IDs
+        $sql = "SELECT GROUP_CONCAT(naam SEPARATOR ', ') AS module_namen FROM module_def WHERE id IN ($idList)";
+        $moduleNaam = Yii::$app->db->createCommand($sql)->queryOne()['module_namen'];
+
+        // Adjust SQL to handle multiple IDs
+        $sql = "
+        SELECT
+            u.student_nr AS 'student_nr',
+            u.klas AS Klas,
+            u.name AS Student,
+            COALESCE(
+                CASE
+                    WHEN r.voldaan='V' THEN 100
+                    ELSE ROUND(r.ingeleverd * 100 / r.aantal_opdrachten, 0)
+                END,
+                0
+            ) AS 'Perc Af',
+            ROUND(r.punten, 0) AS Punten,
+            r.ranking_score AS 'Score'
+        FROM user u
+        LEFT OUTER JOIN resultaat r ON u.student_nr = r.student_nummer AND r.module_id IN ($idList)
+        WHERE u.student_nr > 100
+        ORDER BY 3 DESC, 4 DESC;
+    ";
+
+        // Execute the query
+        $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
+        $data['show_from'] = 1;
+
+        return $this->render('output', [
+            'data' => $data,
+            'descr' => '',
+            'width' => [20, 300, 80, 80, 80],
+            'action' => [
+                'link' => Yii::$app->controller->action->id,
+                'param' => 'export=1&id=' . $id,
+                'class' => 'btn btn-primary',
+                'title' => 'Export to CSV',
+            ],
+        ]);
+    }
+
 
     // called form module overzicht
     public function actionOpdrachtenModule($id, $export = false, $test = 0)
@@ -1282,6 +1332,5 @@ class ReportController extends QueryBaseController
             'data' => parent::executeQuery($sql, "Kerntaken overzicht " . $klas, $export),
             'action' => parent::exportButton($klas ??= 'false'),
         ]);
-
     }
 }
