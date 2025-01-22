@@ -950,46 +950,6 @@ class ReportController extends QueryBaseController
         ]);
     }
 
-    public function actionOpdrachtenVerdeling2($id, $export = false)
-    {
-        // Parse the input IDs and sanitize them
-        $ids = array_map('intval', explode(',', $id)); // Ensure IDs are integers
-        $idList = implode(',', $ids); // Create a comma-separated list for the SQL query
-
-        // Get the module names based on the given IDs
-        $sql = "SELECT GROUP_CONCAT(naam SEPARATOR ', ') AS module_namen FROM module_def WHERE id IN ($idList)";
-        $moduleNaam = Yii::$app->db->createCommand($sql)->queryOne()['module_namen'];
-
-        // Adjust SQL to handle multiple IDs
-        $sql = "
-        SELECT
-            u.student_nr AS 'student_nr',
-            u.klas AS Klas,
-            u.name AS Student,
-            ROUND(r.punten, 0) AS Punten
-        FROM user u
-        LEFT OUTER JOIN resultaat r ON u.student_nr = r.student_nummer AND r.module_id IN ($idList)
-        WHERE u.student_nr > 100
-        ORDER BY 4 DESC;
-    ";
-
-        // Execute the query
-        $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
-        $data['show_from'] = 1;
-
-        return $this->render('output', [
-            'data' => $data,
-            'descr' => '',
-            'width' => [20, 20, 300, 80, 80, 80],
-            'action' => [
-                'link' => Yii::$app->controller->action->id,
-                'param' => 'export=1&id=' . $id,
-                'class' => 'btn btn-primary',
-                'title' => 'Export to CSV',
-            ],
-        ]);
-    }
-
 
     // called form module overzicht
     public function actionOpdrachtenModule($id, $export = false, $test = 0)
