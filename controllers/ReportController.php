@@ -931,7 +931,7 @@ class ReportController extends QueryBaseController
             FROM user u
             LEFT OUTER JOIN resultaat r on u.student_nr=r.student_nummer and r.module_id =$id
             where u.student_nr > 100
-            order u.name;
+            order by u.name;
         ";
 
         $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
