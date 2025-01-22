@@ -931,7 +931,7 @@ class ReportController extends QueryBaseController
             FROM user u
             LEFT OUTER JOIN resultaat r on u.student_nr=r.student_nummer and r.module_id =$id
             where u.student_nr > 100
-            order by 3 DESC, 4 DESC;
+            order by 4 DESC, 5 DESC;
         ";
 
         $data = parent::executeQuery($sql, "Voortgang \"" . $moduleNaam . "\"", $export);
@@ -966,19 +966,11 @@ class ReportController extends QueryBaseController
             u.student_nr AS 'student_nr',
             u.klas AS Klas,
             u.name AS Student,
-            COALESCE(
-                CASE
-                    WHEN r.voldaan='V' THEN 100
-                    ELSE ROUND(r.ingeleverd * 100 / r.aantal_opdrachten, 0)
-                END,
-                0
-            ) AS 'Perc Af',
-            ROUND(r.punten, 0) AS Punten,
-            r.ranking_score AS 'Score'
+            ROUND(r.punten, 0) AS Punten
         FROM user u
         LEFT OUTER JOIN resultaat r ON u.student_nr = r.student_nummer AND r.module_id IN ($idList)
         WHERE u.student_nr > 100
-        ORDER BY 3 DESC, 4 DESC;
+        ORDER BY 4 DESC;
     ";
 
         // Execute the query
